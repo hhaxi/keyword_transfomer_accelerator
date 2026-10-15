@@ -16,6 +16,12 @@
 
 固定模型配置为 **99 token、64 维特征、单头注意力、256 维 FFN 隐层、12 层编码器**。它不是可动态配置任意尺寸的通用 Transformer 加速器。
 
+<p align="center">
+  <img src="docs/figures/keyword-transformer-overview.png" alt="Keyword Transformer 模型结构：MFCC、输入嵌入、12 层编码器和分类头" width="560">
+</p>
+
+上图展示完整模型结构；98 帧 MFCC 经嵌入并加入一个 `[CLS]` token 后，形成编码器的 99 token 输入。下图说明本工程的软件与硬件计算边界。
+
 ```text
 软件：音频前处理 / MFCC / 嵌入
                  │
