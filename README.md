@@ -4,6 +4,8 @@
 
 **当前阶段：已实现本科组线性加速器 RTL、冻结数值模型、参数转换、E203 驱动与 System Bus 集成，并完成本地功能和通用综合验证。正式工艺时序、面积、功耗及官方平台验收仍待官方服务器和工艺资料，不能将当前结果称为全部赛题验收通过。** `environment/smoke/` 仅用于环境检查，实际设计位于 `rtl/`。
 
+第二版采用四路流水 MAC、8 项输出 FIFO 和批量驱动，同一 SoC 任务从 6,803,004 降至 **2,298,840 周期（2.9593 倍加速）**，内部 SRAM 仍为 52 KiB。按 150 MHz 目标折算为 15.32560 ms/任务、65.25030 任务/秒；实际时序与面积代价待工艺验证。详见 [前端性能优化记录](docs/frontend-performance.md)。
+
 ## 设计复现入口
 
 在完成下文环境配置和资源下载后：
@@ -16,6 +18,7 @@
 
 - [设计说明与寄存器协议](docs/architecture.md)：数值格式、存储布局、驱动及计时范围。
 - [本科必做项验收记录](docs/acceptance.md)：已验证项目和官方验收缺口。
+- [前端性能优化记录](docs/frontend-performance.md)：基线、整机周期比较、流水及 FIFO 设计、资源代价和回归方式。
 - `rtl/`：MAC、矩阵控制器和 SRAM 工艺边界。
 - `integration/`：E203 CPU、System Bus 与 512 KiB 共享 SRAM 集成。
 - `firmware/`：实际由 E203 执行的驱动、启动代码和链接脚本。
@@ -52,7 +55,7 @@
 
 输出 `output/design/soc.fst` 和 `soc.vcd.gz`，日志给出计时窗口。改为 `--tasks 12` 可记录全部本地性能任务。活动文件需在正式工具中检查映射和覆盖，并补全 SRAM 功耗模型后才能用于正式功耗估算。
 
-验证完成后运行 `python scripts/collect_results.py` 汇总记录，再运行 `python scripts/package_submission.py` 生成本地交付包 `deliverables/undergraduate-local-submission.zip`。包内含源码、约束、真实测试向量、固件、通用网表和验证记录；较大的整机活动波形作为独立附属文件保留在 `output/design/`。这份包标记为本地实现交付，官方 PPA/平台验收仍待完成。
+验证完成后运行 `python scripts/collect_results.py` 汇总记录并校验相对第一版的性能回归，再运行 `python scripts/package_submission.py` 生成本地交付包 `deliverables/undergraduate-local-submission.zip`。包内含源码、约束、真实测试向量、固件、通用网表和验证记录；若为当前版本采集了整机活动波形，大文件作为独立附属文件保留在 `output/design/`。第一版活动文件已移至 `output/baseline-v1/`，不作为第二版活动证据。这份包标记为本地实现交付，官方 PPA/平台验收仍待完成。
 
 ## 赛题范围
 

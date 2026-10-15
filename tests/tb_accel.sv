@@ -50,21 +50,40 @@ module tb_accel;
             bus(0,0,1,0,rd);
             bus(0,0,1,1,rd); // Busy start must be rejected, ongoing work survives.
             bus(0,20'h10000,0,1,rd);
+            // Stop consuming long enough to fill both FIFO groups and stall MAC.
+            // Repeated low-half reads must preserve the oldest result.
+            repeat(400) @(negedge clk);
+            bus(1,4,0,0,rd);
+            if (!rd[4] || !rd[2] || !rd[0] || rd[1]) $fatal(1,"queued group status mismatch");
+            bus(1,20'h10,0,0,lo);
+            repeat(200) @(negedge clk);
+            bus(1,20'h10,0,0,hi);
+            if (hi!==lo || lo!==expected[0][31:0]) $fatal(1,"FIFO head changed under backpressure");
             for(j=0;j<25344;j=j+1) begin
                 rd=0;
-                while(!rd[2]) bus(1,4,0,0,rd);
+                // Alternate legacy single-result polling and four-result batches.
+                if(taskid%2==0) while(!rd[2]) bus(1,4,0,0,rd);
+                else if(j%4==0) while(!rd[4]) bus(1,4,0,0,rd);
                 bus(1,20'h10,0,0,lo); bus(1,20'h14,0,0,hi);
                 if({hi,lo}!==expected[j]) $fatal(1,"task=%0d output=%0d actual=%h expected=%h",taskid,j,{hi,lo},expected[j]);
+                if(j%1013==0) repeat(200) @(negedge clk);
             end
             bus(1,4,0,0,rd);
             if(rd[2:0]!==3'b010) $fatal(1,"completion status mismatch");
             $display("ACCEL_TASK_PASS task=%0d cycles=%0d outputs=25344",taskid,cycles-start_cycle);
+            if(taskid==0) begin
+                bus(0,0,1,0,rd);repeat(400) @(negedge clk);
+                bus(0,0,2,0,rd);bus(1,4,0,0,rd);
+                if(rd!==0) $fatal(1,"abort must discard queued outputs");
+                bus(1,20'h10,0,1,rd);bus(0,0,1,1,rd);
+            end
         end
-        // Abort a new task, including pending state, then reset without memory initialization.
-        bus(0,0,1,0,rd); repeat(20) @(negedge clk);
-        bus(0,0,2,0,rd);bus(1,4,0,0,rd);if(rd!==0) $fatal(1,"abort failed");
-        bus(0,0,1,1,rd);rst_n=0;repeat(4) @(negedge clk);rst_n=1;
+        // Reset during a full output queue, without resetting SRAM payloads.
+        // In the one-task run task 0 already invalidated parameters by abort.
+        if(num_tasks>1) begin bus(0,0,1,0,rd);repeat(400) @(negedge clk);end
+        rst_n=0;repeat(4) @(negedge clk);rst_n=1;
         bus(1,4,0,0,rd);if(rd!==0) $fatal(1,"reset failed");
-        $display("ACCEL_PASS %0d parameter sets, bit-exact outputs, stalls, errors, abort, reset",num_tasks);$finish;
+        bus(0,0,1,1,rd);bus(1,20'h14,0,1,rd);
+        $display("ACCEL_PASS %0d parameter sets, bit-exact outputs, FIFO stalls, scalar/batch reads, errors, abort, reset",num_tasks);$finish;
     end
 endmodule

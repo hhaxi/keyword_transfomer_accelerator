@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-15T07:31:27.954999+00:00",
+  "generated_at_utc": "2026-10-15T08:12:03.306748+00:00",
   "scope": "Local undergraduate implementation; official acceptance pending",
   "numeric": {
     "validation_samples": 120,
@@ -150,67 +150,67 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 3569424,
+          "cycles": 541138,
           "outputs": 25344
         },
         {
           "task": 1,
-          "cycles": 3569424,
+          "cycles": 540838,
           "outputs": 25344
         },
         {
           "task": 2,
-          "cycles": 3569424,
+          "cycles": 541138,
           "outputs": 25344
         },
         {
           "task": 3,
-          "cycles": 3569424,
+          "cycles": 540838,
           "outputs": 25344
         },
         {
           "task": 4,
-          "cycles": 3569424,
+          "cycles": 541126,
           "outputs": 25344
         },
         {
           "task": 5,
-          "cycles": 3569424,
+          "cycles": 540835,
           "outputs": 25344
         },
         {
           "task": 6,
-          "cycles": 3569424,
+          "cycles": 541129,
           "outputs": 25344
         },
         {
           "task": 7,
-          "cycles": 3569424,
+          "cycles": 540838,
           "outputs": 25344
         },
         {
           "task": 8,
-          "cycles": 3569424,
+          "cycles": 541129,
           "outputs": 25344
         },
         {
           "task": 9,
-          "cycles": 3569424,
+          "cycles": 540832,
           "outputs": 25344
         },
         {
           "task": 10,
-          "cycles": 3569421,
+          "cycles": 541129,
           "outputs": 25344
         },
         {
           "task": 11,
-          "cycles": 3569427,
+          "cycles": 540832,
           "outputs": 25344
         }
       ],
       "log": "output/design/tb_accel-run.log",
-      "log_sha256": "b0270b2863a597d11302701e02bbb32cfe2074194a60a5ad5f943b0066029b9e"
+      "log_sha256": "c8a190ea01ced5bc34eb2cb2d8ccc515fb0ca0c500c88239459cff3edcb33096"
     },
     {
       "name": "accelerator netlist",
@@ -218,67 +218,67 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 3569424,
+          "cycles": 541138,
           "outputs": 25344
         },
         {
           "task": 1,
-          "cycles": 3569424,
+          "cycles": 540838,
           "outputs": 25344
         },
         {
           "task": 2,
-          "cycles": 3569424,
+          "cycles": 541138,
           "outputs": 25344
         },
         {
           "task": 3,
-          "cycles": 3569424,
+          "cycles": 540838,
           "outputs": 25344
         },
         {
           "task": 4,
-          "cycles": 3569424,
+          "cycles": 541126,
           "outputs": 25344
         },
         {
           "task": 5,
-          "cycles": 3569424,
+          "cycles": 540835,
           "outputs": 25344
         },
         {
           "task": 6,
-          "cycles": 3569424,
+          "cycles": 541129,
           "outputs": 25344
         },
         {
           "task": 7,
-          "cycles": 3569424,
+          "cycles": 540838,
           "outputs": 25344
         },
         {
           "task": 8,
-          "cycles": 3569424,
+          "cycles": 541129,
           "outputs": 25344
         },
         {
           "task": 9,
-          "cycles": 3569424,
+          "cycles": 540832,
           "outputs": 25344
         },
         {
           "task": 10,
-          "cycles": 3569421,
+          "cycles": 541129,
           "outputs": 25344
         },
         {
           "task": 11,
-          "cycles": 3569427,
+          "cycles": 540832,
           "outputs": 25344
         }
       ],
       "log": "output/design/tb_accel_netlist-run.log",
-      "log_sha256": "e28bf1939521de54f745d264f1cc9bd8a69be045a25eb0f46a5c429b1de79d51"
+      "log_sha256": "c8a190ea01ced5bc34eb2cb2d8ccc515fb0ca0c500c88239459cff3edcb33096"
     },
     {
       "name": "E203 RTL integration",
@@ -286,67 +286,67 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 1,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 2,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 3,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 4,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 5,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 6,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 7,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 8,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 9,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 10,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 11,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         }
       ],
       "log": "output/design/tb_soc-run.log",
-      "log_sha256": "f2226f2958b969f1c25a821f50aff965eb13876dbe8c17bf76a740aefdfd3c13"
+      "log_sha256": "4d18daf665844bc66e3d71a1e409d0b5dbf50c5f51ed2fdda31e3814d6539d6e"
     },
     {
       "name": "E203 netlist integration",
@@ -354,67 +354,67 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 1,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 2,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 3,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 4,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 5,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 6,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 7,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 8,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 9,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 10,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         },
         {
           "task": 11,
-          "cycles": 6803004,
+          "cycles": 2298840,
           "outputs": 25344
         }
       ],
       "log": "output/design/tb_soc_netlist-run.log",
-      "log_sha256": "f2226f2958b969f1c25a821f50aff965eb13876dbe8c17bf76a740aefdfd3c13"
+      "log_sha256": "4d18daf665844bc66e3d71a1e409d0b5dbf50c5f51ed2fdda31e3814d6539d6e"
     },
     {
       "name": "Icarus four-state accelerator",
@@ -422,12 +422,12 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 3569424,
+          "cycles": 541138,
           "outputs": 25344
         }
       ],
       "log": "output/design/icarus-accel.log",
-      "log_sha256": "e25cef7c6724edcecf9f6a9bd5d5297f0eda5733052808d1ed3b5ab15e0ce6be"
+      "log_sha256": "678e1049bdb5346f481e031f30e06a511719bbe82d210040bdc82d9b96152a12"
     }
   ],
   "component_tests": {
@@ -442,11 +442,12 @@
   },
   "performance": {
     "total_tasks": 12,
-    "total_cycles": 81636048,
+    "total_cycles": 27586080,
     "target_clock_hz": 150000000,
-    "nominal_tasks_per_second": 22.04908302273525,
+    "nominal_tasks_per_second": 65.2503001513807,
     "timing_closed": false,
-    "window": "Host load to shared SRAM through E203 output writeback and completion observation"
+    "window": "Host load to shared SRAM through E203 output writeback and completion observation",
+    "baseline_speedup": 2.959320352873623
   },
   "ppa": {
     "synthesis": "generic gates, SRAM leaves preserved",
@@ -472,65 +473,66 @@
   },
   "generic_synthesis": {
     "accelerator": {
-      "num_wires": 2973,
-      "num_wire_bits": 3489,
-      "num_pub_wires": 44,
-      "num_pub_wire_bits": 475,
+      "num_wires": 10318,
+      "num_wire_bits": 11574,
+      "num_pub_wires": 76,
+      "num_pub_wire_bits": 1225,
       "num_ports": 12,
       "num_port_bits": 96,
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 3235,
+      "num_cells": 11029,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 82,
-        "$_AND_": 765,
-        "$_DFFE_PN0P_": 165,
-        "$_DFF_PN0_": 7,
-        "$_MUX_": 94,
-        "$_NAND_": 1154,
-        "$_NOR_": 46,
-        "$_NOT_": 14,
-        "$_ORNOT_": 73,
-        "$_OR_": 89,
-        "$_XNOR_": 95,
-        "$_XOR_": 642,
-        "$scopeinfo": 1,
+        "$_ANDNOT_": 263,
+        "$_AND_": 2072,
+        "$_DFFE_PN0P_": 303,
+        "$_DFFE_PP_": 320,
+        "$_DFF_PN0_": 10,
+        "$_MUX_": 634,
+        "$_NAND_": 3977,
+        "$_NOR_": 60,
+        "$_NOT_": 20,
+        "$_ORNOT_": 119,
+        "$_OR_": 444,
+        "$_XNOR_": 448,
+        "$_XOR_": 2347,
+        "$scopeinfo": 4,
         "kwt_sram16": 8
       }
     },
     "soc": {
-      "num_wires": 22579,
-      "num_wire_bits": 60836,
-      "num_pub_wires": 4176,
-      "num_pub_wire_bits": 42433,
+      "num_wires": 29910,
+      "num_wire_bits": 68885,
+      "num_pub_wires": 4208,
+      "num_pub_wire_bits": 43183,
       "num_ports": 14,
       "num_port_bits": 141,
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 22491,
+      "num_cells": 30253,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 713,
-        "$_AND_": 6696,
-        "$_DFFE_PN0P_": 885,
+        "$_ANDNOT_": 782,
+        "$_AND_": 7983,
+        "$_DFFE_PN0P_": 1023,
         "$_DFFE_PN1P_": 8,
-        "$_DFFE_PP_": 1442,
-        "$_DFF_PN0_": 12,
+        "$_DFFE_PP_": 1762,
+        "$_DFF_PN0_": 15,
         "$_DFF_PN1_": 1,
         "$_DLATCH_N_": 8,
-        "$_MUX_": 1074,
-        "$_NAND_": 8154,
-        "$_NOR_": 296,
-        "$_NOT_": 149,
-        "$_ORNOT_": 576,
-        "$_OR_": 919,
+        "$_MUX_": 1660,
+        "$_NAND_": 11121,
+        "$_NOR_": 346,
+        "$_NOT_": 165,
+        "$_ORNOT_": 548,
+        "$_OR_": 1213,
         "$_SDFFCE_PN0P_": 2,
-        "$_XNOR_": 330,
-        "$_XOR_": 941,
-        "$scopeinfo": 274,
+        "$_XNOR_": 630,
+        "$_XOR_": 2698,
+        "$scopeinfo": 277,
         "kwt_shared_sram": 1,
         "kwt_sram16": 8,
         "sirv_gnrl_ram": 2
@@ -538,40 +540,28 @@
     }
   },
   "activity": {
-    "full_soc_tasks_captured": 1,
+    "full_soc_tasks_captured": 0,
     "official_mapping_coverage_checked": false,
     "sram_power_model_available": false,
-    "note": "Local activity only; not a twelve-task official power or energy result",
-    "capture": {
-      "status": "complete",
-      "tasks": 1,
-      "level": "rtl",
-      "firmware_sha256": "c83942ba10d212a61429ff74209dc23f3bccfb6872bc2bf29259f58bc7db1a9f",
-      "official_power_result": false,
-      "mapping_coverage_verified": false,
-      "timing_window_log": [
-        "MEASURE_BEGIN task=0 time_ps=1018718000 cycle=152823",
-        "MEASURE_END task=0 time_ps=46367542000 cycle=6955827"
-      ]
-    }
+    "note": "Local activity only; not a twelve-task official power or energy result"
   },
   "source_hash_convention": "text bytes with CRLF normalized to LF",
   "source_sha256": {
-    "rtl/kwt_accel.sv": "d955830324304d424d66c8bd1b036c35e383ced65ecffa3e2fcdc6228b9c6aa3",
+    "rtl/kwt_accel.sv": "79013709bb0060b067b7b955ebca346714540bc21519b277b535e8a47ae8d946",
     "rtl/kwt_mac40.sv": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63",
     "rtl/kwt_sram16.sv": "93499fce6bbd850a7ad747094bb82d75d347112e9aac264ab311131f9c56e320",
     "integration/e203_ram_boundary.v": "50ac226f2ec35fb889c54e9863fc54954325cb986aceedb7bd64569d27689a9e",
     "integration/kwt_shared_sram.sv": "89aee640754231540e2689b3f442d70bcf1b9d11677cbe3ed5aae118491ac268",
     "integration/kwt_soc.sv": "4920d021a803965c3d054c7aee036cf86d41079ec466d1ff84ad2ec6e32b2451",
     "integration/kwt_system_bus.sv": "99ecd04f36e3184b986837978af86ec712d7c40ee1682149ba05c0b5ee83ccf5",
-    "firmware/kwt_driver.c": "f363b55b35f08a75f63d2406047c46e80547e79c9dbeed34e56356320981d352",
+    "firmware/kwt_driver.c": "28bbbc8a3a44cc1ac711fc9e12fe7567dc6c6826b74ada57e0c4f3395d63e698",
     "firmware/kwt_driver.h": "66a8a867108fc3a4633307bbb7c38b1f39c4c477ff2776c52d7cc3f46a3601ab",
     "firmware/link.ld": "6b92fa96a24bec6a9af0a6a74c1d542fa12fbdf7e65a595bd010c55e361d2e9b",
     "firmware/main.c": "4497fa5b2e58187e526f97028ae4037dca52e05f5fa32b50bd04638c861454f4",
     "firmware/start.S": "14cd16d89ca9e5f14c8f00686adfa6e64c318b6116ac04ceb4be505eda9781ac",
     "model/format.json": "612f9574e0495971b0577213d8beec333e2cb852cd1ce1606c0c4e873ea76480",
     "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
-    "tests/tb_accel.sv": "ecd455109fefb938316ff2443b9f26cd458fbb0b9c8013c0828c7e30257a1945",
+    "tests/tb_accel.sv": "427fc60096de75e768410f3133fbbc9bcc4baf0419b53356311f5af8b041c191",
     "tests/tb_mac.sv": "eb29e21ffa6e14c9c6a94b8e8de3d76cb1d64fc44eb97007d45a65bdda736499",
     "tests/tb_soc.sv": "c9fb2f62cf6e377f4134ab8039e7c8a3bc6e383abf48dc96a62d2d09c51e171f",
     "tests/test_numeric.py": "2988fef329e14b008746520c0072af208f3bcc7c9e1dca51fa362fb15a1c9e4b",
@@ -581,7 +571,8 @@
     "scripts/capture_activity.py": "814c6afc21ec4de37314c3d6a566433374736c5f769d14108d239e02d290a7b0",
     "scripts/check_environment.py": "d4f381a53138e7709480c9d15306387eb8e28458caec59a93c814cf80d8d3778",
     "scripts/check_model_environment.py": "2771fc3b6c7827731c0b7400f76f03dbaebf236e309658855cdc25465c517054",
-    "scripts/collect_results.py": "efd80a7a6690bd12b80c02da02278258b3762d033e4ba0afc8b1b37cea9ff013",
+    "scripts/collect_results.py": "5dfe16482c2dccd55701f0746bfffda9b6aba0d2f5f6fcd9e0584883275a9c4a",
+    "scripts/compare_performance.py": "812e30ce6df991d0be8086076ab015f23dce30f89a7f984bfaf4fe6a83b67b20",
     "scripts/convert_task.py": "fe6e0b1f91a9ad664d0d3bf2919e85f875ac6ce05e412680369e4448f8a40cef",
     "scripts/decode_output.py": "fa428441d46aa9de1c65fe5621c361474c2c95cd7f1c2857a3cfdeffc8d3be75",
     "scripts/download_competition_assets.py": "90d41b697b20a680bdc071636795539c1b9db66fdf66c802ee58ce266035675d",
@@ -596,28 +587,20 @@
   },
   "artifacts": {
     "kwt_accel_netlist.v": {
-      "bytes": 181454,
-      "sha256": "2a64bc88902be5633b1e77f35b0e8cb10f5cc4b835f1c0d3f9ba2116a4dff1f3"
+      "bytes": 682199,
+      "sha256": "33a8734cf556886e4d8782bfd0f112e4053912e81865b5e179ddf3fefc468268"
     },
     "kwt_soc_netlist.v": {
-      "bytes": 3943274,
-      "sha256": "e09566a32ed9430fb605b0b40e03133ddde571894254696996eb1555916b7986"
+      "bytes": 4483590,
+      "sha256": "289bbbdccdaf209890e061fe4f56ed01b3c1b5f3165e904b0b34da1aef5412c3"
     },
     "firmware/kwt.elf": {
-      "bytes": 5428,
-      "sha256": "c83942ba10d212a61429ff74209dc23f3bccfb6872bc2bf29259f58bc7db1a9f"
+      "bytes": 5540,
+      "sha256": "26045b97927317bcfbcd836f48fb33f3eee99c80f37dbb9efeb7038fc1f891c3"
     },
     "mac.vcd": {
       "bytes": 2764017,
-      "sha256": "d98c3362a12429f2a1feec1973f272274b9e50b50a31d81a7ec9d9fdf342e9f9"
-    },
-    "soc.fst": {
-      "bytes": 251915561,
-      "sha256": "9f74d61dd0895d7b24e7268ec8a1d63813cd7000df566ea0b01bd20c40702e7b"
-    },
-    "soc.vcd.gz": {
-      "bytes": 3015781376,
-      "sha256": "b1ab513d61bbbff1efb5f99b2200f5c1215ff2224b7b6750ea4b94f574b71302"
+      "sha256": "2143996b4e2a5c753cd84a3ab1274563d580926a4cf32918531481fddd4b4518"
     }
   },
   "calibration": {

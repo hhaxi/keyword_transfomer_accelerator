@@ -1,0 +1,159 @@
+{
+  "version": "v1",
+  "git_commit": "8fda4ae03eaad53ce018283a1122dc32e051db2e",
+  "scope": "Measured local E203 reference; no physical timing, area or power claims",
+  "performance": {
+    "total_tasks": 12,
+    "total_cycles": 81636048,
+    "target_clock_hz": 150000000,
+    "nominal_tasks_per_second": 22.04908302273525,
+    "timing_closed": false,
+    "window": "Host load to shared SRAM through E203 output writeback and completion observation"
+  },
+  "soc_tasks": [
+    {
+      "task": 0,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 1,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 2,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 3,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 4,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 5,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 6,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 7,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 8,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 9,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 10,
+      "cycles": 6803004,
+      "outputs": 25344
+    },
+    {
+      "task": 11,
+      "cycles": 6803004,
+      "outputs": 25344
+    }
+  ],
+  "soc_log_sha256": "f2226f2958b969f1c25a821f50aff965eb13876dbe8c17bf76a740aefdfd3c13",
+  "generic_synthesis": {
+    "accelerator": {
+      "num_wires": 2973,
+      "num_wire_bits": 3489,
+      "num_pub_wires": 44,
+      "num_pub_wire_bits": 475,
+      "num_ports": 12,
+      "num_port_bits": 96,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 3235,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 82,
+        "$_AND_": 765,
+        "$_DFFE_PN0P_": 165,
+        "$_DFF_PN0_": 7,
+        "$_MUX_": 94,
+        "$_NAND_": 1154,
+        "$_NOR_": 46,
+        "$_NOT_": 14,
+        "$_ORNOT_": 73,
+        "$_OR_": 89,
+        "$_XNOR_": 95,
+        "$_XOR_": 642,
+        "$scopeinfo": 1,
+        "kwt_sram16": 8
+      }
+    },
+    "soc": {
+      "num_wires": 22579,
+      "num_wire_bits": 60836,
+      "num_pub_wires": 4176,
+      "num_pub_wire_bits": 42433,
+      "num_ports": 14,
+      "num_port_bits": 141,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 22491,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 713,
+        "$_AND_": 6696,
+        "$_DFFE_PN0P_": 885,
+        "$_DFFE_PN1P_": 8,
+        "$_DFFE_PP_": 1442,
+        "$_DFF_PN0_": 12,
+        "$_DFF_PN1_": 1,
+        "$_DLATCH_N_": 8,
+        "$_MUX_": 1074,
+        "$_NAND_": 8154,
+        "$_NOR_": 296,
+        "$_NOT_": 149,
+        "$_ORNOT_": 576,
+        "$_OR_": 919,
+        "$_SDFFCE_PN0P_": 2,
+        "$_XNOR_": 330,
+        "$_XOR_": 941,
+        "$scopeinfo": 274,
+        "kwt_shared_sram": 1,
+        "kwt_sram16": 8,
+        "sirv_gnrl_ram": 2
+      }
+    }
+  },
+  "numeric_maximum_layer_nrmse": 0.00013201827446406207,
+  "comparison_contract_sha256": {
+    "tests/tb_soc.sv": "c9fb2f62cf6e377f4134ab8039e7c8a3bc6e383abf48dc96a62d2d09c51e171f",
+    "model/format.json": "612f9574e0495971b0577213d8beec333e2cb852cd1ce1606c0c4e873ea76480",
+    "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
+    "integration/kwt_system_bus.sv": "99ecd04f36e3184b986837978af86ec712d7c40ee1682149ba05c0b5ee83ccf5",
+    "integration/kwt_shared_sram.sv": "89aee640754231540e2689b3f442d70bcf1b9d11677cbe3ed5aae118491ac268",
+    "integration/kwt_soc.sv": "4920d021a803965c3d054c7aee036cf86d41079ec466d1ff84ad2ec6e32b2451"
+  },
+  "resources": {
+    "mac_lanes": 1,
+    "internal_sram_bytes": 53248,
+    "result_payload_register_bits": 0
+  },
+  "note": "The first version exposes the MAC accumulator directly. Archived full logs/activity are in output/baseline-v1; the original report is also available at the pinned Git commit.",
+  "vector_manifest_sha256": "973549c721411fc19083861d0125803189a385c354b165dfddfcd9d3d9780f3e"
+}

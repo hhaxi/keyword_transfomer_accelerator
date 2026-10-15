@@ -73,6 +73,11 @@ def main():
         if metadata['firmware_sha256']!=sha(OUT/'firmware/kwt.elf'):raise RuntimeError('Activity used a different firmware build')
         report['activity']['full_soc_tasks_captured']=metadata['tasks']
         report['activity']['capture']=metadata
+    # A first-version comparison is valid only with the same workload and bus.
+    from compare_performance import compare
+    comparison=compare(report)
+    report['performance']['baseline_speedup']=comparison['soc_speedup']
+    (ROOT/'docs/performance-comparison.json').write_text(json.dumps(comparison,indent=2)+'\n')
     (ROOT/'docs/design-validation.json').write_text(json.dumps(report,indent=2)+'\n')
     (ROOT/'docs/numeric-validation.json').write_text(json.dumps(numeric,indent=2)+'\n')
     print('Saved verified local results; official physical metrics remain unverified.')
