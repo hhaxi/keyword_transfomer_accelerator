@@ -10,6 +10,9 @@ module tb_soc;
     wire [31:0] h_rdata,inspect_pc;
     reg [31:0] fw[0:`FW_WORDS-1];
     reg [31:0] xv[0:6335],wv[0:16383],bv[0:255];
+    // PACKED_DECL_BEGIN
+    reg [31:0] xp[0:3167],wp[0:8191];
+    // PACKED_DECL_END
     reg [63:0] expected[0:25343];
     reg [31:0] rd,lo,hi;
     integer taskid,j,num_tasks=12,max_cycles=250000000;
@@ -46,6 +49,13 @@ module tb_soc;
             folder=$sformatf("output/vectors/task_%02d",taskid);
             $readmemh({folder,"/x.hex"},xv);$readmemh({folder,"/w.hex"},wv);
             $readmemh({folder,"/b.hex"},bv);$readmemh({folder,"/expected.hex"},expected);
+            // PACKED_CHECK_BEGIN
+            $readmemh({folder,"/x_packed.hex"},xp);$readmemh({folder,"/w_packed.hex"},wp);
+            for(j=0;j<3168;j=j+1)
+                if(xp[j]!=={xv[2*j+1][15:0],xv[2*j][15:0]}) $fatal(1,"X packing mismatch %0d",j);
+            for(j=0;j<8192;j=j+1)
+                if(wp[j]!=={wv[2*j+1][15:0],wv[2*j][15:0]}) $fatal(1,"W packing mismatch %0d",j);
+            // PACKED_CHECK_END
             @(negedge clk);rst_n=0;boot_hold=1;repeat(5) @(negedge clk);rst_n=1;
             host(0,32'ha000f000,0,rd);host(0,32'ha000f004,0,rd);
             // All accelerator validity state is reset. Clear shared output before timing.
@@ -55,8 +65,8 @@ module tb_soc;
             if($test$plusargs("vcd")) $dumpon;
             $display("MEASURE_BEGIN task=%0d time_ps=%0t cycle=%0d",taskid,$time,cycles);$fflush();
             // Real external loader transactions; included in measured task interval.
-            for(j=0;j<6336;j=j+1) host(0,32'ha0010000+32'(4*j),xv[j],rd);
-            for(j=0;j<16384;j=j+1) host(0,32'ha0018000+32'(4*j),wv[j],rd);
+            for(j=0;j<3168;j=j+1) host(0,32'ha0010000+32'(4*j),xp[j],rd);
+            for(j=0;j<8192;j=j+1) host(0,32'ha0018000+32'(4*j),wp[j],rd);
             for(j=0;j<256;j=j+1) host(0,32'ha0028000+32'(4*j),bv[j],rd);
             host(0,32'ha000f000,1,rd);
             $display("SOC_TASK_START task=%0d pc=%h cycle=%0d",taskid,inspect_pc,cycles);$fflush();
@@ -86,8 +96,8 @@ module tb_soc;
                 if(rd!==32'h50524633) $fatal(1,"Profile publication missing");
                 for(j=0;j<15;j=j+1) begin
                     host(1,32'ha000f020+32'(4*j),0,rd);
-                    if(j==4 && rd!=405504) $fatal(1,"MAC cycle count mismatch");
-                    if(j==9 && rd!=22976) $fatal(1,"DMA read count mismatch");
+                    if(j==4 && rd!=202752) $fatal(1,"MAC cycle count mismatch");
+                    if(j==9 && rd!=11616) $fatal(1,"DMA read count mismatch");
                     if(j==10 && rd!=50688) $fatal(1,"DMA write count mismatch");
                     $display("SOC_PROFILE task=%0d index=%0d value=%0d",taskid,j,rd);
                 end

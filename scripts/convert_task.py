@@ -27,6 +27,8 @@ def main():
     a.output.mkdir(parents=True,exist_ok=True)
     hexfile(a.output/'x.hex',x,32);hexfile(a.output/'w.hex',w.T,32);hexfile(a.output/'b.hex',b,32)
     hexfile(a.output/'expected.hex',y,64)
+    from pack_vectors import pack_directory
+    pack_directory(a.output)
     np.save(a.output/'decoded.npy',decoded,allow_pickle=False)
     result={'layer':a.layer,'format':cfg,'finite':bool(np.isfinite(decoded).all())}
     if 'y' in data:result['nrmse']=nrmse(decoded,data['y'])

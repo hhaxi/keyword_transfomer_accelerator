@@ -32,12 +32,12 @@ module kwt_dma(
     // Keep code, stack and mailbox outside all DMA ranges. Bounds are checked
     // using subtraction from the fixed end, so 32-bit address wrap is rejected.
     wire addresses_ok=xbase[1:0]==0 && wbase[1:0]==0 && bbase[1:0]==0 && ybase[1:0]==0 &&
-        xbase>=32'ha0010000 && xbase<=32'ha0080000-32'd25344 &&
-        wbase>=32'ha0010000 && wbase<=32'ha0080000-32'd65536 &&
+        xbase>=32'ha0010000 && xbase<=32'ha0080000-32'd12672 &&
+        wbase>=32'ha0010000 && wbase<=32'ha0080000-32'd32768 &&
         bbase>=32'ha0010000 && bbase<=32'ha0080000-32'd1024 &&
         ybase>=32'ha0010000 && ybase<=32'ha0080000-32'd202752 &&
-        (ybase+32'd202752<=xbase || xbase+32'd25344<=ybase) &&
-        (ybase+32'd202752<=wbase || wbase+32'd65536<=ybase) &&
+        (ybase+32'd202752<=xbase || xbase+32'd12672<=ybase) &&
+        (ybase+32'd202752<=wbase || wbase+32'd32768<=ybase) &&
         (ybase+32'd202752<=bbase || bbase+32'd1024<=ybase);
     wire start=start_request && !active && addresses_ok;
     wire core_load_ready,core_valid,core_done,core_fault;
@@ -51,9 +51,11 @@ module kwt_dma(
     wire core_clear=phase==CLEAR || (phase==DRAIN && !req_valid && !outstanding) || (abort_now && !active);
     wire core_take=phase==RUN && !output_have && !stopping;
     wire core_load=phase==LOAD && m_rsp_valid && !stopping;
-    wire [19:0] load_addr=read_received<6336 ? 20'h10000+{2'b0,read_received,2'b0} :
-        (read_received<22720 ? 20'h20000+(({4'b0,read_received}-20'd6336)<<2) :
-                              20'h30000+(({4'b0,read_received}-20'd22720)<<2));
+    // Core addresses refer to the first element of each packed pair. Bias is
+    // still a full signed 32-bit word; output representation is unchanged.
+    wire [19:0] load_addr=read_received<3168 ? 20'h10000+{1'b0,read_received,3'b0} :
+        (read_received<11360 ? 20'h20000+(({4'b0,read_received}-20'd3168)<<3) :
+                              20'h30000+(({4'b0,read_received}-20'd11360)<<2));
     assign cmd_ready=!rsp_valid || rsp_ready;
     assign m_valid=req_valid;
     assign m_mask=4'hf;
@@ -63,7 +65,7 @@ module kwt_dma(
     wire accept=req_valid && m_ready;
     wire retire=m_rsp_valid && m_rsp_ready;
     wire refill=(!req_valid || m_ready) && !stopping;
-    wire schedule_read=refill && phase==LOAD && read_scheduled<22976;
+    wire schedule_read=refill && phase==LOAD && read_scheduled<11616;
     wire schedule_write=refill && phase==RUN && output_have;
 
     kwt_accel core(.clk(clk),.rst_n(rst_n),.cmd_valid(1'b0),.cmd_ready(unused_cmd_ready),.cmd_addr(20'b0),
@@ -111,9 +113,9 @@ module kwt_dma(
             if(accept) req_valid<=0;
             if(schedule_read) begin
                 req_valid<=1;m_read<=1;m_wdata<=0;
-                if(read_scheduled<6336) m_addr<=xbase+({16'b0,read_scheduled}<<2);
-                else if(read_scheduled<22720) m_addr<=wbase+(({16'b0,read_scheduled}-6336)<<2);
-                else m_addr<=bbase+(({16'b0,read_scheduled}-22720)<<2);
+                if(read_scheduled<3168) m_addr<=xbase+({16'b0,read_scheduled}<<2);
+                else if(read_scheduled<11360) m_addr<=wbase+(({16'b0,read_scheduled}-3168)<<2);
+                else m_addr<=bbase+(({16'b0,read_scheduled}-11360)<<2);
                 read_scheduled<=read_scheduled+1'b1;
             end
             if(schedule_write) begin
@@ -133,7 +135,7 @@ module kwt_dma(
             if(retire && !stopping) begin
                 if(phase==LOAD && outstanding_read) begin
                     read_received<=read_received+1'b1;
-                    if(read_received==22975) phase<=LAUNCH;
+                    if(read_received==11615) phase<=LAUNCH;
                 end
                 if(phase==RUN && !outstanding_read) begin
                     write_received<=write_received+1'b1;
@@ -166,7 +168,7 @@ module kwt_dma(
                 if(cmd_read && cmd_addr[1:0]==0) begin
                     case(cmd_addr)
                         20'h04: rsp_rdata<={27'b0,config_error,aborted,error,done,active};
-                        20'h0c: rsp_rdata<=32'h4b575433;
+                        20'h0c: rsp_rdata<=32'h4b575434;
                         20'h20: rsp_rdata<=xbase;
                         20'h24: rsp_rdata<=wbase;
                         20'h28: rsp_rdata<=bbase;

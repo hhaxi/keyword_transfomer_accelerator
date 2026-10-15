@@ -8,9 +8,9 @@ static int abort_wait(void) {
     for (uint32_t n=0;n<100000;n++) if (!(*reg(4)&1)) return 0;
     return -4; /* Bus did not drain: memory must not be reused before reset. */
 }
-int kwt_linear(const volatile int32_t *x, const volatile int32_t *w,
+int kwt_linear(const volatile uint32_t *x, const volatile uint32_t *w,
                const volatile int32_t *b, volatile uint32_t *output) {
-    if (*reg(0x0c)!=0x4b575433u) return -3;
+    if (*reg(0x0c)!=0x4b575434u) return -3;
     int rc=abort_wait();
     if (rc) return rc;
     *reg(0x20)=(uint32_t)(uintptr_t)x;

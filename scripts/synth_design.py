@@ -23,7 +23,7 @@ def synthesize():
             'area_scope':'Include DMA engine and added bus/interface logic in addition to the compute core and SRAM macros',
             'clock_target_mhz':150,'timing_met':None,'standard_cell_area_mm2':None,'sram_area_mm2':None,
             'total_accelerator_area_mm2':None,'average_soc_power_w':None,'energy_per_task_j':None,
-            'macro_instances':{'16x4096_SP':6,'16x1024_SP':2},'internal_sram_bytes':53248,
+            'macro_instances':{'16x4096_SP':2,'16x1024_SP':18},'internal_sram_bytes':53248,
             'blocking_inputs':['official standard-cell Liberty and PVT','official SRAM macro models, Liberty and area',
                                'official clock/load/interconnect conditions and accepted PPA flow'],
             'note':'Unknown physical metrics are null, never zero. Generic gate counts are not mm^2 or timing proof.'}

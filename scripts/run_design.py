@@ -57,6 +57,7 @@ def main():
     task=p.parse_args().task
     if task in ('numeric','all'):
         run('numeric-tests',[sys.executable,'tests/test_numeric.py'])
+        run('packing-tests',[sys.executable,'tests/test_packing.py'])
     if task in ('mac','all'):
         text=sim('tb_mac',['rtl/kwt_mac40.sv','tests/tb_mac.sv'])
         assert 'MAC_PASS' in text

@@ -17,12 +17,12 @@ def main():
         for p in folder.glob('LICENSE*'):files[p.relative_to(ROOT).as_posix()]=p
     for p in (ROOT/'output/vectors').glob('task_*/*'):
         if p.suffix in ['.hex','.npz']:files[p.relative_to(ROOT).as_posix()]=p
-    for name in ['numeric-report.json','manifest.json']:
+    for name in ['numeric-report.json','manifest.json','packed-manifest.json']:
         p=ROOT/'output/vectors'/name;files[p.relative_to(ROOT).as_posix()]=p
     for name in ['kwt_accel_netlist.v','kwt_soc_netlist.v','synthesis-stat.json','soc-synthesis-stat.json',
                  'kwt_dma_netlist.v','kwt_bus_netlist.v','dma-synthesis-stat.json','bus-synthesis-stat.json','synth_dma.ys',
                  'ppa-status.json','synth.ys','synth_soc.ys','mac.vcd','firmware/kwt.elf','firmware/kwt.bin','firmware/kwt.hex',
-                 'tb_accel-run.log','tb_accel_netlist-run.log','tb_soc-run.log','tb_soc_netlist-run.log','numeric-tests.log','mac-icarus.log','icarus-accel.log',
+                 'tb_accel-run.log','tb_accel_netlist-run.log','tb_soc-run.log','tb_soc_netlist-run.log','numeric-tests.log','packing-tests.log','mac-icarus.log','icarus-accel.log',
                  'tb_dma-run.log','tb_dma_netlist-run.log','tb_bus-run.log','tb_bus_netlist-run.log','icarus-tb_dma.log','icarus-tb_bus.log']:
         p=ROOT/'output/design'/name
         if not p.is_file():raise RuntimeError('Missing verified artifact: '+name)

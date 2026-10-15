@@ -12,8 +12,8 @@ int main(void) {
             mail[0]=4;
             continue;
         }
-        int rc=kwt_linear((const volatile int32_t *)0xa0010000u,
-                          (const volatile int32_t *)0xa0018000u,
+        int rc=kwt_linear((const volatile uint32_t *)0xa0010000u,
+                          (const volatile uint32_t *)0xa0018000u,
                           (const volatile int32_t *)0xa0028000u,
                           (volatile uint32_t *)0xa0030000u);
         mail[1]=(uint32_t)rc;

@@ -43,7 +43,7 @@ def profiles(filename):
     for t,row in sorted(rows.items()):
         if sorted(row)!=list(range(15)):raise RuntimeError('Incomplete counters for task '+str(t))
         values=dict(zip(PROFILE_NAMES,[row[i] for i in range(15)]))
-        if row[0]!=sum(row[i] for i in [1,2,3]) or row[4]!=405504 or row[9]!=22976 or row[10]!=50688:
+        if row[0]!=sum(row[i] for i in [1,2,3]) or row[4]!=202752 or row[9]!=11616 or row[10]!=50688:
             raise RuntimeError('Counter conservation/operation count failed')
         if not (row[1]<row[11]<=row[12]<row[13]==row[0]):raise RuntimeError('Invalid completion timing')
         values['host_load_and_ready_notification']=loaded[t]-starts[t]
@@ -60,7 +60,7 @@ def main():
             check('E203 netlist integration','tb_soc_netlist-run.log','SOC_PASS'),
             check('Icarus four-state accelerator','icarus-accel.log','ACCEL_PASS',1)]
     components={}
-    for name,marker in [('numeric-tests.log','OK'),('mac-icarus.log','MAC_PASS'),
+    for name,marker in [('numeric-tests.log','OK'),('packing-tests.log','OK'),('mac-icarus.log','MAC_PASS'),
                         ('tb_dma-run.log','DMA_PASS'),('tb_dma_netlist-run.log','DMA_PASS'),
                         ('tb_bus-run.log','BUS_PASS'),('tb_bus_netlist-run.log','BUS_PASS'),
                         ('icarus-tb_dma.log','DMA_PASS'),('icarus-tb_bus.log','BUS_PASS')]:
@@ -129,7 +129,7 @@ def main():
     from compare_performance import compare
     comparison=compare(report)
     report['performance']['baseline_speedup']=comparison['soc_speedup']
-    report['performance']['baseline_version']='v2'
+    report['performance']['baseline_version']='v3'
     report['performance']['first_version_speedup']=comparison['speedup_over_first_version']
     (ROOT/'docs/cycle-analysis.json').write_text(json.dumps(report['cycle_analysis'],indent=2)+'\n')
     (ROOT/'docs/performance-comparison.json').write_text(json.dumps(comparison,indent=2)+'\n')

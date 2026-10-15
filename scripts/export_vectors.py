@@ -136,6 +136,8 @@ def main():
                 d=out/('task_%02d'%li); d.mkdir(exist_ok=True)
                 hexfile(d/'x.hex',qx); hexfile(d/'w.hex',qw.T); hexfile(d/'b.hex',qb)
                 hexfile(d/'expected.hex',yi,64)
+                from pack_vectors import pack_directory
+                pack_directory(d)
                 np.savez_compressed(d/'reference.npz',x=xf,w=tr.enc_layers[li].ffn.layers[0].get_weights()[0],
                                     b=tr.enc_layers[li].ffn.layers[0].get_weights()[1],y=yf,
                                     encoder_input=values[0][0],xq=qx,wq=qw,bq=qb,yq=yi)
@@ -156,8 +158,10 @@ def main():
         if json.loads(frozen.read_text())!=cfg: raise ValueError('Frozen configuration mismatch')
     else:
         frozen.write_text(json.dumps(cfg,indent=2)+'\n')
+    packed={d.name:pack_directory(d) for d in sorted(out.glob('task_*'))}
+    (out/'packed-manifest.json').write_text(json.dumps(packed,indent=2)+'\n')
     hashes={str(p.relative_to(out)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest()
-            for p in out.glob('task_*/*.hex')}
+            for p in out.glob('task_*/*.hex') if not p.stem.endswith('_packed')}
     (out/'manifest.json').write_text(json.dumps(hashes,indent=2)+'\n')
     if args.save_all:
         (out/'evaluation-manifest.json').write_text(json.dumps(all_tasks,indent=2)+'\n')

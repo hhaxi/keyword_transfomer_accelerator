@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-15T08:56:46.516259+00:00",
+  "generated_at_utc": "2026-10-15T09:20:58.655540+00:00",
   "scope": "Local undergraduate implementation; official acceptance pending",
   "numeric": {
     "validation_samples": 120,
@@ -150,67 +150,67 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 541138,
+          "cycles": 305908,
           "outputs": 25344
         },
         {
           "task": 1,
-          "cycles": 540838,
+          "cycles": 282544,
           "outputs": 25344
         },
         {
           "task": 2,
-          "cycles": 541138,
+          "cycles": 305908,
           "outputs": 25344
         },
         {
           "task": 3,
-          "cycles": 540838,
+          "cycles": 282553,
           "outputs": 25344
         },
         {
           "task": 4,
-          "cycles": 541126,
+          "cycles": 305911,
           "outputs": 25344
         },
         {
           "task": 5,
-          "cycles": 540835,
+          "cycles": 282538,
           "outputs": 25344
         },
         {
           "task": 6,
-          "cycles": 541129,
+          "cycles": 305911,
           "outputs": 25344
         },
         {
           "task": 7,
-          "cycles": 540838,
+          "cycles": 282553,
           "outputs": 25344
         },
         {
           "task": 8,
-          "cycles": 541129,
+          "cycles": 305911,
           "outputs": 25344
         },
         {
           "task": 9,
-          "cycles": 540832,
+          "cycles": 282544,
           "outputs": 25344
         },
         {
           "task": 10,
-          "cycles": 541129,
+          "cycles": 305911,
           "outputs": 25344
         },
         {
           "task": 11,
-          "cycles": 540832,
+          "cycles": 282535,
           "outputs": 25344
         }
       ],
       "log": "output/design/tb_accel-run.log",
-      "log_sha256": "7b252b0f55400ef64ab72effe1f7cac55b6171c056a50c92a272a3c31834f0a9"
+      "log_sha256": "9951f191ea2fd6f82076ab176774df1265097676cfaa6b3322fbdca2d5f81c60"
     },
     {
       "name": "accelerator netlist",
@@ -218,67 +218,67 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 541138,
+          "cycles": 305908,
           "outputs": 25344
         },
         {
           "task": 1,
-          "cycles": 540838,
+          "cycles": 282544,
           "outputs": 25344
         },
         {
           "task": 2,
-          "cycles": 541138,
+          "cycles": 305908,
           "outputs": 25344
         },
         {
           "task": 3,
-          "cycles": 540838,
+          "cycles": 282553,
           "outputs": 25344
         },
         {
           "task": 4,
-          "cycles": 541126,
+          "cycles": 305911,
           "outputs": 25344
         },
         {
           "task": 5,
-          "cycles": 540835,
+          "cycles": 282538,
           "outputs": 25344
         },
         {
           "task": 6,
-          "cycles": 541129,
+          "cycles": 305911,
           "outputs": 25344
         },
         {
           "task": 7,
-          "cycles": 540838,
+          "cycles": 282553,
           "outputs": 25344
         },
         {
           "task": 8,
-          "cycles": 541129,
+          "cycles": 305911,
           "outputs": 25344
         },
         {
           "task": 9,
-          "cycles": 540832,
+          "cycles": 282544,
           "outputs": 25344
         },
         {
           "task": 10,
-          "cycles": 541129,
+          "cycles": 305911,
           "outputs": 25344
         },
         {
           "task": 11,
-          "cycles": 540832,
+          "cycles": 282535,
           "outputs": 25344
         }
       ],
       "log": "output/design/tb_accel_netlist-run.log",
-      "log_sha256": "7b252b0f55400ef64ab72effe1f7cac55b6171c056a50c92a272a3c31834f0a9"
+      "log_sha256": "9951f191ea2fd6f82076ab176774df1265097676cfaa6b3322fbdca2d5f81c60"
     },
     {
       "name": "E203 RTL integration",
@@ -286,67 +286,67 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 1,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 2,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 3,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 4,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 5,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 6,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 7,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 8,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 9,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 10,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 11,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         }
       ],
       "log": "output/design/tb_soc-run.log",
-      "log_sha256": "a4b02cced85e7554224415af131d6cdcdde71288c52240ef195978deb3ac1769"
+      "log_sha256": "b346553575a1af44b427850f1360fa26cb76fececa69f5adfdc42b75a9251472"
     },
     {
       "name": "E203 netlist integration",
@@ -354,67 +354,67 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 1,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 2,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 3,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 4,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 5,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 6,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 7,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 8,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 9,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 10,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         },
         {
           "task": 11,
-          "cycles": 592266,
+          "cycles": 271678,
           "outputs": 25344
         }
       ],
       "log": "output/design/tb_soc_netlist-run.log",
-      "log_sha256": "a4b02cced85e7554224415af131d6cdcdde71288c52240ef195978deb3ac1769"
+      "log_sha256": "b346553575a1af44b427850f1360fa26cb76fececa69f5adfdc42b75a9251472"
     },
     {
       "name": "Icarus four-state accelerator",
@@ -422,18 +422,22 @@
       "tasks": [
         {
           "task": 0,
-          "cycles": 541138,
+          "cycles": 305908,
           "outputs": 25344
         }
       ],
       "log": "output/design/icarus-accel.log",
-      "log_sha256": "e514fd8b2c8ab482ddab8fe677b300af0ba7a00b536c2ca4bc545a35d67aba2e"
+      "log_sha256": "9cb04f157974713ba4fac1db4934e54df4675a1921552291aa8daa1d5cfb3220"
     }
   ],
   "component_tests": {
     "numeric-tests.log": {
       "passed": true,
-      "sha256": "ada2231f6651cb08d76fe665f46b18458ad6072708e751f0bc09a6b4ca4f9c89"
+      "sha256": "5f1137cfb5f69a32f626dae0b03fa7a60bbe9fde8f7c13c4a9581df6c8ce6154"
+    },
+    "packing-tests.log": {
+      "passed": true,
+      "sha256": "b75d99dd954fc0222f65d3417246fdc746fda703ed74ff8cb1aad43af1517412"
     },
     "mac-icarus.log": {
       "passed": true,
@@ -441,11 +445,11 @@
     },
     "tb_dma-run.log": {
       "passed": true,
-      "sha256": "f87ecb059563d8fe558376cc86caeb794927cbfb9c9ee7f4105562dccd1923e5"
+      "sha256": "1f4d8fc37d6a468ee5fb0cccf56a070af26c45cc3e25f413bf82cc5b79878ea0"
     },
     "tb_dma_netlist-run.log": {
       "passed": true,
-      "sha256": "f87ecb059563d8fe558376cc86caeb794927cbfb9c9ee7f4105562dccd1923e5"
+      "sha256": "1f4d8fc37d6a468ee5fb0cccf56a070af26c45cc3e25f413bf82cc5b79878ea0"
     },
     "tb_bus-run.log": {
       "passed": true,
@@ -457,7 +461,7 @@
     },
     "icarus-tb_dma.log": {
       "passed": true,
-      "sha256": "c11863e63089f9bcb93f63860d83875c277197e287c3b2383561c6c69af77805"
+      "sha256": "cc130c0515cedb4c49e08eef11383f5cb36684be6f115f9adb0b30cde4b5ad90"
     },
     "icarus-tb_bus.log": {
       "passed": true,
@@ -466,18 +470,19 @@
   },
   "performance": {
     "total_tasks": 12,
-    "total_cycles": 7107192,
+    "total_cycles": 3260136,
     "target_clock_hz": 150000000,
-    "nominal_tasks_per_second": 253.26458044189604,
+    "nominal_tasks_per_second": 552.1242058613506,
     "timing_closed": false,
     "window": "Host load to shared SRAM through DMA output writeback, E203 completion notification and host observation",
-    "baseline_speedup": 3.881431654020322,
-    "baseline_version": "v2",
-    "first_version_speedup": 11.48639969203027
+    "baseline_speedup": 2.180029299391191,
+    "baseline_version": "v3",
+    "first_version_speedup": 25.04068787314394
   },
   "ppa": {
     "synthesis": "Generic compute-core, DMA-engine, bus and E203 netlists; SRAM leaves preserved",
     "post_synthesis_simulation": "12 full compute-core and E203 tasks; DMA fault/recovery and bus throughput regressions passed",
+    "area_scope": "DMA engine including compute core/internal SRAM plus added bus/interface logic; never core-only",
     "clock_target_mhz": 150,
     "timing_met": null,
     "standard_cell_area_mm2": null,
@@ -486,8 +491,8 @@
     "average_soc_power_w": null,
     "energy_per_task_j": null,
     "macro_instances": {
-      "16x4096_SP": 6,
-      "16x1024_SP": 2
+      "16x4096_SP": 2,
+      "16x1024_SP": 18
     },
     "internal_sram_bytes": 53248,
     "blocking_inputs": [
@@ -495,69 +500,68 @@
       "official SRAM macro models, Liberty and area",
       "official clock/load/interconnect conditions and accepted PPA flow"
     ],
-    "note": "Unknown physical metrics are null, never zero. Generic gate counts are not mm^2 or timing proof.",
-    "area_scope": "DMA engine including compute core/internal SRAM plus added bus/interface logic; never core-only"
+    "note": "Unknown physical metrics are null, never zero. Generic gate counts are not mm^2 or timing proof."
   },
   "generic_synthesis": {
     "accelerator": {
-      "num_wires": 10483,
-      "num_wire_bits": 12139,
-      "num_pub_wires": 95,
-      "num_pub_wire_bits": 1582,
+      "num_wires": 20290,
+      "num_wire_bits": 23070,
+      "num_pub_wires": 141,
+      "num_pub_wire_bits": 2748,
       "num_ports": 27,
       "num_port_bits": 317,
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 11375,
+      "num_cells": 21894,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 312,
-        "$_AND_": 2168,
-        "$_DFFE_PN0P_": 367,
-        "$_DFFE_PP_": 320,
+        "$_ANDNOT_": 367,
+        "$_AND_": 4026,
+        "$_DFFE_PN0P_": 532,
+        "$_DFFE_PP_": 896,
         "$_DFF_PN0_": 10,
-        "$_MUX_": 682,
-        "$_NAND_": 4005,
-        "$_NOR_": 74,
-        "$_NOT_": 14,
-        "$_ORNOT_": 93,
-        "$_OR_": 469,
-        "$_XNOR_": 465,
-        "$_XOR_": 2384,
-        "$scopeinfo": 4,
-        "kwt_sram16": 8
+        "$_MUX_": 1518,
+        "$_NAND_": 7854,
+        "$_NOR_": 82,
+        "$_NOT_": 26,
+        "$_ORNOT_": 145,
+        "$_OR_": 803,
+        "$_XNOR_": 735,
+        "$_XOR_": 4872,
+        "$scopeinfo": 8,
+        "kwt_sram16": 20
       }
     },
     "dma_engine": {
-      "num_wires": 14356,
-      "num_wire_bits": 17181,
-      "num_pub_wires": 154,
-      "num_pub_wire_bits": 2607,
+      "num_wires": 24232,
+      "num_wire_bits": 28177,
+      "num_pub_wires": 200,
+      "num_pub_wire_bits": 3773,
       "num_ports": 22,
       "num_port_bits": 202,
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 16027,
+      "num_cells": 26611,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 337,
-        "$_AND_": 3886,
-        "$_DFFE_PN0P_": 1024,
+        "$_ANDNOT_": 399,
+        "$_AND_": 5765,
+        "$_DFFE_PN0P_": 1187,
         "$_DFFE_PN1P_": 1,
-        "$_DFFE_PP_": 320,
+        "$_DFFE_PP_": 896,
         "$_DFF_PN0_": 14,
-        "$_MUX_": 755,
-        "$_NAND_": 5155,
-        "$_NOR_": 167,
-        "$_NOT_": 39,
-        "$_ORNOT_": 223,
-        "$_OR_": 653,
-        "$_XNOR_": 621,
-        "$_XOR_": 2819,
-        "$scopeinfo": 5,
-        "kwt_sram16": 8
+        "$_MUX_": 1552,
+        "$_NAND_": 9049,
+        "$_NOR_": 189,
+        "$_NOT_": 52,
+        "$_ORNOT_": 279,
+        "$_OR_": 1023,
+        "$_XNOR_": 896,
+        "$_XOR_": 5280,
+        "$scopeinfo": 9,
+        "kwt_sram16": 20
       }
     },
     "bus": {
@@ -586,38 +590,38 @@
       }
     },
     "soc": {
-      "num_wires": 34113,
-      "num_wire_bits": 75078,
-      "num_pub_wires": 4346,
-      "num_pub_wire_bits": 45311,
+      "num_wires": 44330,
+      "num_wire_bits": 86415,
+      "num_pub_wires": 4392,
+      "num_pub_wire_bits": 46477,
       "num_ports": 14,
       "num_port_bits": 141,
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 35100,
+      "num_cells": 46025,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 768,
-        "$_AND_": 9759,
-        "$_DFFE_PN0P_": 1749,
+        "$_ANDNOT_": 849,
+        "$_AND_": 11728,
+        "$_DFFE_PN0P_": 1912,
         "$_DFFE_PN1P_": 9,
-        "$_DFFE_PP_": 1762,
+        "$_DFFE_PP_": 2338,
         "$_DFF_PN0_": 21,
         "$_DFF_PN1_": 1,
         "$_DLATCH_N_": 8,
-        "$_MUX_": 1788,
-        "$_NAND_": 12289,
-        "$_NOR_": 468,
-        "$_NOT_": 176,
-        "$_ORNOT_": 686,
-        "$_OR_": 1308,
+        "$_MUX_": 2615,
+        "$_NAND_": 16356,
+        "$_NOR_": 446,
+        "$_NOT_": 266,
+        "$_ORNOT_": 697,
+        "$_OR_": 1763,
         "$_SDFFCE_PN0P_": 2,
-        "$_XNOR_": 824,
-        "$_XOR_": 3192,
-        "$scopeinfo": 279,
+        "$_XNOR_": 1082,
+        "$_XOR_": 5626,
+        "$scopeinfo": 283,
         "kwt_shared_sram": 1,
-        "kwt_sram16": 8,
+        "kwt_sram16": 20,
         "sirv_gnrl_ram": 2
       }
     }
@@ -630,8 +634,8 @@
   },
   "source_hash_convention": "text bytes with CRLF normalized to LF",
   "source_sha256": {
-    "rtl/kwt_accel.sv": "ce84be95fea5d83829d3f88ecfed8626b64ec599d5d0e537f1bd3996835a2b2c",
-    "rtl/kwt_dma.sv": "09eb4b3c1b1e993c31f8eef35746379390c22d50d2c87e729445990995c0a411",
+    "rtl/kwt_accel.sv": "77dfeae36410af831d1173848f8352efad52683e63f1363e8f0fefc11184539b",
+    "rtl/kwt_dma.sv": "00cd74f94683d0dd4d1b447b019367e2dd6ca2c930e8219333656bf87657aaff",
     "rtl/kwt_mac40.sv": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63",
     "rtl/kwt_sram16.sv": "93499fce6bbd850a7ad747094bb82d75d347112e9aac264ab311131f9c56e320",
     "integration/e203_ram_boundary.v": "50ac226f2ec35fb889c54e9863fc54954325cb986aceedb7bd64569d27689a9e",
@@ -639,19 +643,20 @@
     "integration/kwt_shared_sram.sv": "89aee640754231540e2689b3f442d70bcf1b9d11677cbe3ed5aae118491ac268",
     "integration/kwt_soc.sv": "4920d021a803965c3d054c7aee036cf86d41079ec466d1ff84ad2ec6e32b2451",
     "integration/kwt_system_bus.sv": "bfe7fcbc8aac1f7a248d40a9955af3e6f4fdfab0b7c16086e478445acdadbedd",
-    "firmware/kwt_driver.c": "89d89c616dbe179600a98f9c853806ca478b8d87f51755efb6a0a6a4bd552927",
-    "firmware/kwt_driver.h": "a8a23dc4be43ac7b8a6dfcfb04622566838df599c1bd1ef411d656a86c506a1c",
+    "firmware/kwt_driver.c": "e3ec41f78e6cf6f0aca2f6479fb45b6cdace2e7ae2288a79433a9d59f49cc409",
+    "firmware/kwt_driver.h": "627618c27ebbd6ab1018f4ec757d870c1ee5beaa3957d7fa5244daaf50b6be0b",
     "firmware/link.ld": "6b92fa96a24bec6a9af0a6a74c1d542fa12fbdf7e65a595bd010c55e361d2e9b",
-    "firmware/main.c": "b48d8366f4f4ef899316a194065348e1511368bc5746c12771e015ab510dbf7e",
+    "firmware/main.c": "7ec51ff0b622398fe019eab62bdd2a14aeef43831e0a790dc91677ef2bf92093",
     "firmware/start.S": "14cd16d89ca9e5f14c8f00686adfa6e64c318b6116ac04ceb4be505eda9781ac",
     "model/format.json": "612f9574e0495971b0577213d8beec333e2cb852cd1ce1606c0c4e873ea76480",
     "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
     "tests/tb_accel.sv": "4325c7f246901b031bf178ed079aa4cd54b8f5fafeeeb68b80662bed2e46c95e",
     "tests/tb_bus.sv": "b434b839f70641b7d10a29d2355c0f784d69b1bad53550b42d1a320cfb4a4a35",
-    "tests/tb_dma.sv": "f12385eeb10f4373f0a07a90e4e4bf8ad40b56ab21b8045ba9bc16151857370b",
+    "tests/tb_dma.sv": "4191a539e7e1a2d8625fcff71cc9ab5a1e200158722e6a543a8c265a8f59aaf5",
     "tests/tb_mac.sv": "eb29e21ffa6e14c9c6a94b8e8de3d76cb1d64fc44eb97007d45a65bdda736499",
-    "tests/tb_soc.sv": "aaa598e961730e258fbbd02f3ba93f98bb18db4efcd2e45b58abe9fba001fa37",
+    "tests/tb_soc.sv": "80256cc45ec1bf6c178f37a621bf423b6cc7239cba46fe2567d1c223aee2022b",
     "tests/test_numeric.py": "2988fef329e14b008746520c0072af208f3bcc7c9e1dca51fa362fb15a1c9e4b",
+    "tests/test_packing.py": "ea3f59487a862f763fb456d2b77847b903424b02239aa4b7b20a170f953a6c04",
     "constraints/kwt_accel.sdc": "931b6fa755276fd71246de0bb8d24921922d0e91d65681db584e4a78dfe3ad61",
     "constraints/kwt_dma.sdc": "f3d6366ae35176f4c59f0423d6a55bd3d2b0b1315aeb3851e08cec0cbd4c94ac",
     "constraints/kwt_soc.sdc": "c623b5a95d63dbe0d3fb618dc7e3e9bd2fac2e5d28b5ba02f18fb3b231312c8c",
@@ -659,45 +664,46 @@
     "scripts/capture_activity.py": "51bbc8bad73fc6e7426a49735d34ad3b6f8b679f7b190b23ed90ae2b52c0fb75",
     "scripts/check_environment.py": "d4f381a53138e7709480c9d15306387eb8e28458caec59a93c814cf80d8d3778",
     "scripts/check_model_environment.py": "2771fc3b6c7827731c0b7400f76f03dbaebf236e309658855cdc25465c517054",
-    "scripts/collect_results.py": "7ad417ad46e063ee0e392b996dbf3c675cb11b065a3e0f25196b4189111e64c1",
-    "scripts/compare_performance.py": "8dd36affc027c4c863be1d5223c26c7f3c4917cdfe5e954d81baee6060795a46",
-    "scripts/convert_task.py": "fe6e0b1f91a9ad664d0d3bf2919e85f875ac6ce05e412680369e4448f8a40cef",
+    "scripts/collect_results.py": "69604552597f47e3f0febad3a4207406e22509eed232455c8b16b2b96d0f067f",
+    "scripts/compare_performance.py": "b40e4ccda0721eac9ad8fc00f4a5fd417f0ea4b8b726ebd0068629c21a909aba",
+    "scripts/convert_task.py": "875d04baaeb0c8dd5ae2c34eefdcc67dd9a67f30067758a2586366d936f09f28",
     "scripts/decode_output.py": "fa428441d46aa9de1c65fe5621c361474c2c95cd7f1c2857a3cfdeffc8d3be75",
     "scripts/download_competition_assets.py": "90d41b697b20a680bdc071636795539c1b9db66fdf66c802ee58ce266035675d",
     "scripts/evaluate_numeric.py": "726dbf19adaefa22eb24849edd02cc7b49d24ed2ff0f941b2c0519cd20fdcbda",
-    "scripts/export_vectors.py": "4a0b47244c64f91442a8d9bf7661b1aeb8ceb950a804c13029cf2f1889225314",
+    "scripts/export_vectors.py": "ba06acb37dac1ff02186acbcee47a8a6e8d6f8c6af32c33161db45e14ad2e2cb",
     "scripts/fetch_model_wheel.py": "adf7d118997788438b2c93dd04e0303ec8375c14e5ce5344ee3ae30a4aefdafb",
     "scripts/install_native_toolchain.py": "2d87867f7fcf207a113857a55efc4c8e8e41c5c64c161c996783b5dc5bdb6509",
-    "scripts/package_submission.py": "9b0ebb0f68f72f3e4be9954cbc7f3a2ae2c6becc7d2b48bec107f2be7176c718",
-    "scripts/run_design.py": "f5a567040396f279151f9f4e7cb08c4abf1c941c4c8ce9ca2d7479bbcd0db7c2",
-    "scripts/synth_design.py": "a28a25eeea606e67d3c3dd4aa0b8dfed6697c4fd53b59f4b2bfc6e1bc3522aff",
+    "scripts/pack_vectors.py": "1e6c0927d3124603ae0e9ade54b4bd409e77ee7076a675a4a4ac6eeaa5d1879d",
+    "scripts/package_submission.py": "dca0a295994c7b2d341b1eb0ebf1967f75cea9c3eed0e9d563c8ffa3fc548c78",
+    "scripts/run_design.py": "ca1db5aa42bb410c7ab6453b85b98b5807a91232883f4384abf370fb614906bb",
+    "scripts/synth_design.py": "c2602b72ff0fa1c412cc5e691436a4a1fe57a277d8c725d81a0d3752cad39969",
     "scripts/synth_dma.py": "99af3e76df541d0494776286955d98d1e8fbcb0cc1b6c6d2ec988307eea7fc20",
     "scripts/synth_soc.py": "95ccc798610380b836702ca7c4fec2696d1211aeac7f347953fc9c7fd05b6bc8"
   },
   "artifacts": {
     "kwt_accel_netlist.v": {
-      "bytes": 708356,
-      "sha256": "a27bd44ad6f808f9de48a7ead2d23e81a5370ae3f421d57303f3518752df94f4"
+      "bytes": 1334182,
+      "sha256": "9fce225ae886849c0685bf8a642a195cc7b2096ca118bf2a0b98a4dfeb933c93"
     },
     "kwt_dma_netlist.v": {
-      "bytes": 1058729,
-      "sha256": "c48a96feae45da0e553a3e9bf871846925ab00fec270111361f236ec2987f071"
+      "bytes": 1699884,
+      "sha256": "26b4a7f91948b1215bb60386f084da5f9cdff84d25531b2e3ca641377e14a1db"
     },
     "kwt_bus_netlist.v": {
       "bytes": 27255,
       "sha256": "65b18536170796ba29852b61ef0b1c037ed73388e113d2470e7e2c9215d71d24"
     },
     "kwt_soc_netlist.v": {
-      "bytes": 4936265,
-      "sha256": "b1f3d9884ee0513c28255f8405c4c96ec039f2bf400f3f66d79a1973c138d28f"
+      "bytes": 5641009,
+      "sha256": "4ff75bdf8c5e6a39ded86971934103973d2b2861eb3f2d9e90ab6445bf46e2c3"
     },
     "firmware/kwt.elf": {
       "bytes": 5520,
-      "sha256": "c6848d49063ade35974907c5127e1092b60c35ac4d51c9d30d81b0922ea08555"
+      "sha256": "54be761f570bb692b5eb1bfd1cfc6549a039b4090087b85228d1eb90ec88cfb0"
     },
     "mac.vcd": {
       "bytes": 2764017,
-      "sha256": "16ea90b3465ad52ae1841ea3f1b3bbfbbd1361058814778153083a21770b5695"
+      "sha256": "78a8fb011e686ba8bb2d5e1dee6aac5ed487dc9da4f0d33045ee10cf786bc6b7"
     }
   },
   "calibration": {
@@ -1001,265 +1007,265 @@
       {
         "task": 0,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 1,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 2,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 3,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 4,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 5,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 6,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 7,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 8,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 9,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 10,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       },
       {
         "task": 11,
         "cycles": {
-          "dma_total": 499598,
-          "load": 30717,
-          "compute_writeback": 468879,
+          "dma_total": 224667,
+          "load": 15530,
+          "compute_writeback": 209135,
           "control": 2,
-          "mac_active": 405504,
+          "mac_active": 202752,
           "fifo_full_wait": 0,
-          "core_elapsed": 468874,
-          "dma_request_wait": 23511,
+          "core_elapsed": 209130,
+          "dma_request_wait": 24466,
           "dma_response_wait": 0,
-          "dma_read_commands": 22976,
+          "dma_read_commands": 11616,
           "dma_write_commands": 50688,
-          "first_output": 30794,
-          "last_output": 499593,
-          "last_write_ack": 499598,
-          "producer_wait": 380277,
-          "host_load_and_ready_notification": 91907,
-          "cpu_setup_and_completion_observation": 761
+          "first_output": 15615,
+          "last_output": 224662,
+          "last_write_ack": 224667,
+          "producer_wait": 114139,
+          "host_load_and_ready_notification": 46467,
+          "cpu_setup_and_completion_observation": 544
         }
       }
     ],

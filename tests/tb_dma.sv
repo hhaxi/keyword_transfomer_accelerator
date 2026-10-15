@@ -83,14 +83,17 @@ module tb_dma;
     initial begin
         $readmemh("output/vectors/task_00/x.hex",xv);$readmemh("output/vectors/task_00/w.hex",wv);
         $readmemh("output/vectors/task_00/b.hex",bv);$readmemh("output/vectors/task_00/expected.hex",expected);
-        for(j=0;j<6336;j=j+1) mem[16384+j]=xv[j];
-        for(j=0;j<16384;j=j+1) mem[24576+j]=wv[j];
+        for(j=0;j<3168;j=j+1) mem[16384+j]={xv[2*j+1][15:0],xv[2*j][15:0]};
+        for(j=0;j<8192;j=j+1) mem[24576+j]={wv[2*j+1][15:0],wv[2*j][15:0]};
         for(j=0;j<256;j=j+1) mem[40960+j]=bv[j];
         repeat(4) @(negedge clk);rst_n=1;
-        configure();bus(1,20'h0c,0,0,rd);if(rd!==32'h4b575433) $fatal(1,"ID mismatch");
+        configure();bus(1,20'h0c,0,0,rd);if(rd!==32'h4b575434) $fatal(1,"ID mismatch");
         bus(0,20'h20,32'ha0010002,0,rd);bus(0,0,1,1,rd);wait_idle(16);
         configure();bus(0,20'h2c,32'ha0010000,0,rd);bus(0,0,1,1,rd);wait_idle(16);
         configure();bus(0,20'h2c,32'ha0070000,0,rd);bus(0,0,1,1,rd);wait_idle(16);
+        configure();bus(0,20'h20,32'ha007ce84,0,rd);bus(0,0,1,1,rd);wait_idle(16);
+        configure();bus(0,20'h24,32'ha0078004,0,rd);bus(0,0,1,1,rd);wait_idle(16);
+        configure();bus(0,20'h20,32'hfffffffc,0,rd);bus(0,0,1,1,rd);wait_idle(16);
         configure();if(read_count || write_count) $fatal(1,"Invalid configuration issued DMA traffic");
         cmd_wmask=1;bus(0,0,1,1,rd);cmd_wmask=15;
 
@@ -99,6 +102,12 @@ module tb_dma;
         bus(0,0,2,0,rd);repeat(5) @(negedge clk);
         bus(1,4,0,0,rd);if(!rd[0]) $fatal(1,"Abort withdrew an offered command");
         force_block=0;wait_idle(8);
+
+        // Last legal X/W packed ranges are accepted (one word beyond was rejected).
+        force_block=1;bus(0,20'h20,32'ha007ce80,0,rd);bus(0,20'h24,32'ha0078000,0,rd);
+        bus(0,0,1,0,rd);while(!m_valid) @(negedge clk);
+        if(m_addr!==32'ha007ce80) $fatal(1,"Packed upper-bound address rejected");
+        bus(0,0,2,0,rd);force_block=0;wait_idle(8);configure();
 
         // Abort with an accepted read and a delayed response; drain prefetched request too.
         fixed_delay=30;bus(0,0,1,0,rd);while(!pending) @(negedge clk);
@@ -140,8 +149,8 @@ module tb_dma;
             bus(1,20'h40+20'(4*j),0,0,profile[j]);
             $display("DMA_PROFILE index=%0d value=%0d",j,profile[j]);
         end
-        if(profile[0]!=profile[1]+profile[2]+profile[3] || profile[4]!=405504 ||
-           profile[5]==0 || profile[9]!=22976 || profile[10]!=50688 ||
+        if(profile[0]!=profile[1]+profile[2]+profile[3] || profile[4]!=202752 ||
+           profile[5]==0 || profile[9]!=11616 || profile[10]!=50688 ||
            profile[13]!=profile[0] || profile[12]>=profile[13]) $fatal(1,"Cycle accounting mismatch");
         $display("DMA_PASS bit-exact outputs, delayed final write, burst loading, stalls, faults, abort, reset, counters");
         $finish;

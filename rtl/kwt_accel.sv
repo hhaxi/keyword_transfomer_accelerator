@@ -1,5 +1,6 @@
 // One outstanding 32-bit ICB transaction. Offsets are relative to 0x40000000.
-// X/W use one sign-extended 16-bit element per 32-bit bus word, W column-major.
+// Legacy MMIO: one int16 per word. DMA: two adjacent int16 per word,
+// with an element-index address (8-byte stride). W remains column-major.
 module kwt_accel(
     input wire clk, rst_n,
     input wire cmd_valid, output wire cmd_ready,
@@ -21,12 +22,13 @@ module kwt_accel(
     reg [6:0] row;
     reg [7:0] col;
     reg [5:0] k;
-    reg [1:0] bias_lane;
-    // Two groups decouple four parallel MACs from scalar CPU output transfers.
+    reg [2:0] bias_lane, bias_return_lane;
+    reg [31:0] next_bias [0:7];
+    // Two groups decouple eight parallel MACs from scalar output transfers.
     // Payload is unreset; reset/abort invalidate every entry via count/pointers.
-    reg [39:0] fifo [0:7];
-    reg [2:0] head, tail;
-    reg [3:0] count;
+    reg [39:0] fifo [0:15];
+    reg [3:0] head, tail;
+    reg [4:0] count;
     reg [14:0] outputs_read;
     reg [12:0] nx;
     reg [14:0] nw;
@@ -44,8 +46,8 @@ module kwt_accel(
     wire bsel = load_addr >= 20'h30000 && load_addr < 20'h30400;
     wire load = dma_mode ? (dma_load_valid && dma_load_ready) :
                 (take && !cmd_read && aligned && cmd_wmask == 4'hf && !busy);
-    wire xwrite = load && xsel && load_addr[1:0]==0 && load_addr[14:2] == nx && nx < 6336;
-    wire wwrite = load && wsel && load_addr[1:0]==0 && load_addr[15:2] == nw[13:0] && nw < 16384;
+    wire xwrite = load && xsel && load_addr[1:0]==0 && (!dma_mode || !load_addr[2]) && load_addr[14:2] == nx && nx < 6336;
+    wire wwrite = load && wsel && load_addr[1:0]==0 && (!dma_mode || !load_addr[2]) && load_addr[15:2] == nw[13:0] && nw < 16384;
     wire bwrite = load && bsel && load_addr[1:0]==0 && load_addr[9:2] == nb[7:0] && nb < 256;
     wire complete_load = nx == 6336 && nw == 16384 && nb == 256;
     wire start = !busy && complete_load && (dma_mode ? dma_start :
@@ -54,30 +56,40 @@ module kwt_accel(
                  (take && !cmd_read && cmd_addr == 0 && cmd_wmask == 4'hf && cmd_wdata == 2);
     wire pop = count != 0 && (dma_mode ? dma_out_ready :
                (take && cmd_read && cmd_addr == 20'h14));
-    wire push = state == EMIT && count <= 4;
+    wire push = state == EMIT && count <= 8;
     wire read_operands = state == PRIME || state == MAC;
     wire [12:0] xa = xwrite ? load_addr[14:2] : {row,k};
-    // External W remains column-major. Adjacent columns map to separate banks.
-    wire [11:0] wa = wwrite ? {load_addr[15:10],load_addr[7:2]} : {col[7:2],k};
-    wire [9:0] ba = bwrite ? {2'b0,load_addr[9:2]} : {2'b0,col[7:2],bias_lane};
+    // Eight column lanes, each split into even/odd k banks of 16x1024.
+    // A packed DMA word writes both parity banks on the same edge.
+    wire [9:0] wa = wwrite ? {load_addr[15:11],load_addr[7:3]} : {col[7:3],k[5:1]};
+    wire prefetch_req = state==MAC && k<=15 && k[0];
+    wire prefetch_capture = state==MAC && k>=2 && k<=16 && !k[0];
+    wire [4:0] next_group = col[7:3]+5'd1;
+    wire [9:0] ba = bwrite ? {2'b0,load_addr[9:2]} :
+        (prefetch_req ? {2'b0,next_group,k[3:1]} : {2'b0,col[7:3],bias_lane});
     wire [15:0] xd [0:1];
-    wire [15:0] wd [0:3];
+    wire [15:0] wd [0:7][0:1];
     wire [15:0] bl, bh;
     reg xb;
-    wire signed [39:0] acc [0:3];
-    genvar i;
+    wire signed [39:0] acc [0:7];
+    genvar i,p;
     generate for (i=0;i<2;i=i+1) begin: xbanks
-        kwt_sram16 xm(.clk(clk),.cs((xwrite || read_operands) && xa[12]==(i==1)),
-            .we(xwrite),.addr(xa[11:0]),.din(load_data[15:0]),.dout(xd[i]));
+        kwt_sram16 xm(.clk(clk),
+            .cs((xwrite && (dma_mode || xa[0]==(i==1))) || (read_operands && xa[0]==(i==1))),
+            .we(xwrite),.addr(xa[12:1]),.din(dma_mode && i==1 ? load_data[31:16] : load_data[15:0]),.dout(xd[i]));
     end
-    for (i=0;i<4;i=i+1) begin: wbanks
-        kwt_sram16 wm(.clk(clk),.cs(read_operands || (wwrite && load_addr[9:8]==i)),
-            .we(wwrite),.addr(wa),.din(load_data[15:0]),.dout(wd[i]));
-        kwt_mac40 mac(.clk(clk),.rst_n(rst_n),.init(state==BLOAD && bias_lane==i),
-            .enable(state==MAC || state==LAST),.x(xd[xb]),.w(wd[i]),.bias({bh,bl}),.acc(acc[i]));
+    for (i=0;i<8;i=i+1) begin: wbanks
+        for(p=0;p<2;p=p+1) begin: parity
+            kwt_sram16 #(.AW(10)) wm(.clk(clk),
+                .cs((read_operands && k[0]==(p==1)) ||
+                    (wwrite && load_addr[10:8]==i && (dma_mode || load_addr[2]==(p==1)))),
+                .we(wwrite),.addr(wa),.din(dma_mode && p==1 ? load_data[31:16] : load_data[15:0]),.dout(wd[i][p]));
+        end
+        kwt_mac40 mac(.clk(clk),.rst_n(rst_n),.init(state==PRIME),
+            .enable(state==MAC || state==LAST),.x(xd[xb]),.w(wd[i][xb]),.bias(next_bias[i]),.acc(acc[i]));
     end endgenerate
-    kwt_sram16 #(.AW(10)) bmlo(.clk(clk),.cs(bwrite || state==BREQ),.we(bwrite),.addr(ba),.din(load_data[15:0]),.dout(bl));
-    kwt_sram16 #(.AW(10)) bmhi(.clk(clk),.cs(bwrite || state==BREQ),.we(bwrite),.addr(ba),.din(load_data[31:16]),.dout(bh));
+    kwt_sram16 #(.AW(10)) bmlo(.clk(clk),.cs(bwrite || state==BREQ || prefetch_req),.we(bwrite),.addr(ba),.din(load_data[15:0]),.dout(bl));
+    kwt_sram16 #(.AW(10)) bmhi(.clk(clk),.cs(bwrite || state==BREQ || prefetch_req),.we(bwrite),.addr(ba),.din(load_data[31:16]),.dout(bh));
     wire [39:0] result = fifo[head];
     assign cmd_ready = !dma_mode && (!rsp_valid || rsp_ready);
     assign dma_load_ready = !busy;
@@ -88,10 +100,17 @@ module kwt_accel(
     assign perf_cycles=cycles;
     assign perf_mac_cycles=mac_cycles;
     assign perf_fifo_wait=fifo_wait;
+    // Bias payload is intentionally unreset; BREQ/BLOAD fill all lanes before
+    // first use. Later groups prefetch into it while the current MACs run.
+    always @(posedge clk) begin
+        if(state==BLOAD) next_bias[bias_lane]<={bh,bl};
+        if(prefetch_capture) next_bias[bias_return_lane]<={bh,bl};
+    end
+    integer lane;
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state<=IDLE; row<=0; col<=0; k<=0; nx<=0; nw<=0; nb<=0;
-            done<=0; fault<=0; cycles<=0; xb<=0; bias_lane<=0;
+            done<=0; fault<=0; cycles<=0; xb<=0; bias_lane<=0; bias_return_lane<=0;
             mac_cycles<=0; fifo_wait<=0;
             head<=0; tail<=0; count<=0; outputs_read<=0;
             rsp_valid<=0; rsp_rdata<=0; rsp_err<=0;
@@ -105,12 +124,13 @@ module kwt_accel(
             if (state==BREQ) state<=BLOAD;
             if (state==BLOAD) begin
                 bias_lane<=bias_lane+1'b1;
-                if (bias_lane==3) begin k<=0; state<=PRIME; end
+                if (bias_lane==7) begin k<=0; state<=PRIME; end
                 else state<=BREQ;
             end
             // Registered SRAM operands from the preceding edge are consumed
             // while the next pair is read. LAST drains operand 63 exactly once.
-            if (read_operands) xb<=xa[12];
+            if (prefetch_req) bias_return_lane<=k[3:1];
+            if (read_operands) xb<=xa[0];
             if (state==PRIME) begin k<=1; state<=MAC; end
             if (state==MAC) begin
                 if (k==63) state<=LAST;
@@ -118,28 +138,27 @@ module kwt_accel(
             end
             if (state==LAST) state<=EMIT;
             case ({push,pop})
-                2'b10: count<=count+4'd4;
+                2'b10: count<=count+5'd8;
                 2'b01: count<=count-1'b1;
-                2'b11: count<=count+4'd3;
+                2'b11: count<=count+5'd7;
                 default: begin end
             endcase
             if (push) begin
-                fifo[tail]<=acc[0]; fifo[tail+3'd1]<=acc[1];
-                fifo[tail+3'd2]<=acc[2]; fifo[tail+3'd3]<=acc[3];
-                tail<=tail+3'd4;
-                if (col==252 && row==98) state<=DRAIN;
+                for(lane=0;lane<8;lane=lane+1) fifo[tail+4'(lane)]<=acc[lane];
+                tail<=tail+4'd8;
+                if (col==248 && row==98) state<=DRAIN;
                 else begin
-                    col<=col+8'd4;
-                    if (col==252) row<=row+1'b1;
-                    state<=BREQ;
+                    col<=col+8'd8;
+                    if (col==248) row<=row+1'b1;
+                    k<=0; state<=PRIME;
                 end
             end
             if (pop) begin
                 head<=head+1'b1; outputs_read<=outputs_read+1'b1;
                 if (outputs_read==25343) begin state<=IDLE; done<=1; end
             end
-            if (xwrite) nx<=nx+1'b1;
-            if (wwrite) nw<=nw+1'b1;
+            if (xwrite) nx<=nx+(dma_mode ? 13'd2 : 13'd1);
+            if (wwrite) nw<=nw+(dma_mode ? 15'd2 : 15'd1);
             if (bwrite) nb<=nb+1'b1;
             if (start) begin
                 state<=BREQ; row<=0; col<=0; bias_lane<=0; done<=0; cycles<=0;
