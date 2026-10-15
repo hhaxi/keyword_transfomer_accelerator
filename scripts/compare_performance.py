@@ -1,4 +1,4 @@
-"""Verify v7 independent FFN1 mode against preserved v4 workload and timing contract."""
+"""Verify v8 independent FFN1 mode against preserved v4 workload and timing contract."""
 import hashlib
 import json
 import re

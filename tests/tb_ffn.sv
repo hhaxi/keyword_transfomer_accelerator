@@ -188,7 +188,7 @@ module tb_ffn;
         bus(1,20'h7c,0,0,rd);if(rd!=101376) $fatal(1,"Second MAC counter");
         bus(1,20'h80,0,0,rd);if(rd!=25344) $fatal(1,"GELU counter");
         bus(1,20'h84,0,0,rd);if(rd!=0) $fatal(1,"GELU saturated");
-        bus(1,20'h88,0,0,rd);if(rd!=22085) $fatal(1,"GELU/MAC overlap count");
+        bus(1,20'h88,0,0,rd);if(rd!=25240) $fatal(1,"GELU/MAC overlap count");
         $display("FFN_OVERLAP index=0 value=%0d",rd);
         bus(1,20'h8c,0,0,rd);if(rd==0) $fatal(1,"Missing parameter wait");
         $display("FFN_OVERLAP index=1 value=%0d",rd);

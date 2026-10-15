@@ -124,7 +124,7 @@ module tb_soc_ffn;
             if($test$plusargs("profile")) begin
                 for(j=0;j<3;j=j+1) begin
                     host(1,32'ha000f06c+32'(4*j),0,rd);
-                    if(j==0 && rd!=22085) $fatal(1,"GELU overlap mismatch");
+                    if(j==0 && rd!=25240) $fatal(1,"GELU overlap mismatch");
                     if(j!=0 && rd==0) $fatal(1,"Load overlap/wait coverage missing");
                     $display("FFN_OVERLAP task=%0d index=%0d value=%0d",taskid,j,rd);
                 end

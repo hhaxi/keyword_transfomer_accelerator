@@ -28,7 +28,7 @@ def soc(log):
         if values[0]!=values[1]+values[2]+values[3] or values[4]!=202752 or values[9]!=19872 or values[10]!=12672:raise RuntimeError('FFN count mismatch')
         if not values[1]<values[11]<=values[12]<values[13]==values[0]:raise RuntimeError('FFN timestamps inconsistent')
         overlap={int(k):int(v) for n,k,v in overlaps if int(n)==i}
-        if sorted(overlap)!=[0,1,2] or overlap[0]!=22085 or not 0<overlap[1]<overlap[2]:raise RuntimeError('Invalid overlap/wait counts')
+        if sorted(overlap)!=[0,1,2] or overlap[0]!=25240 or not 0<overlap[1]<overlap[2]:raise RuntimeError('Invalid overlap/wait counts')
         host=loaded[i]-begin[i];cpu=t['cycles']-host-values[0]
         if cpu<0:raise RuntimeError('Invalid timing residual')
         rows.append(dict(task=i,host_load=host,dma_load=values[1],compute_writeback=values[2],
@@ -59,7 +59,7 @@ def collect():
             if len(profile)!=15:raise RuntimeError('Missing FFN stress profile')
             stress.append(profile)
             overlap=re.findall(r'FFN_OVERLAP index=(\d+) value=(\d+)',text)
-            if len(overlap)!=3 or overlap[0]!=('0','22085'):raise RuntimeError('Missing stress overlap counters')
+            if len(overlap)!=3 or overlap[0]!=('0','25240'):raise RuntimeError('Missing stress overlap counters')
             stress_overlap.append(overlap)
     for name in ['tb_ffn-run.log','tb_ffn_netlist-run.log','icarus-tb_ffn.log']:
         if 'FFN_LOAD_OVERLAP_PASS' not in (OUT/name).read_text():raise RuntimeError('Missing delayed W2 barrier/recovery test')

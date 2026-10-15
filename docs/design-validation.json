@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-15T11:20:00.082506+00:00",
+  "generated_at_utc": "2026-10-15T11:45:26.934624+00:00",
   "scope": "Local undergraduate implementation; official acceptance pending",
   "numeric": {
     "validation_samples": 120,
@@ -505,8 +505,8 @@
   },
   "generic_synthesis": {
     "accelerator": {
-      "num_wires": 43406,
-      "num_wire_bits": 49353,
+      "num_wires": 43459,
+      "num_wire_bits": 49406,
       "num_pub_wires": 256,
       "num_pub_wire_bits": 5189,
       "num_ports": 35,
@@ -514,29 +514,29 @@
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 46335,
+      "num_cells": 46388,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 687,
-        "$_AND_": 9040,
+        "$_ANDNOT_": 710,
+        "$_AND_": 9101,
         "$_DFFE_PN0P_": 1029,
         "$_DFFE_PP_": 1216,
         "$_DFF_PN0_": 33,
-        "$_MUX_": 2383,
-        "$_NAND_": 17500,
-        "$_NOR_": 214,
-        "$_NOT_": 133,
-        "$_ORNOT_": 420,
-        "$_OR_": 1770,
-        "$_XNOR_": 1763,
-        "$_XOR_": 10090,
+        "$_MUX_": 2359,
+        "$_NAND_": 17487,
+        "$_NOR_": 236,
+        "$_NOT_": 128,
+        "$_ORNOT_": 419,
+        "$_OR_": 1752,
+        "$_XNOR_": 1774,
+        "$_XOR_": 10087,
         "$scopeinfo": 17,
         "kwt_sram16": 40
       }
     },
     "dma_engine": {
-      "num_wires": 49887,
-      "num_wire_bits": 57177,
+      "num_wires": 49879,
+      "num_wire_bits": 57169,
       "num_pub_wires": 328,
       "num_pub_wire_bits": 6591,
       "num_ports": 22,
@@ -544,23 +544,23 @@
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 53550,
+      "num_cells": 53542,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 665,
-        "$_AND_": 11550,
+        "$_ANDNOT_": 691,
+        "$_AND_": 11571,
         "$_DFFE_PN0P_": 1844,
         "$_DFFE_PN1P_": 1,
         "$_DFFE_PP_": 1216,
         "$_DFF_PN0_": 37,
-        "$_MUX_": 2726,
-        "$_NAND_": 19545,
-        "$_NOR_": 396,
-        "$_NOT_": 153,
-        "$_ORNOT_": 623,
-        "$_OR_": 2049,
-        "$_XNOR_": 2013,
-        "$_XOR_": 10674,
+        "$_MUX_": 2730,
+        "$_NAND_": 19474,
+        "$_NOR_": 408,
+        "$_NOT_": 140,
+        "$_ORNOT_": 632,
+        "$_OR_": 2017,
+        "$_XNOR_": 2003,
+        "$_XOR_": 10720,
         "$scopeinfo": 18,
         "kwt_sram16": 40
       }
@@ -591,8 +591,8 @@
       }
     },
     "soc": {
-      "num_wires": 70148,
-      "num_wire_bits": 115562,
+      "num_wires": 69829,
+      "num_wire_bits": 115243,
       "num_pub_wires": 4520,
       "num_pub_wire_bits": 49310,
       "num_ports": 14,
@@ -600,26 +600,26 @@
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 73096,
+      "num_cells": 72777,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 1283,
-        "$_AND_": 17694,
+        "$_ANDNOT_": 1196,
+        "$_AND_": 17395,
         "$_DFFE_PN0P_": 2569,
         "$_DFFE_PN1P_": 9,
         "$_DFFE_PP_": 2658,
         "$_DFF_PN0_": 44,
         "$_DFF_PN1_": 1,
         "$_DLATCH_N_": 8,
-        "$_MUX_": 3763,
-        "$_NAND_": 26635,
-        "$_NOR_": 665,
-        "$_NOT_": 312,
-        "$_ORNOT_": 1138,
-        "$_OR_": 2767,
+        "$_MUX_": 3802,
+        "$_NAND_": 26567,
+        "$_NOR_": 637,
+        "$_NOT_": 317,
+        "$_ORNOT_": 1196,
+        "$_OR_": 2784,
         "$_SDFFCE_PN0P_": 2,
-        "$_XNOR_": 2261,
-        "$_XOR_": 10952,
+        "$_XNOR_": 2238,
+        "$_XOR_": 11019,
         "$scopeinfo": 292,
         "kwt_shared_sram": 1,
         "kwt_sram16": 40,
@@ -642,11 +642,11 @@
       "10": 36,
       "12": 2
     },
-    "architecture_stat_sha256": "229d282b5c3f22e69dd314d0c5b50715a0e14cd3d90637ef8b949496374dfdef"
+    "architecture_stat_sha256": "4197b4c6d74a3623567f64c9db31b8c404d6918ca71ee5646213ac3b0833c9ed"
   },
   "source_hash_convention": "text bytes with CRLF normalized to LF",
   "source_sha256": {
-    "rtl/kwt_accel.sv": "f8e5ac4a7e961752097f408eb057aafeb2e89d52836350af53f67c9414996854",
+    "rtl/kwt_accel.sv": "c5696493a4f64ec2c86da208e762fe031f51e73630694641b393b6e6341b91a9",
     "rtl/kwt_dma.sv": "69cd8eed899642398609a23c93b44a98ad6eb6e435dd7aa4ac88108287cfde49",
     "rtl/kwt_gelu.sv": "c90731e826a9e8878d2d15c905a30017aaa9d7af116baf72984a980aae873a7b",
     "rtl/kwt_mac40.sv": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63",
@@ -670,12 +670,12 @@
     "tests/tb_accel.sv": "6b4e0d810c89876c4e5ec730e9bb92894058df64c874102e8a906fba1507ef39",
     "tests/tb_bus.sv": "b434b839f70641b7d10a29d2355c0f784d69b1bad53550b42d1a320cfb4a4a35",
     "tests/tb_dma.sv": "9868e23799d22e310d8e4b96d500bdb41f1c30fb1d0d57273ba27cad9964e8a0",
-    "tests/tb_ffn.sv": "9f885dafa9ad2bd394d1a8a56973c92b23bc29e988494b33d24cfe99e3f00464",
+    "tests/tb_ffn.sv": "9ca526513cf7df6ee6cb7747fbb61b2dba57d1cf021702c45f05121c5f638ea8",
     "tests/tb_ffn_edges.sv": "64b15316bd9710abce9f837052ca924eb1458b4d2bed62a8cfd25e70381fd31c",
     "tests/tb_gelu.sv": "a3b82f7229fbeada166bc22e9c85351414abcbbb8814d3e5a4756cadc085862e",
     "tests/tb_mac.sv": "eb29e21ffa6e14c9c6a94b8e8de3d76cb1d64fc44eb97007d45a65bdda736499",
     "tests/tb_soc.sv": "80256cc45ec1bf6c178f37a621bf423b6cc7239cba46fe2567d1c223aee2022b",
-    "tests/tb_soc_ffn.sv": "ff5e7dd7838b233b76b699699a2b3153fb643a3ecf2726041afb6f09f193e8bb",
+    "tests/tb_soc_ffn.sv": "138fe6517066ca7c746dec4b32e61156aef18dabce7a49a9cc24b60d5290f837",
     "tests/test_ffn.py": "f90c994ca6f9ccaf3ca1acb14590542c50d3eef69fb04e2c1effb9f182b1e552",
     "tests/test_numeric.py": "2988fef329e14b008746520c0072af208f3bcc7c9e1dca51fa362fb15a1c9e4b",
     "tests/test_packing.py": "ea3f59487a862f763fb456d2b77847b903424b02239aa4b7b20a170f953a6c04",
@@ -686,10 +686,10 @@
     "scripts/capture_activity.py": "51bbc8bad73fc6e7426a49735d34ad3b6f8b679f7b190b23ed90ae2b52c0fb75",
     "scripts/check_environment.py": "d4f381a53138e7709480c9d15306387eb8e28458caec59a93c814cf80d8d3778",
     "scripts/check_model_environment.py": "2771fc3b6c7827731c0b7400f76f03dbaebf236e309658855cdc25465c517054",
-    "scripts/collect_ffn.py": "8eb8585ea458e3eca1e27679a8468c733b7a1b748923bd6c0522611d5c29ccf7",
+    "scripts/collect_ffn.py": "f3c690ad75dab3d7fedc1d317340b639cdc36c570c5522fa1b84b9bf04b93d75",
     "scripts/collect_results.py": "b92c78423c77f323754e68accf66130f7fb51042f99b2a4b7d90efcd27178e7c",
-    "scripts/compare_ffn_performance.py": "534e47725a3caeaab9610ffd0395529acbfe1f9e73e09e23b391e25b45d60f6b",
-    "scripts/compare_performance.py": "268b6f0c7084f38b2429b0063645e6c623d5258cd8c232d29b3374fe8d8d3de0",
+    "scripts/compare_ffn_performance.py": "c8b73c7547fd816176c5c84b5cd748e21c58f1c35b80c1502bcd2517b6cc4415",
+    "scripts/compare_performance.py": "cb1a65a705f67275d24443f37925a74958e67df88c862ae520f7b9c0cbecee0b",
     "scripts/convert_ffn.py": "a2578702d088b4d289a72c591a277cb496d125fd3c65f2d5f4ecc40dcfc90c61",
     "scripts/convert_task.py": "875d04baaeb0c8dd5ae2c34eefdcc67dd9a67f30067758a2586366d936f09f28",
     "scripts/decode_output.py": "9c3f9005f726073e083aeeb086b97a06ecffd2b4905abe69b7ae63a801f7e06d",
@@ -710,36 +710,36 @@
   },
   "artifacts": {
     "architecture-stat.json": {
-      "bytes": 3340,
-      "sha256": "229d282b5c3f22e69dd314d0c5b50715a0e14cd3d90637ef8b949496374dfdef"
+      "bytes": 3341,
+      "sha256": "4197b4c6d74a3623567f64c9db31b8c404d6918ca71ee5646213ac3b0833c9ed"
     },
     "kwt_accel_netlist.json": {
-      "bytes": 27486712,
-      "sha256": "86cf137c5a8edeadc41aab82de4dd5c272be51ab27891657dd345c7653d4bae7"
+      "bytes": 27516742,
+      "sha256": "d02ec107d5fb676c0957e786e62c8f23b34695811ce61b44f7ccdcb8d90b76c8"
     },
     "kwt_accel_netlist.v": {
-      "bytes": 2789227,
-      "sha256": "c931d612d52424c0df7ec5a943d1139b6f7c4162707df499115a9c29ea798d1f"
+      "bytes": 2791886,
+      "sha256": "16b9931b724a4880781538fa3393aab132a1226e8c207a0382f44d3ff2e490ee"
     },
     "kwt_dma_netlist.v": {
-      "bytes": 3534894,
-      "sha256": "33bb5ce2f804547fb956f114eb829bc90458c0ff563357535ead8f6b4b2f61dc"
+      "bytes": 3534594,
+      "sha256": "65bbb6bbb832f54e020cae49626452968568960cd8589af76010d95e17c38565"
     },
     "kwt_bus_netlist.v": {
       "bytes": 27255,
       "sha256": "65b18536170796ba29852b61ef0b1c037ed73388e113d2470e7e2c9215d71d24"
     },
     "kwt_soc_netlist.v": {
-      "bytes": 7644876,
-      "sha256": "e5b9281492948f93c118b8897cbb4525806e363779b2d69a6bec2f6bffaf2e4f"
+      "bytes": 7624755,
+      "sha256": "b0333ff50daf52199d23a80c8f02f23f550209b4c39553a5c80aab74e2ea4467"
     },
     "firmware/kwt.elf": {
       "bytes": 5824,
-      "sha256": "e5036f98be3f2b9854dfc06b3609d5cfa21871cdef29fb687349b82421fcdc75"
+      "sha256": "b9d8698f9f0a85369dd4e840e50879f5fb991b183f845e8a14a1f8b416806603"
     },
     "mac.vcd": {
       "bytes": 2764017,
-      "sha256": "58eb67aedd461a9cff1e77d863b66cb00de5dd6d69ec5c678c9b91028182ec32"
+      "sha256": "e8ce28d00806b0f90cbe53c76ce1ce9a45a87055878238fa9314483a3e88c9c3"
     }
   },
   "calibration": {
@@ -1320,62 +1320,62 @@
     "tasks": [
       {
         "task": 0,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 1,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 2,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 3,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 4,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 5,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 6,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 7,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 8,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 9,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 10,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       },
       {
         "task": 11,
-        "cycles": 310289,
+        "cycles": 306709,
         "outputs": 6336
       }
     ],
@@ -1384,25 +1384,25 @@
         "task": 0,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1410,8 +1410,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1419,25 +1419,25 @@
         "task": 1,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1445,8 +1445,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1454,25 +1454,25 @@
         "task": 2,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1480,8 +1480,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1489,25 +1489,25 @@
         "task": 3,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1515,8 +1515,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1524,25 +1524,25 @@
         "task": 4,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1550,8 +1550,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1559,25 +1559,25 @@
         "task": 5,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1585,8 +1585,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1594,25 +1594,25 @@
         "task": 6,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1620,8 +1620,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1629,25 +1629,25 @@
         "task": 7,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1655,8 +1655,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1664,25 +1664,25 @@
         "task": 8,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1690,8 +1690,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1699,25 +1699,25 @@
         "task": 9,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1725,8 +1725,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1734,25 +1734,25 @@
         "task": 10,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1760,8 +1760,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       },
@@ -1769,25 +1769,25 @@
         "task": 11,
         "host_load": 79495,
         "dma_load": 15530,
-        "compute_writeback": 214338,
+        "compute_writeback": 210659,
         "dma_control": 2,
-        "cpu_completion_residual": 924,
+        "cpu_completion_residual": 1023,
         "profile": {
-          "0": 229870,
+          "0": 226191,
           "1": 15530,
-          "2": 214338,
+          "2": 210659,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 214333,
-          "7": 11677,
+          "6": 210654,
+          "7": 11807,
           "8": 0,
           "9": 19872,
           "10": 12672,
           "11": 26717,
-          "12": 229865,
-          "13": 229870,
-          "14": 190661
+          "12": 226186,
+          "13": 226191,
+          "14": 186935
         },
         "extra": {
           "0": 101376,
@@ -1795,8 +1795,8 @@
           "2": 0
         },
         "overlap": {
-          "0": 22085,
-          "1": 2308,
+          "0": 25240,
+          "1": 2563,
           "2": 11036
         }
       }
@@ -2878,9 +2878,9 @@
       "note": "Optional full FFN engineering metric, not undergraduate mandatory FFN1 score"
     },
     "performance": {
-      "total_cycles": 3723468,
+      "total_cycles": 3680508,
       "target_clock_hz": 150000000,
-      "nominal_tasks_per_second": 483.4202952731164,
+      "nominal_tasks_per_second": 489.06292283565205,
       "timing_closed": false,
       "macs_per_task": 3244032,
       "output_elements": 6336
@@ -2888,7 +2888,7 @@
     "component_tests": {
       "tb_ffn-run.log": {
         "passed": true,
-        "sha256": "9e34c8dee1abae35168abba870f1e60bec710fea9a0d898421b17b04459c60ef"
+        "sha256": "58817ab9cb88e4a437e7d200309db621ba598b2aa03200c5ef07790c55ceac47"
       },
       "tb_ffn_edges-run.log": {
         "passed": true,
@@ -2900,19 +2900,19 @@
       },
       "icarus-tb_ffn_edges.log": {
         "passed": true,
-        "sha256": "47bf2c06189c4a371b8cdac4ced2cf0965156932069277131849eeda1badba9b"
+        "sha256": "4428c547457071f5439533d2f037df0efcf918e1b6a16dbf7e8f7add7255ddfc"
       },
       "tb_ffn_netlist-run.log": {
         "passed": true,
-        "sha256": "9e34c8dee1abae35168abba870f1e60bec710fea9a0d898421b17b04459c60ef"
+        "sha256": "58817ab9cb88e4a437e7d200309db621ba598b2aa03200c5ef07790c55ceac47"
       },
       "icarus-tb_ffn.log": {
         "passed": true,
-        "sha256": "6a48809c2e961139df70eb408bb6f5137eb5e800aeb8db687df07d0bfebde1bb"
+        "sha256": "f692e52fa390058eba12e6337815a1e3b5495e8b9fd36aa807dfc5c828e3c73e"
       },
       "ffn-numeric-tests.log": {
         "passed": true,
-        "sha256": "2a8542ec4a2a39ce5d30d175f415f02731638b0baca3b0ae495c179091478231"
+        "sha256": "31af5c8d3aac6aaf780ef833c86bd6330f65f1f315c528ecbecb41515acde8fe"
       },
       "tb_gelu-run.log": {
         "passed": true,
@@ -2928,15 +2928,15 @@
       },
       "tb_soc_ffn-run.log": {
         "passed": true,
-        "sha256": "7e22a36054ae79f0cbc44761197f68c2a4e3467166a32e6fa74c185398b129d6"
+        "sha256": "3ae68707f81fa33a911487fc0eba247e92fdc67a83c984613215a80198ef0a7c"
       },
       "tb_soc_ffn_noprofile-run.log": {
         "passed": true,
-        "sha256": "d52ac7490b28c133d5767ec5870a18f4c0d87a47cdb31ae11ef121edd26abf3d"
+        "sha256": "6682281298fb96a05d77bd1c9873dca0678b21eed34bb5a2012eac9e7bd5524f"
       },
       "tb_soc_ffn_netlist-run.log": {
         "passed": true,
-        "sha256": "0d8ff02d326b3b234ab87c2119c0b89ac25d7b1263563fcd575e6230e22837fc"
+        "sha256": "3ae68707f81fa33a911487fc0eba247e92fdc67a83c984613215a80198ef0a7c"
       }
     },
     "mode_switch_without_reset_verified": true,
@@ -2994,26 +2994,12 @@
     "note": "Do not compare full FFN tasks/s directly against the undergraduate FFN1 throughput score."
   },
   "full_ffn_optimization": {
-    "baseline_git_commit": "411a15173dca348be00cb2615661321cb1987199",
+    "baseline_git_commit": "eefe43199e88a7c603ceeebf4277363923f6694a",
     "same_workload_and_timing_verified": true,
     "numeric_contract_unchanged": true,
     "timed_driver_machine_code_unchanged": true,
-    "dma_implementation_changed": true,
+    "dma_implementation_changed": false,
     "baseline_cycles_per_task": [
-      346838,
-      346838,
-      346838,
-      346838,
-      346838,
-      346838,
-      346838,
-      346838,
-      346838,
-      346838,
-      346838,
-      346838
-    ],
-    "optimized_cycles_per_task": [
       310289,
       310289,
       310289,
@@ -3027,44 +3013,58 @@
       310289,
       310289
     ],
-    "baseline_total_cycles": 4162056,
-    "optimized_total_cycles": 3723468,
-    "speedup": 1.1177901891462476,
-    "cycle_reduction_percent": 10.537772677734269,
-    "throughput_increase_percent": 11.77901891462476,
-    "baseline_nominal_tasks_per_second": 432.47856347920356,
-    "optimized_nominal_tasks_per_second": 483.4202952731164,
-    "baseline_nominal_ms_per_task": 2.3122533333333335,
-    "optimized_nominal_ms_per_task": 2.0685933333333333,
+    "optimized_cycles_per_task": [
+      306709,
+      306709,
+      306709,
+      306709,
+      306709,
+      306709,
+      306709,
+      306709,
+      306709,
+      306709,
+      306709,
+      306709
+    ],
+    "baseline_total_cycles": 3723468,
+    "optimized_total_cycles": 3680508,
+    "speedup": 1.0116723017583442,
+    "cycle_reduction_percent": 1.1537631047185082,
+    "throughput_increase_percent": 1.1672301758344217,
+    "baseline_nominal_tasks_per_second": 483.4202952731164,
+    "optimized_nominal_tasks_per_second": 489.06292283565205,
+    "baseline_nominal_ms_per_task": 2.0685933333333333,
+    "optimized_nominal_ms_per_task": 2.0447266666666666,
     "mac_units_before": 16,
     "mac_units_after": 16,
     "output_columns_parallel": 8,
     "k_terms_per_cycle_before": 2,
     "k_terms_per_cycle_after": 2,
-    "internal_sram_bytes_before": 87040,
+    "internal_sram_bytes_before": 90624,
     "internal_sram_bytes_after": 90624,
     "sram_macros_before": 40,
     "sram_macros_after": 40,
     "generic_cells": {
       "accelerator": {
-        "before": 46115,
-        "after": 46335
+        "before": 46335,
+        "after": 46388
       },
       "dma_engine": {
-        "before": 53064,
-        "after": 53550
+        "before": 53550,
+        "after": 53542
       },
       "bus": {
         "before": 453,
         "after": 453
       },
       "soc": {
-        "before": 72219,
-        "after": 73096
+        "before": 73096,
+        "after": 72777
       }
     },
     "target_clock_hz": 150000000,
     "timing_closed": false,
-    "note": "Same 16 MAC units, background GELU, eight-row tiling and W2/b2 load overlap. Intermediate SRAM grows by 3584 bytes. No measured power/energy or physical area claim. Mandatory FFN1 remains a separate workload."
+    "note": "Same 16 MAC units and 90624-byte SRAM. Next-group read/init overlaps L1 MERGE or L2 FIFO acceptance; merge register preserved. No measured power/energy or physical area claim. Mandatory FFN1 remains a separate workload."
   }
 }

@@ -1,5 +1,7 @@
 # 第七版：数据搬运与 GELU 后台调度
 
+> 本文保留第七版 `eefe431` 的历史结果。当前第八版见 [组间调度优化](ffn-group-scheduling.md)。
+
 第七版在保持 **16 路乘加单元**的前提下，让 GELU 和下一组第一层计算重叠，并让第一层分块计算覆盖第二层参数 DMA 加载。数学模型、量化格式、GELU 表、共享总线及计时边界不变。
 
 第六版基线为提交 `411a15173dca348be00cb2615661321cb1987199`，机器记录在 `performance-baseline-v6.json`，本地归档为 `deliverables/full-ffn-v6-baseline.zip`、`deliverables/v6-source-baseline.zip`、`output/baseline-v6/`。第四、五版基线继续保留。

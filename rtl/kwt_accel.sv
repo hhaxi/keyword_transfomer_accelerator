@@ -79,11 +79,22 @@ module kwt_accel(
     wire pop = count != 0 && (dma_mode ? dma_out_ready :
                (take && cmd_read && cmd_addr == 20'h14));
     wire push = state == EMIT && count <= 8;
-    wire read_operands = state == PRIME || state == MAC;
-    wire [12:0] xa = xwrite ? load_addr[14:2] : {row,k[5:0]};
+    // Prime the next group on the edge that retires the current group.
+    // MERGE still captures the old accumulators before their nonblocking init;
+    // L2 primes only on FIFO acceptance, so backpressure cannot lose operands.
+    wire tile_end = row[2:0]==7 || row==98;
+    wire group_last = col==(second_stage ? 8'd56 : 8'd248);
+    wire prime_next = full_ffn && !(group_last && tile_end) &&
+        (second_stage ? push : merge_fire);
+    wire [6:0] operand_row = prime_next && group_last ? row+7'd1 : row;
+    wire [4:0] operand_group = prime_next ? (group_last ? 5'd0 : col[7:3]+5'd1) : col[7:3];
+    wire [7:0] operand_k = prime_next ? 8'd0 : k;
+    wire read_operands = state == PRIME || state == MAC || prime_next;
+    wire mac_init = state==PRIME || prime_next;
+    wire [12:0] xa = xwrite ? load_addr[14:2] : {operand_row,operand_k[5:0]};
     // Eight column lanes, each split into even/odd k banks of 16x1024.
     // A packed DMA word writes both parity banks on the same edge.
-    wire [9:0] wa = wwrite ? {load_addr[15:11],load_addr[7:3]} : {col[7:3],k[5:1]};
+    wire [9:0] wa = wwrite ? {load_addr[15:11],load_addr[7:3]} : {operand_group,operand_k[5:1]};
     wire prefetch_req = state==MAC && (full_ffn ? (k<=30 && k[1]) : (k<=15 && k[0]));
     wire prefetch_capture = state==MAC && (full_ffn ? (k>=4 && k<=32 && !k[1]) : (k>=2 && k<=16 && !k[0]));
     wire [2:0] prefetch_lane=full_ffn ? k[4:2] : k[3:1];
@@ -95,7 +106,7 @@ module kwt_accel(
     wire [15:0] bl, bh, b2l,b2h;
     wire [15:0] wd2 [0:7][0:1];
     wire [15:0] gd [0:1];
-    wire [9:0] wa2=w2write ? {load_addr[15:13],load_addr[9:3]} : {col[5:3],k[7:1]};
+    wire [9:0] wa2=w2write ? {load_addr[15:13],load_addr[9:3]} : {operand_group[2:0],operand_k[7:1]};
     wire [2:0] next_group2=col[5:3]+3'd1;
     wire [6:0] ba2=b2write ? {1'b0,load_addr[7:2]} :
         (prefetch_req ? {1'b0,next_group2,prefetch_lane} : {1'b0,col[5:3],bias_lane});
@@ -103,7 +114,7 @@ module kwt_accel(
     wire gelu_saturated;
     // Eight rows per tile reuse the same two parity banks. The scalar GELU
     // worker owns the write address while first-layer MACs run independently.
-    wire [9:0] ga=gelu_busy ? {gelu_row,gelu_group,gelu_lane[2:1]} : {row[2:0],k[7:1]};
+    wire [9:0] ga=gelu_busy ? {gelu_row,gelu_group,gelu_lane[2:1]} : {operand_row[2:0],operand_k[7:1]};
     kwt_gelu activation(.value(merged[gelu_lane]),.input_shift(gelu_input_shift),
         .output_shift(gelu_output_shift),.result(gelu_result),.saturated(gelu_saturated));
     reg xb;
@@ -126,9 +137,9 @@ module kwt_accel(
                 .cs((read_operands && second_stage && (full_ffn || k[0]==(p==1))) || (w2write && load_addr[12:10]==i)),
                 .we(w2write),.addr(wa2),.din(p==1 ? load_data[31:16] : load_data[15:0]),.dout(wd2[i][p]));
         end
-        kwt_mac40 mac(.clk(clk),.rst_n(rst_n),.init(state==PRIME),
+        kwt_mac40 mac(.clk(clk),.rst_n(rst_n),.init(mac_init),
             .enable(mac_enable),.x(second_stage ? gd[xb] : xd[xb]),.w(second_stage ? wd2[i][xb] : wd[i][xb]),.bias(next_bias[i]),.acc(acc[i]));
-        kwt_mac40 odd_mac(.clk(clk),.rst_n(rst_n),.init(state==PRIME && full_ffn),
+        kwt_mac40 odd_mac(.clk(clk),.rst_n(rst_n),.init(mac_init && full_ffn),
             .enable(mac_enable && full_ffn),.x(second_stage ? gd[1] : xd[1]),
             .w(second_stage ? wd2[i][1] : wd[i][1]),.bias(32'sd0),.acc(odd_acc[i]));
         // Register the exact partial-sum merge before GELU to avoid adding a
@@ -216,7 +227,7 @@ module kwt_accel(
             if (merge_fire) begin
                 if(!second_stage) begin
                     gelu_busy<=1;gelu_lane<=0;gelu_group<=col[7:3];gelu_row<=row[2:0];
-                    k<=0;col<=col+8'd8;state<=PRIME;
+                    k<=prime_next ? 8'd2 : 8'd0;col<=col+8'd8;state<=prime_next ? MAC : PRIME;
                     if(col==248) begin
                         if(row[2:0]==7 || row==98) state<=GELU;
                         else begin row<=row+1'b1;col<=0;end
@@ -235,7 +246,7 @@ module kwt_accel(
                 if (col==(second_stage ? 8'd56 : 8'd248) && row==98) state<=DRAIN;
                 else begin
                     col<=col+8'd8;
-                    k<=0; state<=PRIME;
+                    k<=prime_next ? 8'd2 : 8'd0; state<=prime_next ? MAC : PRIME;
                     if(second_stage && col==56) begin
                         row<=row+1'b1;col<=0;
                         if(row[2:0]==7) begin second_stage<=0;bias_lane<=0;state<=BREQ;end
