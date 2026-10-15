@@ -1,6 +1,7 @@
 .venv*/
 .tools/
 output/
+deliverables/
 tmp/
 environment/local-tools.json
 environment/installed-model-packages.txt
@@ -14,6 +15,7 @@ Thumbs.db
 .env
 .env.*
 *.vcd
+*.fst
 *.wlf
 transcript
 assets/downloads/

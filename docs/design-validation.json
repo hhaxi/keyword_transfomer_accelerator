@@ -1,0 +1,919 @@
+{
+  "generated_at_utc": "2026-10-15T07:31:27.954999+00:00",
+  "scope": "Local undergraduate implementation; official acceptance pending",
+  "numeric": {
+    "validation_samples": 120,
+    "layers": 12,
+    "layer_nrmse": [
+      0.00010735775975945757,
+      0.0001075445166005968,
+      0.00011610131300298161,
+      0.00012349400656717381,
+      0.00013187026686814322,
+      0.00012591143926690942,
+      0.00012945194241569105,
+      0.0001269076564176813,
+      0.00013201827446406207,
+      0.00012594978771536994,
+      0.00012758543335205142,
+      0.00011881052382678334
+    ],
+    "maximum_layer_nrmse": 0.00013201827446406207,
+    "performance_tasks": [
+      {
+        "task": 0,
+        "layer": 0,
+        "sample": {
+          "index": 9,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        "nrmse": 0.0001244475124149296
+      },
+      {
+        "task": 1,
+        "layer": 1,
+        "sample": {
+          "index": 0,
+          "label": "_unknown_",
+          "file": "three/8910e5ef_nohash_2.wav"
+        },
+        "nrmse": 0.00010830878121448802
+      },
+      {
+        "task": 2,
+        "layer": 2,
+        "sample": {
+          "index": 5,
+          "label": "yes",
+          "file": "yes/c4cfbe43_nohash_1.wav"
+        },
+        "nrmse": 0.00011771705606526209
+      },
+      {
+        "task": 3,
+        "layer": 3,
+        "sample": {
+          "index": 18,
+          "label": "no",
+          "file": "no/171b56dc_nohash_1.wav"
+        },
+        "nrmse": 0.00011270159810999777
+      },
+      {
+        "task": 4,
+        "layer": 4,
+        "sample": {
+          "index": 2,
+          "label": "up",
+          "file": "up/099d52ad_nohash_4.wav"
+        },
+        "nrmse": 0.00012851638772684395
+      },
+      {
+        "task": 5,
+        "layer": 5,
+        "sample": {
+          "index": 7,
+          "label": "down",
+          "file": "down/3cc595de_nohash_4.wav"
+        },
+        "nrmse": 0.00012584844968148984
+      },
+      {
+        "task": 6,
+        "layer": 6,
+        "sample": {
+          "index": 13,
+          "label": "left",
+          "file": "left/45692b02_nohash_0.wav"
+        },
+        "nrmse": 0.00012706458689814643
+      },
+      {
+        "task": 7,
+        "layer": 7,
+        "sample": {
+          "index": 27,
+          "label": "right",
+          "file": "right/ef77b778_nohash_4.wav"
+        },
+        "nrmse": 0.00012611848425332723
+      },
+      {
+        "task": 8,
+        "layer": 8,
+        "sample": {
+          "index": 10,
+          "label": "on",
+          "file": "on/edc53350_nohash_0.wav"
+        },
+        "nrmse": 0.00013343776702591176
+      },
+      {
+        "task": 9,
+        "layer": 9,
+        "sample": {
+          "index": 17,
+          "label": "off",
+          "file": "off/099d52ad_nohash_1.wav"
+        },
+        "nrmse": 0.00012478162822685275
+      },
+      {
+        "task": 10,
+        "layer": 10,
+        "sample": {
+          "index": 48,
+          "label": "stop",
+          "file": "stop/ab1299bb_nohash_0.wav"
+        },
+        "nrmse": 0.00012073853720803437
+      },
+      {
+        "task": 11,
+        "layer": 11,
+        "sample": {
+          "index": 4,
+          "label": "go",
+          "file": "go/45692b02_nohash_2.wav"
+        },
+        "nrmse": 0.00012964707230836601
+      }
+    ],
+    "official_600_sample_evaluation": false
+  },
+  "checks": [
+    {
+      "name": "accelerator RTL",
+      "passed": true,
+      "tasks": [
+        {
+          "task": 0,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 1,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 2,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 3,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 4,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 5,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 6,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 7,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 8,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 9,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 10,
+          "cycles": 3569421,
+          "outputs": 25344
+        },
+        {
+          "task": 11,
+          "cycles": 3569427,
+          "outputs": 25344
+        }
+      ],
+      "log": "output/design/tb_accel-run.log",
+      "log_sha256": "b0270b2863a597d11302701e02bbb32cfe2074194a60a5ad5f943b0066029b9e"
+    },
+    {
+      "name": "accelerator netlist",
+      "passed": true,
+      "tasks": [
+        {
+          "task": 0,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 1,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 2,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 3,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 4,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 5,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 6,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 7,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 8,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 9,
+          "cycles": 3569424,
+          "outputs": 25344
+        },
+        {
+          "task": 10,
+          "cycles": 3569421,
+          "outputs": 25344
+        },
+        {
+          "task": 11,
+          "cycles": 3569427,
+          "outputs": 25344
+        }
+      ],
+      "log": "output/design/tb_accel_netlist-run.log",
+      "log_sha256": "e28bf1939521de54f745d264f1cc9bd8a69be045a25eb0f46a5c429b1de79d51"
+    },
+    {
+      "name": "E203 RTL integration",
+      "passed": true,
+      "tasks": [
+        {
+          "task": 0,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 1,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 2,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 3,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 4,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 5,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 6,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 7,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 8,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 9,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 10,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 11,
+          "cycles": 6803004,
+          "outputs": 25344
+        }
+      ],
+      "log": "output/design/tb_soc-run.log",
+      "log_sha256": "f2226f2958b969f1c25a821f50aff965eb13876dbe8c17bf76a740aefdfd3c13"
+    },
+    {
+      "name": "E203 netlist integration",
+      "passed": true,
+      "tasks": [
+        {
+          "task": 0,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 1,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 2,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 3,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 4,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 5,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 6,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 7,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 8,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 9,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 10,
+          "cycles": 6803004,
+          "outputs": 25344
+        },
+        {
+          "task": 11,
+          "cycles": 6803004,
+          "outputs": 25344
+        }
+      ],
+      "log": "output/design/tb_soc_netlist-run.log",
+      "log_sha256": "f2226f2958b969f1c25a821f50aff965eb13876dbe8c17bf76a740aefdfd3c13"
+    },
+    {
+      "name": "Icarus four-state accelerator",
+      "passed": true,
+      "tasks": [
+        {
+          "task": 0,
+          "cycles": 3569424,
+          "outputs": 25344
+        }
+      ],
+      "log": "output/design/icarus-accel.log",
+      "log_sha256": "e25cef7c6724edcecf9f6a9bd5d5297f0eda5733052808d1ed3b5ab15e0ce6be"
+    }
+  ],
+  "component_tests": {
+    "numeric-tests.log": {
+      "passed": true,
+      "sha256": "5f1137cfb5f69a32f626dae0b03fa7a60bbe9fde8f7c13c4a9581df6c8ce6154"
+    },
+    "mac-icarus.log": {
+      "passed": true,
+      "sha256": "f71d7aa4b31c2919c27aadc55c7203f434e6f942e6f83c2b561cb4608f88bca5"
+    }
+  },
+  "performance": {
+    "total_tasks": 12,
+    "total_cycles": 81636048,
+    "target_clock_hz": 150000000,
+    "nominal_tasks_per_second": 22.04908302273525,
+    "timing_closed": false,
+    "window": "Host load to shared SRAM through E203 output writeback and completion observation"
+  },
+  "ppa": {
+    "synthesis": "generic gates, SRAM leaves preserved",
+    "post_synthesis_simulation": "12 full tasks bit-exact",
+    "clock_target_mhz": 150,
+    "timing_met": null,
+    "standard_cell_area_mm2": null,
+    "sram_area_mm2": null,
+    "total_accelerator_area_mm2": null,
+    "average_soc_power_w": null,
+    "energy_per_task_j": null,
+    "macro_instances": {
+      "16x4096_SP": 6,
+      "16x1024_SP": 2
+    },
+    "internal_sram_bytes": 53248,
+    "blocking_inputs": [
+      "official standard-cell Liberty and PVT",
+      "official SRAM macro models, Liberty and area",
+      "official clock/load/interconnect conditions and accepted PPA flow"
+    ],
+    "note": "Unknown physical metrics are null, never zero. Generic gate counts are not mm^2 or timing proof."
+  },
+  "generic_synthesis": {
+    "accelerator": {
+      "num_wires": 2973,
+      "num_wire_bits": 3489,
+      "num_pub_wires": 44,
+      "num_pub_wire_bits": 475,
+      "num_ports": 12,
+      "num_port_bits": 96,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 3235,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 82,
+        "$_AND_": 765,
+        "$_DFFE_PN0P_": 165,
+        "$_DFF_PN0_": 7,
+        "$_MUX_": 94,
+        "$_NAND_": 1154,
+        "$_NOR_": 46,
+        "$_NOT_": 14,
+        "$_ORNOT_": 73,
+        "$_OR_": 89,
+        "$_XNOR_": 95,
+        "$_XOR_": 642,
+        "$scopeinfo": 1,
+        "kwt_sram16": 8
+      }
+    },
+    "soc": {
+      "num_wires": 22579,
+      "num_wire_bits": 60836,
+      "num_pub_wires": 4176,
+      "num_pub_wire_bits": 42433,
+      "num_ports": 14,
+      "num_port_bits": 141,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 22491,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 713,
+        "$_AND_": 6696,
+        "$_DFFE_PN0P_": 885,
+        "$_DFFE_PN1P_": 8,
+        "$_DFFE_PP_": 1442,
+        "$_DFF_PN0_": 12,
+        "$_DFF_PN1_": 1,
+        "$_DLATCH_N_": 8,
+        "$_MUX_": 1074,
+        "$_NAND_": 8154,
+        "$_NOR_": 296,
+        "$_NOT_": 149,
+        "$_ORNOT_": 576,
+        "$_OR_": 919,
+        "$_SDFFCE_PN0P_": 2,
+        "$_XNOR_": 330,
+        "$_XOR_": 941,
+        "$scopeinfo": 274,
+        "kwt_shared_sram": 1,
+        "kwt_sram16": 8,
+        "sirv_gnrl_ram": 2
+      }
+    }
+  },
+  "activity": {
+    "full_soc_tasks_captured": 1,
+    "official_mapping_coverage_checked": false,
+    "sram_power_model_available": false,
+    "note": "Local activity only; not a twelve-task official power or energy result",
+    "capture": {
+      "status": "complete",
+      "tasks": 1,
+      "level": "rtl",
+      "firmware_sha256": "c83942ba10d212a61429ff74209dc23f3bccfb6872bc2bf29259f58bc7db1a9f",
+      "official_power_result": false,
+      "mapping_coverage_verified": false,
+      "timing_window_log": [
+        "MEASURE_BEGIN task=0 time_ps=1018718000 cycle=152823",
+        "MEASURE_END task=0 time_ps=46367542000 cycle=6955827"
+      ]
+    }
+  },
+  "source_hash_convention": "text bytes with CRLF normalized to LF",
+  "source_sha256": {
+    "rtl/kwt_accel.sv": "d955830324304d424d66c8bd1b036c35e383ced65ecffa3e2fcdc6228b9c6aa3",
+    "rtl/kwt_mac40.sv": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63",
+    "rtl/kwt_sram16.sv": "93499fce6bbd850a7ad747094bb82d75d347112e9aac264ab311131f9c56e320",
+    "integration/e203_ram_boundary.v": "50ac226f2ec35fb889c54e9863fc54954325cb986aceedb7bd64569d27689a9e",
+    "integration/kwt_shared_sram.sv": "89aee640754231540e2689b3f442d70bcf1b9d11677cbe3ed5aae118491ac268",
+    "integration/kwt_soc.sv": "4920d021a803965c3d054c7aee036cf86d41079ec466d1ff84ad2ec6e32b2451",
+    "integration/kwt_system_bus.sv": "99ecd04f36e3184b986837978af86ec712d7c40ee1682149ba05c0b5ee83ccf5",
+    "firmware/kwt_driver.c": "f363b55b35f08a75f63d2406047c46e80547e79c9dbeed34e56356320981d352",
+    "firmware/kwt_driver.h": "66a8a867108fc3a4633307bbb7c38b1f39c4c477ff2776c52d7cc3f46a3601ab",
+    "firmware/link.ld": "6b92fa96a24bec6a9af0a6a74c1d542fa12fbdf7e65a595bd010c55e361d2e9b",
+    "firmware/main.c": "4497fa5b2e58187e526f97028ae4037dca52e05f5fa32b50bd04638c861454f4",
+    "firmware/start.S": "14cd16d89ca9e5f14c8f00686adfa6e64c318b6116ac04ceb4be505eda9781ac",
+    "model/format.json": "612f9574e0495971b0577213d8beec333e2cb852cd1ce1606c0c4e873ea76480",
+    "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
+    "tests/tb_accel.sv": "ecd455109fefb938316ff2443b9f26cd458fbb0b9c8013c0828c7e30257a1945",
+    "tests/tb_mac.sv": "eb29e21ffa6e14c9c6a94b8e8de3d76cb1d64fc44eb97007d45a65bdda736499",
+    "tests/tb_soc.sv": "c9fb2f62cf6e377f4134ab8039e7c8a3bc6e383abf48dc96a62d2d09c51e171f",
+    "tests/test_numeric.py": "2988fef329e14b008746520c0072af208f3bcc7c9e1dca51fa362fb15a1c9e4b",
+    "constraints/kwt_accel.sdc": "9fadb930e1daa62bb5e773bfc438227b880439a6d2ca70f95a13e9f01ff09e01",
+    "constraints/kwt_soc.sdc": "c623b5a95d63dbe0d3fb618dc7e3e9bd2fac2e5d28b5ba02f18fb3b231312c8c",
+    "scripts/build_soc.py": "625bd6715317bfcb873e8d721fb5edb5b44ca5d5d7d6d8115e8cee2acff40a63",
+    "scripts/capture_activity.py": "814c6afc21ec4de37314c3d6a566433374736c5f769d14108d239e02d290a7b0",
+    "scripts/check_environment.py": "d4f381a53138e7709480c9d15306387eb8e28458caec59a93c814cf80d8d3778",
+    "scripts/check_model_environment.py": "2771fc3b6c7827731c0b7400f76f03dbaebf236e309658855cdc25465c517054",
+    "scripts/collect_results.py": "efd80a7a6690bd12b80c02da02278258b3762d033e4ba0afc8b1b37cea9ff013",
+    "scripts/convert_task.py": "fe6e0b1f91a9ad664d0d3bf2919e85f875ac6ce05e412680369e4448f8a40cef",
+    "scripts/decode_output.py": "fa428441d46aa9de1c65fe5621c361474c2c95cd7f1c2857a3cfdeffc8d3be75",
+    "scripts/download_competition_assets.py": "90d41b697b20a680bdc071636795539c1b9db66fdf66c802ee58ce266035675d",
+    "scripts/evaluate_numeric.py": "726dbf19adaefa22eb24849edd02cc7b49d24ed2ff0f941b2c0519cd20fdcbda",
+    "scripts/export_vectors.py": "4a0b47244c64f91442a8d9bf7661b1aeb8ceb950a804c13029cf2f1889225314",
+    "scripts/fetch_model_wheel.py": "adf7d118997788438b2c93dd04e0303ec8375c14e5ce5344ee3ae30a4aefdafb",
+    "scripts/install_native_toolchain.py": "2d87867f7fcf207a113857a55efc4c8e8e41c5c64c161c996783b5dc5bdb6509",
+    "scripts/package_submission.py": "1e1991f6b56db0bcd3864a88a47337e0aaff3d9a02eb2c5f664da39e89b2685a",
+    "scripts/run_design.py": "f00f49c18c1097dc51374da84e36b07e21a2e85c053505412988f3a21f856965",
+    "scripts/synth_design.py": "319b1c6286b3e58eccd2ba20d5523506d19b8c0c405a701855795c324a0ec7b2",
+    "scripts/synth_soc.py": "778ee94fd53bb7934f5455456d32a7700557f3b524f6971bed2b6d6ea835287a"
+  },
+  "artifacts": {
+    "kwt_accel_netlist.v": {
+      "bytes": 181454,
+      "sha256": "2a64bc88902be5633b1e77f35b0e8cb10f5cc4b835f1c0d3f9ba2116a4dff1f3"
+    },
+    "kwt_soc_netlist.v": {
+      "bytes": 3943274,
+      "sha256": "e09566a32ed9430fb605b0b40e03133ddde571894254696996eb1555916b7986"
+    },
+    "firmware/kwt.elf": {
+      "bytes": 5428,
+      "sha256": "c83942ba10d212a61429ff74209dc23f3bccfb6872bc2bf29259f58bc7db1a9f"
+    },
+    "mac.vcd": {
+      "bytes": 2764017,
+      "sha256": "d98c3362a12429f2a1feec1973f272274b9e50b50a31d81a7ec9d9fdf342e9f9"
+    },
+    "soc.fst": {
+      "bytes": 251915561,
+      "sha256": "9f74d61dd0895d7b24e7268ec8a1d63813cd7000df566ea0b01bd20c40702e7b"
+    },
+    "soc.vcd.gz": {
+      "bytes": 3015781376,
+      "sha256": "b1ab513d61bbbff1efb5f99b2200f5c1215ff2224b7b6750ea4b94f574b71302"
+    }
+  },
+  "calibration": {
+    "split": "training",
+    "sample_count": 24,
+    "samples": [
+      {
+        "index": 3,
+        "label": "_silence_",
+        "file": "silence"
+      },
+      {
+        "index": 2,
+        "label": "_unknown_",
+        "file": "one/85ac0c1b_nohash_0.wav"
+      },
+      {
+        "index": 17,
+        "label": "yes",
+        "file": "yes/3102f006_nohash_4.wav"
+      },
+      {
+        "index": 19,
+        "label": "no",
+        "file": "no/f953e1af_nohash_3.wav"
+      },
+      {
+        "index": 1,
+        "label": "up",
+        "file": "up/7e556a2c_nohash_0.wav"
+      },
+      {
+        "index": 38,
+        "label": "down",
+        "file": "down/9a76f8c3_nohash_1.wav"
+      },
+      {
+        "index": 0,
+        "label": "left",
+        "file": "left/ff4ed4f3_nohash_0.wav"
+      },
+      {
+        "index": 5,
+        "label": "right",
+        "file": "right/87d5e978_nohash_1.wav"
+      },
+      {
+        "index": 14,
+        "label": "on",
+        "file": "on/72aa7259_nohash_1.wav"
+      },
+      {
+        "index": 23,
+        "label": "off",
+        "file": "off/ac9dee0e_nohash_4.wav"
+      },
+      {
+        "index": 6,
+        "label": "stop",
+        "file": "stop/1496195a_nohash_1.wav"
+      },
+      {
+        "index": 4,
+        "label": "go",
+        "file": "go/c25a032b_nohash_0.wav"
+      },
+      {
+        "index": 21,
+        "label": "_silence_",
+        "file": "silence"
+      },
+      {
+        "index": 13,
+        "label": "_unknown_",
+        "file": "one/6bf5baf3_nohash_2.wav"
+      },
+      {
+        "index": 32,
+        "label": "yes",
+        "file": "yes/4954abe8_nohash_0.wav"
+      },
+      {
+        "index": 27,
+        "label": "no",
+        "file": "no/a8688b67_nohash_1.wav"
+      },
+      {
+        "index": 12,
+        "label": "up",
+        "file": "up/0ff728b5_nohash_1.wav"
+      },
+      {
+        "index": 40,
+        "label": "down",
+        "file": "down/2b5e346d_nohash_0.wav"
+      },
+      {
+        "index": 9,
+        "label": "left",
+        "file": "left/c5a1e46c_nohash_2.wav"
+      },
+      {
+        "index": 11,
+        "label": "right",
+        "file": "right/54aecbd5_nohash_1.wav"
+      },
+      {
+        "index": 16,
+        "label": "on",
+        "file": "on/4c6944d6_nohash_2.wav"
+      },
+      {
+        "index": 39,
+        "label": "off",
+        "file": "off/5a98d407_nohash_3.wav"
+      },
+      {
+        "index": 37,
+        "label": "stop",
+        "file": "stop/06f6c194_nohash_0.wav"
+      },
+      {
+        "index": 7,
+        "label": "go",
+        "file": "go/c948d727_nohash_3.wav"
+      }
+    ],
+    "layer_nrmse": [
+      0.0001058013907532226,
+      0.0001068925065753203,
+      0.00011711198062135754,
+      0.0001239367638879891,
+      0.000130390433907798,
+      0.0001262366407386315,
+      0.0001290147073318706,
+      0.00012750102301304598,
+      0.00013181544665348977,
+      0.00012604856647794178,
+      0.00012808153557198172,
+      0.00011849198523764367
+    ],
+    "layer_input_max_abs": [
+      4.981874465942383,
+      4.4442315101623535,
+      4.237649440765381,
+      4.347968101501465,
+      4.86332893371582,
+      5.107501029968262,
+      4.982784271240234,
+      5.2402801513671875,
+      5.014349460601807,
+      5.299623966217041,
+      5.524238109588623,
+      4.939246654510498
+    ],
+    "layer_saturated_input_count": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "maximum_layer_nrmse": 0.00013181544665348977,
+    "threshold": 0.03,
+    "passed": true,
+    "performance_tasks": [
+      {
+        "task": 0,
+        "layer": 0,
+        "sample": {
+          "index": 3,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        "nrmse": 0.0001244475124149296
+      },
+      {
+        "task": 1,
+        "layer": 1,
+        "sample": {
+          "index": 2,
+          "label": "_unknown_",
+          "file": "one/85ac0c1b_nohash_0.wav"
+        },
+        "nrmse": 0.00010973953134693761
+      },
+      {
+        "task": 2,
+        "layer": 2,
+        "sample": {
+          "index": 17,
+          "label": "yes",
+          "file": "yes/3102f006_nohash_4.wav"
+        },
+        "nrmse": 0.0001159529845212363
+      },
+      {
+        "task": 3,
+        "layer": 3,
+        "sample": {
+          "index": 19,
+          "label": "no",
+          "file": "no/f953e1af_nohash_3.wav"
+        },
+        "nrmse": 0.000133822584767404
+      },
+      {
+        "task": 4,
+        "layer": 4,
+        "sample": {
+          "index": 1,
+          "label": "up",
+          "file": "up/7e556a2c_nohash_0.wav"
+        },
+        "nrmse": 0.0001286911067955104
+      },
+      {
+        "task": 5,
+        "layer": 5,
+        "sample": {
+          "index": 38,
+          "label": "down",
+          "file": "down/9a76f8c3_nohash_1.wav"
+        },
+        "nrmse": 0.0001264475227850074
+      },
+      {
+        "task": 6,
+        "layer": 6,
+        "sample": {
+          "index": 0,
+          "label": "left",
+          "file": "left/ff4ed4f3_nohash_0.wav"
+        },
+        "nrmse": 0.00012646887974555326
+      },
+      {
+        "task": 7,
+        "layer": 7,
+        "sample": {
+          "index": 5,
+          "label": "right",
+          "file": "right/87d5e978_nohash_1.wav"
+        },
+        "nrmse": 0.00012447635400379881
+      },
+      {
+        "task": 8,
+        "layer": 8,
+        "sample": {
+          "index": 14,
+          "label": "on",
+          "file": "on/72aa7259_nohash_1.wav"
+        },
+        "nrmse": 0.00012348435171233895
+      },
+      {
+        "task": 9,
+        "layer": 9,
+        "sample": {
+          "index": 23,
+          "label": "off",
+          "file": "off/ac9dee0e_nohash_4.wav"
+        },
+        "nrmse": 0.0001235958245733681
+      },
+      {
+        "task": 10,
+        "layer": 10,
+        "sample": {
+          "index": 6,
+          "label": "stop",
+          "file": "stop/1496195a_nohash_1.wav"
+        },
+        "nrmse": 0.00012311481079001397
+      },
+      {
+        "task": 11,
+        "layer": 11,
+        "sample": {
+          "index": 4,
+          "label": "go",
+          "file": "go/c25a032b_nohash_0.wav"
+        },
+        "nrmse": 0.00011800944766167874
+      }
+    ],
+    "checkpoint_tensors_verified": 162,
+    "reference": "unmodified pinned KWT-1 best_weights, TensorFlow 2.4.0 development fallback",
+    "official_evaluation": false
+  }
+}

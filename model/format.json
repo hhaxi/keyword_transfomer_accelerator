@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "layers": [
+    {
+      "layer": 0,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 10.421298027038574,
+      "weight_max": 0.4201895594596863,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 1,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 9.187920570373535,
+      "weight_max": 0.3442831337451935,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 2,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 9.141429901123047,
+      "weight_max": 0.3745529353618622,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 3,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 9.072564125061035,
+      "weight_max": 0.41112613677978516,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 4,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 8.978381156921387,
+      "weight_max": 0.32905369997024536,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 5,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 9.522403717041016,
+      "weight_max": 0.3204328715801239,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 6,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 8.841757774353027,
+      "weight_max": 0.32933828234672546,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 7,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 8.929516792297363,
+      "weight_max": 0.3689568042755127,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 8,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 8.803136825561523,
+      "weight_max": 0.2897762060165405,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 9,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 9.216290473937988,
+      "weight_max": 0.3408030867576599,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 10,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 9.300140380859375,
+      "weight_max": 0.36291491985321045,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    },
+    {
+      "layer": 11,
+      "x_exponent": -11,
+      "w_exponent": -16,
+      "x_analytic_bound": 9.748616218566895,
+      "weight_max": 0.3552662432193756,
+      "rounding": "nearest_ties_even",
+      "scale_source": "checkpoint weights and LayerNorm analytic bound; no evaluation samples"
+    }
+  ],
+  "x_bits": 16,
+  "w_bits": 16,
+  "bias_bits": 32,
+  "accumulator_bits": 40,
+  "output_bits": 64
+}

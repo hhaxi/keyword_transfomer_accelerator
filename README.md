@@ -2,7 +2,57 @@
 
 本项目面向芯片设计赛题的本科生组，以 KWT-1 模型和 E203 蜂鸟 SoC 为参考，开发 Transformer 前馈网络第一线性层加速器。
 
-**当前阶段：公开资源、开发环境和环境自检已就绪；比赛加速器 RTL、驱动、量化方案及 SoC 集成尚未实现。** `environment/smoke/` 中的 MAC 电路只用于检查工具能否正常工作。
+**当前阶段：已实现本科组线性加速器 RTL、冻结数值模型、参数转换、E203 驱动与 System Bus 集成，并完成本地功能和通用综合验证。正式工艺时序、面积、功耗及官方平台验收仍待官方服务器和工艺资料，不能将当前结果称为全部赛题验收通过。** `environment/smoke/` 仅用于环境检查，实际设计位于 `rtl/`。
+
+## 设计复现入口
+
+在完成下文环境配置和资源下载后：
+
+```powershell
+.\design.ps1 all
+```
+
+依次执行：24 条训练样本的无梯度标定检查、120 条验证样本的逐层参考提取与数值检查、数值边界测试、MAC、Icarus 四态检查、12 层加速器 RTL、真实 E203 固件仿真、加速器通用综合/网表仿真、E203 整机通用综合/网表仿真。整机回归可能需要十几分钟或更久，日志保存在 `output/design/`。
+
+- [设计说明与寄存器协议](docs/architecture.md)：数值格式、存储布局、驱动及计时范围。
+- [本科必做项验收记录](docs/acceptance.md)：已验证项目和官方验收缺口。
+- `rtl/`：MAC、矩阵控制器和 SRAM 工艺边界。
+- `integration/`：E203 CPU、System Bus 与 512 KiB 共享 SRAM 集成。
+- `firmware/`：实际由 E203 执行的驱动、启动代码和链接脚本。
+- `model/`：冻结逐层指数及与 RTL 一致的整数模型。
+- `tests/`：组件、矩阵、整机测试平台。
+- `constraints/`：150 MHz 目标 SDC，无掩盖违例的路径例外。
+
+按需运行 `calibrate`、`export`、`numeric`、`mac`、`fourstate`、`accel`、`soc`、`synth` 或 `synth-soc`，例如 `.\design.ps1 soc`。`tools.ps1` 保留为环境自检入口，不能替代 `design.ps1` 的设计验证。
+
+任意实际层输入可用以下命令转换；输入 NPZ 包含浮点 `x[99,64]`、`w[64,256]`、`b[256]` 和可选参考 `y[99,256]`：
+
+```powershell
+.venv-model\Scripts\python.exe scripts/convert_task.py input.npz --layer 0 --output output/custom-task
+.venv-model\Scripts\python.exe scripts/decode_output.py hardware-output.hex --layer 0 --output output/decoded.npy --reference input.npz
+.venv-model\Scripts\python.exe scripts/evaluate_numeric.py evaluation-manifest.json --output output/evaluation.json
+```
+
+评测清单格式为 `[{"layer": 0, "npz": "sample_000_layer_00.npz"}, ...]`，覆盖 12 层且各层样本数相同；路径相对清单文件。该入口支持未来官方 600 条样本提取结果，不修改冻结数值配置。
+
+官方音频清单可表示为相对数据集的路径 JSON 数组，静音用 `"silence"`；以下命令按指定源码的测试划分及标签索引核对清单，并保存全部逐层参考：
+
+```powershell
+.venv-model\Scripts\python.exe scripts/export_vectors.py --split testing --sample-list official-samples.json --save-all --output output/official
+.venv-model\Scripts\python.exe scripts/evaluate_numeric.py output/official/evaluation-manifest.json --output output/official-evaluation.json
+```
+
+该流程只评估冻结配置，不能用测试结果回调量化尺度。
+
+生成完整任务活动文件（可较大，GTKWave 需提供 `fst2vcd.exe`）：
+
+```powershell
+.venv-model\Scripts\python.exe scripts/capture_activity.py --netlist --tasks 1 --compressed
+```
+
+输出 `output/design/soc.fst` 和 `soc.vcd.gz`，日志给出计时窗口。改为 `--tasks 12` 可记录全部本地性能任务。活动文件需在正式工具中检查映射和覆盖，并补全 SRAM 功耗模型后才能用于正式功耗估算。
+
+验证完成后运行 `python scripts/collect_results.py` 汇总记录，再运行 `python scripts/package_submission.py` 生成本地交付包 `deliverables/undergraduate-local-submission.zip`。包内含源码、约束、真实测试向量、固件、通用网表和验证记录；较大的整机活动波形作为独立附属文件保留在 `output/design/`。这份包标记为本地实现交付，官方 PPA/平台验收仍待完成。
 
 ## 赛题范围
 
@@ -127,7 +177,7 @@ SDK 编译器前缀为 `riscv64-unknown-elf-`，支持 RV32 多库；检查采�
 - 上游要求 TensorFlow `2.4.0rc1`，配置时 PyPI 无法获取该版本，因此使用 **2.4.0 开发替代版**。NumPy 为 1.19.5，TensorFlow Addons 为 0.12.1；完整版本见依赖锁文件。与官方浮点参考的数值等价性仍需验证。
 - 自检使用原始 Session 图模式、推理设置，关闭训练增强和 Dropout；607,308 个模型参数对应的 162 个权重张量均与 checkpoint 逐项精确匹配。旧版 checkpoint 可能显示无权重 GELU 层对象别名警告，实际权重不匹配会使检查失败。
 - Speech Commands V2 保留完整词类、背景噪声、许可及官方划分列表：105,835 个 WAV（含 6 个背景噪声文件），验证列表 9,981 条、测试列表 11,005 条。十二分类映射、unknown 和 silence 处理应沿用指定源码。
-- 已完成静音及 3 条验证音频的推理检查，重复推理结果一致；尚未进行完整准确率评估，也未生成批量逐层输入和浮点参考。测试集不用于调节量化参数。
+- 环境自检包含静音及 3 条验证音频的重复推理；设计验证进一步覆盖 120 条验证样本的全部 12 层，导出 12 个硬件任务及逐层浮点参考。尚未执行官方 600 条样本评测。测试集不用于调节量化参数。
 
 模型背景论文：[Keyword Transformer: A Self-Attention Model for Keyword Spotting](https://arxiv.org/abs/2104.00769)。论文 PDF 不属于自动下载及构建的必需输入。
 
@@ -144,12 +194,11 @@ SDK 编译器前缀为 `riscv64-unknown-elf-`，支持 RV32 多库；检查采�
 
 第三方源码、权重、数据集和工具遵循各自上游许可；仓库仅记录来源并提供获取脚本，不随 Git 分发这些大文件。原始许可文件保留在下载内容中。
 
-## 后续开发
+## 后续官方验收
 
-1. 导出 12 层第一线性层的权重、偏置、输入与浮点参考，建立 NRMSE 评估。
-2. 确定数据格式、量化与累加位宽、分块方式和存储布局。
-3. 实现加速器 RTL、参数切换、测试平台及软件驱动。
-4. 选择 System Bus 或 NICE 接口，接入 E203，并核对共享 SRAM、地址和时钟要求。
-5. 在官方服务器上完成指定工艺综合、时序、面积与功耗评测。
+1. 接入组委会最终平台地址、参数加载环境和 SRAM 宏接口。
+2. 在官方服务器完成指定工艺映射和 150 MHz STA，核验面积不超过 2.25 mm²。
+3. 用统一条件和覆盖检查通过的活动文件估算整机功耗及单任务能耗。
+4. 对齐官方浮点环境，执行冻结后发布的 600 条评测样本及 12 个性能任务。
 
-目前通过的是工具环境检查；Yosys 使用通用门级，OpenSTA 仅验证启动，尚不能据此判定满足赛题的频率、面积或精度指标。
+当前数值精度和功能结论限于仓库记录的本地测试集；Yosys 为通用门级综合，尚不能据此判定正式工艺频率、面积和功耗达标。
