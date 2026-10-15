@@ -1,223 +1,240 @@
-# KWT-1 关键词识别加速器（本科生组：必做与完整编码器拓展）
+# KWT-1 关键词识别加速器
 
-本项目以 KWT-1 模型和 E203 蜂鸟 SoC 为参考，保留本科必做第一线性层和第八版完整 FFN，并增加第 4—7 项完整编码器拓展：注意力 → 残差/LN1 → FFN1/GELU/FFN2 → 残差/LN2，按模型顺序执行 12 层。
+面向本科生组芯片设计赛题，基于 **E203 蜂鸟 SoC** 实现第一线性层、完整 FFN 和 **12 层 PostNorm Transformer 编码器**。工程包含可综合 RTL、冻结整数模型、参数转换、RISC-V 固件、SoC 集成及自动化验证。
 
-**当前阶段：已实现本科组线性加速器 RTL、冻结数值模型、参数转换、E203 驱动与 System Bus 集成，并完成本地功能和通用综合验证。正式工艺时序、面积、功耗及官方平台验收仍待官方服务器和工艺资料，不能将当前结果称为全部赛题验收通过。** `environment/smoke/` 仅用于环境检查，实际设计位于 `rtl/`。
+**当前版本：编码器第二版 + FFN 第八版。** 完整编码器实测 **14,808,628 周期/次**，相对编码器第一版减少 **4.68%**；两种独立 FFN 模式性能保持不变。当前已完成本地 RTL、四态仿真和通用网表验证，正式工艺时序、面积、功耗及官方平台评测待官方环境提供后完成。
 
-完整编码器新增独立 `ENC1` 伴随引擎和 `kwt_encoder_soc` 顶层；原 KWT5 两种模式继续保留。新流程运行 `.\encoder.ps1 all`，旧 FFN 流程仍运行 `.\design.ps1 all`。新设计说明见 [完整编码器](docs/full-encoder.md)，实测结果见 [编码器性能](docs/encoder-performance.md) 和 [验证记录](docs/encoder-validation.json)。本地 120 条验证样本预测与浮点模型全部一致，两者均正确 119 条；内部 SRAM 增至 235 KiB，正式面积仍需确认。第八版归档保存在本地 `deliverables/full-ffn-v8-baseline.zip` 和 `v8-source-baseline.zip`。
+[设计与接口](docs/full-encoder.md) · [最新性能](docs/encoder-performance.md) · [验证记录](docs/encoder-validation.json) · [赛题指南](芯片设计赛题指南.pdf) · [第三方来源](NOTICE.md)
 
-**编码器第二版增加分阶段周期计数、矩阵组间预读与连续 DMA。** 完整 12 层任务由 **15,535,024 降至 14,808,628 周期（减少 4.68%，同频吞吐提升 4.91%）**。保持原 4 路编码器共享乘法器、16 路 FFN MAC、1 个 GELU 和 235 KiB 内部 SRAM；精确周期及与第一版的比较见 [编码器性能](docs/encoder-performance.md)。第一版编码器提交 `ccc7641` 和本地 `deliverables/encoder-v1-baseline.zip` 保留。
+## 1. 实现范围
 
-**第八版通过重叠组间读取和 MAC 初始化优化完整 FFN。** 保持 16 个 MAC、1 个 GELU、88.5 KiB 内部 SRAM 和 40 个宏，完整任务由第七版 310,289 降至 **306,709 周期**，减少 **1.15%**；按 150 MHz 目标折算 **2.04473 ms、489.06292 任务/秒**。独立第一层仍为 **271,678 周期/任务**。详见 [第八版组间调度优化](docs/ffn-group-scheduling.md)。
-
-第四版必做基线固定在提交 `d501f0d`；本地历史交付包为 `deliverables/undergraduate-v4-baseline.zip`，源代码归档为 `deliverables/v4-source-baseline.zip`。第五版完整 FFN 基线为 `aa344f9`，本地另存 `deliverables/full-ffn-v5-baseline.zip` 和 `v5-source-baseline.zip`。第六版基线为 `411a151`，本地保存在 `deliverables/full-ffn-v6-baseline.zip`、`deliverables/v6-source-baseline.zip`。第七版基线为 `eefe431`，本地保存在 `deliverables/full-ffn-v7-baseline.zip`、`deliverables/v7-source-baseline.zip`。正式时序、面积和功耗仍待工艺验证。
-
-## 设计复现入口
-
-在完成下文环境配置和资源下载后：
-
-```powershell
-.\design.ps1 all
-```
-
-依次执行：24 条训练样本的无梯度标定检查、120 条验证样本的逐层参考提取与数值检查、数值边界测试、MAC、Icarus 四态检查、12 层计算核 RTL、DMA 异常恢复、总线吞吐/仲裁、真实 E203 固件仿真、GELU 数值与硬件检查、完整 FFN 两种模式切换，以及计算核、DMA、总线和 E203 整机的通用综合/网表验证。完整回归可能需要十几分钟或更久，日志保存在 `output/design/`。
-
-- [设计说明与寄存器协议](docs/architecture.md)：数值格式、存储布局、驱动及计时范围。
-- [本科必做项验收记录](docs/acceptance.md)：已验证项目和官方验收缺口。
-- [第八版组间调度优化](docs/ffn-group-scheduling.md)：当前性能、周期归因、资源与验证。
-- [第七版搬运与 GELU 调度优化](docs/ffn-overlap-performance.md)：后台 GELU 与参数预取的历史基线。
-- [第六版性能与资源对比](docs/full-ffn-performance.md)：双项乘加并行的历史基线。
-- [完整 FFN 基础设计](docs/full-ffn.md)：第五版两种模式、冻结数值格式及 KWT5 协议。
-- [第四版性能分析](docs/parallel-packed-performance.md)：保留的本科必做基线。
-- [第三版 DMA 与周期分析](docs/dma-performance.md)：历史 DMA 和总线优化记录。
-- [第二版优化记录](docs/frontend-performance.md)：流水 MAC 和 FIFO 的历史基线。
-- `rtl/`：MAC、矩阵控制器、自主 DMA 和 SRAM 工艺边界。
-- `integration/`：E203 CPU、三方轮转 System Bus 与 512 KiB 共享 SRAM 集成。
-- `firmware/`：实际由 E203 执行的驱动、启动代码和链接脚本。
-- `model/`：两种模式冻结的逐层指数、整数模型与固定样本文件清单。
-- `tests/`：组件、矩阵、整机测试平台。
-- `constraints/`：150 MHz 目标 SDC，无掩盖违例的路径例外。
-
-按需运行 `calibrate`、`export`、`export-ffn`、`numeric`、`mac`、`fourstate`、`accel`、`dma`、`gelu`、`ffn`、`bus`、`soc`、`soc-ffn`、`synth`、`synth-dma` 或 `synth-soc`，例如 `.\design.ps1 soc`。SoC 仿真在停止计时后请求周期快照；`scripts/collect_results.py` 汇总为 `docs/cycle-analysis.json`。`tools.ps1` 保留为环境自检入口，不能替代设计验证。
-
-当前 SoC 基址仍为 `0x40000000`，控制器 ID 为 `KWT5`（`0x4b575435`），模式寄存器 `0x38` 选择 0=第一线性层、1=完整 FFN。X/W 每个 32 位字传输两个相邻 int16 元素，先出现的元素放在低半字；b/Y 格式不变。使用配套固件和 `x_packed.hex/w_packed.hex`，旧 KWT3/KWT4 驱动不兼容。独立计算核原 MMIO 保留每字一个元素。
-
-`export_vectors.py` 和 `convert_task.py` 自动生成紧凑文件；已有旧向量时运行 `python scripts/pack_vectors.py` 即可无损生成，无需重新量化。
-
-任意实际层输入可用以下命令转换；输入 NPZ 包含浮点 `x[99,64]`、`w[64,256]`、`b[256]` 和可选参考 `y[99,256]`：
-
-```powershell
-.venv-model\Scripts\python.exe scripts/convert_task.py input.npz --layer 0 --output output/custom-task
-.venv-model\Scripts\python.exe scripts/decode_output.py hardware-output.hex --layer 0 --output output/decoded.npy --reference input.npz
-.venv-model\Scripts\python.exe scripts/evaluate_numeric.py evaluation-manifest.json --output output/evaluation.json
-```
-
-评测清单格式为 `[{"layer": 0, "npz": "sample_000_layer_00.npz"}, ...]`，覆盖 12 层且各层样本数相同；路径相对清单文件。该入口支持未来官方 600 条样本提取结果，不修改冻结数值配置。
-
-官方音频清单可表示为相对数据集的路径 JSON 数组，静音用 `"silence"`；以下命令按指定源码的测试划分及标签索引核对清单，并保存全部逐层参考：
-
-```powershell
-.venv-model\Scripts\python.exe scripts/export_vectors.py --split testing --sample-list official-samples.json --save-all --output output/official
-.venv-model\Scripts\python.exe scripts/evaluate_numeric.py output/official/evaluation-manifest.json --output output/official-evaluation.json
-```
-
-该流程只评估冻结配置，不能用测试结果回调量化尺度。
-
-生成完整任务活动文件（可较大，GTKWave 需提供 `fst2vcd.exe`）：
-
-```powershell
-.venv-model\Scripts\python.exe scripts/capture_activity.py --netlist --tasks 1 --compressed
-```
-
-输出 `output/design/soc.fst` 和 `soc.vcd.gz`，日志给出计时窗口。改为 `--tasks 12` 可记录全部本地性能任务。活动文件需在正式工具中检查映射和覆盖，并补全 SRAM 功耗模型后才能用于正式功耗估算。
-
-验证完成后运行 `python scripts/collect_results.py` 汇总记录并校验独立第一层相对第四版的性能回归，并单独汇总完整 FFN 结果，再运行 `python scripts/package_submission.py` 生成本地交付包 `deliverables/undergraduate-local-submission.zip`。包内含源码、约束、真实测试向量、固件、四类通用网表和验证记录；若为当前版本采集了整机活动波形，大文件作为独立附属文件保留在 `output/design/`。第一版活动文件位于 `output/baseline-v1/`，第二、三版报告和日志分别位于 `output/baseline-v2/`、`output/baseline-v3/`，第四、五、六版报告和日志分别在 `output/baseline-v4/`、`output/baseline-v5/`、`output/baseline-v6/`；第七版记录在 `output/baseline-v7/`；历史波形不作为第八版活动证据。这份包标记为本地实现交付，官方 PPA/平台验收仍待完成。
-
-## 赛题范围
-
-依据仓库中的 [赛题指南](芯片设计赛题指南.pdf)，本科生组必做第 1—3 项，核心计算为：
-
-```text
-Y = X × W + b
-X: 99 × 64    W: 64 × 256    b: 256    Y: 99 × 256
-支持 12 个编码器层的参数切换，并完成 SoC 集成及验证。
-```
-
-记录的约束包括 150 MHz 时钟、512 KB 共享 SRAM、加速器面积不超过 2.25 mm²、必做 NRMSE 不超过 3%；完整定义及验收口径以指南和官方后续通知为准。GELU、第二线性层、注意力、残差与 LayerNorm 属于选做，当前完整编码器按用户选定的第 4—7 项实现；官方分类精度和 PPA 验收仍待评测。机器可读范围见 [project-context.json](environment/project-context.json)。
-
-官方 SoC 参考为 [riscv-mcu/e203_hbirdv2](https://github.com/riscv-mcu/e203_hbirdv2)。本项目固定其提交作为开发基线，不代表组委会指定了该提交。正式后端环境由官方后期提供服务器，届时对接工艺库、SRAM 宏及评测条件。
-
-## 工程结构
-
-```text
-README.md                         使用说明及开发状态
-芯片设计赛题指南.pdf                原始赛题指南
-assets/resources.lock.json        公开资源版本、下载来源与校验值
-environment/
-  project-context.json            已确认的本科组范围
-  requirements-model.in           模型依赖声明
-  requirements-model.lock.txt     固定版本和包哈希
-  local-tools.example.json        外部工具路径配置模板
-  smoke/                          工具环境检查电路、测试平台和 Tcl
-scripts/
-  download_competition_assets.py  模型、数据集、SoC 和 SDK 下载校验
-  fetch_model_wheel.py            TensorFlow 安装包下载校验
-  install_native_toolchain.py     Nuclei GCC / Make 下载及安装
-  check_model_environment.py      模型权重、特征和推理检查
-  check_environment.py            HDL、综合、SDK 等环境检查
-  clean-project.ps1               项目内缓存清理
-docs/validation.json              本机环境验证结果快照
-env.ps1                           当前终端的环境变量
-setup.ps1                         创建模型环境及项目私有工具链
-tools.ps1                         环境检查入口
-```
-
-模型、音频、第三方源码保存在本地 `assets/sources/`、`assets/datasets/`、`assets/references/`；工具和 Python 环境在 `.tools/`、`.venv-model/`；运行输出在 `output/`。这些可重新获取的内容不提交 Git。外部工具的本机路径保存在被忽略的 `environment/local-tools.json`。
-
-## 首次配置
-
-当前脚本面向 **Windows x64 + PowerShell + WSL Ubuntu**。先准备 Git 和 [uv](https://docs.astral.sh/uv/)，以及以下外部工具：
-
-| 工具 | 本机已验证版本 | 用途 |
+| 工作模式 | 计算内容 | 当前状态 |
 | --- | --- | --- |
-| Icarus Verilog | 12.0 | RTL 与综合后仿真 |
-| ModelSim | 2020.4，需可用许可证 | RTL 仿真 |
-| WSL Ubuntu | 24.04 | 运行 Linux EDA 工具 |
-| Yosys | 0.67 | 通用门级综合 |
-| Verilator | 5.020 | RTL lint |
-| OpenSTA | 3.1.0 | 启动检查，正式 STA 待工艺库 |
-| GTKWave（可选） | 复用本机安装 | 查看 VCD 波形 |
+| 第一线性层独立模式 | `X[99,64] × W[64,256] + b[256]` | 保留本科必做功能，支持 12 层参数切换 |
+| 完整 FFN 独立模式 | 第一线性层 → GELU → 第二线性层，维度 `64 → 256 → 64` | 保留第八版实现与性能 |
+| 完整编码器 | 注意力 → 残差/LN1 → 完整 FFN → 残差/LN2，连续执行 12 层 | 已实现第 4—7 项拓展涉及的编码器功能及本地验证流程 |
 
-`setup.ps1` 自动配置 Python 3.8.20、模型依赖、Nuclei GCC 14.2.1（2025.10 工具包）及 GNU Make 4.4.1。它复用上表的工具，不负责安装 WSL、仿真器、Linux EDA 或商业许可证。模型检查使用 CPU，无需 CUDA。
+固定模型配置为 **99 token、64 维特征、单头注意力、256 维 FFN 隐层、12 层编码器**。它不是可动态配置任意尺寸的通用 Transformer 加速器。
+
+```text
+软件：音频前处理 / MFCC / 嵌入
+                 │
+                 ▼ X [99,64]
+       ┌─────────────────────────────────────────────┐
+       │ Q/K/V → QKᵀ / 8 → 行 Softmax → PV → Wo + bo │
+       │                  ↓                          │
+       │            残差相加 → LN1                   │
+       │                  ↓                          │
+       │     FFN1 [64,256] → GELU → FFN2 [256,64]    │
+       │                  ↓                          │
+       │            残差相加 → LN2                   │
+       └─────────────────────────────────────────────┘
+                 │ 重复 12 层，跨层复用驻留结果
+                 ▼
+软件：class token 分类头
+```
+
+注意力、两次残差、两次 LayerNorm 和 FFN 算子均由硬件计算。E203 固件负责配置地址、启动、等待完成及读取状态；音频前处理、嵌入和最后分类头属于软件参考边界。当前已集成真实 E203 CPU 和共享总线，不只是孤立的计算核。
+
+## 2. 最新性能与优化
+
+以下为相同输入、参数、固件及计时边界下的整机仿真周期：
+
+| 工作负载 | 优化前 | 当前 | 变化 |
+| --- | ---: | ---: | --- |
+| 完整 12 层编码器 | 15,535,024 | **14,808,628** | 周期减少 **4.68%**，同频吞吐提升 **4.91%** |
+| 第一线性层独立任务 | 271,678 | **271,678** | 无回退 |
+| 完整 FFN 独立任务 | 306,709 | **306,709** | 无回退 |
+
+编码器计时包含初始输入加载、12 次参数加载、CPU 调度与统计、硬件计算、最终写回确认及通知观察；不含固件初次装载和计时后的输出比较。三个工作负载的计算量不同，不能直接用其周期比作为相互加速比。
+
+按目标 **150 MHz** 折算，完整编码器为 **98.724 ms/次、10.129 次/秒**；该折算不代表已完成正式工艺的频率验证。
+
+本轮优化包括：
+
+- **矩阵组间预读与初始化重叠**：QKV、QK、PV、输出投影在保存当前结果时准备下一组，累计节省 **420,456 周期**；主矩阵段有效乘法周期占比由 **92.93% 提升至 97.33%**。
+- **连续 DMA**：分离请求和响应游标，支持两笔顺序在途事务；输入/参数整段读取、输出整段写回。理想总线测试中连续读写各 6,336 字，达到 **每拍一个 32 位字**。FFN 结果以每组 8 字连续读取，组间保留残差 SRAM 读写拍。
+- **细分周期计数**：覆盖 QKV、QK、Softmax、PV、输出投影/残差1、LN1、LN2、输入/参数 DMA、FFN 结果 DMA/残差2和输出 DMA；另有请求背压、响应等待及同拍收发计数。
+- **数值与兼容性保持**：整数格式、舍入位置、乘法器数量、DMA 字数和内部 SRAM 访问量不变；原 FFN RTL 与固件保留。
+
+十项阶段计数互斥，求和等于编码器命令总周期。DMA 等待诊断已经包含在对应阶段中，不能再累加至总周期。完整数据及计时口径见 [性能报告](docs/encoder-performance.md)。
+
+## 3. 硬件组织与接口
+
+| 模块 | 主要文件 | 职责 |
+| --- | --- | --- |
+| 编码器伴随引擎 | `rtl/kwt_encoder.sv` | 注意力、残差、LayerNorm、编码器 DMA 和周期计数 |
+| FFN 引擎 | `rtl/kwt_accel.sv`、`rtl/kwt_dma.sv` | 两种独立模式、矩阵计算、GELU、输入/权重加载与结果写回 |
+| 数学与存储模块 | `rtl/kwt_exp_negative.sv`、`kwt_udiv64.sv`、`kwt_isqrt64.sv`、`kwt_vecmem32.sv` | 指数近似、整数除法/平方根及同步 SRAM 接口 |
+| 扩展总线 | `integration/kwt_extended_system_bus.sv`、`kwt_dma_arbiter.sv` | CPU、主机与共享 SRAM 连接，两个 DMA 的公平仲裁 |
+| 完整 SoC 顶层 | `integration/kwt_encoder_soc.sv` | E203 CPU 与两个硬件引擎集成 |
+| RISC-V 驱动 | `firmware/kwt_encoder_driver.c`、`kwt_driver.c` | 按模型顺序启动编码器与 FFN |
+
+资源配置保持 **16 路 FFN MAC、1 个 GELU、4 路编码器共享 32 位乘法通路**；指数插值等另有辅助算术，不能将这些主通路数当作整个 SoC 的全部乘法器数。
+
+完整加速器内部 SRAM 为 **235 KiB / 240,640 B / 122 个 16 位宏**，其中原 FFN 占 88.5 KiB。System Bus 的 **512 KiB 共享 SRAM** 与 E203 自有存储边界单独统计。Q/K/V/O 复用一组投影权重缓存，分数/概率复用单行缓存，LN2 结果可驻留供下一层使用。
+
+| 寄存器窗口 | 标识 | 操作 |
+| --- | --- | --- |
+| `0x40000000` | `KWT5` | 模式寄存器 `0x38`：0=第一线性层，1=完整 FFN |
+| `0x40080000` | `ENC1` | 操作寄存器 `0x38`：0=注意力至 LN1 并写出 FFN 输入，1=读取 FFN 结果并完成残差/LN2 |
+
+ENC1 的新增计数位于偏移 `0x60—0x90`。地址布局、状态位、中止/错误排空、驻留控制及数值格式详见 [编码器接口文档](docs/full-encoder.md)；FFN 协议见 [基础架构](docs/architecture.md)。
+
+## 4. 验证结果与适用边界
+
+| 验证项目 | 已完成的本地结果 |
+| --- | --- |
+| 编码器 RTL 整机 | **12 条输入 × 12 层**，每条最终 6,336 个整数输出逐位一致 |
+| 编码器通用网表整机 | 1 条输入执行全部 12 层，输出、周期及固件采集的性能计数与 RTL 一致 |
+| 两种独立 FFN 模式 | RTL 与网表各执行 12 个任务，结果正确、周期无回退 |
+| 中间矩阵 | 12 层 Q/K/V、分数、概率、PV、输出投影和残差/LN 逐位核对 |
+| 数学与边界 | 除法 1,029 例、平方根 1,031 例、指数近似 34,855 例；覆盖常量输入、零方差等边界 |
+| 总线与异常 | 覆盖背压、连续收发、两笔在途中止排空、错误后受阻请求保持、读写错误、复位及重启 |
+| 软件数值参考 | 120 条本地验证样本中，浮点与整数模型均正确 **119/120**，预测一致 **120/120**；最大逐层聚合 NRMSE **0.171713%** |
+
+软件数值验证的 120 条样本与 RTL 整机的 12 条输入是不同验证范围。模型与整数格式保持冻结，不使用测试集调节尺度。
+
+机器可读证据、源文件和日志校验值见 [encoder-validation.json](docs/encoder-validation.json)。通用网表仿真不含工艺延时；正式 **150 MHz、≤2.25 mm²、功耗、能耗及官方 600 条样本评测**仍待完成。
+
+## 5. 首次配置
+
+当前复现脚本面向 **Windows x64 + PowerShell + WSL Ubuntu**。先安装 Git、uv，并准备以下工具：
+
+| 工具 | 用途 / 配置方式 |
+| --- | --- |
+| Verilator（WSL）、Icarus Verilog（Windows） | RTL/网表仿真、四态检查及 lint；按配置模板填写对应路径 |
+| Yosys | WSL 中的通用综合与结构检查 |
+| ModelSim、OpenSTA | 当前完整环境自检会调用；ModelSim 需要可用许可证，OpenSTA 自检仅检查工具启动 |
+| Python 模型环境、Nuclei GCC、GNU Make | 由 `setup.ps1` 安装到项目内；GCC 用于 RV32 固件编译 |
+| GTKWave | 可选，用于查看波形 |
+
+`setup.ps1` 不负责安装 WSL、外部 EDA 软件或商业许可证。模型运行使用 CPU，无需 CUDA。
 
 ```powershell
 git clone https://github.com/hhaxi/keyword_transfomer_accelerator.git
 cd keyword_transfomer_accelerator
 
-# 首次在新机器配置；已有 local-tools.json 时直接编辑，保留本机路径。
+# 仅在首次配置时复制；已有配置应直接编辑。
 Copy-Item environment/local-tools.example.json environment/local-tools.json
 notepad environment/local-tools.json
-```
 
-填写 Windows 工具的 `bin` 目录，以及 WSL 发行版名称和 Linux 可执行文件路径；Linux 工具也可填写 PATH 中的命令名。不要把本机配置提交到仓库。
-
-下载公开资源（下载脚本使用 Python 3.13，与模型环境分离）：
-
-```powershell
+# 下载固定版本的模型、权重、Speech Commands V2、E203 和 SDK。
 uv run --no-project --python 3.13 scripts/download_competition_assets.py
-```
 
-默认获取模型源码及权重、Speech Commands V2、E203 和 HBird SDK。可分开执行：
-
-```powershell
-uv run --no-project --python 3.13 scripts/download_competition_assets.py --components model hardware
-uv run --no-project --python 3.13 scripts/download_competition_assets.py --components dataset
-```
-
-数据集压缩包约 2.43 GB，GCC 安装包约 1.54 GB；下载、解压及安装期间建议预留至少 20 GB 空间。数据集支持分段续传并验证 SHA-256；仓库快照逐文件验证 Git blob。运行元数据保存在 `assets/metadata/`，版本和校验基线见 [resources.lock.json](assets/resources.lock.json)。重新运行下载脚本会重新解压选中的参考源码，请将自己的代码放在独立目录中。
-
-随后安装项目依赖并执行自检：
-
-```powershell
+# 创建模型环境、安装项目私有工具链并执行环境自检。
 .\setup.ps1
 ```
 
-脚本仅设置项目内环境和当前终端 PATH，不替换系统 Python。若 PowerShell 的执行策略阻止运行，请按本机管理要求允许这些已审阅的项目脚本。
+模型环境使用 **Python 3.8.20、TensorFlow 2.4.0、NumPy 1.19.5**；下载辅助脚本使用独立的 Python 3.13。上游原环境为 TensorFlow 2.4.0rc1，本机采用 2.4.0 开发替代版，与官方浮点运行环境的等价性仍需确认。完整依赖见 [依赖锁文件](environment/requirements-model.lock.txt)。
 
-## 日常使用和验证
+资源版本、来源和哈希见 [resources.lock.json](assets/resources.lock.json)。模型固定使用 `best_weights`，FFN 隐层维度以该 checkpoint 的 `flags.json` 为准。下载和安装期间建议预留至少 20 GB 空间，长时间仿真及波形可能需要更多空间。下载脚本会重新解压所选第三方源码，自研代码应保存在项目的 `rtl/` 等独立目录。
 
-已配置的机器直接运行：
+## 6. 运行与复现
+
+所有命令均在仓库根目录执行。首次生成完整验证证据时，按以下顺序运行：
 
 ```powershell
 . .\env.ps1
-.\tools.ps1 all
+
+# 生成基础模型/FFN 向量，并完成原两种模式的验证。
+.\design.ps1 all
+
+# 生成编码器向量，执行功能、兼容性、整机、网表、性能对比及打包。
+.\encoder.ps1 all
 ```
 
-`tools.ps1` 自身也会加载环境。分项检查如下：
+编码器默认样本选择依赖基础流程生成的 `output/vectors/` 和 `output/calibration/` 记录；兼容回归也使用原 FFN 向量。新克隆工程应先完成基础流程。已有完整环境和向量时，可按需执行：
 
-| 命令 | 检查内容 |
+| 命令 | 内容 |
 | --- | --- |
-| `.\tools.ps1 versions` | 工具版本 |
-| `.\tools.ps1 model` | best_weights、全部模型权重、MFCC 和少量音频推理 |
-| `.\tools.ps1 rtl` | Icarus 与 ModelSim 的有符号 MAC、复位和使能仿真 |
-| `.\tools.ps1 synth` | Yosys 通用综合和综合后仿真 |
-| `.\tools.ps1 sdk` | 上游 E203 SDK Hello World 编译、链接及 ELF32 检查 |
-| `.\tools.ps1 lint` | Verilator lint |
-| `.\tools.ps1 sta` | OpenSTA 启动检查 |
+| `.\encoder.ps1 component` | 12 层中间矩阵、连续 DMA 和常量输入检查 |
+| `.\encoder.ps1 fourstate` | Icarus 四态数学与组件检查 |
+| `.\encoder.ps1 faults` | DMA/寄存器异常、中止恢复与仲裁检查 |
+| `.\encoder.ps1 lint` | 扩展总线和加速器严格 lint |
+| `.\encoder.ps1 compat` | 两种独立 FFN 模式的 RTL 兼容与性能回归 |
+| `.\encoder.ps1 soc` | 12 条输入的真实 E203 编码器整机 RTL 回归 |
+| `.\encoder.ps1 profile` | 同配置跨层驻留 A/B 及内存访问统计 |
+| `.\encoder.ps1 synth` | 生成保留 SRAM 边界的通用网表 |
+| `.\encoder.ps1 netlist` | 1 条输入、12 层网表整机回归，需先综合 |
+| `.\encoder.ps1 compat-netlist` | 两种独立 FFN 模式的网表回归，需先综合 |
+| `.\encoder.ps1 collect` / `package` | 校验证据并生成报告 / 本地交付包 |
 
-完整报告为 `output/environment/environment-report.json`，日志及波形同在 `output/environment/` 下。版本化的 [验证快照](docs/validation.json) 记录整理工程时的检查结果。
+整机回归较长，可将 12 条输入分为四个独立仿真进程；并行只缩短宿主机运行时间，不改变硬件周期：
 
-SDK 编译器前缀为 `riscv64-unknown-elf-`，支持 RV32 多库；检查采用 `rv32imac_zicsr_zifencei`、`ilp32` 和上游 `ddr200t` 参考配置。编译在输出目录中的 SDK 副本进行，产物包括 ELF、BIN、HEX、反汇编及 Verilog 存储文件。此检查尚未在 SoC 或板卡上执行程序。
+```powershell
+.venv-model\Scripts\python.exe scripts/run_encoder.py soc --tasks 12 --jobs 4
+```
 
-## 模型与数据注意事项
+`tools.ps1 all` 是环境自检入口，报告位于 `output/environment/`；它不能替代 `design.ps1` 和 `encoder.ps1` 的设计验证。前端日常开发可先执行 `component`、`faults`、`lint`、`compat` 和 `soc`，需要完整交付证据时再完成其余步骤。
 
-- 使用 [ARM-software/keyword-transformer](https://github.com/ARM-software/keyword-transformer) 提交 `237e4097afd4f6851e0b82f0a8d65c2dfe8eae30` 下的 `models_data_v2_12_labels/kwt1/best_weights`。原始 `checkpoint` 默认指向 `last_weights`，必须显式选择 `best_weights`。
-- 上游 README 表格的 KWT-1 `mlp-dim=128` 与指定 `flags.json` 不一致；该模型配置实际为 256，与本项目赛题维度一致。
-- 上游要求 TensorFlow `2.4.0rc1`，配置时 PyPI 无法获取该版本，因此使用 **2.4.0 开发替代版**。NumPy 为 1.19.5，TensorFlow Addons 为 0.12.1；完整版本见依赖锁文件。与官方浮点参考的数值等价性仍需验证。
-- 自检使用原始 Session 图模式、推理设置，关闭训练增强和 Dropout；607,308 个模型参数对应的 162 个权重张量均与 checkpoint 逐项精确匹配。旧版 checkpoint 可能显示无权重 GELU 层对象别名警告，实际权重不匹配会使检查失败。
-- Speech Commands V2 保留完整词类、背景噪声、许可及官方划分列表：105,835 个 WAV（含 6 个背景噪声文件），验证列表 9,981 条、测试列表 11,005 条。十二分类映射、unknown 和 silence 处理应沿用指定源码。
-- 环境自检包含静音及 3 条验证音频的重复推理；设计验证进一步覆盖 120 条验证样本的全部 12 层，导出 12 个硬件任务及逐层浮点参考。尚未执行官方 600 条样本评测。测试集不用于调节量化参数。
+官方样本清单到位后的编码器导出入口：
 
-模型背景论文：[Keyword Transformer: A Self-Attention Model for Keyword Spotting](https://arxiv.org/abs/2104.00769)。论文 PDF 不属于自动下载及构建的必需输入。
+```powershell
+.venv-model\Scripts\python.exe scripts/export_encoder.py --split testing --sample-list official-samples.json --output output/encoder-official
+```
 
-## 清理和版本管理
+清单为数据集相对音频路径组成的 JSON 数组，静音项为 `"silence"`。此命令生成参考与硬件向量；官方硬件评测还需对接对应平台的加载、运行和读取流程。自定义第一线性层数据转换见 [架构文档](docs/architecture.md)。
 
-先预览，再执行：
+## 7. 工程目录与交付
+
+```text
+rtl/                        自研计算核、DMA、数学模块及 SRAM 接口
+integration/                E203 集成、共享 SRAM、System Bus 与 DMA 仲裁
+firmware/                   RISC-V 启动代码、驱动和整机测试程序
+model/                      冻结整数格式、参考模型及样本选择
+scripts/                    资源获取、模型转换、构建、验证和打包
+tests/                     RTL 测试平台、数值检查与性能观察器
+constraints/                目标时钟和顶层接口约束
+docs/                      架构、性能、验证证据与历史基线
+environment/               工具配置模板、依赖锁定及环境自检
+assets/resources.lock.json  上游资源版本与校验值
+encoder.ps1                 完整编码器验证入口
+design.ps1                 第一线性层与完整 FFN 验证入口
+setup.ps1 / env.ps1          首次安装 / 当前终端环境
+```
+
+本地产物位置：
+
+| 路径 | 内容 |
+| --- | --- |
+| `output/design/` | 仿真、lint、综合日志及构建目录 |
+| `output/encoder-design/` | 编码器固件、通用网表与综合记录 |
+| `output/encoder-vectors/`、`output/encoder-calibration/` | 编码器验证/训练检查向量与数值报告 |
+| `docs/encoder-performance.md`、`docs/encoder-validation.json` | 最新可读性能报告与机器可读证据 |
+| `deliverables/undergraduate-encoder-local-submission.zip` | 完整编码器本地交付包 |
+| `deliverables/encoder-submission-sha256.txt` | 交付包 SHA-256 |
+
+`collect` 检查测试完整性、RTL/网表一致性、源文件与向量校验值，以及两种 FFN 模式性能；证据缺失或过期时拒绝生成完整报告。`package` 在此基础上打包源码、参数、向量、日志、固件和通用网表，并校验归档内容。新增工程文件应先纳入 Git 暂存区，打包仅采集已跟踪/已暂存的源码文件。
+
+第三方源码、模型权重、音频、工具、Python 环境、`output/` 与 `deliverables/` 均不随 Git 分发。新机器需要执行下载和复现流程，本机已有交付包不等于远端仓库中保存了这些大文件。
+
+## 8. 保留基线与进一步阅读
+
+| 基线 | 提交 | 说明 |
+| --- | --- | --- |
+| 第四版本科必做 | `d501f0d` | 保留第一线性层必做基线 |
+| 第八版完整 FFN | `3461cf7` | 当前两种独立模式的功能与性能对照 |
+| 第一版完整编码器 | `ccc7641` | 15,535,024 周期的编码器优化对照 |
+| 第二版完整编码器 | `08b1969` | 本 README 所述调度、连续 DMA 与细分计数实现 |
+
+本机分别保留 `deliverables/undergraduate-v4-baseline.zip`、`full-ffn-v8-baseline.zip` 和 `encoder-v1-baseline.zip` 等历史归档。第五至第七版 FFN 的过程记录仍保留在 Git 历史和对应文档中。
+
+- [完整编码器设计](docs/full-encoder.md)：执行顺序、数值契约、寄存器和内存布局。
+- [最新编码器性能](docs/encoder-performance.md)：版本对比、阶段周期及跨层驻留 A/B。
+- [第八版 FFN 调度](docs/ffn-group-scheduling.md)：两种独立模式的当前基线。
+- [完整 FFN 基础设计](docs/full-ffn.md)：双线性层与 GELU。
+- [第四版必做性能](docs/parallel-packed-performance.md)：紧凑打包与必做基线。
+- [赛题范围记录](environment/project-context.json)：已确认的本科组范围、参考平台与约束。
+
+## 9. 清理与来源
+
+清理前先预览：
 
 ```powershell
 .\scripts\clean-project.ps1 -WhatIf
-.\scripts\clean-project.ps1
 ```
 
-清理范围是项目内下载压缩包、TensorFlow wheel 缓存、临时输出、运行时下载元数据和源码的 Python 缓存。版本化的资源校验清单、验证快照、已安装环境、工具、解压的数据集及参考源码保留。请先保存需要长期留存的 `output/` 结果；这些输出不受 Git 保护。清理后日常自检仍可运行，重新执行安装或下载脚本可能重新获取已删除的安装包。
+确认后去掉 `-WhatIf` 执行。该脚本会删除 **整个 `output/`**、临时文件和下载缓存，包括其中的日志、向量及历史输出备份；请先保存需要保留的验证证据。已安装工具、模型环境、解压的数据集和参考源码会保留。清理后需重新生成输出才能再次汇总或打包。
 
-第三方源码、权重、数据集和工具遵循各自上游许可；仓库仅记录来源并提供获取脚本，不随 Git 分发这些大文件。原始许可文件保留在下载内容中。
-
-## 后续官方验收
-
-1. 接入组委会最终平台地址、参数加载环境和 SRAM 宏接口。
-2. 在官方服务器完成指定工艺映射和 150 MHz STA，核验面积不超过 2.25 mm²。
-3. 用统一条件和覆盖检查通过的活动文件估算整机功耗及单任务能耗。
-4. 对齐官方浮点环境，执行冻结后发布的 600 条评测样本及 12 个性能任务。
-
-当前数值精度和功能结论限于仓库记录的本地测试集；Yosys 为通用门级综合，尚不能据此判定正式工艺频率、面积和功耗达标。
+官方 SoC 参考为 [riscv-mcu/e203_hbirdv2](https://github.com/riscv-mcu/e203_hbirdv2)，模型来自 [ARM-software/keyword-transformer](https://github.com/ARM-software/keyword-transformer)，数据集为 Speech Commands V2。固定提交、下载地址和校验值均记录在资源清单中；上游许可文件随下载内容保留。自研与第三方边界见 [NOTICE.md](NOTICE.md)。
