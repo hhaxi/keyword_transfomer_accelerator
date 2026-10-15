@@ -13,7 +13,9 @@ def main():
     p.add_argument('input',type=Path);p.add_argument('--layer',type=int,required=True,choices=range(12))
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--reference',type=Path,help='Optional NPZ containing floating y[99,256]')
+    p.add_argument('--ffn',action='store_true',help='Decode optional full FFN output [99,64] with ffn-format.json')
     a=p.parse_args();values=[]
+    cols=64 if a.ffn else 256
     for line in a.input.read_text().splitlines():
         line=line.strip()
         if not line:continue
@@ -22,15 +24,16 @@ def main():
         if value>=2**63:value-=2**64
         if not -2**39<=value<2**39:raise ValueError('Output is not a sign-extended 40-bit result')
         values.append(value)
-    if len(values)!=99*256:raise ValueError('Expected exactly 25344 results')
-    cfg=json.loads((ROOT/'model/format.json').read_text())['layers'][a.layer]
-    result=decode(np.asarray(values,dtype=np.int64).reshape(99,256),cfg['x_exponent'],cfg['w_exponent'])
+    if len(values)!=99*cols:raise ValueError('Wrong result count for selected mode')
+    cfg=json.loads((ROOT/('model/ffn-format.json' if a.ffn else 'model/format.json')).read_text())['layers'][a.layer]
+    exponent=cfg['output_exponent'] if a.ffn else cfg['x_exponent']+cfg['w_exponent']
+    result=decode(np.asarray(values,dtype=np.int64).reshape(99,cols),exponent,0)
     a.output.parent.mkdir(parents=True,exist_ok=True)
     with a.output.open('wb') as f:np.save(f,result,allow_pickle=False)
     summary={'layer':a.layer,'finite':bool(np.isfinite(result).all()),'shape':list(result.shape)}
     if a.reference:
         with np.load(a.reference,allow_pickle=False) as ref:
-            if ref['y'].shape!=(99,256):raise ValueError('Reference shape mismatch')
+            if ref['y'].shape!=(99,cols):raise ValueError('Reference shape mismatch')
             summary['nrmse']=nrmse(result,ref['y'])
     print(json.dumps(summary,indent=2))
 

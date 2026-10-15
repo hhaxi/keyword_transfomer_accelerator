@@ -1,5 +1,5 @@
 // Technology boundary: synchronous single-port 16-bit SRAM, no reset of contents.
-// Allowed instances use AW=12 (4096) or AW=10 (1024).
+// Allowed instances use AW=12 (4096), AW=10 (1024), or AW=7 (128).
 // KWT_SRAM_BLACKBOX preserves these leaves for official macro mapping.
 `ifdef KWT_SRAM_BLACKBOX
 (* blackbox *)

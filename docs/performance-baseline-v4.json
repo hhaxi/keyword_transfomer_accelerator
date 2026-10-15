@@ -1,0 +1,211 @@
+{
+  "version": "v4",
+  "git_commit": "d501f0dee548969ee397622a42ced29ca8219239",
+  "performance": {
+    "total_tasks": 12,
+    "total_cycles": 3260136,
+    "target_clock_hz": 150000000,
+    "nominal_tasks_per_second": 552.1242058613506,
+    "timing_closed": false,
+    "window": "Host load to shared SRAM through DMA output writeback, E203 completion notification and host observation",
+    "baseline_speedup": 2.180029299391191,
+    "baseline_version": "v3",
+    "first_version_speedup": 25.04068787314394
+  },
+  "soc_tasks": [
+    {
+      "task": 0,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 1,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 2,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 3,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 4,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 5,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 6,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 7,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 8,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 9,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 10,
+      "cycles": 271678,
+      "outputs": 25344
+    },
+    {
+      "task": 11,
+      "cycles": 271678,
+      "outputs": 25344
+    }
+  ],
+  "generic_synthesis": {
+    "accelerator": {
+      "num_wires": 20290,
+      "num_wire_bits": 23070,
+      "num_pub_wires": 141,
+      "num_pub_wire_bits": 2748,
+      "num_ports": 27,
+      "num_port_bits": 317,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 21894,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 367,
+        "$_AND_": 4026,
+        "$_DFFE_PN0P_": 532,
+        "$_DFFE_PP_": 896,
+        "$_DFF_PN0_": 10,
+        "$_MUX_": 1518,
+        "$_NAND_": 7854,
+        "$_NOR_": 82,
+        "$_NOT_": 26,
+        "$_ORNOT_": 145,
+        "$_OR_": 803,
+        "$_XNOR_": 735,
+        "$_XOR_": 4872,
+        "$scopeinfo": 8,
+        "kwt_sram16": 20
+      }
+    },
+    "dma_engine": {
+      "num_wires": 24232,
+      "num_wire_bits": 28177,
+      "num_pub_wires": 200,
+      "num_pub_wire_bits": 3773,
+      "num_ports": 22,
+      "num_port_bits": 202,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 26611,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 399,
+        "$_AND_": 5765,
+        "$_DFFE_PN0P_": 1187,
+        "$_DFFE_PN1P_": 1,
+        "$_DFFE_PP_": 896,
+        "$_DFF_PN0_": 14,
+        "$_MUX_": 1552,
+        "$_NAND_": 9049,
+        "$_NOR_": 189,
+        "$_NOT_": 52,
+        "$_ORNOT_": 279,
+        "$_OR_": 1023,
+        "$_XNOR_": 896,
+        "$_XOR_": 5280,
+        "$scopeinfo": 9,
+        "kwt_sram16": 20
+      }
+    },
+    "bus": {
+      "num_wires": 402,
+      "num_wire_bits": 957,
+      "num_pub_wires": 66,
+      "num_pub_wire_bits": 620,
+      "num_ports": 48,
+      "num_port_bits": 501,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 453,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 11,
+        "$_AND_": 74,
+        "$_DFFE_PN0P_": 9,
+        "$_DFF_PN0_": 2,
+        "$_MUX_": 47,
+        "$_NAND_": 279,
+        "$_NOR_": 12,
+        "$_NOT_": 4,
+        "$_ORNOT_": 6,
+        "$_OR_": 9
+      }
+    },
+    "soc": {
+      "num_wires": 44330,
+      "num_wire_bits": 86415,
+      "num_pub_wires": 4392,
+      "num_pub_wire_bits": 46477,
+      "num_ports": 14,
+      "num_port_bits": 141,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 46025,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 849,
+        "$_AND_": 11728,
+        "$_DFFE_PN0P_": 1912,
+        "$_DFFE_PN1P_": 9,
+        "$_DFFE_PP_": 2338,
+        "$_DFF_PN0_": 21,
+        "$_DFF_PN1_": 1,
+        "$_DLATCH_N_": 8,
+        "$_MUX_": 2615,
+        "$_NAND_": 16356,
+        "$_NOR_": 446,
+        "$_NOT_": 266,
+        "$_ORNOT_": 697,
+        "$_OR_": 1763,
+        "$_SDFFCE_PN0P_": 2,
+        "$_XNOR_": 1082,
+        "$_XOR_": 5626,
+        "$scopeinfo": 283,
+        "kwt_shared_sram": 1,
+        "kwt_sram16": 20,
+        "sirv_gnrl_ram": 2
+      }
+    }
+  },
+  "comparison_contract_sha256": {
+    "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
+    "model/format.json": "612f9574e0495971b0577213d8beec333e2cb852cd1ce1606c0c4e873ea76480",
+    "integration/kwt_shared_sram.sv": "89aee640754231540e2689b3f442d70bcf1b9d11677cbe3ed5aae118491ac268",
+    "integration/kwt_soc.sv": "4920d021a803965c3d054c7aee036cf86d41079ec466d1ff84ad2ec6e32b2451",
+    "integration/kwt_bus_fabric.sv": "3cc23fd51f33d9e17e817be066d439e8706f82b9958d26ffdae1f6ae0c647277",
+    "integration/kwt_system_bus.sv": "bfe7fcbc8aac1f7a248d40a9955af3e6f4fdfab0b7c16086e478445acdadbedd",
+    "tests/tb_soc.sv": "80256cc45ec1bf6c178f37a621bf423b6cc7239cba46fe2567d1c223aee2022b"
+  },
+  "vector_manifest_sha256": "973549c721411fc19083861d0125803189a385c354b165dfddfcd9d3d9780f3e"
+}

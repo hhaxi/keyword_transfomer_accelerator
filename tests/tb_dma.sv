@@ -87,7 +87,7 @@ module tb_dma;
         for(j=0;j<8192;j=j+1) mem[24576+j]={wv[2*j+1][15:0],wv[2*j][15:0]};
         for(j=0;j<256;j=j+1) mem[40960+j]=bv[j];
         repeat(4) @(negedge clk);rst_n=1;
-        configure();bus(1,20'h0c,0,0,rd);if(rd!==32'h4b575434) $fatal(1,"ID mismatch");
+        configure();bus(1,20'h0c,0,0,rd);if(rd!==32'h4b575435) $fatal(1,"ID mismatch");
         bus(0,20'h20,32'ha0010002,0,rd);bus(0,0,1,1,rd);wait_idle(16);
         configure();bus(0,20'h2c,32'ha0010000,0,rd);bus(0,0,1,1,rd);wait_idle(16);
         configure();bus(0,20'h2c,32'ha0070000,0,rd);bus(0,0,1,1,rd);wait_idle(16);

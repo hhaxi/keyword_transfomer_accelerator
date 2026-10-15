@@ -4,7 +4,9 @@
 
 **当前阶段：已实现本科组线性加速器 RTL、冻结数值模型、参数转换、E203 驱动与 System Bus 集成，并完成本地功能和通用综合验证。正式工艺时序、面积、功耗及官方平台验收仍待官方服务器和工艺资料，不能将当前结果称为全部赛题验收通过。** `environment/smoke/` 仅用于环境检查，实际设计位于 `rtl/`。
 
-第四版采用 **8 路 MAC、偏置预取和 X/W 紧凑打包**，同一 SoC 任务从第三版的 592,266 降至 **271,678 周期（加速 2.1800 倍，周期减少 54.13%）**。内部 SRAM 仍为 52 KiB，宏数量由 8 增至 20。按 150 MHz 目标折算为 **1.81119 ms/任务、552.12421 任务/秒**；实际时序、面积和功耗仍待工艺验证。详见 [第四版性能分析](docs/parallel-packed-performance.md)。
+**第五版已实现完整 FFN（第一线性层 → GELU → 第二线性层），并保留第一线性层独立模式。** 独立模式仍为第四版的 **271,678 周期/任务**；完整 FFN 为 **545,654 周期/任务**，按 150 MHz 目标折算 **3.63769 ms、274.89948 任务/秒**。8 路 MAC 分时复用，中间数据只用 512 B 行缓冲，不写回共享 SRAM；总内部 SRAM 为 85 KiB。两种任务定义不同，吞吐分别统计。详见 [完整 FFN 实现与验证](docs/full-ffn.md)。
+
+第四版必做基线固定在提交 `d501f0d`；本地历史交付包为 `deliverables/undergraduate-v4-baseline.zip`，源代码归档为 `deliverables/v4-source-baseline.zip`。新增模块的正式时序、面积和功耗仍待工艺验证。
 
 ## 设计复现入口
 
@@ -14,23 +16,24 @@
 .\design.ps1 all
 ```
 
-依次执行：24 条训练样本的无梯度标定检查、120 条验证样本的逐层参考提取与数值检查、数值边界测试、MAC、Icarus 四态检查、12 层计算核 RTL、DMA 异常恢复、总线吞吐/仲裁、真实 E203 固件仿真，以及计算核、DMA、总线和 E203 整机的通用综合/网表验证。完整回归可能需要十几分钟或更久，日志保存在 `output/design/`。
+依次执行：24 条训练样本的无梯度标定检查、120 条验证样本的逐层参考提取与数值检查、数值边界测试、MAC、Icarus 四态检查、12 层计算核 RTL、DMA 异常恢复、总线吞吐/仲裁、真实 E203 固件仿真、GELU 数值与硬件检查、完整 FFN 两种模式切换，以及计算核、DMA、总线和 E203 整机的通用综合/网表验证。完整回归可能需要十几分钟或更久，日志保存在 `output/design/`。
 
 - [设计说明与寄存器协议](docs/architecture.md)：数值格式、存储布局、驱动及计时范围。
 - [本科必做项验收记录](docs/acceptance.md)：已验证项目和官方验收缺口。
-- [第四版性能分析](docs/parallel-packed-performance.md)：8 路 MAC、偏置预取、紧凑传输、周期对比和资源代价。
+- [完整 FFN 实现与验证](docs/full-ffn.md)：第五版两种模式、数值格式、性能与资源对比。
+- [第四版性能分析](docs/parallel-packed-performance.md)：保留的本科必做基线。
 - [第三版 DMA 与周期分析](docs/dma-performance.md)：历史 DMA 和总线优化记录。
 - [第二版优化记录](docs/frontend-performance.md)：流水 MAC 和 FIFO 的历史基线。
 - `rtl/`：MAC、矩阵控制器、自主 DMA 和 SRAM 工艺边界。
 - `integration/`：E203 CPU、三方轮转 System Bus 与 512 KiB 共享 SRAM 集成。
 - `firmware/`：实际由 E203 执行的驱动、启动代码和链接脚本。
-- `model/`：冻结逐层指数及与 RTL 一致的整数模型。
+- `model/`：两种模式冻结的逐层指数、整数模型与固定样本文件清单。
 - `tests/`：组件、矩阵、整机测试平台。
 - `constraints/`：150 MHz 目标 SDC，无掩盖违例的路径例外。
 
-按需运行 `calibrate`、`export`、`numeric`、`mac`、`fourstate`、`accel`、`dma`、`bus`、`soc`、`synth`、`synth-dma` 或 `synth-soc`，例如 `.\design.ps1 soc`。SoC 仿真在停止计时后请求周期快照；`scripts/collect_results.py` 汇总为 `docs/cycle-analysis.json`。`tools.ps1` 保留为环境自检入口，不能替代设计验证。
+按需运行 `calibrate`、`export`、`export-ffn`、`numeric`、`mac`、`fourstate`、`accel`、`dma`、`gelu`、`ffn`、`bus`、`soc`、`soc-ffn`、`synth`、`synth-dma` 或 `synth-soc`，例如 `.\design.ps1 soc`。SoC 仿真在停止计时后请求周期快照；`scripts/collect_results.py` 汇总为 `docs/cycle-analysis.json`。`tools.ps1` 保留为环境自检入口，不能替代设计验证。
 
-第四版 SoC 基址仍为 `0x40000000`，控制器 ID 为 `KWT4`（`0x4b575434`）。X/W 每个 32 位字传输两个相邻 int16 元素，先出现的元素放在低半字；b/Y 格式不变。使用配套固件和 `x_packed.hex/w_packed.hex`，旧 KWT3 驱动不兼容。独立计算核原 MMIO 保留每字一个元素。
+第五版 SoC 基址仍为 `0x40000000`，控制器 ID 为 `KWT5`（`0x4b575435`），模式寄存器 `0x38` 选择 0=第一线性层、1=完整 FFN。X/W 每个 32 位字传输两个相邻 int16 元素，先出现的元素放在低半字；b/Y 格式不变。使用配套固件和 `x_packed.hex/w_packed.hex`，旧 KWT3/KWT4 驱动不兼容。独立计算核原 MMIO 保留每字一个元素。
 
 `export_vectors.py` 和 `convert_task.py` 自动生成紧凑文件；已有旧向量时运行 `python scripts/pack_vectors.py` 即可无损生成，无需重新量化。
 
@@ -61,7 +64,7 @@
 
 输出 `output/design/soc.fst` 和 `soc.vcd.gz`，日志给出计时窗口。改为 `--tasks 12` 可记录全部本地性能任务。活动文件需在正式工具中检查映射和覆盖，并补全 SRAM 功耗模型后才能用于正式功耗估算。
 
-验证完成后运行 `python scripts/collect_results.py` 汇总记录并校验相对第三版的性能回归，再运行 `python scripts/package_submission.py` 生成本地交付包 `deliverables/undergraduate-local-submission.zip`。包内含源码、约束、真实测试向量、固件、四类通用网表和验证记录；若为当前版本采集了整机活动波形，大文件作为独立附属文件保留在 `output/design/`。第一版活动文件位于 `output/baseline-v1/`，第二、三版报告和日志分别位于 `output/baseline-v2/`、`output/baseline-v3/`，不作为第四版活动证据。这份包标记为本地实现交付，官方 PPA/平台验收仍待完成。
+验证完成后运行 `python scripts/collect_results.py` 汇总记录并校验独立第一层相对第四版的性能回归，并单独汇总完整 FFN 结果，再运行 `python scripts/package_submission.py` 生成本地交付包 `deliverables/undergraduate-local-submission.zip`。包内含源码、约束、真实测试向量、固件、四类通用网表和验证记录；若为当前版本采集了整机活动波形，大文件作为独立附属文件保留在 `output/design/`。第一版活动文件位于 `output/baseline-v1/`，第二、三版报告和日志分别位于 `output/baseline-v2/`、`output/baseline-v3/`，第四版报告和日志在 `output/baseline-v4/`；历史波形不作为第五版活动证据。这份包标记为本地实现交付，官方 PPA/平台验收仍待完成。
 
 ## 赛题范围
 
@@ -73,7 +76,7 @@ X: 99 × 64    W: 64 × 256    b: 256    Y: 99 × 256
 支持 12 个编码器层的参数切换，并完成 SoC 集成及验证。
 ```
 
-记录的约束包括 150 MHz 时钟、512 KB 共享 SRAM、加速器面积不超过 2.25 mm²、NRMSE 不超过 3%；完整定义及验收口径以指南和官方后续通知为准。GELU、第二线性层和注意力属于选做。机器可读范围见 [project-context.json](environment/project-context.json)。
+记录的约束包括 150 MHz 时钟、512 KB 共享 SRAM、加速器面积不超过 2.25 mm²、NRMSE 不超过 3%；完整定义及验收口径以指南和官方后续通知为准。GELU、第二线性层和注意力属于选做；当前已完成前两者，注意力未实现。机器可读范围见 [project-context.json](environment/project-context.json)。
 
 官方 SoC 参考为 [riscv-mcu/e203_hbirdv2](https://github.com/riscv-mcu/e203_hbirdv2)。本项目固定其提交作为开发基线，不代表组委会指定了该提交。正式后端环境由官方后期提供服务器，届时对接工艺库、SRAM 宏及评测条件。
 

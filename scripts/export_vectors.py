@@ -10,7 +10,7 @@ np, tf = upstream.np, upstream.tf
 ROOT = upstream.ROOT
 sys.path.insert(0, str(ROOT / 'model'))
 from numeric import encode, decode, linear, exponent_for_bound, nrmse
-from kws_streaming.data.input_data import AudioProcessor
+from kws_streaming.data.input_data import AudioProcessor, which_set
 
 
 def load_reference():
@@ -67,8 +67,12 @@ def main():
     parser.add_argument('--save-all',action='store_true',help='Save every floating task and an evaluate_numeric manifest')
     args=parser.parse_args()
     if args.samples<12: raise ValueError('At least 12 balanced samples required')
+    fixed=ROOT/'model'/(args.split+'-samples.json')
+    if not args.sample_list and fixed.exists() and args.samples==len(json.loads(fixed.read_text())):
+        args.sample_list=fixed
     out=args.output.resolve(); out.mkdir(parents=True,exist_ok=True)
     sess,flags,model,tr,taps=load_reference()
+    flags.pick_deterministically=True
     ap=AudioProcessor(flags)
     labels=(upstream.MODEL/'labels.txt').read_text().splitlines()
     # Round-robin labels, preserving upstream index ordering and unknown selection.
@@ -79,6 +83,12 @@ def main():
     if args.sample_list:
         lookup={Path(s['file']).relative_to(upstream.DATA).as_posix():i for i,s in enumerate(ap.data_index[args.split]) if s['label']!='_silence_'}
         for name in json.loads(args.sample_list.read_text(encoding='utf-8')):
+            if name!='silence' and name not in lookup:
+                path=upstream.DATA/name
+                if not path.is_file() or which_set(str(path),flags.validation_percentage,flags.testing_percentage)!=args.split:
+                    raise ValueError('Sample outside selected split: '+name)
+                lookup[name]=len(ap.data_index[args.split])
+                ap.data_index[args.split].append({'label':Path(name).parts[0],'file':str(path)})
             if name=='silence':selected.append(buckets[0][0])
             elif name in lookup:selected.append(lookup[name])
             else:raise ValueError('Sample is outside the selected upstream split/label index: '+str(name))

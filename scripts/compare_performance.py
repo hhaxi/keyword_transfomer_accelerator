@@ -1,4 +1,4 @@
-"""Compare v4 with pinned v3; verify identical tensors and timing boundaries."""
+"""Verify v5 independent FFN1 mode against preserved v4 workload and timing contract."""
 import hashlib
 import json
 import re
@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def compare(current):
-    baseline = json.loads((ROOT / 'docs/performance-baseline-v3.json').read_text())
+    baseline = json.loads((ROOT / 'docs/performance-baseline-v4.json').read_text())
     first = json.loads((ROOT / 'docs/performance-baseline.json').read_text())
     second = json.loads((ROOT / 'docs/performance-baseline-v2.json').read_text())
     for name, expected in baseline['comparison_contract_sha256'].items():
@@ -16,26 +16,12 @@ def compare(current):
         actual=hashlib.sha256(data).hexdigest()
         if current['source_sha256'].get(name) != actual:
             raise RuntimeError('Report does not match source: ' + name)
-        # Only explicit transport packing/checks and expected activity counts
-        # may differ in the testbench. Clock, host handshake, timer boundaries,
-        # CPU polling, resets and output checker must still hash to the v3 file.
-        if name=='tests/tb_soc.sv':
-            for tag in ['PACKED_DECL', 'PACKED_CHECK']:
-                pattern=rb'(?m)^ *// '+tag.encode()+rb'_BEGIN\n[\s\S]*?^ *// '+tag.encode()+rb'_END\n'
-                data,n=re.subn(pattern,b'',data)
-                if n!=1:raise RuntimeError('Missing packed testbench block: '+tag)
-            replacements={
-                b"j<3168;j=j+1) host(0,32'ha0010000+32'(4*j),xp[j]":b"j<6336;j=j+1) host(0,32'ha0010000+32'(4*j),xv[j]",
-                b"j<8192;j=j+1) host(0,32'ha0018000+32'(4*j),wp[j]":b"j<16384;j=j+1) host(0,32'ha0018000+32'(4*j),wv[j]",
-                b'rd!=202752':b'rd!=405504', b'rd!=11616':b'rd!=22976'}
-            for a,b in replacements.items():
-                if data.count(a)!=1:raise RuntimeError('Unexpected benchmark packing change')
-                data=data.replace(a,b)
+        # Mandatory-mode testbench, bus, CPU, SRAM and numeric format stay byte-identical.
         if hashlib.sha256(data).hexdigest() != expected:
             raise RuntimeError('Benchmark contract changed; review comparison: ' + name)
     vectors = hashlib.sha256((ROOT / 'output/vectors/manifest.json').read_bytes()).hexdigest()
     if vectors != baseline['vector_manifest_sha256']:
-        raise RuntimeError('Performance vectors changed from the first-version baseline')
+        raise RuntimeError('Performance vectors changed from the v4 baseline')
     manifest = json.loads((ROOT / 'output/vectors/manifest.json').read_text())
     for name, expected in manifest.items():
         if hashlib.sha256((ROOT / 'output/vectors' / name).read_bytes()).hexdigest() != expected:
@@ -64,9 +50,9 @@ def compare(current):
         raise RuntimeError('Task count or output count changed')
     before = baseline['performance']['total_cycles']
     after = sum(task['cycles'] for task in tasks)
-    # At least 2x over v3 for the selected eight-lane plus packing optimization.
-    if after * 2 > before:
-        raise RuntimeError('Frontend performance regression: less than 2x SoC speedup')
+    # Optional FFN must preserve mandatory-mode throughput within one percent.
+    if after > before * 1.01:
+        raise RuntimeError('Mandatory-mode regression exceeds 1% against v4')
     hz = current['performance']['target_clock_hz']
     if hz != baseline['performance']['target_clock_hz']:
         raise RuntimeError('Nominal clock changed')
@@ -74,7 +60,7 @@ def compare(current):
         'baseline_git_commit': baseline['git_commit'],
         'workload_timing_contract_verified': True,
         'bus_implementation_changed': False,
-        'transport_packing_changed': True,
+        'transport_packing_changed': False,
         'packed_transport_lossless_verified': True,
         'packed_manifest_sha256': hashlib.sha256((ROOT/'output/vectors/packed-manifest.json').read_bytes()).hexdigest(),
         'second_version_git_commit': second['git_commit'],
@@ -94,17 +80,17 @@ def compare(current):
         'baseline_nominal_tasks_per_second': len(tasks) * hz / before,
         'optimized_nominal_tasks_per_second': len(tasks) * hz / after,
         'target_clock_hz': hz, 'timing_closed': False,
-        'resources': {'mac_lanes_before': 4, 'mac_lanes_after': 8,
-                      'internal_sram_bytes_before': 53248, 'internal_sram_bytes_after': 53248,
+        'resources': {'mac_lanes_before': 8, 'mac_lanes_after': 8,
+                      'internal_sram_bytes_before': 53248, 'internal_sram_bytes_after': 87040,
                       'compute_fifo_payload_register_bits': 640,
                       'bias_prefetch_register_bits': 256,
-                      'sram_macros_before': 8, 'sram_macros_after': 20,
+                      'sram_macros_before': 20, 'sram_macros_after': 40,
                       'dma_output_hold_bits': 64,
                       'generic_compute_core_cells_before': baseline['generic_synthesis']['accelerator']['num_cells'],
                       'generic_compute_core_cells_after': current['generic_synthesis']['accelerator']['num_cells'],
                       'generic_dma_engine_cells_after': current['generic_synthesis']['dma_engine']['num_cells'],
                       'generic_bus_cells_after': current['generic_synthesis']['bus']['num_cells']},
-        'note': 'Same canonical tensors, shared SRAM, CPU wiring, bus, numeric contract and timing boundaries. X/W transport changes from sign-extended words to lossless packed pairs; both external loading and DMA remain timed. The exact testbench delta is checked, and packed files are verified against canonical vectors. Optional profile reads occur after timing. Generic cell counts are not physical area or power; compute-core-only counts exclude the DMA engine and must not be used as total accelerator area.'
+        'note': 'Same canonical tensors, shared SRAM, CPU wiring, bus, numeric contract and timing boundaries. Mandatory-mode testbench is byte-identical to v4; packed transport and canonical tensors are unchanged. All loading and writeback remain timed. Full FFN is a separate task and must not be described as a speedup or regression of FFN1. Optional profile reads occur after timing. Generic cell counts are not physical area or power; compute-core-only counts exclude the DMA engine and must not be used as total accelerator area.'
     }
 
 

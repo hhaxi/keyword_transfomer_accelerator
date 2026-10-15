@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "gelu": "exact-erf correction table, Q16, step 1/32, linear interpolation, |z|>=8 identity/zero",
+  "rounding": "rescale nearest ties even; interpolation arithmetic floor",
+  "intermediate_bits": 16,
+  "accumulator_bits": 40,
+  "output_bits": 64,
+  "layers": [
+    {
+      "layer": 0,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 58.84048514068127,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 1,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 56.455240443348885,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 2,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 54.81550528854132,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 3,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 61.03864260017872,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 4,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 45.796983398497105,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 5,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 53.55198612809181,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 6,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 43.68206620961428,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 7,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 41.24357349425554,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 8,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 43.43022245168686,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 9,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 47.57001933455467,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 10,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -16,
+      "output_exponent": -25,
+      "quantized_ffn1_abs_bound": 47.769491001963615,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    },
+    {
+      "layer": 11,
+      "gelu_input_shift": 11,
+      "gelu_output_shift": 7,
+      "gelu_exponent": -9,
+      "w2_exponent": -15,
+      "output_exponent": -24,
+      "quantized_ffn1_abs_bound": 53.63927951455116,
+      "scale_source": "checkpoint and analytic FFN1 bounds; no sample fitting"
+    }
+  ]
+}

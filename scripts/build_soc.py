@@ -28,13 +28,14 @@ def firmware():
     (dest/'kwt.hex').write_text(''.join('%08x\n'%int.from_bytes(data[i:i+4],'little') for i in range(0,len(data),4)))
     (dest/'size.vh').write_text('`define FW_WORDS %d\n'%(len(data)//4))
 
-def build_and_simulate():
+def build_and_simulate(ffn=False):
     firmware()
+    top='tb_soc_ffn' if ffn else 'tb_soc'
     files=source_files()+SYSTEM_RTL+['integration/kwt_shared_sram.sv','integration/kwt_system_bus.sv',
-                             'integration/kwt_soc.sv','tests/tb_soc.sv']
+                             'integration/kwt_soc.sv','tests/'+top+'.sv']
     includes=['+incdir+'+str((SOC/'rtl/e203/core').relative_to(ROOT)).replace('\\','/'),
               '+incdir+output/design/firmware','+define+DISABLE_SV_ASSERTION']
-    text=sim('tb_soc',files,includes,run_args=['+profile'])
+    text=sim(top,files,includes,run_args=['+profile'])
     if 'SOC_PASS' not in text: raise RuntimeError('SoC test did not pass')
 
 if __name__=='__main__': build_and_simulate()

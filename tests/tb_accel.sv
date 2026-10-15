@@ -13,7 +13,8 @@ module tb_accel;
     integer taskid,j,transactions=0,num_tasks=12;
     longint cycles=0,start_cycle;
     string folder;
-    kwt_accel dut(.dma_mode(1'b0),.dma_load_valid(1'b0),.dma_load_addr(20'b0),
+    kwt_accel dut(.ffn_mode(1'b0),.gelu_input_shift(5'd0),.gelu_output_shift(5'd0),
+        .perf_second_mac(),.perf_gelu(),.perf_saturation(),.dma_mode(1'b0),.dma_load_valid(1'b0),.dma_load_addr(20'b0),
         .dma_load_data(32'b0),.dma_load_ready(),.dma_start(1'b0),.dma_clear(1'b0),
         .dma_out_valid(),.dma_out_data(),.dma_out_ready(1'b0),.dma_done(),.dma_fault(),
         .perf_cycles(),.perf_mac_cycles(),.perf_fifo_wait(),.*);

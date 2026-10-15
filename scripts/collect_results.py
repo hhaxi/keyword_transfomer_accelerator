@@ -125,11 +125,13 @@ def main():
     report['ppa']['synthesis']='Generic compute-core, DMA-engine, bus and E203 netlists; SRAM leaves preserved'
     report['ppa']['post_synthesis_simulation']='12 full compute-core and E203 tasks; DMA fault/recovery and bus throughput regressions passed'
     (OUT/'ppa-status.json').write_text(json.dumps(report['ppa'],indent=2)+'\n')
+    from collect_ffn import collect as collect_ffn
+    report['optional_ffn']=collect_ffn()
     # Compare the same workload; bus/DMA changes are the optimization under test.
     from compare_performance import compare
     comparison=compare(report)
     report['performance']['baseline_speedup']=comparison['soc_speedup']
-    report['performance']['baseline_version']='v3'
+    report['performance']['baseline_version']='v4'
     report['performance']['first_version_speedup']=comparison['speedup_over_first_version']
     (ROOT/'docs/cycle-analysis.json').write_text(json.dumps(report['cycle_analysis'],indent=2)+'\n')
     (ROOT/'docs/performance-comparison.json').write_text(json.dumps(comparison,indent=2)+'\n')

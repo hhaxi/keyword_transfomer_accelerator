@@ -19,7 +19,14 @@ def main():
         if p.suffix in ['.hex','.npz']:files[p.relative_to(ROOT).as_posix()]=p
     for name in ['numeric-report.json','manifest.json','packed-manifest.json']:
         p=ROOT/'output/vectors'/name;files[p.relative_to(ROOT).as_posix()]=p
-    for name in ['kwt_accel_netlist.v','kwt_soc_netlist.v','synthesis-stat.json','soc-synthesis-stat.json',
+    for folder in ['output/ffn-vectors','output/ffn-calibration']:
+        for p in (ROOT/folder).rglob('*'):
+            if p.is_file() and p.suffix in ['.hex','.json','.npz','.txt']:
+                files[p.relative_to(ROOT).as_posix()]=p
+    for name in ['kwt_gelu_netlist.v','gelu-synthesis-stat.json','synth_gelu.ys',
+                 'ffn-numeric-tests.log','tb_gelu-run.log','tb_gelu_netlist-run.log','icarus-tb_gelu.log',
+                 'tb_ffn-run.log','tb_ffn_netlist-run.log','icarus-tb_ffn.log','tb_soc_ffn-run.log','tb_soc_ffn_netlist-run.log',
+                 'kwt_accel_netlist.v','kwt_soc_netlist.v','synthesis-stat.json','soc-synthesis-stat.json',
                  'kwt_dma_netlist.v','kwt_bus_netlist.v','dma-synthesis-stat.json','bus-synthesis-stat.json','synth_dma.ys',
                  'ppa-status.json','synth.ys','synth_soc.ys','mac.vcd','firmware/kwt.elf','firmware/kwt.bin','firmware/kwt.hex',
                  'tb_accel-run.log','tb_accel_netlist-run.log','tb_soc-run.log','tb_soc_netlist-run.log','numeric-tests.log','packing-tests.log','mac-icarus.log','icarus-accel.log',

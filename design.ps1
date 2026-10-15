@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('calibrate','export','numeric','mac','fourstate','accel','dma','bus','soc','synth','synth-dma','synth-soc','all')]
+    [ValidateSet('calibrate','export','export-ffn','numeric','mac','fourstate','accel','dma','ffn','gelu','bus','soc','soc-ffn','synth','synth-dma','synth-soc','all')]
     [string]$Task='all'
 )
 $ErrorActionPreference='Stop'
@@ -15,11 +15,17 @@ try {
         & $DesignPython scripts/export_vectors.py --samples 120
         if ($LASTEXITCODE) { throw 'Reference export failed' }
     }
+    if ($Task -in @('export-ffn','all')) {
+        & $DesignPython scripts/export_ffn.py --split training
+        if ($LASTEXITCODE) { throw 'FFN calibration checks failed' }
+        & $DesignPython scripts/export_ffn.py
+        if ($LASTEXITCODE) { throw 'FFN export failed' }
+    }
     if ($Task -eq 'numeric') {
         & $DesignPython scripts/run_design.py numeric
         if ($LASTEXITCODE) { throw 'Numeric model checks failed' }
     }
-    if ($Task -in @('mac','fourstate','accel','dma','bus','soc','synth','synth-dma','synth-soc','all')) {
+    if ($Task -in @('mac','fourstate','accel','dma','ffn','gelu','bus','soc','soc-ffn','synth','synth-dma','synth-soc','all')) {
         & $DesignPython scripts/run_design.py $Task
         if ($LASTEXITCODE) { throw 'Design checks failed' }
     }
