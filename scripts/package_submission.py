@@ -26,10 +26,10 @@ def main():
     for name in ['kwt_gelu_netlist.v','gelu-synthesis-stat.json','synth_gelu.ys',
                  'tb_ffn_edges-run.log','tb_ffn_edges_netlist-run.log','icarus-tb_ffn_edges.log',
                  'ffn-numeric-tests.log','tb_gelu-run.log','tb_gelu_netlist-run.log','icarus-tb_gelu.log',
-                 'tb_ffn-run.log','tb_ffn_netlist-run.log','icarus-tb_ffn.log','tb_soc_ffn-run.log','tb_soc_ffn_netlist-run.log',
-                 'kwt_accel_netlist.v','kwt_soc_netlist.v','synthesis-stat.json','soc-synthesis-stat.json',
+                 'tb_ffn-run.log','tb_ffn_netlist-run.log','icarus-tb_ffn.log','tb_soc_ffn-run.log','tb_soc_ffn_netlist-run.log','tb_soc_ffn_noprofile-run.log',
+                 'kwt_accel_netlist.v','kwt_accel_netlist.json','kwt_soc_netlist.v','synthesis-stat.json','soc-synthesis-stat.json',
                  'kwt_dma_netlist.v','kwt_bus_netlist.v','dma-synthesis-stat.json','bus-synthesis-stat.json','synth_dma.ys',
-                 'ppa-status.json','synth.ys','synth_soc.ys','mac.vcd','firmware/kwt.elf','firmware/kwt.bin','firmware/kwt.hex',
+                 'architecture-stat.json','ppa-status.json','synth.ys','synth_soc.ys','mac.vcd','firmware/kwt.elf','firmware/kwt.bin','firmware/kwt.hex',
                  'tb_accel-run.log','tb_accel_netlist-run.log','tb_soc-run.log','tb_soc_netlist-run.log','numeric-tests.log','packing-tests.log','mac-icarus.log','icarus-accel.log',
                  'tb_dma-run.log','tb_dma_netlist-run.log','tb_bus-run.log','tb_bus_netlist-run.log','icarus-tb_dma.log','icarus-tb_bus.log']:
         p=ROOT/'output/design'/name

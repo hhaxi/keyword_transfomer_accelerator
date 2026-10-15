@@ -17,13 +17,16 @@ module kwt_accel(
     output wire [63:0] dma_out_data, input wire dma_out_ready,
     output wire dma_done, dma_fault,
     output wire [31:0] perf_cycles, perf_mac_cycles, perf_fifo_wait,
-    output reg [31:0] perf_second_mac,perf_gelu,perf_saturation
+    output reg [31:0] perf_second_mac,perf_gelu,perf_saturation,perf_gelu_overlap,perf_parameter_wait
 );
     localparam IDLE=4'd0, BREQ=4'd1, BLOAD=4'd2, PRIME=4'd3,
                MAC=4'd4, LAST=4'd5, EMIT=4'd6, DRAIN=4'd7, GELU=4'd8, MERGE=4'd9;
     reg [3:0] state;
     reg second_stage;
-    reg [2:0] gelu_lane;
+    reg [2:0] gelu_lane,gelu_row;
+    reg [4:0] gelu_group;
+    reg gelu_busy;
+    wire merge_fire=state==MERGE && !gelu_busy;
     wire full_ffn=dma_mode && ffn_mode;
     // Full FFN reads both existing parity banks each cycle. Independent FFN1
     // retains its original scalar-k schedule and cycle contract.
@@ -67,7 +70,8 @@ module kwt_accel(
     wire b2sel=load_addr>=20'h50000 && load_addr<20'h50100;
     wire w2write=load && full_ffn && w2sel && load_addr[2:0]==0 && load_addr[15:2]==nw2[13:0] && nw2<16384;
     wire b2write=load && full_ffn && b2sel && load_addr[1:0]==0 && load_addr[7:2]==nb2[5:0] && nb2<64;
-    wire complete_load = nx == 6336 && nw == 16384 && nb == 256 && (!full_ffn || (nw2==16384 && nb2==64));
+    wire complete_load = nx == 6336 && nw == 16384 && nb == 256;
+    wire second_ready=nw2==16384 && nb2==64;
     wire start = !busy && complete_load && (dma_mode ? dma_start :
                  (load && cmd_addr == 0 && cmd_wdata == 1));
     wire clear = dma_mode ? dma_clear :
@@ -97,7 +101,9 @@ module kwt_accel(
         (prefetch_req ? {1'b0,next_group2,prefetch_lane} : {1'b0,col[5:3],bias_lane});
     wire signed [15:0] gelu_result;
     wire gelu_saturated;
-    wire [6:0] ga=state==GELU ? {col[7:3],gelu_lane[2:1]} : k[7:1];
+    // Eight rows per tile reuse the same two parity banks. The scalar GELU
+    // worker owns the write address while first-layer MACs run independently.
+    wire [9:0] ga=gelu_busy ? {gelu_row,gelu_group,gelu_lane[2:1]} : {row[2:0],k[7:1]};
     kwt_gelu activation(.value(merged[gelu_lane]),.input_shift(gelu_input_shift),
         .output_shift(gelu_output_shift),.result(gelu_result),.saturated(gelu_saturated));
     reg xb;
@@ -127,12 +133,12 @@ module kwt_accel(
             .w(second_stage ? wd2[i][1] : wd[i][1]),.bias(32'sd0),.acc(odd_acc[i]));
         // Register the exact partial-sum merge before GELU to avoid adding a
         // 40-bit adder to its combinational path. Payload validity is the FSM.
-        always @(posedge clk) if(state==MERGE) merged[i]<=acc[i]+odd_acc[i];
+        always @(posedge clk) if(merge_fire) merged[i]<=acc[i]+odd_acc[i];
     end
     for(i=0;i<2;i=i+1) begin: intermediate
-        kwt_sram16 #(.AW(7)) gm(.clk(clk),
-            .cs((state==GELU && gelu_lane[0]==(i==1)) || (read_operands && second_stage && (full_ffn || k[0]==(i==1)))),
-            .we(state==GELU),.addr(ga),.din(gelu_result),.dout(gd[i]));
+        kwt_sram16 #(.AW(10)) gm(.clk(clk),
+            .cs((gelu_busy && gelu_lane[0]==(i==1)) || (read_operands && second_stage && (full_ffn || k[0]==(i==1)))),
+            .we(gelu_busy),.addr(ga),.din(gelu_result),.dout(gd[i]));
     end
     endgenerate
     kwt_sram16 #(.AW(10)) bmlo(.clk(clk),.cs(bwrite || (!second_stage && (state==BREQ || prefetch_req))),.we(bwrite),.addr(ba),.din(load_data[15:0]),.dout(bl));
@@ -143,7 +149,8 @@ module kwt_accel(
         .we(b2write),.addr(ba2),.din(load_data[31:16]),.dout(b2h));
     wire [39:0] result = fifo[head];
     assign cmd_ready = !dma_mode && (!rsp_valid || rsp_ready);
-    assign dma_load_ready = !busy;
+    // While L1 is running, only the physically separate W2/b2 banks may load.
+    assign dma_load_ready = !busy || (full_ffn && !second_stage && (w2sel || b2sel));
     assign dma_out_valid = count != 0;
     assign dma_out_data = {{24{result[39]}},result};
     assign dma_done=done;
@@ -163,7 +170,8 @@ module kwt_accel(
             state<=IDLE; second_stage<=0;gelu_lane<=0;nw2<=0;nb2<=0; row<=0; col<=0; k<=0; nx<=0; nw<=0; nb<=0;
             done<=0; fault<=0; cycles<=0; xb<=0; bias_lane<=0; bias_return_lane<=0;
             mac_cycles<=0; fifo_wait<=0;
-            perf_second_mac<=0;perf_gelu<=0;perf_saturation<=0;
+            perf_second_mac<=0;perf_gelu<=0;perf_saturation<=0;perf_gelu_overlap<=0;perf_parameter_wait<=0;
+            gelu_busy<=0;gelu_group<=0;gelu_row<=0;
             head<=0; tail<=0; count<=0; outputs_read<=0;
             rsp_valid<=0; rsp_rdata<=0; rsp_err<=0;
         end else begin
@@ -171,14 +179,19 @@ module kwt_accel(
             if (busy) cycles<=cycles+1;
             if (state==MAC || state==LAST) mac_cycles<=mac_cycles+1;
             if(second_stage && (state==MAC || state==LAST)) perf_second_mac<=perf_second_mac+1;
-            if(state==GELU) begin
+            if(gelu_busy) begin
                 perf_gelu<=perf_gelu+1;
+                if(mac_enable) perf_gelu_overlap<=perf_gelu_overlap+1;
                 if(gelu_saturated) perf_saturation<=perf_saturation+1;
                 gelu_lane<=gelu_lane+1'b1;
-                if(gelu_lane==7) begin
-                    k<=0;
-                    if(col==248) begin second_stage<=1;col<=0;bias_lane<=0;state<=BREQ;end
-                    else begin col<=col+8'd8;state<=PRIME;end
+                if(gelu_lane==7) gelu_busy<=0;
+            end
+            // GELU denotes the tile barrier, not the worker's activity state.
+            if(state==GELU) begin
+                if(!gelu_busy && !second_ready) perf_parameter_wait<=perf_parameter_wait+1;
+                if(!gelu_busy && second_ready) begin
+                    second_stage<=1;row<={row[6:3],3'b000};col<=0;
+                    bias_lane<=0;k<=0;state<=BREQ;
                 end
             end
             if (state==EMIT && !push) fifo_wait<=fifo_wait+1;
@@ -200,9 +213,15 @@ module kwt_accel(
                 else k<=k+k_step;
             end
             if (state==LAST) state<=full_ffn ? MERGE : EMIT;
-            if (state==MERGE) begin
-                if(!second_stage) begin state<=GELU;gelu_lane<=0;end
-                else state<=EMIT;
+            if (merge_fire) begin
+                if(!second_stage) begin
+                    gelu_busy<=1;gelu_lane<=0;gelu_group<=col[7:3];gelu_row<=row[2:0];
+                    k<=0;col<=col+8'd8;state<=PRIME;
+                    if(col==248) begin
+                        if(row[2:0]==7 || row==98) state<=GELU;
+                        else begin row<=row+1'b1;col<=0;end
+                    end
+                end else state<=EMIT;
             end
             case ({push,pop})
                 2'b10: count<=count+5'd8;
@@ -218,7 +237,8 @@ module kwt_accel(
                     col<=col+8'd8;
                     k<=0; state<=PRIME;
                     if(second_stage && col==56) begin
-                        row<=row+1'b1;col<=0;second_stage<=0;bias_lane<=0;state<=BREQ;
+                        row<=row+1'b1;col<=0;
+                        if(row[2:0]==7) begin second_stage<=0;bias_lane<=0;state<=BREQ;end
                     end else if(!second_stage && col==248) row<=row+1'b1;
                 end
             end
@@ -234,13 +254,15 @@ module kwt_accel(
             if (start) begin
                 state<=BREQ; second_stage<=0;gelu_lane<=0; row<=0; col<=0; bias_lane<=0; done<=0; cycles<=0;
                 mac_cycles<=0; fifo_wait<=0;
-                perf_second_mac<=0;perf_gelu<=0;perf_saturation<=0;
+                perf_second_mac<=0;perf_gelu<=0;perf_saturation<=0;perf_gelu_overlap<=0;perf_parameter_wait<=0;
+            gelu_busy<=0;gelu_group<=0;gelu_row<=0;
                 head<=0; tail<=0; count<=0; outputs_read<=0;
             end
             if (clear) begin
                 state<=IDLE; second_stage<=0;gelu_lane<=0;nw2<=0;nb2<=0; nx<=0; nw<=0; nb<=0; done<=0; fault<=0; cycles<=0;
                 mac_cycles<=0; fifo_wait<=0;
-                perf_second_mac<=0;perf_gelu<=0;perf_saturation<=0;
+                perf_second_mac<=0;perf_gelu<=0;perf_saturation<=0;perf_gelu_overlap<=0;perf_parameter_wait<=0;
+            gelu_busy<=0;gelu_group<=0;gelu_row<=0;
                 head<=0; tail<=0; count<=0; outputs_read<=0; bias_lane<=0;
             end
             if (take) begin

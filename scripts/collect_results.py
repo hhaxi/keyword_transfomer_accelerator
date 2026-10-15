@@ -1,6 +1,7 @@
 """Collect observed pass markers, cycles, provenance and explicit PPA limitations."""
 from datetime import datetime, timezone
 import hashlib
+from collections import Counter
 import json
 from pathlib import Path
 import re
@@ -85,10 +86,18 @@ def main():
             if p.is_file() and '__pycache__' not in p.parts and p.suffix in ['.sv','.v','.c','.h','.S','.ld','.json','.py','.sdc']:
                 sources[p.relative_to(ROOT).as_posix()]=hashlib.sha256(p.read_bytes().replace(b'\r\n',b'\n')).hexdigest()
     artifacts={}
-    for name in ['kwt_accel_netlist.v','kwt_dma_netlist.v','kwt_bus_netlist.v','kwt_soc_netlist.v',
+    for name in ['architecture-stat.json','kwt_accel_netlist.json','kwt_accel_netlist.v','kwt_dma_netlist.v','kwt_bus_netlist.v','kwt_soc_netlist.v',
                  'firmware/kwt.elf','mac.vcd','soc.fst','soc.vcd.gz']:
         p=OUT/name
         if p.exists():artifacts[name]={'bytes':p.stat().st_size,'sha256':sha(p)}
+    structure=read_json(OUT/'architecture-stat.json')['design']['num_cells_by_type']
+    if structure.get('kwt_mac40')!=16 or structure.get('kwt_gelu')!=1:raise RuntimeError('Arithmetic unit count changed')
+    modules=read_json(OUT/'kwt_accel_netlist.json')['modules']
+    core=modules['kwt_accel'];default_aw=modules['kwt_sram16']['parameter_default_values']['AW']
+    banks=Counter(int(c['parameters'].get('AW',default_aw),2) for c in core['cells'].values() if c['type']=='kwt_sram16')
+    if banks!={12:2,10:36,7:2}:raise RuntimeError('Unexpected SRAM geometry')
+    hardware={'mac_units':16,'gelu_units':1,'internal_sram_bytes':sum(2*(1<<aw)*n for aw,n in banks.items()),
+              'sram_macros':dict(banks),'architecture_stat_sha256':sha(OUT/'architecture-stat.json')}
     report={'generated_at_utc':datetime.now(timezone.utc).isoformat(),'scope':'Local undergraduate implementation; official acceptance pending',
             'numeric':{'validation_samples':numeric['sample_count'],'layers':12,'layer_nrmse':numeric['layer_nrmse'],
                        'maximum_layer_nrmse':numeric['maximum_layer_nrmse'],'performance_tasks':numeric['performance_tasks'],
@@ -104,6 +113,7 @@ def main():
             'activity':{'full_soc_tasks_captured':0,
                         'official_mapping_coverage_checked':False,'sram_power_model_available':False,
                         'note':'Local activity only; not a twelve-task official power or energy result'},
+            'hardware_structure':hardware,
             'source_hash_convention':'text bytes with CRLF normalized to LF',
             'source_sha256':sources,'artifacts':artifacts}
     calibration=ROOT/'output/calibration/numeric-report.json'

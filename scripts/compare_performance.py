@@ -1,4 +1,4 @@
-"""Verify v6 independent FFN1 mode against preserved v4 workload and timing contract."""
+"""Verify v7 independent FFN1 mode against preserved v4 workload and timing contract."""
 import hashlib
 import json
 import re
@@ -81,7 +81,7 @@ def compare(current):
         'optimized_nominal_tasks_per_second': len(tasks) * hz / after,
         'target_clock_hz': hz, 'timing_closed': False,
         'resources': {'mac_lanes_before': 8, 'mac_lanes_after': 8, 'physical_mac_units_after': 16,
-                      'internal_sram_bytes_before': 53248, 'internal_sram_bytes_after': 87040,
+                      'internal_sram_bytes_before': 53248, 'internal_sram_bytes_after': 90624,
                       'compute_fifo_payload_register_bits': 640,
                       'bias_prefetch_register_bits': 256,
                       'sram_macros_before': 20, 'sram_macros_after': 40,

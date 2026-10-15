@@ -1,0 +1,1805 @@
+{
+  "git_commit": "411a15173dca348be00cb2615661321cb1987199",
+  "ffn": {
+    "scope": "Optional complete FFN (linear1, GELU, linear2), without residual/LayerNorm or attention",
+    "official_metric": false,
+    "tasks": [
+      {
+        "task": 0,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 1,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 2,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 3,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 4,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 5,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 6,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 7,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 8,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 9,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 10,
+        "cycles": 346838,
+        "outputs": 6336
+      },
+      {
+        "task": 11,
+        "cycles": 346838,
+        "outputs": 6336
+      }
+    ],
+    "cycle_analysis": [
+      {
+        "task": 0,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 1,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 2,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 3,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 4,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 5,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 6,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 7,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 8,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 9,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 10,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      },
+      {
+        "task": 11,
+        "host_load": 79495,
+        "dma_load": 26567,
+        "compute_writeback": 240007,
+        "dma_control": 2,
+        "cpu_completion_residual": 767,
+        "profile": {
+          "0": 266576,
+          "1": 26567,
+          "2": 240007,
+          "3": 2,
+          "4": 202752,
+          "5": 0,
+          "6": 240002,
+          "7": 11676,
+          "8": 0,
+          "9": 19872,
+          "10": 12672,
+          "11": 28077,
+          "12": 266571,
+          "13": 266576,
+          "14": 216331
+        },
+        "extra": {
+          "0": 101376,
+          "1": 25344,
+          "2": 0
+        }
+      }
+    ],
+    "numeric": {
+      "split": "validation",
+      "samples": [
+        {
+          "index": 9,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 0,
+          "label": "_unknown_",
+          "file": "three/8910e5ef_nohash_2.wav"
+        },
+        {
+          "index": 5,
+          "label": "yes",
+          "file": "yes/c4cfbe43_nohash_1.wav"
+        },
+        {
+          "index": 18,
+          "label": "no",
+          "file": "no/171b56dc_nohash_1.wav"
+        },
+        {
+          "index": 2,
+          "label": "up",
+          "file": "up/099d52ad_nohash_4.wav"
+        },
+        {
+          "index": 7,
+          "label": "down",
+          "file": "down/3cc595de_nohash_4.wav"
+        },
+        {
+          "index": 13,
+          "label": "left",
+          "file": "left/45692b02_nohash_0.wav"
+        },
+        {
+          "index": 27,
+          "label": "right",
+          "file": "right/ef77b778_nohash_4.wav"
+        },
+        {
+          "index": 10,
+          "label": "on",
+          "file": "on/edc53350_nohash_0.wav"
+        },
+        {
+          "index": 17,
+          "label": "off",
+          "file": "off/099d52ad_nohash_1.wav"
+        },
+        {
+          "index": 48,
+          "label": "stop",
+          "file": "stop/ab1299bb_nohash_0.wav"
+        },
+        {
+          "index": 4,
+          "label": "go",
+          "file": "go/45692b02_nohash_2.wav"
+        },
+        {
+          "index": 11,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 1,
+          "label": "_unknown_",
+          "file": "zero/45692b02_nohash_0.wav"
+        },
+        {
+          "index": 6,
+          "label": "yes",
+          "file": "yes/e11fbc6e_nohash_0.wav"
+        },
+        {
+          "index": 23,
+          "label": "no",
+          "file": "no/e54a0f16_nohash_0.wav"
+        },
+        {
+          "index": 14,
+          "label": "up",
+          "file": "up/50ed8a7b_nohash_0.wav"
+        },
+        {
+          "index": 24,
+          "label": "down",
+          "file": "down/e6e29c47_nohash_0.wav"
+        },
+        {
+          "index": 28,
+          "label": "left",
+          "file": "left/6940f7f3_nohash_0.wav"
+        },
+        {
+          "index": 31,
+          "label": "right",
+          "file": "right/ce0cb033_nohash_0.wav"
+        },
+        {
+          "index": 15,
+          "label": "on",
+          "file": "on/4340d369_nohash_0.wav"
+        },
+        {
+          "index": 36,
+          "label": "off",
+          "file": "off/3b853f44_nohash_1.wav"
+        },
+        {
+          "index": 66,
+          "label": "stop",
+          "file": "stop/bdee441c_nohash_4.wav"
+        },
+        {
+          "index": 44,
+          "label": "go",
+          "file": "go/6071a214_nohash_2.wav"
+        },
+        {
+          "index": 16,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 3,
+          "label": "_unknown_",
+          "file": "eight/56eb74ae_nohash_3.wav"
+        },
+        {
+          "index": 8,
+          "label": "yes",
+          "file": "yes/8dc18a75_nohash_2.wav"
+        },
+        {
+          "index": 29,
+          "label": "no",
+          "file": "no/171edea9_nohash_0.wav"
+        },
+        {
+          "index": 22,
+          "label": "up",
+          "file": "up/73f20b00_nohash_0.wav"
+        },
+        {
+          "index": 32,
+          "label": "down",
+          "file": "down/cc8b3228_nohash_3.wav"
+        },
+        {
+          "index": 42,
+          "label": "left",
+          "file": "left/c24d96eb_nohash_0.wav"
+        },
+        {
+          "index": 39,
+          "label": "right",
+          "file": "right/e11fbc6e_nohash_3.wav"
+        },
+        {
+          "index": 47,
+          "label": "on",
+          "file": "on/605ed0ff_nohash_3.wav"
+        },
+        {
+          "index": 40,
+          "label": "off",
+          "file": "off/db9d52d2_nohash_1.wav"
+        },
+        {
+          "index": 72,
+          "label": "stop",
+          "file": "stop/1a9afd33_nohash_1.wav"
+        },
+        {
+          "index": 46,
+          "label": "go",
+          "file": "go/a1dd919f_nohash_0.wav"
+        },
+        {
+          "index": 21,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 12,
+          "label": "_unknown_",
+          "file": "nine/e54a0f16_nohash_0.wav"
+        },
+        {
+          "index": 19,
+          "label": "yes",
+          "file": "yes/4e6902d0_nohash_0.wav"
+        },
+        {
+          "index": 34,
+          "label": "no",
+          "file": "no/6d818f6c_nohash_3.wav"
+        },
+        {
+          "index": 25,
+          "label": "up",
+          "file": "up/50f55535_nohash_2.wav"
+        },
+        {
+          "index": 53,
+          "label": "down",
+          "file": "down/439c84f4_nohash_1.wav"
+        },
+        {
+          "index": 50,
+          "label": "left",
+          "file": "left/3c4aa5ef_nohash_0.wav"
+        },
+        {
+          "index": 41,
+          "label": "right",
+          "file": "right/3a929277_nohash_3.wav"
+        },
+        {
+          "index": 52,
+          "label": "on",
+          "file": "on/edc53350_nohash_2.wav"
+        },
+        {
+          "index": 45,
+          "label": "off",
+          "file": "off/364c0853_nohash_0.wav"
+        },
+        {
+          "index": 99,
+          "label": "stop",
+          "file": "stop/7195ffa6_nohash_0.wav"
+        },
+        {
+          "index": 74,
+          "label": "go",
+          "file": "go/856eb138_nohash_3.wav"
+        },
+        {
+          "index": 33,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 37,
+          "label": "_unknown_",
+          "file": "seven/7c1d8533_nohash_2.wav"
+        },
+        {
+          "index": 20,
+          "label": "yes",
+          "file": "yes/32ad5b65_nohash_3.wav"
+        },
+        {
+          "index": 35,
+          "label": "no",
+          "file": "no/2e0d80f7_nohash_0.wav"
+        },
+        {
+          "index": 26,
+          "label": "up",
+          "file": "up/1657c9fa_nohash_1.wav"
+        },
+        {
+          "index": 56,
+          "label": "down",
+          "file": "down/ec21c46b_nohash_0.wav"
+        },
+        {
+          "index": 51,
+          "label": "left",
+          "file": "left/ad63d93c_nohash_0.wav"
+        },
+        {
+          "index": 69,
+          "label": "right",
+          "file": "right/6c0f6493_nohash_3.wav"
+        },
+        {
+          "index": 61,
+          "label": "on",
+          "file": "on/264f471d_nohash_3.wav"
+        },
+        {
+          "index": 49,
+          "label": "off",
+          "file": "off/ccca5655_nohash_1.wav"
+        },
+        {
+          "index": 100,
+          "label": "stop",
+          "file": "stop/56eb74ae_nohash_0.wav"
+        },
+        {
+          "index": 84,
+          "label": "go",
+          "file": "go/3c4aa5ef_nohash_4.wav"
+        },
+        {
+          "index": 59,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 38,
+          "label": "_unknown_",
+          "file": "bed/3cc595de_nohash_0.wav"
+        },
+        {
+          "index": 30,
+          "label": "yes",
+          "file": "yes/f822b9bf_nohash_0.wav"
+        },
+        {
+          "index": 43,
+          "label": "no",
+          "file": "no/a9ca1818_nohash_3.wav"
+        },
+        {
+          "index": 60,
+          "label": "up",
+          "file": "up/c842b5e4_nohash_2.wav"
+        },
+        {
+          "index": 58,
+          "label": "down",
+          "file": "down/73f20b00_nohash_3.wav"
+        },
+        {
+          "index": 55,
+          "label": "left",
+          "file": "left/1816b768_nohash_0.wav"
+        },
+        {
+          "index": 81,
+          "label": "right",
+          "file": "right/48bfde8e_nohash_0.wav"
+        },
+        {
+          "index": 79,
+          "label": "on",
+          "file": "on/ad63d93c_nohash_3.wav"
+        },
+        {
+          "index": 57,
+          "label": "off",
+          "file": "off/e95c70e2_nohash_0.wav"
+        },
+        {
+          "index": 113,
+          "label": "stop",
+          "file": "stop/ae927455_nohash_0.wav"
+        },
+        {
+          "index": 88,
+          "label": "go",
+          "file": "go/8dc18a75_nohash_1.wav"
+        },
+        {
+          "index": 65,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 75,
+          "label": "_unknown_",
+          "file": "five/856eb138_nohash_3.wav"
+        },
+        {
+          "index": 70,
+          "label": "yes",
+          "file": "yes/ccca5655_nohash_0.wav"
+        },
+        {
+          "index": 54,
+          "label": "no",
+          "file": "no/0ea9c8ce_nohash_1.wav"
+        },
+        {
+          "index": 67,
+          "label": "up",
+          "file": "up/ec74a8a5_nohash_0.wav"
+        },
+        {
+          "index": 64,
+          "label": "down",
+          "file": "down/099d52ad_nohash_3.wav"
+        },
+        {
+          "index": 77,
+          "label": "left",
+          "file": "left/39afb88e_nohash_0.wav"
+        },
+        {
+          "index": 82,
+          "label": "right",
+          "file": "right/bc196f81_nohash_0.wav"
+        },
+        {
+          "index": 98,
+          "label": "on",
+          "file": "on/e11fbc6e_nohash_0.wav"
+        },
+        {
+          "index": 68,
+          "label": "off",
+          "file": "off/b487da60_nohash_1.wav"
+        },
+        {
+          "index": 132,
+          "label": "stop",
+          "file": "stop/525eaa62_nohash_4.wav"
+        },
+        {
+          "index": 108,
+          "label": "go",
+          "file": "go/ce0cb033_nohash_1.wav"
+        },
+        {
+          "index": 78,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 80,
+          "label": "_unknown_",
+          "file": "tree/28ef2a01_nohash_0.wav"
+        },
+        {
+          "index": 76,
+          "label": "yes",
+          "file": "yes/6c0f6493_nohash_4.wav"
+        },
+        {
+          "index": 62,
+          "label": "no",
+          "file": "no/56eb74ae_nohash_1.wav"
+        },
+        {
+          "index": 96,
+          "label": "up",
+          "file": "up/171edea9_nohash_3.wav"
+        },
+        {
+          "index": 71,
+          "label": "down",
+          "file": "down/6071a214_nohash_0.wav"
+        },
+        {
+          "index": 91,
+          "label": "left",
+          "file": "left/439c84f4_nohash_3.wav"
+        },
+        {
+          "index": 86,
+          "label": "right",
+          "file": "right/3cc595de_nohash_1.wav"
+        },
+        {
+          "index": 124,
+          "label": "on",
+          "file": "on/3c4aa5ef_nohash_0.wav"
+        },
+        {
+          "index": 87,
+          "label": "off",
+          "file": "off/6a27a9bf_nohash_1.wav"
+        },
+        {
+          "index": 160,
+          "label": "stop",
+          "file": "stop/7c1d8533_nohash_0.wav"
+        },
+        {
+          "index": 133,
+          "label": "go",
+          "file": "go/0ab3b47d_nohash_0.wav"
+        },
+        {
+          "index": 89,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 83,
+          "label": "_unknown_",
+          "file": "seven/d874a786_nohash_0.wav"
+        },
+        {
+          "index": 92,
+          "label": "yes",
+          "file": "yes/439c84f4_nohash_0.wav"
+        },
+        {
+          "index": 63,
+          "label": "no",
+          "file": "no/a9ca1818_nohash_0.wav"
+        },
+        {
+          "index": 123,
+          "label": "up",
+          "file": "up/ef77b778_nohash_1.wav"
+        },
+        {
+          "index": 73,
+          "label": "down",
+          "file": "down/3c4aa5ef_nohash_2.wav"
+        },
+        {
+          "index": 97,
+          "label": "left",
+          "file": "left/ec74a8a5_nohash_1.wav"
+        },
+        {
+          "index": 93,
+          "label": "right",
+          "file": "right/1e02ffc5_nohash_2.wav"
+        },
+        {
+          "index": 142,
+          "label": "on",
+          "file": "on/32ad5b65_nohash_1.wav"
+        },
+        {
+          "index": 115,
+          "label": "off",
+          "file": "off/16db1582_nohash_1.wav"
+        },
+        {
+          "index": 166,
+          "label": "stop",
+          "file": "stop/dca2797e_nohash_4.wav"
+        },
+        {
+          "index": 141,
+          "label": "go",
+          "file": "go/45692b02_nohash_1.wav"
+        },
+        {
+          "index": 101,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 95,
+          "label": "_unknown_",
+          "file": "four/bdb26021_nohash_0.wav"
+        },
+        {
+          "index": 94,
+          "label": "yes",
+          "file": "yes/7fd25f7c_nohash_0.wav"
+        },
+        {
+          "index": 85,
+          "label": "no",
+          "file": "no/73f20b00_nohash_3.wav"
+        },
+        {
+          "index": 138,
+          "label": "up",
+          "file": "up/23ad12d8_nohash_1.wav"
+        },
+        {
+          "index": 102,
+          "label": "down",
+          "file": "down/ad63d93c_nohash_4.wav"
+        },
+        {
+          "index": 103,
+          "label": "left",
+          "file": "left/3cc595de_nohash_2.wav"
+        },
+        {
+          "index": 118,
+          "label": "right",
+          "file": "right/56eb74ae_nohash_2.wav"
+        },
+        {
+          "index": 145,
+          "label": "on",
+          "file": "on/27b9a84f_nohash_0.wav"
+        },
+        {
+          "index": 116,
+          "label": "off",
+          "file": "off/ccca5655_nohash_4.wav"
+        },
+        {
+          "index": 171,
+          "label": "stop",
+          "file": "stop/f822b9bf_nohash_4.wav"
+        },
+        {
+          "index": 144,
+          "label": "go",
+          "file": "go/f84762e5_nohash_0.wav"
+        }
+      ],
+      "sample_count": 120,
+      "layer_nrmse": [
+        0.0012380188633452976,
+        0.0009704467398764862,
+        0.0011696086516508818,
+        0.0010578582119895048,
+        0.0011593009103117813,
+        0.0011702152228666635,
+        0.0007973727029377915,
+        0.001283197610686409,
+        0.0013981904367536843,
+        0.0012378303943320773,
+        0.001180694389581065,
+        0.0009074105883748982
+      ],
+      "maximum_layer_nrmse": 0.0013981904367536843,
+      "gelu_max_absolute_error": [
+        0.0013605356216430664,
+        0.0014864206314086914,
+        0.001366257667541504,
+        0.0014087408781051636,
+        0.0013401508331298828,
+        0.0013956427574157715,
+        0.00137406587600708,
+        0.0013228654861450195,
+        0.001380324363708496,
+        0.0013241767883300781,
+        0.001419663429260254,
+        0.0014308691024780273
+      ],
+      "gelu_saturation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "performance_tasks": [
+        {
+          "task": 0,
+          "layer": 0,
+          "sample": {
+            "index": 9,
+            "label": "_silence_",
+            "file": "silence"
+          },
+          "nrmse": 0.0006608199055917856
+        },
+        {
+          "task": 1,
+          "layer": 1,
+          "sample": {
+            "index": 0,
+            "label": "_unknown_",
+            "file": "three/8910e5ef_nohash_2.wav"
+          },
+          "nrmse": 0.0012307798255022252
+        },
+        {
+          "task": 2,
+          "layer": 2,
+          "sample": {
+            "index": 5,
+            "label": "yes",
+            "file": "yes/c4cfbe43_nohash_1.wav"
+          },
+          "nrmse": 0.0010182812559729863
+        },
+        {
+          "task": 3,
+          "layer": 3,
+          "sample": {
+            "index": 18,
+            "label": "no",
+            "file": "no/171b56dc_nohash_1.wav"
+          },
+          "nrmse": 0.0008852954178339836
+        },
+        {
+          "task": 4,
+          "layer": 4,
+          "sample": {
+            "index": 2,
+            "label": "up",
+            "file": "up/099d52ad_nohash_4.wav"
+          },
+          "nrmse": 0.0010334218207411034
+        },
+        {
+          "task": 5,
+          "layer": 5,
+          "sample": {
+            "index": 7,
+            "label": "down",
+            "file": "down/3cc595de_nohash_4.wav"
+          },
+          "nrmse": 0.0011386005375456556
+        },
+        {
+          "task": 6,
+          "layer": 6,
+          "sample": {
+            "index": 13,
+            "label": "left",
+            "file": "left/45692b02_nohash_0.wav"
+          },
+          "nrmse": 0.0008368586125606278
+        },
+        {
+          "task": 7,
+          "layer": 7,
+          "sample": {
+            "index": 27,
+            "label": "right",
+            "file": "right/ef77b778_nohash_4.wav"
+          },
+          "nrmse": 0.0012940908732095096
+        },
+        {
+          "task": 8,
+          "layer": 8,
+          "sample": {
+            "index": 10,
+            "label": "on",
+            "file": "on/edc53350_nohash_0.wav"
+          },
+          "nrmse": 0.0014361583825572564
+        },
+        {
+          "task": 9,
+          "layer": 9,
+          "sample": {
+            "index": 17,
+            "label": "off",
+            "file": "off/099d52ad_nohash_1.wav"
+          },
+          "nrmse": 0.001013989208806095
+        },
+        {
+          "task": 10,
+          "layer": 10,
+          "sample": {
+            "index": 48,
+            "label": "stop",
+            "file": "stop/ab1299bb_nohash_0.wav"
+          },
+          "nrmse": 0.0013214180307958318
+        },
+        {
+          "task": 11,
+          "layer": 11,
+          "sample": {
+            "index": 4,
+            "label": "go",
+            "file": "go/45692b02_nohash_2.wav"
+          },
+          "nrmse": 0.0009684285531306534
+        }
+      ],
+      "engineering_threshold": 0.03,
+      "passed": true,
+      "official_metric": false,
+      "note": "Optional full FFN engineering metric, not undergraduate mandatory FFN1 score"
+    },
+    "calibration": {
+      "split": "training",
+      "samples": [
+        {
+          "index": 3,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 2,
+          "label": "_unknown_",
+          "file": "one/85ac0c1b_nohash_0.wav"
+        },
+        {
+          "index": 17,
+          "label": "yes",
+          "file": "yes/3102f006_nohash_4.wav"
+        },
+        {
+          "index": 19,
+          "label": "no",
+          "file": "no/f953e1af_nohash_3.wav"
+        },
+        {
+          "index": 1,
+          "label": "up",
+          "file": "up/7e556a2c_nohash_0.wav"
+        },
+        {
+          "index": 38,
+          "label": "down",
+          "file": "down/9a76f8c3_nohash_1.wav"
+        },
+        {
+          "index": 0,
+          "label": "left",
+          "file": "left/ff4ed4f3_nohash_0.wav"
+        },
+        {
+          "index": 5,
+          "label": "right",
+          "file": "right/87d5e978_nohash_1.wav"
+        },
+        {
+          "index": 14,
+          "label": "on",
+          "file": "on/72aa7259_nohash_1.wav"
+        },
+        {
+          "index": 23,
+          "label": "off",
+          "file": "off/ac9dee0e_nohash_4.wav"
+        },
+        {
+          "index": 6,
+          "label": "stop",
+          "file": "stop/1496195a_nohash_1.wav"
+        },
+        {
+          "index": 4,
+          "label": "go",
+          "file": "go/c25a032b_nohash_0.wav"
+        },
+        {
+          "index": 21,
+          "label": "_silence_",
+          "file": "silence"
+        },
+        {
+          "index": 13,
+          "label": "_unknown_",
+          "file": "one/6bf5baf3_nohash_2.wav"
+        },
+        {
+          "index": 32,
+          "label": "yes",
+          "file": "yes/4954abe8_nohash_0.wav"
+        },
+        {
+          "index": 27,
+          "label": "no",
+          "file": "no/a8688b67_nohash_1.wav"
+        },
+        {
+          "index": 12,
+          "label": "up",
+          "file": "up/0ff728b5_nohash_1.wav"
+        },
+        {
+          "index": 40,
+          "label": "down",
+          "file": "down/2b5e346d_nohash_0.wav"
+        },
+        {
+          "index": 9,
+          "label": "left",
+          "file": "left/c5a1e46c_nohash_2.wav"
+        },
+        {
+          "index": 11,
+          "label": "right",
+          "file": "right/54aecbd5_nohash_1.wav"
+        },
+        {
+          "index": 16,
+          "label": "on",
+          "file": "on/4c6944d6_nohash_2.wav"
+        },
+        {
+          "index": 39,
+          "label": "off",
+          "file": "off/5a98d407_nohash_3.wav"
+        },
+        {
+          "index": 37,
+          "label": "stop",
+          "file": "stop/06f6c194_nohash_0.wav"
+        },
+        {
+          "index": 7,
+          "label": "go",
+          "file": "go/c948d727_nohash_3.wav"
+        }
+      ],
+      "sample_count": 24,
+      "layer_nrmse": [
+        0.001219628918687665,
+        0.0010095475529418299,
+        0.0011943094295159338,
+        0.0010611993966386816,
+        0.001169958366258445,
+        0.0011932173825778829,
+        0.0008166467146363428,
+        0.0013023564867739304,
+        0.0014392719330458947,
+        0.0012247877875633793,
+        0.0011693412177463433,
+        0.0009219584660843908
+      ],
+      "maximum_layer_nrmse": 0.0014392719330458947,
+      "gelu_max_absolute_error": [
+        0.0013157129287719727,
+        0.001352936029434204,
+        0.0013296008110046387,
+        0.001328110694885254,
+        0.0012561678886413574,
+        0.0012829899787902832,
+        0.0012912750244140625,
+        0.0012552738189697266,
+        0.001350998878479004,
+        0.0013374090194702148,
+        0.0013432502746582031,
+        0.0013363361358642578
+      ],
+      "gelu_saturation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "performance_tasks": [
+        {
+          "task": 0,
+          "layer": 0,
+          "sample": {
+            "index": 3,
+            "label": "_silence_",
+            "file": "silence"
+          },
+          "nrmse": 0.0006608199055917856
+        },
+        {
+          "task": 1,
+          "layer": 1,
+          "sample": {
+            "index": 2,
+            "label": "_unknown_",
+            "file": "one/85ac0c1b_nohash_0.wav"
+          },
+          "nrmse": 0.0011872105414574793
+        },
+        {
+          "task": 2,
+          "layer": 2,
+          "sample": {
+            "index": 17,
+            "label": "yes",
+            "file": "yes/3102f006_nohash_4.wav"
+          },
+          "nrmse": 0.0015007207128881958
+        },
+        {
+          "task": 3,
+          "layer": 3,
+          "sample": {
+            "index": 19,
+            "label": "no",
+            "file": "no/f953e1af_nohash_3.wav"
+          },
+          "nrmse": 0.001292675811140194
+        },
+        {
+          "task": 4,
+          "layer": 4,
+          "sample": {
+            "index": 1,
+            "label": "up",
+            "file": "up/7e556a2c_nohash_0.wav"
+          },
+          "nrmse": 0.001371026410289951
+        },
+        {
+          "task": 5,
+          "layer": 5,
+          "sample": {
+            "index": 38,
+            "label": "down",
+            "file": "down/9a76f8c3_nohash_1.wav"
+          },
+          "nrmse": 0.0012227675877753345
+        },
+        {
+          "task": 6,
+          "layer": 6,
+          "sample": {
+            "index": 0,
+            "label": "left",
+            "file": "left/ff4ed4f3_nohash_0.wav"
+          },
+          "nrmse": 0.0007822502559237739
+        },
+        {
+          "task": 7,
+          "layer": 7,
+          "sample": {
+            "index": 5,
+            "label": "right",
+            "file": "right/87d5e978_nohash_1.wav"
+          },
+          "nrmse": 0.0013329933764564493
+        },
+        {
+          "task": 8,
+          "layer": 8,
+          "sample": {
+            "index": 14,
+            "label": "on",
+            "file": "on/72aa7259_nohash_1.wav"
+          },
+          "nrmse": 0.0011250602092937002
+        },
+        {
+          "task": 9,
+          "layer": 9,
+          "sample": {
+            "index": 23,
+            "label": "off",
+            "file": "off/ac9dee0e_nohash_4.wav"
+          },
+          "nrmse": 0.0011851515031228166
+        },
+        {
+          "task": 10,
+          "layer": 10,
+          "sample": {
+            "index": 6,
+            "label": "stop",
+            "file": "stop/1496195a_nohash_1.wav"
+          },
+          "nrmse": 0.00118848779145471
+        },
+        {
+          "task": 11,
+          "layer": 11,
+          "sample": {
+            "index": 4,
+            "label": "go",
+            "file": "go/c25a032b_nohash_0.wav"
+          },
+          "nrmse": 0.0009620907757005329
+        }
+      ],
+      "engineering_threshold": 0.03,
+      "passed": true,
+      "official_metric": false,
+      "note": "Optional full FFN engineering metric, not undergraduate mandatory FFN1 score"
+    },
+    "performance": {
+      "total_cycles": 4162056,
+      "target_clock_hz": 150000000,
+      "nominal_tasks_per_second": 432.47856347920356,
+      "timing_closed": false,
+      "macs_per_task": 3244032,
+      "output_elements": 6336
+    },
+    "component_tests": {
+      "tb_ffn-run.log": {
+        "passed": true,
+        "sha256": "5ec7f002605c5bc823cd42cf8ca6b0707a1e20589f7730a70472d966752f8103"
+      },
+      "tb_ffn_edges-run.log": {
+        "passed": true,
+        "sha256": "b171344e40b06489785314cb101a2ae27497e28b883f063b429dd4c9283d736b"
+      },
+      "tb_ffn_edges_netlist-run.log": {
+        "passed": true,
+        "sha256": "b171344e40b06489785314cb101a2ae27497e28b883f063b429dd4c9283d736b"
+      },
+      "icarus-tb_ffn_edges.log": {
+        "passed": true,
+        "sha256": "cf8188fd34879b177cd9562bc6078ea0d9e0e5ef4da8032a53290a6da1d17244"
+      },
+      "tb_ffn_netlist-run.log": {
+        "passed": true,
+        "sha256": "5ec7f002605c5bc823cd42cf8ca6b0707a1e20589f7730a70472d966752f8103"
+      },
+      "icarus-tb_ffn.log": {
+        "passed": true,
+        "sha256": "789539ef020434d0df58b81fddbb002b931c27bb16e5a7998c2275c1cb87cfc0"
+      },
+      "ffn-numeric-tests.log": {
+        "passed": true,
+        "sha256": "d5500f87027c87c49b30b5ff539bd88fa7500f35005894e567e2ca29719517e6"
+      },
+      "tb_gelu-run.log": {
+        "passed": true,
+        "sha256": "a9ef81d1fa7806a68ca938e14eedc5b5e34ebb11709ee19726099e33b39de209"
+      },
+      "tb_gelu_netlist-run.log": {
+        "passed": true,
+        "sha256": "a9ef81d1fa7806a68ca938e14eedc5b5e34ebb11709ee19726099e33b39de209"
+      },
+      "icarus-tb_gelu.log": {
+        "passed": true,
+        "sha256": "78c213d863e1aef99cddb96e0d786072b3ac87383bd3c67a8cfc2103a009862f"
+      },
+      "tb_soc_ffn-run.log": {
+        "passed": true,
+        "sha256": "c2acfd508a0e5e85bd77ea069ad96ac4cd03e9f8a4c276e68dc01a2aab9ab727"
+      },
+      "tb_soc_ffn_netlist-run.log": {
+        "passed": true,
+        "sha256": "c2acfd508a0e5e85bd77ea069ad96ac4cd03e9f8a4c276e68dc01a2aab9ab727"
+      }
+    },
+    "mode_switch_without_reset_verified": true,
+    "full_range_cases": [
+      [
+        "0",
+        "6336",
+        "25344"
+      ],
+      [
+        "1",
+        "6336",
+        "12672"
+      ],
+      [
+        "2",
+        "6336",
+        "12573"
+      ]
+    ],
+    "full_range_vector_sha256": {
+      "output/ffn-edges/case_0/b.hex": "adb9dae361eeb7c6a2633787aeda827fffadf40874e270a2f86c37a46115e340",
+      "output/ffn-edges/case_0/b2.hex": "ac533d723c3fd8eecefa8c7fae24cf9fc8c9c575db8f38b2865869dcf8257c16",
+      "output/ffn-edges/case_0/expected.hex": "8f8b1d414890a8ffa54cd6cea1fb17d5e5863c3250ac635affc408629f5de8c6",
+      "output/ffn-edges/case_0/sat.hex": "1555447901397a634052e3dd21704f2d6ad7d0161ec9b3560ac58b5e529a3a65",
+      "output/ffn-edges/case_0/w.hex": "05814f057b64a364492365e68327d266f7f92432a45bf024ecca8dd779b893ae",
+      "output/ffn-edges/case_0/w2.hex": "764d6af4e0cb571b484cca7d4157a904f55eef461204ac253881ee237ca8b921",
+      "output/ffn-edges/case_0/x.hex": "7177bff59e0f18adcb0d11e29a3d14c9f9a5568f348eeb4634b6228d75f5cd3c",
+      "output/ffn-edges/case_1/b.hex": "adb9dae361eeb7c6a2633787aeda827fffadf40874e270a2f86c37a46115e340",
+      "output/ffn-edges/case_1/b2.hex": "ac533d723c3fd8eecefa8c7fae24cf9fc8c9c575db8f38b2865869dcf8257c16",
+      "output/ffn-edges/case_1/expected.hex": "26e5710383c07e36bda090c735838f4dd4593f54db1e9e49c20eae79dccf15c2",
+      "output/ffn-edges/case_1/sat.hex": "8a7f61e05895608fb756d975e88144c39a4ba292dedbba063851cd9cd6547bba",
+      "output/ffn-edges/case_1/w.hex": "76a615032634b44a900bd246f02431dd8c9a0e9548deb1c3735631850f789ca4",
+      "output/ffn-edges/case_1/w2.hex": "76a615032634b44a900bd246f02431dd8c9a0e9548deb1c3735631850f789ca4",
+      "output/ffn-edges/case_1/x.hex": "75a443d2f2db38e3b0a3951a945578fe3e3107fbff6a6c5a369d30a4fd35a4ff",
+      "output/ffn-edges/case_2/b.hex": "adb9dae361eeb7c6a2633787aeda827fffadf40874e270a2f86c37a46115e340",
+      "output/ffn-edges/case_2/b2.hex": "ac533d723c3fd8eecefa8c7fae24cf9fc8c9c575db8f38b2865869dcf8257c16",
+      "output/ffn-edges/case_2/expected.hex": "b82308295c1493fb71b08ce9c99273eff87a0f5186c0badb517583bf32b7b63e",
+      "output/ffn-edges/case_2/sat.hex": "a96df7a9321a98afb890558e1f6e86803756852804213aa57554b1fa6b88fc04",
+      "output/ffn-edges/case_2/w.hex": "ebd5a8f879f91ff6d375f22e6ebddd3ee0db2dcbd220b957d5e383d5ef5a5218",
+      "output/ffn-edges/case_2/w2.hex": "63b20c6a7afcc72cf0fa479472a834c097fbcd48bd9d8795ec0e6eedcce0abca",
+      "output/ffn-edges/case_2/x.hex": "107530324e8e45b3013de7aa6c6b76ff808651aea96b87e536c8790ed3506e83"
+    },
+    "intermediate_shared_sram_transactions": 0,
+    "row_buffer_bytes": 512,
+    "internal_sram_bytes": 87040,
+    "macro_instances": {
+      "16x4096_SP": 2,
+      "16x1024_SP": 34,
+      "16x128_SP": 4
+    },
+    "ffn_vector_manifest_sha256": "03f18a1291dad8561c748739a597b18145ffdc877978c0ded163e885e43c1022",
+    "note": "Do not compare full FFN tasks/s directly against the undergraduate FFN1 throughput score."
+  },
+  "generic_synthesis": {
+    "accelerator": {
+      "num_wires": 43325,
+      "num_wire_bits": 49133,
+      "num_pub_wires": 250,
+      "num_pub_wire_bits": 5112,
+      "num_ports": 33,
+      "num_port_bits": 424,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 46115,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 689,
+        "$_AND_": 9010,
+        "$_DFFE_PN0P_": 964,
+        "$_DFFE_PP_": 1216,
+        "$_DFF_PN0_": 25,
+        "$_MUX_": 2355,
+        "$_NAND_": 17529,
+        "$_NOR_": 222,
+        "$_NOT_": 110,
+        "$_ORNOT_": 394,
+        "$_OR_": 1757,
+        "$_XNOR_": 1745,
+        "$_XOR_": 10042,
+        "$scopeinfo": 17,
+        "kwt_sram16": 40
+      }
+    },
+    "dma_engine": {
+      "num_wires": 49532,
+      "num_wire_bits": 56627,
+      "num_pub_wires": 319,
+      "num_pub_wire_bits": 6418,
+      "num_ports": 22,
+      "num_port_bits": 202,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 53064,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 814,
+        "$_AND_": 11382,
+        "$_DFFE_PN0P_": 1747,
+        "$_DFFE_PN1P_": 1,
+        "$_DFFE_PP_": 1216,
+        "$_DFF_PN0_": 29,
+        "$_MUX_": 2783,
+        "$_NAND_": 19274,
+        "$_NOR_": 371,
+        "$_NOT_": 166,
+        "$_ORNOT_": 606,
+        "$_OR_": 2103,
+        "$_XNOR_": 2012,
+        "$_XOR_": 10502,
+        "$scopeinfo": 18,
+        "kwt_sram16": 40
+      }
+    },
+    "bus": {
+      "num_wires": 402,
+      "num_wire_bits": 957,
+      "num_pub_wires": 66,
+      "num_pub_wire_bits": 620,
+      "num_ports": 48,
+      "num_port_bits": 501,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 453,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 11,
+        "$_AND_": 74,
+        "$_DFFE_PN0P_": 9,
+        "$_DFF_PN0_": 2,
+        "$_MUX_": 47,
+        "$_NAND_": 279,
+        "$_NOR_": 12,
+        "$_NOT_": 4,
+        "$_ORNOT_": 6,
+        "$_OR_": 9
+      }
+    },
+    "soc": {
+      "num_wires": 69371,
+      "num_wire_bits": 114621,
+      "num_pub_wires": 4511,
+      "num_pub_wire_bits": 49137,
+      "num_ports": 14,
+      "num_port_bits": 141,
+      "num_memories": 0,
+      "num_memory_bits": 0,
+      "num_processes": 0,
+      "num_cells": 72219,
+      "num_submodules": 0,
+      "num_cells_by_type": {
+        "$_ANDNOT_": 1236,
+        "$_AND_": 17205,
+        "$_DFFE_PN0P_": 2472,
+        "$_DFFE_PN1P_": 9,
+        "$_DFFE_PP_": 2658,
+        "$_DFF_PN0_": 36,
+        "$_DFF_PN1_": 1,
+        "$_DLATCH_N_": 8,
+        "$_MUX_": 3736,
+        "$_NAND_": 26641,
+        "$_NOR_": 647,
+        "$_NOT_": 307,
+        "$_ORNOT_": 1089,
+        "$_OR_": 2698,
+        "$_SDFFCE_PN0P_": 2,
+        "$_XNOR_": 2234,
+        "$_XOR_": 10905,
+        "$scopeinfo": 292,
+        "kwt_shared_sram": 1,
+        "kwt_sram16": 40,
+        "sirv_gnrl_ram": 2
+      }
+    }
+  },
+  "source_sha256": {
+    "rtl/kwt_accel.sv": "0bb3e4c46a91d17112d7c91712c64ffcf6313d35d7486a27f83e04d316a6ac4e",
+    "rtl/kwt_dma.sv": "21084c22ace9f9900579675c765c609594c379db30e0474c56b35c9c80fd931b",
+    "rtl/kwt_gelu.sv": "c90731e826a9e8878d2d15c905a30017aaa9d7af116baf72984a980aae873a7b",
+    "rtl/kwt_mac40.sv": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63",
+    "rtl/kwt_sram16.sv": "3c14d9652dc4550a016274910d1b6a4721d0e1e84621a57fe6355e00a9ea6a9d",
+    "integration/e203_ram_boundary.v": "50ac226f2ec35fb889c54e9863fc54954325cb986aceedb7bd64569d27689a9e",
+    "integration/kwt_bus_fabric.sv": "3cc23fd51f33d9e17e817be066d439e8706f82b9958d26ffdae1f6ae0c647277",
+    "integration/kwt_shared_sram.sv": "89aee640754231540e2689b3f442d70bcf1b9d11677cbe3ed5aae118491ac268",
+    "integration/kwt_soc.sv": "4920d021a803965c3d054c7aee036cf86d41079ec466d1ff84ad2ec6e32b2451",
+    "integration/kwt_system_bus.sv": "bfe7fcbc8aac1f7a248d40a9955af3e6f4fdfab0b7c16086e478445acdadbedd",
+    "firmware/kwt_driver.c": "1dc00a39d5689ceaba2175dafb504c0ef9b00d33dec732b1923def9dfe0abed1",
+    "firmware/kwt_driver.h": "28733c59b2f1272c514aadfb678c3b6ad692da16c15fbde08319a1eeb7de5a93",
+    "firmware/link.ld": "6b92fa96a24bec6a9af0a6a74c1d542fa12fbdf7e65a595bd010c55e361d2e9b",
+    "firmware/main.c": "295a7e6c9b00cc2428eee47e2827a7b7a99df390125cb1431e4badddc19aa9d6",
+    "firmware/start.S": "14cd16d89ca9e5f14c8f00686adfa6e64c318b6116ac04ceb4be505eda9781ac",
+    "model/ffn-format.json": "0f4d0dc4a09ba946e0de367c4adbb2f842898bd7d081eefdbe0240b876e60441",
+    "model/ffn_numeric.py": "81494b665a4dffa1c44ce64d834245aab94213173da32a4409884b833030c1e6",
+    "model/format.json": "612f9574e0495971b0577213d8beec333e2cb852cd1ce1606c0c4e873ea76480",
+    "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
+    "model/training-samples.json": "78fcb117633c4e800169465d9034cc4819334f365ae5de0fcdd3632d194fd59e",
+    "model/validation-samples.json": "12ad0863f30f9bdb8ffca02fe5cd2c24e70ea5fc8740d820624cd2c1ab9ced69",
+    "tests/tb_accel.sv": "cc66685b569a3182e9fdd7723bea5538f49fdce0b739765b6a98f61981c391ab",
+    "tests/tb_bus.sv": "b434b839f70641b7d10a29d2355c0f784d69b1bad53550b42d1a320cfb4a4a35",
+    "tests/tb_dma.sv": "9868e23799d22e310d8e4b96d500bdb41f1c30fb1d0d57273ba27cad9964e8a0",
+    "tests/tb_ffn.sv": "f7a8e8c409f32dfefc7edbbd2b7b2a3ded93f0974b3c862baea2d4903bd9226a",
+    "tests/tb_ffn_edges.sv": "e4a94feaad39d04d195d2edbfe9a5a9f732c48b34ad5d3d0c4e71f7ad9c208dd",
+    "tests/tb_gelu.sv": "a3b82f7229fbeada166bc22e9c85351414abcbbb8814d3e5a4756cadc085862e",
+    "tests/tb_mac.sv": "eb29e21ffa6e14c9c6a94b8e8de3d76cb1d64fc44eb97007d45a65bdda736499",
+    "tests/tb_soc.sv": "80256cc45ec1bf6c178f37a621bf423b6cc7239cba46fe2567d1c223aee2022b",
+    "tests/tb_soc_ffn.sv": "69067b9c78aa641fd7d1e3adfe87e370ddef38aa1c4b698e498d0ab0eb2563c4",
+    "tests/test_ffn.py": "f90c994ca6f9ccaf3ca1acb14590542c50d3eef69fb04e2c1effb9f182b1e552",
+    "tests/test_numeric.py": "2988fef329e14b008746520c0072af208f3bcc7c9e1dca51fa362fb15a1c9e4b",
+    "tests/test_packing.py": "ea3f59487a862f763fb456d2b77847b903424b02239aa4b7b20a170f953a6c04",
+    "constraints/kwt_accel.sdc": "98252c3d0c304cf7f71ae44c57563abfc6d97be97b4c85b72accce1c4551a7fd",
+    "constraints/kwt_dma.sdc": "f3d6366ae35176f4c59f0423d6a55bd3d2b0b1315aeb3851e08cec0cbd4c94ac",
+    "constraints/kwt_soc.sdc": "c623b5a95d63dbe0d3fb618dc7e3e9bd2fac2e5d28b5ba02f18fb3b231312c8c",
+    "scripts/build_soc.py": "0a30188665b9a55626afa9090db36141b79f5fc84fc35488ee7e49b75d3f9cdd",
+    "scripts/capture_activity.py": "51bbc8bad73fc6e7426a49735d34ad3b6f8b679f7b190b23ed90ae2b52c0fb75",
+    "scripts/check_environment.py": "d4f381a53138e7709480c9d15306387eb8e28458caec59a93c814cf80d8d3778",
+    "scripts/check_model_environment.py": "2771fc3b6c7827731c0b7400f76f03dbaebf236e309658855cdc25465c517054",
+    "scripts/collect_ffn.py": "e057448f327d5fafbbbd463d76fc8f5b9219b990adeddc7a8cf858ce24210f2e",
+    "scripts/collect_results.py": "9630678374a5c327bee65867e1f9631ead1314cf5a1432b8c9922a7a1cb7e358",
+    "scripts/compare_ffn_performance.py": "758c9b6f90f36ced6c8d658c41b6f89ec70383af3718c3ca0d3ed18438121d78",
+    "scripts/compare_performance.py": "374a44b170135b944bb427aa28e78f6d848c93739172ef665696f770fb0a24bb",
+    "scripts/convert_ffn.py": "a2578702d088b4d289a72c591a277cb496d125fd3c65f2d5f4ecc40dcfc90c61",
+    "scripts/convert_task.py": "875d04baaeb0c8dd5ae2c34eefdcc67dd9a67f30067758a2586366d936f09f28",
+    "scripts/decode_output.py": "9c3f9005f726073e083aeeb086b97a06ecffd2b4905abe69b7ae63a801f7e06d",
+    "scripts/download_competition_assets.py": "90d41b697b20a680bdc071636795539c1b9db66fdf66c802ee58ce266035675d",
+    "scripts/evaluate_numeric.py": "726dbf19adaefa22eb24849edd02cc7b49d24ed2ff0f941b2c0519cd20fdcbda",
+    "scripts/export_ffn.py": "b120a24b4c5a46fdedc3d3a452b44ae132ef1dad1a237463282c5a8b423d47ca",
+    "scripts/export_vectors.py": "c36c8544aca44494c43899a090fdb6e1522b69b3d6ea62469a7f54f2f10d424a",
+    "scripts/fetch_model_wheel.py": "adf7d118997788438b2c93dd04e0303ec8375c14e5ce5344ee3ae30a4aefdafb",
+    "scripts/generate_gelu.py": "467af98b317f23ff26d14e85c6bde3acdf336ad81544db98d7a5cf7c34752589",
+    "scripts/install_native_toolchain.py": "2d87867f7fcf207a113857a55efc4c8e8e41c5c64c161c996783b5dc5bdb6509",
+    "scripts/pack_vectors.py": "1e6c0927d3124603ae0e9ade54b4bd409e77ee7076a675a4a4ac6eeaa5d1879d",
+    "scripts/package_submission.py": "418ea127e55badbeb0d0da29c44b06a7e2727a60f9d5e7c4238274fdc8fbae9d",
+    "scripts/run_design.py": "a8a0b9e3826901a6805f16a8a1b122f3d278d75a9ee582a811ac047ec00344e9",
+    "scripts/synth_design.py": "c7ab0f3aeb74db9041b4a8bbab0d5a87994d049c31f5a3cc0bd77b8b42db1351",
+    "scripts/synth_dma.py": "266e9d80e960ad47723ab8fc02bcaf1c9e0cd4e46754b5af9b0350d8bef712c5",
+    "scripts/synth_gelu.py": "9f529a349bbac533c24f430aaf02b0caee1bc6a149374ba75d16d30f98ec9d9f",
+    "scripts/synth_soc.py": "8c70cd14d56c3b065e407a55554948bb4c0d6fd55cfb29bc37c08257f9117acd"
+  },
+  "timing_testbench_sha256": "cda860589bcf54941cbfc06dce12aaa12c9ef7f7c4a47f5de34e6535fccf98f1",
+  "driver_execution_sha256": "baf7d49cdca5804359fa93b7c1a10160b3b78b808cd5ba822962c5a3ca925035",
+  "timed_firmware_region": {
+    "start_offset": 42,
+    "end_offset": 554,
+    "sha256": "340342552b2d222cb7e5b74c211fdeebadb9828893b91cb91e92864412b874c6",
+    "scope": "main, execute, kwt_linear and kwt_ffn; excludes boot/trap setup and post-task profile function"
+  }
+}

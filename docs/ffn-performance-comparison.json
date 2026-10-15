@@ -1,22 +1,10 @@
 {
-  "baseline_git_commit": "aa344f96043682ecf8009b62c2484145764994a5",
+  "baseline_git_commit": "411a15173dca348be00cb2615661321cb1987199",
   "same_workload_and_timing_verified": true,
   "numeric_contract_unchanged": true,
+  "timed_driver_machine_code_unchanged": true,
+  "dma_implementation_changed": true,
   "baseline_cycles_per_task": [
-    545654,
-    545654,
-    545654,
-    545654,
-    545654,
-    545654,
-    545654,
-    545654,
-    545654,
-    545654,
-    545654,
-    545654
-  ],
-  "optimized_cycles_per_task": [
     346838,
     346838,
     346838,
@@ -30,43 +18,57 @@
     346838,
     346838
   ],
-  "baseline_total_cycles": 6547848,
-  "optimized_total_cycles": 4162056,
-  "speedup": 1.5732243871778755,
-  "cycle_reduction_percent": 36.43627646823811,
-  "throughput_increase_percent": 57.32243871778755,
-  "baseline_nominal_tasks_per_second": 274.89947842405627,
-  "optimized_nominal_tasks_per_second": 432.47856347920356,
-  "baseline_nominal_ms_per_task": 3.637693333333333,
-  "optimized_nominal_ms_per_task": 2.3122533333333335,
-  "mac_units_before": 8,
+  "optimized_cycles_per_task": [
+    310289,
+    310289,
+    310289,
+    310289,
+    310289,
+    310289,
+    310289,
+    310289,
+    310289,
+    310289,
+    310289,
+    310289
+  ],
+  "baseline_total_cycles": 4162056,
+  "optimized_total_cycles": 3723468,
+  "speedup": 1.1177901891462476,
+  "cycle_reduction_percent": 10.537772677734269,
+  "throughput_increase_percent": 11.77901891462476,
+  "baseline_nominal_tasks_per_second": 432.47856347920356,
+  "optimized_nominal_tasks_per_second": 483.4202952731164,
+  "baseline_nominal_ms_per_task": 2.3122533333333335,
+  "optimized_nominal_ms_per_task": 2.0685933333333333,
+  "mac_units_before": 16,
   "mac_units_after": 16,
   "output_columns_parallel": 8,
-  "k_terms_per_cycle_before": 1,
+  "k_terms_per_cycle_before": 2,
   "k_terms_per_cycle_after": 2,
   "internal_sram_bytes_before": 87040,
-  "internal_sram_bytes_after": 87040,
+  "internal_sram_bytes_after": 90624,
   "sram_macros_before": 40,
   "sram_macros_after": 40,
   "generic_cells": {
     "accelerator": {
-      "before": 27380,
-      "after": 46115
+      "before": 46115,
+      "after": 46335
     },
     "dma_engine": {
-      "before": 33786,
-      "after": 53064
+      "before": 53064,
+      "after": 53550
     },
     "bus": {
       "before": 453,
       "after": 453
     },
     "soc": {
-      "before": 53122,
-      "after": 72219
+      "before": 72219,
+      "after": 73096
     }
   },
   "target_clock_hz": 150000000,
   "timing_closed": false,
-  "note": "More arithmetic hardware and simultaneous bank activity; no measured power/energy or physical area claim. Mandatory FFN1 remains a separate workload."
+  "note": "Same 16 MAC units, background GELU, eight-row tiling and W2/b2 load overlap. Intermediate SRAM grows by 3584 bytes. No measured power/energy or physical area claim. Mandatory FFN1 remains a separate workload."
 }

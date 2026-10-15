@@ -1,7 +1,7 @@
 """Build real RV32 firmware and simulate the pinned E203 CPU plus our System Bus."""
 import json
 from pathlib import Path
-from run_design import ROOT,OUT,SYSTEM_RTL,run,sim
+from run_design import ROOT,OUT,SYSTEM_RTL,run,sim,linux
 
 SOC=ROOT/'assets/references/e203_hbirdv2-9f3e34f337f5d0a1236a285871ffa2032491617a'
 
@@ -37,5 +37,8 @@ def build_and_simulate(ffn=False):
               '+incdir+output/design/firmware','+define+DISABLE_SV_ASSERTION']
     text=sim(top,files,includes,run_args=['+profile'])
     if 'SOC_PASS' not in text: raise RuntimeError('SoC test did not pass')
+    if ffn:
+        plain=linux('tb_soc_ffn_noprofile-run','output/design/build_tb_soc_ffn/Vtb_soc_ffn +tasks=1',1800)
+        if 'FFN_SOC_PASS tasks=1' not in plain:raise RuntimeError('Non-profile FFN test did not pass')
 
 if __name__=='__main__': build_and_simulate()

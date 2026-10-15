@@ -120,6 +120,16 @@ module tb_soc_ffn;
                     $display("FFN_EXTRA task=%0d index=%0d value=%0d",taskid,j,rd);
                 end
             end
+            // OVERLAP_PROFILE_BEGIN
+            if($test$plusargs("profile")) begin
+                for(j=0;j<3;j=j+1) begin
+                    host(1,32'ha000f06c+32'(4*j),0,rd);
+                    if(j==0 && rd!=22085) $fatal(1,"GELU overlap mismatch");
+                    if(j!=0 && rd==0) $fatal(1,"Load overlap/wait coverage missing");
+                    $display("FFN_OVERLAP task=%0d index=%0d value=%0d",taskid,j,rd);
+                end
+            end
+            // OVERLAP_PROFILE_END
             // PROFILE_END
             $display("FFN_SOC_TASK_PASS task=%0d cycles=%0d outputs=6336",taskid,task_cycles);
             $fflush();

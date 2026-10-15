@@ -16,6 +16,6 @@ int kwt_linear(const volatile uint32_t *x, const volatile uint32_t *w,
 int kwt_ffn(const volatile uint32_t *x, const volatile uint32_t *w,
             const volatile int32_t *b, const volatile uint32_t *w2,
             const volatile int32_t *b2, volatile uint32_t *output, uint32_t gelu_config);
-/* Profile destination must hold 19 words (word 15 is publication magic). */
+/* Profile destination must hold 22 words (word 15 is publication magic). */
 void kwt_profile(volatile uint32_t *out);
 #endif

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-15T10:52:39.956509+00:00",
+  "generated_at_utc": "2026-10-15T11:20:00.082506+00:00",
   "scope": "Local undergraduate implementation; official acceptance pending",
   "numeric": {
     "validation_samples": 120,
@@ -346,7 +346,7 @@
         }
       ],
       "log": "output/design/tb_soc-run.log",
-      "log_sha256": "909752ce8a3cf8a473376c355b88b0e0613cc7258a56e856b55372de09d320f6"
+      "log_sha256": "22bc13d97005a82d74323264c0a6a1ca21ed4d79d1887f18fdf13240ddd3d704"
     },
     {
       "name": "E203 netlist integration",
@@ -414,7 +414,7 @@
         }
       ],
       "log": "output/design/tb_soc_netlist-run.log",
-      "log_sha256": "909752ce8a3cf8a473376c355b88b0e0613cc7258a56e856b55372de09d320f6"
+      "log_sha256": "22bc13d97005a82d74323264c0a6a1ca21ed4d79d1887f18fdf13240ddd3d704"
     },
     {
       "name": "Icarus four-state accelerator",
@@ -492,10 +492,10 @@
     "energy_per_task_j": null,
     "macro_instances": {
       "16x4096_SP": 2,
-      "16x1024_SP": 34,
-      "16x128_SP": 4
+      "16x1024_SP": 36,
+      "16x128_SP": 2
     },
-    "internal_sram_bytes": 87040,
+    "internal_sram_bytes": 90624,
     "blocking_inputs": [
       "official standard-cell Liberty and PVT",
       "official SRAM macro models, Liberty and area",
@@ -505,62 +505,62 @@
   },
   "generic_synthesis": {
     "accelerator": {
-      "num_wires": 43325,
-      "num_wire_bits": 49133,
-      "num_pub_wires": 250,
-      "num_pub_wire_bits": 5112,
-      "num_ports": 33,
-      "num_port_bits": 424,
+      "num_wires": 43406,
+      "num_wire_bits": 49353,
+      "num_pub_wires": 256,
+      "num_pub_wire_bits": 5189,
+      "num_ports": 35,
+      "num_port_bits": 488,
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 46115,
+      "num_cells": 46335,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 689,
-        "$_AND_": 9010,
-        "$_DFFE_PN0P_": 964,
+        "$_ANDNOT_": 687,
+        "$_AND_": 9040,
+        "$_DFFE_PN0P_": 1029,
         "$_DFFE_PP_": 1216,
-        "$_DFF_PN0_": 25,
-        "$_MUX_": 2355,
-        "$_NAND_": 17529,
-        "$_NOR_": 222,
-        "$_NOT_": 110,
-        "$_ORNOT_": 394,
-        "$_OR_": 1757,
-        "$_XNOR_": 1745,
-        "$_XOR_": 10042,
+        "$_DFF_PN0_": 33,
+        "$_MUX_": 2383,
+        "$_NAND_": 17500,
+        "$_NOR_": 214,
+        "$_NOT_": 133,
+        "$_ORNOT_": 420,
+        "$_OR_": 1770,
+        "$_XNOR_": 1763,
+        "$_XOR_": 10090,
         "$scopeinfo": 17,
         "kwt_sram16": 40
       }
     },
     "dma_engine": {
-      "num_wires": 49532,
-      "num_wire_bits": 56627,
-      "num_pub_wires": 319,
-      "num_pub_wire_bits": 6418,
+      "num_wires": 49887,
+      "num_wire_bits": 57177,
+      "num_pub_wires": 328,
+      "num_pub_wire_bits": 6591,
       "num_ports": 22,
       "num_port_bits": 202,
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 53064,
+      "num_cells": 53550,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 814,
-        "$_AND_": 11382,
-        "$_DFFE_PN0P_": 1747,
+        "$_ANDNOT_": 665,
+        "$_AND_": 11550,
+        "$_DFFE_PN0P_": 1844,
         "$_DFFE_PN1P_": 1,
         "$_DFFE_PP_": 1216,
-        "$_DFF_PN0_": 29,
-        "$_MUX_": 2783,
-        "$_NAND_": 19274,
-        "$_NOR_": 371,
-        "$_NOT_": 166,
-        "$_ORNOT_": 606,
-        "$_OR_": 2103,
-        "$_XNOR_": 2012,
-        "$_XOR_": 10502,
+        "$_DFF_PN0_": 37,
+        "$_MUX_": 2726,
+        "$_NAND_": 19545,
+        "$_NOR_": 396,
+        "$_NOT_": 153,
+        "$_ORNOT_": 623,
+        "$_OR_": 2049,
+        "$_XNOR_": 2013,
+        "$_XOR_": 10674,
         "$scopeinfo": 18,
         "kwt_sram16": 40
       }
@@ -591,35 +591,35 @@
       }
     },
     "soc": {
-      "num_wires": 69371,
-      "num_wire_bits": 114621,
-      "num_pub_wires": 4511,
-      "num_pub_wire_bits": 49137,
+      "num_wires": 70148,
+      "num_wire_bits": 115562,
+      "num_pub_wires": 4520,
+      "num_pub_wire_bits": 49310,
       "num_ports": 14,
       "num_port_bits": 141,
       "num_memories": 0,
       "num_memory_bits": 0,
       "num_processes": 0,
-      "num_cells": 72219,
+      "num_cells": 73096,
       "num_submodules": 0,
       "num_cells_by_type": {
-        "$_ANDNOT_": 1236,
-        "$_AND_": 17205,
-        "$_DFFE_PN0P_": 2472,
+        "$_ANDNOT_": 1283,
+        "$_AND_": 17694,
+        "$_DFFE_PN0P_": 2569,
         "$_DFFE_PN1P_": 9,
         "$_DFFE_PP_": 2658,
-        "$_DFF_PN0_": 36,
+        "$_DFF_PN0_": 44,
         "$_DFF_PN1_": 1,
         "$_DLATCH_N_": 8,
-        "$_MUX_": 3736,
-        "$_NAND_": 26641,
-        "$_NOR_": 647,
-        "$_NOT_": 307,
-        "$_ORNOT_": 1089,
-        "$_OR_": 2698,
+        "$_MUX_": 3763,
+        "$_NAND_": 26635,
+        "$_NOR_": 665,
+        "$_NOT_": 312,
+        "$_ORNOT_": 1138,
+        "$_OR_": 2767,
         "$_SDFFCE_PN0P_": 2,
-        "$_XNOR_": 2234,
-        "$_XOR_": 10905,
+        "$_XNOR_": 2261,
+        "$_XOR_": 10952,
         "$scopeinfo": 292,
         "kwt_shared_sram": 1,
         "kwt_sram16": 40,
@@ -633,10 +633,21 @@
     "sram_power_model_available": false,
     "note": "Local activity only; not a twelve-task official power or energy result"
   },
+  "hardware_structure": {
+    "mac_units": 16,
+    "gelu_units": 1,
+    "internal_sram_bytes": 90624,
+    "sram_macros": {
+      "7": 2,
+      "10": 36,
+      "12": 2
+    },
+    "architecture_stat_sha256": "229d282b5c3f22e69dd314d0c5b50715a0e14cd3d90637ef8b949496374dfdef"
+  },
   "source_hash_convention": "text bytes with CRLF normalized to LF",
   "source_sha256": {
-    "rtl/kwt_accel.sv": "0bb3e4c46a91d17112d7c91712c64ffcf6313d35d7486a27f83e04d316a6ac4e",
-    "rtl/kwt_dma.sv": "21084c22ace9f9900579675c765c609594c379db30e0474c56b35c9c80fd931b",
+    "rtl/kwt_accel.sv": "f8e5ac4a7e961752097f408eb057aafeb2e89d52836350af53f67c9414996854",
+    "rtl/kwt_dma.sv": "69cd8eed899642398609a23c93b44a98ad6eb6e435dd7aa4ac88108287cfde49",
     "rtl/kwt_gelu.sv": "c90731e826a9e8878d2d15c905a30017aaa9d7af116baf72984a980aae873a7b",
     "rtl/kwt_mac40.sv": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63",
     "rtl/kwt_sram16.sv": "3c14d9652dc4550a016274910d1b6a4721d0e1e84621a57fe6355e00a9ea6a9d",
@@ -645,8 +656,8 @@
     "integration/kwt_shared_sram.sv": "89aee640754231540e2689b3f442d70bcf1b9d11677cbe3ed5aae118491ac268",
     "integration/kwt_soc.sv": "4920d021a803965c3d054c7aee036cf86d41079ec466d1ff84ad2ec6e32b2451",
     "integration/kwt_system_bus.sv": "bfe7fcbc8aac1f7a248d40a9955af3e6f4fdfab0b7c16086e478445acdadbedd",
-    "firmware/kwt_driver.c": "1dc00a39d5689ceaba2175dafb504c0ef9b00d33dec732b1923def9dfe0abed1",
-    "firmware/kwt_driver.h": "28733c59b2f1272c514aadfb678c3b6ad692da16c15fbde08319a1eeb7de5a93",
+    "firmware/kwt_driver.c": "e3c967e1f9e2dae0267ac1f8586032794ca977b13cc93eebdaf77eb03b99efd0",
+    "firmware/kwt_driver.h": "fe4b1e8c323592ae6483b12d2560642b04794049f556893fa4138d4ddb54b032",
     "firmware/link.ld": "6b92fa96a24bec6a9af0a6a74c1d542fa12fbdf7e65a595bd010c55e361d2e9b",
     "firmware/main.c": "295a7e6c9b00cc2428eee47e2827a7b7a99df390125cb1431e4badddc19aa9d6",
     "firmware/start.S": "14cd16d89ca9e5f14c8f00686adfa6e64c318b6116ac04ceb4be505eda9781ac",
@@ -656,29 +667,29 @@
     "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
     "model/training-samples.json": "78fcb117633c4e800169465d9034cc4819334f365ae5de0fcdd3632d194fd59e",
     "model/validation-samples.json": "12ad0863f30f9bdb8ffca02fe5cd2c24e70ea5fc8740d820624cd2c1ab9ced69",
-    "tests/tb_accel.sv": "cc66685b569a3182e9fdd7723bea5538f49fdce0b739765b6a98f61981c391ab",
+    "tests/tb_accel.sv": "6b4e0d810c89876c4e5ec730e9bb92894058df64c874102e8a906fba1507ef39",
     "tests/tb_bus.sv": "b434b839f70641b7d10a29d2355c0f784d69b1bad53550b42d1a320cfb4a4a35",
     "tests/tb_dma.sv": "9868e23799d22e310d8e4b96d500bdb41f1c30fb1d0d57273ba27cad9964e8a0",
-    "tests/tb_ffn.sv": "f7a8e8c409f32dfefc7edbbd2b7b2a3ded93f0974b3c862baea2d4903bd9226a",
-    "tests/tb_ffn_edges.sv": "e4a94feaad39d04d195d2edbfe9a5a9f732c48b34ad5d3d0c4e71f7ad9c208dd",
+    "tests/tb_ffn.sv": "9f885dafa9ad2bd394d1a8a56973c92b23bc29e988494b33d24cfe99e3f00464",
+    "tests/tb_ffn_edges.sv": "64b15316bd9710abce9f837052ca924eb1458b4d2bed62a8cfd25e70381fd31c",
     "tests/tb_gelu.sv": "a3b82f7229fbeada166bc22e9c85351414abcbbb8814d3e5a4756cadc085862e",
     "tests/tb_mac.sv": "eb29e21ffa6e14c9c6a94b8e8de3d76cb1d64fc44eb97007d45a65bdda736499",
     "tests/tb_soc.sv": "80256cc45ec1bf6c178f37a621bf423b6cc7239cba46fe2567d1c223aee2022b",
-    "tests/tb_soc_ffn.sv": "69067b9c78aa641fd7d1e3adfe87e370ddef38aa1c4b698e498d0ab0eb2563c4",
+    "tests/tb_soc_ffn.sv": "ff5e7dd7838b233b76b699699a2b3153fb643a3ecf2726041afb6f09f193e8bb",
     "tests/test_ffn.py": "f90c994ca6f9ccaf3ca1acb14590542c50d3eef69fb04e2c1effb9f182b1e552",
     "tests/test_numeric.py": "2988fef329e14b008746520c0072af208f3bcc7c9e1dca51fa362fb15a1c9e4b",
     "tests/test_packing.py": "ea3f59487a862f763fb456d2b77847b903424b02239aa4b7b20a170f953a6c04",
-    "constraints/kwt_accel.sdc": "98252c3d0c304cf7f71ae44c57563abfc6d97be97b4c85b72accce1c4551a7fd",
+    "constraints/kwt_accel.sdc": "33974ce347f37e9110f6fcc070298cf0e2a05a61546cb6b81b18ce3fd243b996",
     "constraints/kwt_dma.sdc": "f3d6366ae35176f4c59f0423d6a55bd3d2b0b1315aeb3851e08cec0cbd4c94ac",
     "constraints/kwt_soc.sdc": "c623b5a95d63dbe0d3fb618dc7e3e9bd2fac2e5d28b5ba02f18fb3b231312c8c",
-    "scripts/build_soc.py": "0a30188665b9a55626afa9090db36141b79f5fc84fc35488ee7e49b75d3f9cdd",
+    "scripts/build_soc.py": "8e6f4e873a0ec3ac7c93e3b5a5d6fd7a206d4acb47731f5a684e49649920995a",
     "scripts/capture_activity.py": "51bbc8bad73fc6e7426a49735d34ad3b6f8b679f7b190b23ed90ae2b52c0fb75",
     "scripts/check_environment.py": "d4f381a53138e7709480c9d15306387eb8e28458caec59a93c814cf80d8d3778",
     "scripts/check_model_environment.py": "2771fc3b6c7827731c0b7400f76f03dbaebf236e309658855cdc25465c517054",
-    "scripts/collect_ffn.py": "e057448f327d5fafbbbd463d76fc8f5b9219b990adeddc7a8cf858ce24210f2e",
-    "scripts/collect_results.py": "9630678374a5c327bee65867e1f9631ead1314cf5a1432b8c9922a7a1cb7e358",
-    "scripts/compare_ffn_performance.py": "758c9b6f90f36ced6c8d658c41b6f89ec70383af3718c3ca0d3ed18438121d78",
-    "scripts/compare_performance.py": "374a44b170135b944bb427aa28e78f6d848c93739172ef665696f770fb0a24bb",
+    "scripts/collect_ffn.py": "8eb8585ea458e3eca1e27679a8468c733b7a1b748923bd6c0522611d5c29ccf7",
+    "scripts/collect_results.py": "b92c78423c77f323754e68accf66130f7fb51042f99b2a4b7d90efcd27178e7c",
+    "scripts/compare_ffn_performance.py": "534e47725a3caeaab9610ffd0395529acbfe1f9e73e09e23b391e25b45d60f6b",
+    "scripts/compare_performance.py": "268b6f0c7084f38b2429b0063645e6c623d5258cd8c232d29b3374fe8d8d3de0",
     "scripts/convert_ffn.py": "a2578702d088b4d289a72c591a277cb496d125fd3c65f2d5f4ecc40dcfc90c61",
     "scripts/convert_task.py": "875d04baaeb0c8dd5ae2c34eefdcc67dd9a67f30067758a2586366d936f09f28",
     "scripts/decode_output.py": "9c3f9005f726073e083aeeb086b97a06ecffd2b4905abe69b7ae63a801f7e06d",
@@ -690,37 +701,45 @@
     "scripts/generate_gelu.py": "467af98b317f23ff26d14e85c6bde3acdf336ad81544db98d7a5cf7c34752589",
     "scripts/install_native_toolchain.py": "2d87867f7fcf207a113857a55efc4c8e8e41c5c64c161c996783b5dc5bdb6509",
     "scripts/pack_vectors.py": "1e6c0927d3124603ae0e9ade54b4bd409e77ee7076a675a4a4ac6eeaa5d1879d",
-    "scripts/package_submission.py": "418ea127e55badbeb0d0da29c44b06a7e2727a60f9d5e7c4238274fdc8fbae9d",
+    "scripts/package_submission.py": "0a6ce674535d29b85ff50dbf6d1dcf705d1fa28f55e5f893462fb0e8f2454dd2",
     "scripts/run_design.py": "a8a0b9e3826901a6805f16a8a1b122f3d278d75a9ee582a811ac047ec00344e9",
-    "scripts/synth_design.py": "c7ab0f3aeb74db9041b4a8bbab0d5a87994d049c31f5a3cc0bd77b8b42db1351",
+    "scripts/synth_design.py": "9bcbac4ed8c46213e127e6bf86aa52567570680d1d285065fea5914dcf6ab51a",
     "scripts/synth_dma.py": "266e9d80e960ad47723ab8fc02bcaf1c9e0cd4e46754b5af9b0350d8bef712c5",
     "scripts/synth_gelu.py": "9f529a349bbac533c24f430aaf02b0caee1bc6a149374ba75d16d30f98ec9d9f",
     "scripts/synth_soc.py": "8c70cd14d56c3b065e407a55554948bb4c0d6fd55cfb29bc37c08257f9117acd"
   },
   "artifacts": {
+    "architecture-stat.json": {
+      "bytes": 3340,
+      "sha256": "229d282b5c3f22e69dd314d0c5b50715a0e14cd3d90637ef8b949496374dfdef"
+    },
+    "kwt_accel_netlist.json": {
+      "bytes": 27486712,
+      "sha256": "86cf137c5a8edeadc41aab82de4dd5c272be51ab27891657dd345c7653d4bae7"
+    },
     "kwt_accel_netlist.v": {
-      "bytes": 2768199,
-      "sha256": "3cdb824e4e91bef54f49b6080eb5fc8a4c1dcafff71bb21d38e4d5333d7ca135"
+      "bytes": 2789227,
+      "sha256": "c931d612d52424c0df7ec5a943d1139b6f7c4162707df499115a9c29ea798d1f"
     },
     "kwt_dma_netlist.v": {
-      "bytes": 3489134,
-      "sha256": "707cb49d05ea045e37fb4f5bc26199c9a81022fcb25e0f26609535e42b860fa8"
+      "bytes": 3534894,
+      "sha256": "33bb5ce2f804547fb956f114eb829bc90458c0ff563357535ead8f6b4b2f61dc"
     },
     "kwt_bus_netlist.v": {
       "bytes": 27255,
       "sha256": "65b18536170796ba29852b61ef0b1c037ed73388e113d2470e7e2c9215d71d24"
     },
     "kwt_soc_netlist.v": {
-      "bytes": 7561783,
-      "sha256": "d633d5ea55ac2694f15a205a79dbf26af6208f23e5b5913b206bf9b3900c4b17"
+      "bytes": 7644876,
+      "sha256": "e5b9281492948f93c118b8897cbb4525806e363779b2d69a6bec2f6bffaf2e4f"
     },
     "firmware/kwt.elf": {
-      "bytes": 5820,
-      "sha256": "a288b8aee839f8525465cf3973e47e94294b5b884ec97ecbd0d6358f719e4b6a"
+      "bytes": 5824,
+      "sha256": "e5036f98be3f2b9854dfc06b3609d5cfa21871cdef29fb687349b82421fcdc75"
     },
     "mac.vcd": {
       "bytes": 2764017,
-      "sha256": "13ea99fe4383029c70b994599cd37f846ef817ee770b432edcf7aa012ed773fd"
+      "sha256": "58eb67aedd461a9cff1e77d863b66cb00de5dd6d69ec5c678c9b91028182ec32"
     }
   },
   "calibration": {
@@ -1301,62 +1320,62 @@
     "tasks": [
       {
         "task": 0,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 1,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 2,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 3,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 4,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 5,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 6,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 7,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 8,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 9,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 10,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       },
       {
         "task": 11,
-        "cycles": 346838,
+        "cycles": 310289,
         "outputs": 6336
       }
     ],
@@ -1364,364 +1383,430 @@
       {
         "task": 0,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 1,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 2,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 3,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 4,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 5,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 6,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 7,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 8,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 9,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 10,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       },
       {
         "task": 11,
         "host_load": 79495,
-        "dma_load": 26567,
-        "compute_writeback": 240007,
+        "dma_load": 15530,
+        "compute_writeback": 214338,
         "dma_control": 2,
-        "cpu_completion_residual": 767,
+        "cpu_completion_residual": 924,
         "profile": {
-          "0": 266576,
-          "1": 26567,
-          "2": 240007,
+          "0": 229870,
+          "1": 15530,
+          "2": 214338,
           "3": 2,
           "4": 202752,
           "5": 0,
-          "6": 240002,
-          "7": 11676,
+          "6": 214333,
+          "7": 11677,
           "8": 0,
           "9": 19872,
           "10": 12672,
-          "11": 28077,
-          "12": 266571,
-          "13": 266576,
-          "14": 216331
+          "11": 26717,
+          "12": 229865,
+          "13": 229870,
+          "14": 190661
         },
         "extra": {
           "0": 101376,
           "1": 25344,
           "2": 0
+        },
+        "overlap": {
+          "0": 22085,
+          "1": 2308,
+          "2": 11036
         }
       }
     ],
+    "overlap_counter_names": [
+      "gelu_and_mac_cycles",
+      "parameter_wait_after_gelu",
+      "dma_tail_load_cycles"
+    ],
+    "cycle_analysis_note": "dma_load is only before early L1 launch; remaining W2/b2 loading is included in compute_writeback/RUN. Overlap counters are not additive phases.",
     "numeric": {
       "split": "validation",
       "samples": [
@@ -2793,9 +2878,9 @@
       "note": "Optional full FFN engineering metric, not undergraduate mandatory FFN1 score"
     },
     "performance": {
-      "total_cycles": 4162056,
+      "total_cycles": 3723468,
       "target_clock_hz": 150000000,
-      "nominal_tasks_per_second": 432.47856347920356,
+      "nominal_tasks_per_second": 483.4202952731164,
       "timing_closed": false,
       "macs_per_task": 3244032,
       "output_elements": 6336
@@ -2803,7 +2888,7 @@
     "component_tests": {
       "tb_ffn-run.log": {
         "passed": true,
-        "sha256": "5ec7f002605c5bc823cd42cf8ca6b0707a1e20589f7730a70472d966752f8103"
+        "sha256": "9e34c8dee1abae35168abba870f1e60bec710fea9a0d898421b17b04459c60ef"
       },
       "tb_ffn_edges-run.log": {
         "passed": true,
@@ -2815,19 +2900,19 @@
       },
       "icarus-tb_ffn_edges.log": {
         "passed": true,
-        "sha256": "cf8188fd34879b177cd9562bc6078ea0d9e0e5ef4da8032a53290a6da1d17244"
+        "sha256": "47bf2c06189c4a371b8cdac4ced2cf0965156932069277131849eeda1badba9b"
       },
       "tb_ffn_netlist-run.log": {
         "passed": true,
-        "sha256": "5ec7f002605c5bc823cd42cf8ca6b0707a1e20589f7730a70472d966752f8103"
+        "sha256": "9e34c8dee1abae35168abba870f1e60bec710fea9a0d898421b17b04459c60ef"
       },
       "icarus-tb_ffn.log": {
         "passed": true,
-        "sha256": "789539ef020434d0df58b81fddbb002b931c27bb16e5a7998c2275c1cb87cfc0"
+        "sha256": "6a48809c2e961139df70eb408bb6f5137eb5e800aeb8db687df07d0bfebde1bb"
       },
       "ffn-numeric-tests.log": {
         "passed": true,
-        "sha256": "d5500f87027c87c49b30b5ff539bd88fa7500f35005894e567e2ca29719517e6"
+        "sha256": "2a8542ec4a2a39ce5d30d175f415f02731638b0baca3b0ae495c179091478231"
       },
       "tb_gelu-run.log": {
         "passed": true,
@@ -2843,11 +2928,15 @@
       },
       "tb_soc_ffn-run.log": {
         "passed": true,
-        "sha256": "c2acfd508a0e5e85bd77ea069ad96ac4cd03e9f8a4c276e68dc01a2aab9ab727"
+        "sha256": "7e22a36054ae79f0cbc44761197f68c2a4e3467166a32e6fa74c185398b129d6"
+      },
+      "tb_soc_ffn_noprofile-run.log": {
+        "passed": true,
+        "sha256": "d52ac7490b28c133d5767ec5870a18f4c0d87a47cdb31ae11ef121edd26abf3d"
       },
       "tb_soc_ffn_netlist-run.log": {
         "passed": true,
-        "sha256": "c2acfd508a0e5e85bd77ea069ad96ac4cd03e9f8a4c276e68dc01a2aab9ab727"
+        "sha256": "0d8ff02d326b3b234ab87c2119c0b89ac25d7b1263563fcd575e6230e22837fc"
       }
     },
     "mode_switch_without_reset_verified": true,
@@ -2893,34 +2982,24 @@
     },
     "intermediate_shared_sram_transactions": 0,
     "row_buffer_bytes": 512,
-    "internal_sram_bytes": 87040,
+    "buffered_rows": 8,
+    "intermediate_buffer_bytes": 4096,
+    "internal_sram_bytes": 90624,
     "macro_instances": {
       "16x4096_SP": 2,
-      "16x1024_SP": 34,
-      "16x128_SP": 4
+      "16x1024_SP": 36,
+      "16x128_SP": 2
     },
     "ffn_vector_manifest_sha256": "03f18a1291dad8561c748739a597b18145ffdc877978c0ded163e885e43c1022",
     "note": "Do not compare full FFN tasks/s directly against the undergraduate FFN1 throughput score."
   },
   "full_ffn_optimization": {
-    "baseline_git_commit": "aa344f96043682ecf8009b62c2484145764994a5",
+    "baseline_git_commit": "411a15173dca348be00cb2615661321cb1987199",
     "same_workload_and_timing_verified": true,
     "numeric_contract_unchanged": true,
+    "timed_driver_machine_code_unchanged": true,
+    "dma_implementation_changed": true,
     "baseline_cycles_per_task": [
-      545654,
-      545654,
-      545654,
-      545654,
-      545654,
-      545654,
-      545654,
-      545654,
-      545654,
-      545654,
-      545654,
-      545654
-    ],
-    "optimized_cycles_per_task": [
       346838,
       346838,
       346838,
@@ -2934,44 +3013,58 @@
       346838,
       346838
     ],
-    "baseline_total_cycles": 6547848,
-    "optimized_total_cycles": 4162056,
-    "speedup": 1.5732243871778755,
-    "cycle_reduction_percent": 36.43627646823811,
-    "throughput_increase_percent": 57.32243871778755,
-    "baseline_nominal_tasks_per_second": 274.89947842405627,
-    "optimized_nominal_tasks_per_second": 432.47856347920356,
-    "baseline_nominal_ms_per_task": 3.637693333333333,
-    "optimized_nominal_ms_per_task": 2.3122533333333335,
-    "mac_units_before": 8,
+    "optimized_cycles_per_task": [
+      310289,
+      310289,
+      310289,
+      310289,
+      310289,
+      310289,
+      310289,
+      310289,
+      310289,
+      310289,
+      310289,
+      310289
+    ],
+    "baseline_total_cycles": 4162056,
+    "optimized_total_cycles": 3723468,
+    "speedup": 1.1177901891462476,
+    "cycle_reduction_percent": 10.537772677734269,
+    "throughput_increase_percent": 11.77901891462476,
+    "baseline_nominal_tasks_per_second": 432.47856347920356,
+    "optimized_nominal_tasks_per_second": 483.4202952731164,
+    "baseline_nominal_ms_per_task": 2.3122533333333335,
+    "optimized_nominal_ms_per_task": 2.0685933333333333,
+    "mac_units_before": 16,
     "mac_units_after": 16,
     "output_columns_parallel": 8,
-    "k_terms_per_cycle_before": 1,
+    "k_terms_per_cycle_before": 2,
     "k_terms_per_cycle_after": 2,
     "internal_sram_bytes_before": 87040,
-    "internal_sram_bytes_after": 87040,
+    "internal_sram_bytes_after": 90624,
     "sram_macros_before": 40,
     "sram_macros_after": 40,
     "generic_cells": {
       "accelerator": {
-        "before": 27380,
-        "after": 46115
+        "before": 46115,
+        "after": 46335
       },
       "dma_engine": {
-        "before": 33786,
-        "after": 53064
+        "before": 53064,
+        "after": 53550
       },
       "bus": {
         "before": 453,
         "after": 453
       },
       "soc": {
-        "before": 53122,
-        "after": 72219
+        "before": 72219,
+        "after": 73096
       }
     },
     "target_clock_hz": 150000000,
     "timing_closed": false,
-    "note": "More arithmetic hardware and simultaneous bank activity; no measured power/energy or physical area claim. Mandatory FFN1 remains a separate workload."
+    "note": "Same 16 MAC units, background GELU, eight-row tiling and W2/b2 load overlap. Intermediate SRAM grows by 3584 bytes. No measured power/energy or physical area claim. Mandatory FFN1 remains a separate workload."
   }
 }

@@ -15,6 +15,8 @@ def soc(log):
     if [t['task'] for t in tasks]!=list(range(12)) or any(t['outputs']!=6336 for t in tasks):raise RuntimeError('Incomplete FFN tasks')
     counters=re.findall(r'FFN_SOC_PROFILE task=(\d+) index=(\d+) value=(\d+)',text)
     extra=re.findall(r'FFN_EXTRA task=(\d+) index=(\d+) value=(\d+)',text)
+    overlaps=re.findall(r'FFN_OVERLAP task=(\d+) index=(\d+) value=(\d+)',text)
+    if len(overlaps)!=36:raise RuntimeError('Incomplete overlap counters')
     if len(counters)!=180 or len(extra)!=36:raise RuntimeError('Incomplete FFN counters')
     begin={int(t):int(c) for t,c in re.findall(r'MEASURE_BEGIN task=(\d+) time_ps=\d+ cycle=(\d+)',text)}
     loaded={int(t):int(c) for t,c in re.findall(r'SOC_TASK_START task=(\d+) pc=[0-9a-f]+ cycle=(\d+)',text)}
@@ -25,17 +27,22 @@ def soc(log):
         if sorted(values)!=list(range(15)) or others!={0:101376,1:25344,2:0}:raise RuntimeError('FFN component cycle count/saturation mismatch')
         if values[0]!=values[1]+values[2]+values[3] or values[4]!=202752 or values[9]!=19872 or values[10]!=12672:raise RuntimeError('FFN count mismatch')
         if not values[1]<values[11]<=values[12]<values[13]==values[0]:raise RuntimeError('FFN timestamps inconsistent')
+        overlap={int(k):int(v) for n,k,v in overlaps if int(n)==i}
+        if sorted(overlap)!=[0,1,2] or overlap[0]!=22085 or not 0<overlap[1]<overlap[2]:raise RuntimeError('Invalid overlap/wait counts')
         host=loaded[i]-begin[i];cpu=t['cycles']-host-values[0]
         if cpu<0:raise RuntimeError('Invalid timing residual')
         rows.append(dict(task=i,host_load=host,dma_load=values[1],compute_writeback=values[2],
-                         dma_control=values[3],cpu_completion_residual=cpu,profile=values,extra=others))
+                         dma_control=values[3],cpu_completion_residual=cpu,profile=values,extra=others,overlap=overlap))
     return tasks,rows
 
 
 def collect():
     a,pa=soc('tb_soc_ffn-run.log');b,pb=soc('tb_soc_ffn_netlist-run.log')
     if a!=b or pa!=pb:raise RuntimeError('FFN RTL/netlist cycle or output mismatch')
-    logs={};stress=[]
+    plain=(OUT/'tb_soc_ffn_noprofile-run.log').read_text()
+    plain_cycles=re.findall(r'FFN_SOC_TASK_PASS task=0 cycles=(\d+) outputs=6336',plain)
+    if plain_cycles!=[str(a[0]['cycles'])] or 'FFN_SOC_PASS tasks=1' not in plain:raise RuntimeError('Profiling affects timing')
+    logs={};stress=[];stress_overlap=[]
     for name,marker in [('tb_ffn-run.log','FFN_PASS'),
                         ('tb_ffn_edges-run.log','FFN_EDGES_PASS cases=3'),
                         ('tb_ffn_edges_netlist-run.log','FFN_EDGES_PASS cases=3'),
@@ -43,7 +50,7 @@ def collect():
                         ('icarus-tb_ffn.log','FFN_PASS'),('ffn-numeric-tests.log','OK'),
                         ('tb_gelu-run.log','GELU_PASS vectors=54357'),('tb_gelu_netlist-run.log','GELU_PASS vectors=54357'),
                         ('icarus-tb_gelu.log','GELU_PASS vectors=54357'),
-                        ('tb_soc_ffn-run.log','FFN_SOC_PASS'),('tb_soc_ffn_netlist-run.log','FFN_SOC_PASS')]:
+                        ('tb_soc_ffn-run.log','FFN_SOC_PASS'),('tb_soc_ffn_noprofile-run.log','FFN_SOC_PASS tasks=1'),('tb_soc_ffn_netlist-run.log','FFN_SOC_PASS')]:
         p=OUT/name;text=p.read_text()
         if marker not in text:raise RuntimeError('Missing check '+name)
         logs[name]={'passed':True,'sha256':sha(p)}
@@ -51,7 +58,12 @@ def collect():
             profile=re.findall(r'FFN_PROFILE index=(\d+) value=(\d+)',text)
             if len(profile)!=15:raise RuntimeError('Missing FFN stress profile')
             stress.append(profile)
-    if not all(p==stress[0] for p in stress):raise RuntimeError('FFN stress counters differ')
+            overlap=re.findall(r'FFN_OVERLAP index=(\d+) value=(\d+)',text)
+            if len(overlap)!=3 or overlap[0]!=('0','22085'):raise RuntimeError('Missing stress overlap counters')
+            stress_overlap.append(overlap)
+    for name in ['tb_ffn-run.log','tb_ffn_netlist-run.log','icarus-tb_ffn.log']:
+        if 'FFN_LOAD_OVERLAP_PASS' not in (OUT/name).read_text():raise RuntimeError('Missing delayed W2 barrier/recovery test')
+    if not all(p==stress[0] for p in stress) or not all(p==stress_overlap[0] for p in stress_overlap):raise RuntimeError('FFN stress counters differ')
     edge_logs=['tb_ffn_edges-run.log','tb_ffn_edges_netlist-run.log','icarus-tb_ffn_edges.log']
     edge_rows=[]
     for name in edge_logs:
@@ -71,13 +83,15 @@ def collect():
     if not numeric['passed'] or not calibration['passed']:raise RuntimeError('FFN numeric verification failed')
     total=sum(t['cycles'] for t in a)
     result={'scope':'Optional complete FFN (linear1, GELU, linear2), without residual/LayerNorm or attention',
-            'official_metric':False,'tasks':a,'cycle_analysis':pa,'numeric':numeric,'calibration':calibration,
+            'official_metric':False,'tasks':a,'cycle_analysis':pa,
+            'overlap_counter_names':['gelu_and_mac_cycles','parameter_wait_after_gelu','dma_tail_load_cycles'],
+            'cycle_analysis_note':'dma_load is only before early L1 launch; remaining W2/b2 loading is included in compute_writeback/RUN. Overlap counters are not additive phases.','numeric':numeric,'calibration':calibration,
             'performance':{'total_cycles':total,'target_clock_hz':150000000,'nominal_tasks_per_second':12*150000000/total,
                            'timing_closed':False,'macs_per_task':3244032,'output_elements':6336},
             'component_tests':logs,'mode_switch_without_reset_verified':True,
             'full_range_cases':edge_rows[0],'full_range_vector_sha256':edge_vectors,
-            'intermediate_shared_sram_transactions':0,'row_buffer_bytes':512,
-            'internal_sram_bytes':87040,'macro_instances':{'16x4096_SP':2,'16x1024_SP':34,'16x128_SP':4},
+            'intermediate_shared_sram_transactions':0,'row_buffer_bytes':512,'buffered_rows':8,'intermediate_buffer_bytes':4096,
+            'internal_sram_bytes':90624,'macro_instances':{'16x4096_SP':2,'16x1024_SP':36,'16x128_SP':2},
             'ffn_vector_manifest_sha256':sha(ROOT/'output/ffn-vectors/manifest.json'),
             'note':'Do not compare full FFN tasks/s directly against the undergraduate FFN1 throughput score.'}
     (ROOT/'docs/ffn-validation.json').write_text(json.dumps(result,indent=2)+'\n')

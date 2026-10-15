@@ -15,7 +15,8 @@ module tb_ffn;
     reg [31:0] rd,held,profile[0:14];
     integer j,polls,read_count=0,write_count=0,cycles=0,transactions=0;
     reg was_stalled=0;reg [68:0] stalled_command;
-    reg last_busy_checked=0;
+    reg last_busy_checked=0,stall_second_load=0;
+    reg [31:0] pending_addr=0;
     kwt_dma dut(.*);
     always @(posedge clk) begin
         cycles<=cycles+1;
@@ -32,10 +33,13 @@ module tb_ffn;
             if(m_valid && m_ready) begin
                 if(m_addr<32'ha0010000 || m_addr>=32'ha0080000 || m_addr[1:0]!=0 || m_mask!=15)
                     $fatal(1,"Unsafe DMA address/mask %h",m_addr);
-                pending<=1;pending_read<=m_read;
+                pending<=1;pending_read<=m_read;pending_addr<=m_addr;
                 delay_left<=fixed_delay!=0?fixed_delay:cycles%5;
+                if(stall_second_load && m_read && m_addr==32'ha0062000) begin
+                    delay_left<=20000;stall_second_load<=0;
+                end
                 m_err<=0;
-                if((inject_kind==1 && m_read) || (inject_kind==2 && !m_read) ||
+                if((inject_kind==1 && m_read) || (inject_kind==4 && m_read && m_addr==32'ha0062000) || (inject_kind==2 && !m_read) ||
                    (inject_kind==3 && !m_read && m_addr==32'ha003c5fc)) begin
                     m_err<=1;inject_kind<=0;
                 end else if(m_read) m_rdata<=mem[m_addr[18:2]];
@@ -128,6 +132,22 @@ module tb_ffn;
 
         // Read error, write error and write-side abort each recover without reset.
         inject_kind=1;bus(0,0,1,0,rd);wait_idle(4);
+        inject_kind=4;bus(0,0,1,0,rd);wait_idle(4); // W2 read error after early L1 launch.
+        // Hold W2 while L1 fills an eight-row tile. FFN2 must wait, then recover.
+        stall_second_load=1;bus(0,0,1,0,rd);
+        while(!(pending && pending_read && pending_addr==32'ha0062000)) @(negedge clk);
+        repeat(10000) @(negedge clk);
+        bus(1,20'h50,0,0,rd);if(rd!=8192) $fatal(1,"L1 did not compute eight rows during W2 load");
+        bus(1,20'h7c,0,0,rd);if(rd!=0) $fatal(1,"L2 started before parameters were ready");
+        bus(1,20'h8c,0,0,rd);if(rd==0) $fatal(1,"Parameter wait not exercised");
+        wait_idle(2);
+        for(j=0;j<6336;j=j+1)
+            if({mem[49152+2*j+1],mem[49152+2*j]}!==expected[j]) $fatal(1,"Delayed W2 recovery mismatch %0d",j);
+        $display("FFN_LOAD_OVERLAP_PASS eight_rows_before_W2, barrier, delayed_load_recovery");
+        // Abort after background GELU has begun, then reuse all payload memories.
+        bus(0,0,1,0,rd);rd=0;
+        while(rd==0) bus(1,20'h80,0,0,rd);
+        bus(0,0,2,0,rd);wait_idle(8);
         inject_kind=2;bus(0,0,1,0,rd);wait_idle(4);
         inject_kind=3;bus(0,0,1,0,rd);wait_idle(4); // Final write failure must never report done.
         bus(0,0,1,0,rd);while(!(m_valid && !m_read)) @(negedge clk);
@@ -168,12 +188,21 @@ module tb_ffn;
         bus(1,20'h7c,0,0,rd);if(rd!=101376) $fatal(1,"Second MAC counter");
         bus(1,20'h80,0,0,rd);if(rd!=25344) $fatal(1,"GELU counter");
         bus(1,20'h84,0,0,rd);if(rd!=0) $fatal(1,"GELU saturated");
+        bus(1,20'h88,0,0,rd);if(rd!=22085) $fatal(1,"GELU/MAC overlap count");
+        $display("FFN_OVERLAP index=0 value=%0d",rd);
+        bus(1,20'h8c,0,0,rd);if(rd==0) $fatal(1,"Missing parameter wait");
+        $display("FFN_OVERLAP index=1 value=%0d",rd);
+        bus(1,20'h90,0,0,rd);if(rd==0) $fatal(1,"Missing DMA tail overlap");
+        $display("FFN_OVERLAP index=2 value=%0d",rd);
         // Switch FFN -> independent first layer -> FFN without resetting chip.
         bus(0,20'h38,0,0,rd);bus(0,0,1,0,rd);wait_idle(2);
         for(j=0;j<25344;j=j+1)
             if({mem[49152+2*j+1],mem[49152+2*j]}!==first_expected[j]) $fatal(1,"First-layer mode switch mismatch %0d",j);
         bus(1,20'h7c,0,0,rd);if(rd!=0) $fatal(1,"Stale second MAC count");
         bus(1,20'h80,0,0,rd);if(rd!=0) $fatal(1,"Stale GELU count");
+        bus(1,20'h88,0,0,rd);if(rd!=0) $fatal(1,"Stale GELU overlap");
+        bus(1,20'h8c,0,0,rd);if(rd!=0) $fatal(1,"Stale parameter wait");
+        bus(1,20'h90,0,0,rd);if(rd!=0) $fatal(1,"Stale tail load count");
         configure();bus(0,0,1,0,rd);wait_idle(2);
         for(j=0;j<6336;j=j+1)
             if({mem[49152+2*j+1],mem[49152+2*j]}!==expected[j]) $fatal(1,"FFN mode recovery mismatch %0d",j);

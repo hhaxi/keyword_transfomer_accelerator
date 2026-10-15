@@ -1,5 +1,7 @@
 # 第六版：完整 FFN 双项并行优化
 
+> 本文保留第六版 `411a151` 的历史结果。当前第七版见 [搬运与 GELU 调度优化](ffn-overlap-performance.md)。
+
 第六版保持完整 FFN 的输入、权重、冻结量化配置、GELU 数学表、输出格式和 KWT5 协议不变。完整模式在八个输出通道内各并行处理两个相邻 k 项，独立第一层继续使用原来的单项路径。
 
 第五版基线提交为 `aa344f96043682ecf8009b62c2484145764994a5`，机器记录在 `performance-baseline-v5.json`，本地归档在 `deliverables/full-ffn-v5-baseline.zip`、`deliverables/v5-source-baseline.zip` 和 `output/baseline-v5/`。第四版本科必做基线 `d501f0d` 继续保留。

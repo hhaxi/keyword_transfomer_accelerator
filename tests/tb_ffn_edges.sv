@@ -22,7 +22,7 @@ module tb_ffn_edges;
         .ffn_mode(1'b1),.gelu_input_shift(5'd0),.gelu_output_shift(5'd0),
         .dma_out_valid(valid),.dma_out_data(data),.dma_out_ready(ready),.dma_done(done),.dma_fault(fault),
         .perf_cycles(elapsed),.perf_mac_cycles(mac_cycles),.perf_fifo_wait(fifo_wait),
-        .perf_second_mac(second_mac),.perf_gelu(gelu_cycles),.perf_saturation(saturation));
+        .perf_gelu_overlap(),.perf_parameter_wait(),.perf_second_mac(second_mac),.perf_gelu(gelu_cycles),.perf_saturation(saturation));
     always @(posedge clk) begin
         cycles<=cycles+1;
         if(cycles>1500000) $fatal(1,"Edge test timeout");

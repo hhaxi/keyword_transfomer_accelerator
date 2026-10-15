@@ -4,62 +4,62 @@
   "tasks": [
     {
       "task": 0,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 1,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 2,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 3,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 4,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 5,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 6,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 7,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 8,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 9,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 10,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     },
     {
       "task": 11,
-      "cycles": 346838,
+      "cycles": 310289,
       "outputs": 6336
     }
   ],
@@ -67,364 +67,430 @@
     {
       "task": 0,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 1,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 2,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 3,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 4,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 5,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 6,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 7,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 8,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 9,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 10,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     },
     {
       "task": 11,
       "host_load": 79495,
-      "dma_load": 26567,
-      "compute_writeback": 240007,
+      "dma_load": 15530,
+      "compute_writeback": 214338,
       "dma_control": 2,
-      "cpu_completion_residual": 767,
+      "cpu_completion_residual": 924,
       "profile": {
-        "0": 266576,
-        "1": 26567,
-        "2": 240007,
+        "0": 229870,
+        "1": 15530,
+        "2": 214338,
         "3": 2,
         "4": 202752,
         "5": 0,
-        "6": 240002,
-        "7": 11676,
+        "6": 214333,
+        "7": 11677,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 28077,
-        "12": 266571,
-        "13": 266576,
-        "14": 216331
+        "11": 26717,
+        "12": 229865,
+        "13": 229870,
+        "14": 190661
       },
       "extra": {
         "0": 101376,
         "1": 25344,
         "2": 0
+      },
+      "overlap": {
+        "0": 22085,
+        "1": 2308,
+        "2": 11036
       }
     }
   ],
+  "overlap_counter_names": [
+    "gelu_and_mac_cycles",
+    "parameter_wait_after_gelu",
+    "dma_tail_load_cycles"
+  ],
+  "cycle_analysis_note": "dma_load is only before early L1 launch; remaining W2/b2 loading is included in compute_writeback/RUN. Overlap counters are not additive phases.",
   "numeric": {
     "split": "validation",
     "samples": [
@@ -1496,9 +1562,9 @@
     "note": "Optional full FFN engineering metric, not undergraduate mandatory FFN1 score"
   },
   "performance": {
-    "total_cycles": 4162056,
+    "total_cycles": 3723468,
     "target_clock_hz": 150000000,
-    "nominal_tasks_per_second": 432.47856347920356,
+    "nominal_tasks_per_second": 483.4202952731164,
     "timing_closed": false,
     "macs_per_task": 3244032,
     "output_elements": 6336
@@ -1506,7 +1572,7 @@
   "component_tests": {
     "tb_ffn-run.log": {
       "passed": true,
-      "sha256": "5ec7f002605c5bc823cd42cf8ca6b0707a1e20589f7730a70472d966752f8103"
+      "sha256": "9e34c8dee1abae35168abba870f1e60bec710fea9a0d898421b17b04459c60ef"
     },
     "tb_ffn_edges-run.log": {
       "passed": true,
@@ -1518,19 +1584,19 @@
     },
     "icarus-tb_ffn_edges.log": {
       "passed": true,
-      "sha256": "cf8188fd34879b177cd9562bc6078ea0d9e0e5ef4da8032a53290a6da1d17244"
+      "sha256": "47bf2c06189c4a371b8cdac4ced2cf0965156932069277131849eeda1badba9b"
     },
     "tb_ffn_netlist-run.log": {
       "passed": true,
-      "sha256": "5ec7f002605c5bc823cd42cf8ca6b0707a1e20589f7730a70472d966752f8103"
+      "sha256": "9e34c8dee1abae35168abba870f1e60bec710fea9a0d898421b17b04459c60ef"
     },
     "icarus-tb_ffn.log": {
       "passed": true,
-      "sha256": "789539ef020434d0df58b81fddbb002b931c27bb16e5a7998c2275c1cb87cfc0"
+      "sha256": "6a48809c2e961139df70eb408bb6f5137eb5e800aeb8db687df07d0bfebde1bb"
     },
     "ffn-numeric-tests.log": {
       "passed": true,
-      "sha256": "d5500f87027c87c49b30b5ff539bd88fa7500f35005894e567e2ca29719517e6"
+      "sha256": "2a8542ec4a2a39ce5d30d175f415f02731638b0baca3b0ae495c179091478231"
     },
     "tb_gelu-run.log": {
       "passed": true,
@@ -1546,11 +1612,15 @@
     },
     "tb_soc_ffn-run.log": {
       "passed": true,
-      "sha256": "c2acfd508a0e5e85bd77ea069ad96ac4cd03e9f8a4c276e68dc01a2aab9ab727"
+      "sha256": "7e22a36054ae79f0cbc44761197f68c2a4e3467166a32e6fa74c185398b129d6"
+    },
+    "tb_soc_ffn_noprofile-run.log": {
+      "passed": true,
+      "sha256": "d52ac7490b28c133d5767ec5870a18f4c0d87a47cdb31ae11ef121edd26abf3d"
     },
     "tb_soc_ffn_netlist-run.log": {
       "passed": true,
-      "sha256": "c2acfd508a0e5e85bd77ea069ad96ac4cd03e9f8a4c276e68dc01a2aab9ab727"
+      "sha256": "0d8ff02d326b3b234ab87c2119c0b89ac25d7b1263563fcd575e6230e22837fc"
     }
   },
   "mode_switch_without_reset_verified": true,
@@ -1596,11 +1666,13 @@
   },
   "intermediate_shared_sram_transactions": 0,
   "row_buffer_bytes": 512,
-  "internal_sram_bytes": 87040,
+  "buffered_rows": 8,
+  "intermediate_buffer_bytes": 4096,
+  "internal_sram_bytes": 90624,
   "macro_instances": {
     "16x4096_SP": 2,
-    "16x1024_SP": 34,
-    "16x128_SP": 4
+    "16x1024_SP": 36,
+    "16x128_SP": 2
   },
   "ffn_vector_manifest_sha256": "03f18a1291dad8561c748739a597b18145ffdc877978c0ded163e885e43c1022",
   "note": "Do not compare full FFN tasks/s directly against the undergraduate FFN1 throughput score."

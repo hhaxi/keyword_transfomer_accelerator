@@ -53,13 +53,15 @@ module kwt_dma(
     wire unused_cmd_ready,unused_rsp_valid,unused_rsp_err;
     wire [31:0] unused_rsp_data;
     wire [63:0] core_data;
-    wire [31:0] core_cycles,mac_cycles,fifo_wait,second_mac,gelu_cycles,gelu_saturation;
+    wire [31:0] core_cycles,mac_cycles,fifo_wait,second_mac,gelu_cycles,gelu_saturation,gelu_overlap,parameter_wait;
+    reg [31:0] tail_load_cycles;
+    wire load_response=(phase==LOAD || phase==LAUNCH || phase==RUN) && m_rsp_valid && outstanding_read;
     wire bus_error=m_rsp_valid && m_err;
-    wire engine_fault=core_fault || (phase==LOAD && !core_load_ready);
+    wire engine_fault=core_fault || (load_response && !core_load_ready);
     wire stopping=abort_now || bus_error || (engine_fault && active) || phase==DRAIN;
     wire core_clear=phase==CLEAR || (phase==DRAIN && !req_valid && !outstanding) || (abort_now && !active);
     wire core_take=phase==RUN && !output_have && !stopping;
-    wire core_load=phase==LOAD && m_rsp_valid && !stopping;
+    wire core_load=load_response && !stopping;
     // Core addresses refer to the first element of each packed pair. Bias is
     // still a full signed 32-bit word; output representation is unchanged.
     wire [19:0] load_addr=read_received<3168 ? 20'h10000+{1'b0,read_received,3'b0} :
@@ -70,20 +72,22 @@ module kwt_dma(
     assign cmd_ready=!rsp_valid || rsp_ready;
     assign m_valid=req_valid;
     assign m_mask=4'hf;
-    // LOAD follows a synchronous core clear, so its SRAM writer always accepts
-    // one word per clock. Never couple response-ready to a CPU abort handshake.
+    // Initial loads follow a core clear; overlapped W2/b2 responses target
+    // banks unused by L1. A readiness violation drains as an engine error.
+    // Never couple response-ready to a CPU abort handshake.
     assign m_rsp_ready=1'b1;
     wire accept=req_valid && m_ready;
     wire retire=m_rsp_valid && m_rsp_ready;
     wire refill=(!req_valid || m_ready) && !stopping;
-    wire schedule_read=refill && phase==LOAD && read_scheduled<read_words;
-    wire schedule_write=refill && phase==RUN && output_have;
+    wire schedule_read=refill && (phase==LOAD || phase==LAUNCH || phase==RUN) && read_scheduled<read_words;
+    wire schedule_write=refill && phase==RUN && output_have && !schedule_read;
 
     kwt_accel core(.clk(clk),.rst_n(rst_n),.cmd_valid(1'b0),.cmd_ready(unused_cmd_ready),.cmd_addr(20'b0),
         .cmd_read(1'b0),.cmd_wdata(32'b0),.cmd_wmask(4'b0),.rsp_valid(unused_rsp_valid),
         .rsp_ready(1'b1),.rsp_rdata(unused_rsp_data),.rsp_err(unused_rsp_err),
         .ffn_mode(ffn_mode),.gelu_input_shift(gelu_config[4:0]),.gelu_output_shift(gelu_config[12:8]),
         .perf_second_mac(second_mac),.perf_gelu(gelu_cycles),.perf_saturation(gelu_saturation),
+        .perf_gelu_overlap(gelu_overlap),.perf_parameter_wait(parameter_wait),
         .dma_mode(1'b1),.dma_load_valid(core_load),.dma_load_addr(load_addr),.dma_load_data(m_rdata),
         .dma_load_ready(core_load_ready),.dma_start(phase==LAUNCH && !stopping),.dma_clear(core_clear),
         .dma_out_valid(core_valid),.dma_out_data(core_data),.dma_out_ready(core_take),
@@ -97,7 +101,7 @@ module kwt_dma(
             req_valid<=0;outstanding<=0;outstanding_read<=0;m_addr<=0;m_wdata<=0;m_read<=1;
             read_scheduled<=0;read_received<=0;write_scheduled<=0;write_received<=0;
             output_hold<=0;output_have<=0;output_high<=0;
-            total_cycles<=0;load_cycles<=0;run_cycles<=0;other_cycles<=0;
+            total_cycles<=0;load_cycles<=0;run_cycles<=0;other_cycles<=0;tail_load_cycles<=0;
             request_wait<=0;response_wait<=0;read_commands<=0;write_commands<=0;
             first_output<=0;last_output<=0;last_write<=0;producer_wait<=0;first_seen<=0;
             rsp_valid<=0;rsp_rdata<=0;rsp_err<=0;
@@ -105,6 +109,7 @@ module kwt_dma(
             if(rsp_valid && rsp_ready) rsp_valid<=0;
             if(active) begin
                 total_cycles<=total_cycles+1;
+                if(phase==RUN && read_received<read_words) tail_load_cycles<=tail_load_cycles+1;
                 if(phase==LOAD) load_cycles<=load_cycles+1;
                 else if(phase==RUN) run_cycles<=run_cycles+1;
                 else other_cycles<=other_cycles+1;
@@ -148,9 +153,10 @@ module kwt_dma(
             if(phase==CLEAR) phase<=LOAD;
             if(phase==LAUNCH) phase<=RUN;
             if(retire && !stopping) begin
-                if(phase==LOAD && outstanding_read) begin
+                if(load_response) begin
                     read_received<=read_received+1'b1;
-                    if(read_received==read_words-1'b1) phase<=LAUNCH;
+                    // Launch L1 as soon as its inputs are resident; W2/b2 continue loading.
+                    if(read_received==11615) phase<=LAUNCH;
                 end
                 if(phase==RUN && !outstanding_read) begin
                     write_received<=write_received+1'b1;
@@ -174,7 +180,7 @@ module kwt_dma(
                 phase<=CLEAR;done<=0;error<=0;aborted<=0;config_error<=0;
                 read_scheduled<=0;read_received<=0;write_scheduled<=0;write_received<=0;
                 output_have<=0;output_high<=0;
-                total_cycles<=0;load_cycles<=0;run_cycles<=0;other_cycles<=0;
+                total_cycles<=0;load_cycles<=0;run_cycles<=0;other_cycles<=0;tail_load_cycles<=0;
                 request_wait<=0;response_wait<=0;read_commands<=0;write_commands<=0;
                 first_output<=0;last_output<=0;last_write<=0;producer_wait<=0;first_seen<=0;
             end
@@ -195,6 +201,9 @@ module kwt_dma(
                         20'h7c: rsp_rdata<=second_mac;
                         20'h80: rsp_rdata<=gelu_cycles;
                         20'h84: rsp_rdata<=gelu_saturation;
+                        20'h88: rsp_rdata<=gelu_overlap;
+                        20'h8c: rsp_rdata<=parameter_wait;
+                        20'h90: rsp_rdata<=tail_load_cycles;
                         20'h40: rsp_rdata<=total_cycles;
                         20'h44: rsp_rdata<=load_cycles;
                         20'h48: rsp_rdata<=run_cycles;

@@ -49,6 +49,6 @@ int kwt_ffn(const volatile uint32_t *x, const volatile uint32_t *w,
 }
 void kwt_profile(volatile uint32_t *out) {
     for (uint32_t i=0;i<15;i++) out[i]=*reg(0x40+4*i);
-    for (uint32_t i=0;i<3;i++) out[16+i]=*reg(0x7c+4*i);
+    for (uint32_t i=0;i<6;i++) out[16+i]=*reg(0x7c+4*i);
     fence();out[15]=0x50524633u; /* Publish only after all counters were copied. */
 }
