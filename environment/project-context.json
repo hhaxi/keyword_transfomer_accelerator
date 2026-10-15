@@ -1,0 +1,30 @@
+{
+  "competition_group": "undergraduate",
+  "confirmed_by": "user",
+  "required_tasks": [1, 2, 3],
+  "required_operation": "Y = X @ W + b",
+  "input_shape": [99, 64],
+  "weight_shape": [64, 256],
+  "output_shape": [99, 256],
+  "parameter_sets": 12,
+  "optional_operations": ["GELU", "second feed-forward linear layer", "attention"],
+  "soc_reference": {
+    "url": "https://github.com/riscv-mcu/e203_hbirdv2",
+    "role": "Official SoC reference identified by user",
+    "local_baseline_commit": "9f3e34f337f5d0a1236a285871ffa2032491617a",
+    "commit_status": "Local reproducibility baseline; user did not specify a required commit",
+    "local_directory": "assets/references/e203_hbirdv2-9f3e34f337f5d0a1236a285871ffa2032491617a"
+  },
+  "backend_environment": "Official server to be provided later, as confirmed by user",
+  "integration_interface": "Not yet selected: System Bus or NICE",
+  "competition_constraints": {
+    "clock_mhz": 150,
+    "shared_sram_kb": 512,
+    "accelerator_area_limit_mm2": 2.25,
+    "nrmse_limit": 0.03
+  },
+  "pending_validation": [
+    "Verify competition memory and clock requirements against the reference SoC during integration",
+    "Validate TensorFlow 2.4.0 development results against the official floating-point reference"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "iverilog_bin": "C:/EDA/iverilog/bin",
+  "modelsim_bin": "C:/EDA/modelsim/win64",
+  "gtkwave_bin": "C:/EDA/gtkwave/bin",
+  "wsl_distro": "Ubuntu",
+  "wsl_yosys": "yosys",
+  "wsl_verilator": "verilator",
+  "wsl_opensta": "sta"
+}

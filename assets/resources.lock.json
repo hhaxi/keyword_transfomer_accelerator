@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-10-15",
+  "model": {
+    "repository": "ARM-software/keyword-transformer",
+    "url": "https://codeload.github.com/ARM-software/keyword-transformer/zip/237e4097afd4f6851e0b82f0a8d65c2dfe8eae30",
+    "commit": "237e4097afd4f6851e0b82f0a8d65c2dfe8eae30",
+    "archive": "assets/downloads/keyword-transformer-237e4097afd4f6851e0b82f0a8d65c2dfe8eae30.zip",
+    "sha256": "ebbdd2529841ddee9773116ee149ba709c4e791d1011a2d2149993bce1986d32",
+    "source_directory": "assets/sources/keyword-transformer-237e4097afd4f6851e0b82f0a8d65c2dfe8eae30",
+    "git_blobs_verified": 210,
+    "kwt1_files": {
+      "best_weights.data-00000-of-00001": {
+        "bytes": 7401050,
+        "sha256": "ae993f6ed995938c1ab584b0857b35ca18f31f88001c7e17c7d7c3868bd33ad3"
+      },
+      "best_weights.index": {
+        "bytes": 34662,
+        "sha256": "5a60a0fa78a1855572084a42669768e2998d37e7d93c833962960fdb0db70fbc"
+      },
+      "flags.json": {
+        "bytes": 2097,
+        "sha256": "fcd480d309f96d2029a3ba764634f9e46dd73b667c0ebb84b66af02680494c58"
+      },
+      "flags.txt": {
+        "bytes": 1867,
+        "sha256": "c2e1e7d478aba268d648fff51a4841ec28816d7b330ba6104b51cd331adb56c5"
+      },
+      "labels.txt": {
+        "bytes": 60,
+        "sha256": "d19753ae642d3a5ab8eb8042f5df4d1d8c40afc6bb8ae4b7b16a808bc8ce6efd"
+      }
+    },
+    "archive_bytes": 251636982
+  },
+  "dataset": {
+    "url": "https://storage.googleapis.com/download.tensorflow.org/data/speech_commands_v0.02.tar.gz",
+    "archive": "assets/downloads/speech_commands_v0.02.tar.gz",
+    "bytes": 2428923189,
+    "sha256": "af14739ee7dc311471de98f5f9d2c9191b18aedfe957f4a6ff791c709868ff58",
+    "md5": "6b74f3901214cb2c2934e98196829835",
+    "remote_etag_verified": true,
+    "directory": "assets/datasets/speech_commands_v0.02",
+    "archive_entries": 105878,
+    "wav_files": 105835,
+    "wav_counts_by_directory": {
+      "_background_noise_": 6,
+      "backward": 1664,
+      "bed": 2014,
+      "bird": 2064,
+      "cat": 2031,
+      "dog": 2128,
+      "down": 3917,
+      "eight": 3787,
+      "five": 4052,
+      "follow": 1579,
+      "forward": 1557,
+      "four": 3728,
+      "go": 3880,
+      "happy": 2054,
+      "house": 2113,
+      "learn": 1575,
+      "left": 3801,
+      "marvin": 2100,
+      "nine": 3934,
+      "no": 3941,
+      "off": 3745,
+      "on": 3845,
+      "one": 3890,
+      "right": 3778,
+      "seven": 3998,
+      "sheila": 2022,
+      "six": 3860,
+      "stop": 3872,
+      "three": 3727,
+      "tree": 1759,
+      "two": 3880,
+      "up": 3723,
+      "visual": 1592,
+      "wow": 2123,
+      "yes": 4044,
+      "zero": 4052
+    },
+    "official_split_list_counts": {
+      "validation_list.txt": 9981,
+      "testing_list.txt": 11005
+    },
+    "official_sha256_verified": true,
+    "official_sha256_source": "https://raw.githubusercontent.com/tensorflow/datasets/master/tensorflow_datasets/datasets/speech_commands/checksums.tsv"
+  },
+  "hardware_references": [
+    {
+      "repository": "riscv-mcu/e203_hbirdv2",
+      "url": "https://codeload.github.com/riscv-mcu/e203_hbirdv2/zip/9f3e34f337f5d0a1236a285871ffa2032491617a",
+      "commit": "9f3e34f337f5d0a1236a285871ffa2032491617a",
+      "archive": "assets/downloads/e203_hbirdv2-9f3e34f337f5d0a1236a285871ffa2032491617a.zip",
+      "sha256": "d952eff19c59d217a2c4edaa9578a45fc38dffa82bbbd412b1465e75d20e47d5",
+      "source_directory": "assets/references/e203_hbirdv2-9f3e34f337f5d0a1236a285871ffa2032491617a",
+      "git_blobs_verified": 1051,
+      "archive_bytes": 55769799,
+      "revision_role": "Pinned reproducibility baseline, not an officially mandated competition revision"
+    },
+    {
+      "repository": "riscv-mcu/hbird-sdk",
+      "url": "https://codeload.github.com/riscv-mcu/hbird-sdk/zip/0e0e9083569721578c42f07a95b05a26c0760db6",
+      "commit": "0e0e9083569721578c42f07a95b05a26c0760db6",
+      "archive": "assets/downloads/hbird-sdk-0e0e9083569721578c42f07a95b05a26c0760db6.zip",
+      "sha256": "22887fe1cdef35bccc5757a59a7ade4363581c93324c704ff32116137aa1de01",
+      "source_directory": "assets/references/hbird-sdk-0e0e9083569721578c42f07a95b05a26c0760db6",
+      "git_blobs_verified": 408,
+      "archive_bytes": 7030495,
+      "revision_role": "Pinned reproducibility baseline, not an officially mandated competition revision"
+    }
+  ],
+  "paper": {
+    "title": "Keyword Transformer: A Self-Attention Model for Keyword Spotting",
+    "arxiv_id": "2104.00769",
+    "source": "https://arxiv.org/abs/2104.00769",
+    "file": "assets/papers/arXiv_2104.00769.pdf",
+    "pages": 5,
+    "bytes": 900209,
+    "sha256": "0726b22c7e6bd48083ba2afebd393d7b99165335c9e8bc48de7e5fb09f5c7174"
+  },
+  "native_tools": [
+    {
+      "name": "nuclei-gcc",
+      "source": "https://download.nucleisys.com/upload/files/toolchain/gcc/nuclei_riscv_newlibc_prebuilt_win64_2025.10.zip",
+      "bytes": 1536146975,
+      "md5": "aa1edbc9f3c0d939a9fe7bd27075fe77",
+      "sha256": "d34477f74bf8c4b2796961bee86a8a1a05954f4ba2460839fdbe366a65ce6480",
+      "directory": ".tools/nuclei-gcc"
+    },
+    {
+      "name": "build-tools",
+      "source": "https://download.nucleisys.com/upload/files/toolchain/build-tools/win32-buildtools-1.2.zip",
+      "bytes": 3781077,
+      "md5": "aa009ec4c5ee47f5ef9b0ccebc46c5fd",
+      "sha256": "60952f1c658978a2bff23ccaf1f274ca16f37c87b710a9bbd452f640c9427d5e",
+      "directory": ".tools/build-tools"
+    }
+  ],
+  "tensorflow_wheel": {
+    "filename": "tensorflow-2.4.0-cp38-cp38-win_amd64.whl",
+    "url": "https://files.pythonhosted.org/packages/84/f3/4aa5da782d3ad2ed33026a6e42280ce5a146b6fe71191b52e2bd0be7903e/tensorflow-2.4.0-cp38-cp38-win_amd64.whl",
+    "bytes": 370679704,
+    "sha256": "7adcf41f57fdb12cd6792df02fb3cd16bddbe449cd7140faaa2bf2b3d5b5c4df"
+  }
+}

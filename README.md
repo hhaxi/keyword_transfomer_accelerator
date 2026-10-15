@@ -1,1 +1,155 @@
-# keyword_transfomer_accelerator
+# KWT-1 关键词识别线性层加速器（本科生组）
+
+本项目面向芯片设计赛题的本科生组，以 KWT-1 模型和 E203 蜂鸟 SoC 为参考，开发 Transformer 前馈网络第一线性层加速器。
+
+**当前阶段：公开资源、开发环境和环境自检已就绪；比赛加速器 RTL、驱动、量化方案及 SoC 集成尚未实现。** `environment/smoke/` 中的 MAC 电路只用于检查工具能否正常工作。
+
+## 赛题范围
+
+依据仓库中的 [赛题指南](芯片设计赛题指南.pdf)，本科生组必做第 1—3 项，核心计算为：
+
+```text
+Y = X × W + b
+X: 99 × 64    W: 64 × 256    b: 256    Y: 99 × 256
+支持 12 个编码器层的参数切换，并完成 SoC 集成及验证。
+```
+
+记录的约束包括 150 MHz 时钟、512 KB 共享 SRAM、加速器面积不超过 2.25 mm²、NRMSE 不超过 3%；完整定义及验收口径以指南和官方后续通知为准。GELU、第二线性层和注意力属于选做。机器可读范围见 [project-context.json](environment/project-context.json)。
+
+官方 SoC 参考为 [riscv-mcu/e203_hbirdv2](https://github.com/riscv-mcu/e203_hbirdv2)。本项目固定其提交作为开发基线，不代表组委会指定了该提交。正式后端环境由官方后期提供服务器，届时对接工艺库、SRAM 宏及评测条件。
+
+## 工程结构
+
+```text
+README.md                         使用说明及开发状态
+芯片设计赛题指南.pdf                原始赛题指南
+assets/resources.lock.json        公开资源版本、下载来源与校验值
+environment/
+  project-context.json            已确认的本科组范围
+  requirements-model.in           模型依赖声明
+  requirements-model.lock.txt     固定版本和包哈希
+  local-tools.example.json        外部工具路径配置模板
+  smoke/                          工具环境检查电路、测试平台和 Tcl
+scripts/
+  download_competition_assets.py  模型、数据集、SoC 和 SDK 下载校验
+  fetch_model_wheel.py            TensorFlow 安装包下载校验
+  install_native_toolchain.py     Nuclei GCC / Make 下载及安装
+  check_model_environment.py      模型权重、特征和推理检查
+  check_environment.py            HDL、综合、SDK 等环境检查
+  clean-project.ps1               项目内缓存清理
+docs/validation.json              本机环境验证结果快照
+env.ps1                           当前终端的环境变量
+setup.ps1                         创建模型环境及项目私有工具链
+tools.ps1                         环境检查入口
+```
+
+模型、音频、第三方源码保存在本地 `assets/sources/`、`assets/datasets/`、`assets/references/`；工具和 Python 环境在 `.tools/`、`.venv-model/`；运行输出在 `output/`。这些可重新获取的内容不提交 Git。外部工具的本机路径保存在被忽略的 `environment/local-tools.json`。
+
+## 首次配置
+
+当前脚本面向 **Windows x64 + PowerShell + WSL Ubuntu**。先准备 Git 和 [uv](https://docs.astral.sh/uv/)，以及以下外部工具：
+
+| 工具 | 本机已验证版本 | 用途 |
+| --- | --- | --- |
+| Icarus Verilog | 12.0 | RTL 与综合后仿真 |
+| ModelSim | 2020.4，需可用许可证 | RTL 仿真 |
+| WSL Ubuntu | 24.04 | 运行 Linux EDA 工具 |
+| Yosys | 0.67 | 通用门级综合 |
+| Verilator | 5.020 | RTL lint |
+| OpenSTA | 3.1.0 | 启动检查，正式 STA 待工艺库 |
+| GTKWave（可选） | 复用本机安装 | 查看 VCD 波形 |
+
+`setup.ps1` 自动配置 Python 3.8.20、模型依赖、Nuclei GCC 14.2.1（2025.10 工具包）及 GNU Make 4.4.1。它复用上表的工具，不负责安装 WSL、仿真器、Linux EDA 或商业许可证。模型检查使用 CPU，无需 CUDA。
+
+```powershell
+git clone https://github.com/hhaxi/keyword_transfomer_accelerator.git
+cd keyword_transfomer_accelerator
+
+# 首次在新机器配置；已有 local-tools.json 时直接编辑，保留本机路径。
+Copy-Item environment/local-tools.example.json environment/local-tools.json
+notepad environment/local-tools.json
+```
+
+填写 Windows 工具的 `bin` 目录，以及 WSL 发行版名称和 Linux 可执行文件路径；Linux 工具也可填写 PATH 中的命令名。不要把本机配置提交到仓库。
+
+下载公开资源（下载脚本使用 Python 3.13，与模型环境分离）：
+
+```powershell
+uv run --no-project --python 3.13 scripts/download_competition_assets.py
+```
+
+默认获取模型源码及权重、Speech Commands V2、E203 和 HBird SDK。可分开执行：
+
+```powershell
+uv run --no-project --python 3.13 scripts/download_competition_assets.py --components model hardware
+uv run --no-project --python 3.13 scripts/download_competition_assets.py --components dataset
+```
+
+数据集压缩包约 2.43 GB，GCC 安装包约 1.54 GB；下载、解压及安装期间建议预留至少 20 GB 空间。数据集支持分段续传并验证 SHA-256；仓库快照逐文件验证 Git blob。运行元数据保存在 `assets/metadata/`，版本和校验基线见 [resources.lock.json](assets/resources.lock.json)。重新运行下载脚本会重新解压选中的参考源码，请将自己的代码放在独立目录中。
+
+随后安装项目依赖并执行自检：
+
+```powershell
+.\setup.ps1
+```
+
+脚本仅设置项目内环境和当前终端 PATH，不替换系统 Python。若 PowerShell 的执行策略阻止运行，请按本机管理要求允许这些已审阅的项目脚本。
+
+## 日常使用和验证
+
+已配置的机器直接运行：
+
+```powershell
+. .\env.ps1
+.\tools.ps1 all
+```
+
+`tools.ps1` 自身也会加载环境。分项检查如下：
+
+| 命令 | 检查内容 |
+| --- | --- |
+| `.\tools.ps1 versions` | 工具版本 |
+| `.\tools.ps1 model` | best_weights、全部模型权重、MFCC 和少量音频推理 |
+| `.\tools.ps1 rtl` | Icarus 与 ModelSim 的有符号 MAC、复位和使能仿真 |
+| `.\tools.ps1 synth` | Yosys 通用综合和综合后仿真 |
+| `.\tools.ps1 sdk` | 上游 E203 SDK Hello World 编译、链接及 ELF32 检查 |
+| `.\tools.ps1 lint` | Verilator lint |
+| `.\tools.ps1 sta` | OpenSTA 启动检查 |
+
+完整报告为 `output/environment/environment-report.json`，日志及波形同在 `output/environment/` 下。版本化的 [验证快照](docs/validation.json) 记录整理工程时的检查结果。
+
+SDK 编译器前缀为 `riscv64-unknown-elf-`，支持 RV32 多库；检查采用 `rv32imac_zicsr_zifencei`、`ilp32` 和上游 `ddr200t` 参考配置。编译在输出目录中的 SDK 副本进行，产物包括 ELF、BIN、HEX、反汇编及 Verilog 存储文件。此检查尚未在 SoC 或板卡上执行程序。
+
+## 模型与数据注意事项
+
+- 使用 [ARM-software/keyword-transformer](https://github.com/ARM-software/keyword-transformer) 提交 `237e4097afd4f6851e0b82f0a8d65c2dfe8eae30` 下的 `models_data_v2_12_labels/kwt1/best_weights`。原始 `checkpoint` 默认指向 `last_weights`，必须显式选择 `best_weights`。
+- 上游 README 表格的 KWT-1 `mlp-dim=128` 与指定 `flags.json` 不一致；该模型配置实际为 256，与本项目赛题维度一致。
+- 上游要求 TensorFlow `2.4.0rc1`，配置时 PyPI 无法获取该版本，因此使用 **2.4.0 开发替代版**。NumPy 为 1.19.5，TensorFlow Addons 为 0.12.1；完整版本见依赖锁文件。与官方浮点参考的数值等价性仍需验证。
+- 自检使用原始 Session 图模式、推理设置，关闭训练增强和 Dropout；607,308 个模型参数对应的 162 个权重张量均与 checkpoint 逐项精确匹配。旧版 checkpoint 可能显示无权重 GELU 层对象别名警告，实际权重不匹配会使检查失败。
+- Speech Commands V2 保留完整词类、背景噪声、许可及官方划分列表：105,835 个 WAV（含 6 个背景噪声文件），验证列表 9,981 条、测试列表 11,005 条。十二分类映射、unknown 和 silence 处理应沿用指定源码。
+- 已完成静音及 3 条验证音频的推理检查，重复推理结果一致；尚未进行完整准确率评估，也未生成批量逐层输入和浮点参考。测试集不用于调节量化参数。
+
+模型背景论文：[Keyword Transformer: A Self-Attention Model for Keyword Spotting](https://arxiv.org/abs/2104.00769)。论文 PDF 不属于自动下载及构建的必需输入。
+
+## 清理和版本管理
+
+先预览，再执行：
+
+```powershell
+.\scripts\clean-project.ps1 -WhatIf
+.\scripts\clean-project.ps1
+```
+
+清理范围是项目内下载压缩包、TensorFlow wheel 缓存、临时输出、运行时下载元数据和源码的 Python 缓存。版本化的资源校验清单、验证快照、已安装环境、工具、解压的数据集及参考源码保留。请先保存需要长期留存的 `output/` 结果；这些输出不受 Git 保护。清理后日常自检仍可运行，重新执行安装或下载脚本可能重新获取已删除的安装包。
+
+第三方源码、权重、数据集和工具遵循各自上游许可；仓库仅记录来源并提供获取脚本，不随 Git 分发这些大文件。原始许可文件保留在下载内容中。
+
+## 后续开发
+
+1. 导出 12 层第一线性层的权重、偏置、输入与浮点参考，建立 NRMSE 评估。
+2. 确定数据格式、量化与累加位宽、分块方式和存储布局。
+3. 实现加速器 RTL、参数切换、测试平台及软件驱动。
+4. 选择 System Bus 或 NICE 接口，接入 E203，并核对共享 SRAM、地址和时钟要求。
+5. 在官方服务器上完成指定工艺综合、时序、面积与功耗评测。
+
+目前通过的是工具环境检查；Yosys 使用通用门级，OpenSTA 仅验证启动，尚不能据此判定满足赛题的频率、面积或精度指标。
