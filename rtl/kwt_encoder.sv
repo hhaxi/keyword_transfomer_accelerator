@@ -23,7 +23,7 @@ module kwt_encoder(
     reg [1:0] load_kind,projection;
     reg [13:0] load_index,tail_index;
     reg [10:0] dump_group;
-    reg [1:0] dump_lane;
+    reg [1:0] dump_prefetch;
     reg [6:0] row,keyrow,k;
     reg [3:0] group_;
     reg signed [71:0] acc[0:3];
@@ -32,23 +32,40 @@ module kwt_encoder(
     reg [31:0] exp_sum,reciprocal,low_word;
     reg [127:0] output_buffer,norm_value,gamma;
     reg [31:0] cycles,mac_cycles,read_commands,write_commands,sram_reads,sram_writes,saturations;
+    // Phase counters are disjoint; wait counters overlap their DMA phase.
+    reg [31:0] phase_cycles[0:9];
+    reg [31:0] dma_request_wait,dma_response_wait,dma_retire_refill;
+    reg [13:0] issue_index;
+    reg [1:0] pending_count;
+    reg offer_held,dma_error_pending;
     wire busy=state!=IDLE;
     wire take=cmd_valid && cmd_ready;
     wire wr=take && !cmd_read && cmd_wmask==15 && cmd_addr[1:0]==0;
     wire abort_now=wr && cmd_addr==0 && cmd_wdata==2;
-    wire stopping=abort_pending || abort_now;
+    wire stopping=abort_pending || abort_now || dma_error_pending;
     assign cmd_ready=!rsp_valid || rsp_ready;
-    assign m_valid=state==LREQ || state==WREQ || state==TREQ;
+    wire loading=state==LREQ || state==LWAIT;
+    wire dumping=state==WREQ || state==WWAIT;
+    wire tail_loading=state==TREQ || state==TWAIT;
+    wire [13:0] burst_length=loading ? load_length : tail_loading ? 14'd8 : norm_second ? 14'd6336 : 14'd3168;
+    // Two in-order credits allow retirement/refill every clock. A stalled offer
+    // is irrevocable, including on abort/error; all accepted requests drain.
+    assign m_valid=(loading || dumping || tail_loading) && issue_index<burst_length &&
+        pending_count<2 && (!(abort_pending || dma_error_pending) || offer_held);
+    wire issue=m_valid && m_ready;
+    wire retire=m_rsp_valid && pending_count!=0;
+    wire [2:0] pending_next={1'b0,pending_count}+{2'd0,issue}-{2'd0,retire};
     assign m_read=state!=WREQ && state!=WWAIT;
     assign m_mask=4'hf;
     assign m_rsp_ready=1'b1;
     wire [13:0] load_length=load_kind==0 ? 14'd6336 : load_kind==1 ? 14'd320 : 14'd4096;
     wire [31:0] load_base=load_kind==0 ? xbase : load_kind==1 ? pbase+32'd65536 : pbase+{16'b0,projection,14'b0};
-    assign m_addr=(state==TREQ || state==TWAIT) ? fybase+{16'd0,tail_index,2'b0} :
+    assign m_addr=(state==TREQ || state==TWAIT) ? fybase+{16'd0,tail_index[13:3],3'd0,2'b0}+{16'd0,issue_index,2'b0} :
         (state==WREQ || state==WWAIT) ?
-            (norm_second ? ybase+{17'd0,dump_group,4'b0} : fxbase+{18'd0,dump_group,3'b0})+{28'd0,dump_lane,2'b0} :
-            load_base+{16'd0,load_index,2'b0};
-    assign m_wdata=output_buffer[dump_lane*32+:32];
+            (norm_second ? ybase : fxbase)+{16'd0,issue_index,2'b0} :
+            load_base+{16'd0,issue_index,2'b0};
+    wire [1:0] write_lane=norm_second ? issue_index[1:0] : {1'b0,issue_index[0]};
+    assign m_wdata=m_read ? 32'd0 : output_buffer[write_lane*32+:32];
 
     function automatic signed [71:0] sx32(input signed [31:0] v);
         sx32={{40{v[31]}},v};
@@ -112,6 +129,9 @@ module kwt_encoder(
     kwt_vecmem32 #(.AW(7)) pm_(clk,pcs,pwe,pm,pa,pi,pd);
     kwt_sram16 #(.AW(7)) score_lo(clk,scs,swe,sa,si[15:0],sd[15:0]);
     kwt_sram16 #(.AW(7)) score_hi(clk,scs,swe,sa,si[31:16],sd[31:16]);
+    wire another_group=group_!=15 || row!=98;
+    wire [6:0] following_row=group_==15 ? row+1'b1 : row;
+    wire [3:0] following_group=group_+1'b1;
     wire [6:0] next_k=k+1'b1;
     wire [6:0] read_k=(state==PPRIME || state==SPRIME || state==VPRIME) ? 7'd0 : next_k;
     wire [3:0] next_group=group_+1'b1;
@@ -168,7 +188,7 @@ module kwt_encoder(
         kcs=0;kwe=0;km=15;ka=0;ki=0;vcs=0;vwe=0;vm=15;va=0;vi=0;
         wcs=0;wwe=0;wm=15;wa=0;wi=0;pcs=0;pwe=0;pm=15;pa=0;pi=0;
         scs=0;swe=0;sa=0;si=0;sat_events=0;
-        if(state==LWAIT && m_rsp_valid && !m_err && !stopping) begin
+        if(loading && retire && !m_err && !stopping) begin
             case(load_kind)
                 0:begin xcs=1;xwe=1;xm=4'b1<<load_index[1:0];xa=load_index[12:2];xi={4{m_rdata}};end
                 1:begin pcs=1;pwe=1;pm=4'b1<<load_index[1:0];pa=load_index[8:2];pi={4{m_rdata}};end
@@ -192,6 +212,25 @@ module kwt_encoder(
                     if(projected[u]>72'sd2147483647 || projected[u]< -72'sd2147483648) sat_events=sat_events+1'b1;
                 end
             end
+        end
+        // Save the old result and prime the next matrix group on independent
+        // SRAM ports. Accumulator reset occurs only after its result is saved.
+        if(state==PSAVE && another_group) begin
+            if(projection==3) begin pcs=1;pa={3'd0,following_group};end
+            else begin
+                wcs=1;wa={following_group,6'd0};
+                xcs=1;xa={following_row,4'd0};xm=1;
+            end
+        end
+        if(state==RSAVE && another_group) begin
+            wcs=1;wa={following_group,6'd0};
+            qcs=1;qa={following_row,4'd0};qm=1;
+        end
+        if(state==SSAVE && keyrow!=98) begin
+            qcs=1;kcs=1;qa={row,4'd0};ka={7'(keyrow+1'b1),4'd0};
+        end
+        if(state==VSAVE && group_!=15) begin
+            scs=1;sa=0;vcs=1;va={7'd0,following_group};
         end
         if(state==RSAVE) begin
             xcs=1;xwe=1;xa={row,group_};
@@ -233,12 +272,13 @@ module kwt_encoder(
             end
         end
         if(state==DREAD) begin xcs=1;xa=dump_group;end
+        if(dumping && dump_prefetch==0 && dump_group<1583) begin xcs=1;xa=dump_group+1'b1;end
         if(state==TGROUP) begin xcs=1;xa=tail_index[13:3];end
         if(state==TSTORE) begin xcs=1;xwe=1;xa=tail_index[13:3];xi=output_buffer;end
-        if(state==TWAIT && m_rsp_valid && !m_err && tail_index[0] && overflow32(tail_value)) sat_events=sat_events+1'b1;
+        if(tail_loading && retire && !m_err && tail_index[0] && overflow32(tail_value)) sat_events=sat_events+1'b1;
         if(state==VARMAC) for(integer u=0;u<4;u=u+1)
             if(overflow32(sx32($signed(xd[u*32+:32]))-{{32{mean[39]}},mean})) sat_events=sat_events+1'b1;
-        if(state==DCAP && !norm_second) for(integer u=0;u<4;u=u+1)
+        if((state==DCAP || (dumping && dump_prefetch==1)) && !norm_second) for(integer u=0;u<4;u=u+1)
             if(rne(sx32($signed(xd[u*32+:32])),{1'b0,config_[12:8]})>32767 ||
                rne(sx32($signed(xd[u*32+:32])),{1'b0,config_[12:8]})< -32768) sat_events=sat_events+1'b1;
         if(stopping) begin xcs=0;qcs=0;kcs=0;vcs=0;wcs=0;pcs=0;scs=0;sat_events=0;end
@@ -254,10 +294,13 @@ module kwt_encoder(
         if(!rst_n) begin
             state<=IDLE;xbase<=0;pbase<=0;fxbase<=0;fybase<=0;ybase<=0;config_<=0;operation<=0;
             done<=0;error<=0;aborted<=0;config_error<=0;abort_pending<=0;resident_valid<=0;z_valid<=0;norm_second<=0;
-            load_kind<=0;load_index<=0;tail_index<=0;projection<=0;dump_group<=0;dump_lane<=0;
+            load_kind<=0;load_index<=0;tail_index<=0;projection<=0;dump_group<=0;dump_prefetch<=0;
             row<=0;keyrow<=0;k<=0;group_<=0;row_max<=0;sum<=0;mean<=0;exp_sum<=0;reciprocal<=0;low_word<=0;
             output_buffer<=0;norm_value<=0;gamma<=0;
             cycles<=0;mac_cycles<=0;read_commands<=0;write_commands<=0;sram_reads<=0;sram_writes<=0;saturations<=0;
+            issue_index<=0;pending_count<=0;offer_held<=0;dma_error_pending<=0;
+            for(i=0;i<10;i=i+1) phase_cycles[i]<=0;
+            dma_request_wait<=0;dma_response_wait<=0;dma_retire_refill<=0;
             rsp_valid<=0;rsp_rdata<=0;rsp_err<=0;
             for(i=0;i<4;i=i+1) acc[i]<=0;
         end else begin
@@ -268,30 +311,58 @@ module kwt_encoder(
                 if(state==PMAC || state==SMAC || state==VMAC || state==VARMAC || state==ANORM || state==AFFINE || state==NCALC)
                     mac_cycles<=mac_cycles+1'b1;
             end
-            if(m_valid && m_ready) begin
+            pending_count<=pending_next[1:0];
+            offer_held<=m_valid && !m_ready;
+            if(issue) issue_index<=issue_index+1'b1;
+            // norm_value is dead during output DMA, so reuse it as the next
+            // group's write buffer rather than adding SRAM or arithmetic.
+            if(dumping && !stopping) begin
+                if(dump_prefetch==0 && dump_group<1583) dump_prefetch<=1;
+                else if(dump_prefetch==1) begin
+                    dump_prefetch<=2;
+                    if(norm_second) norm_value<=xd;
+                    else begin
+                        for(i=0;i<4;i=i+1) norm_value[i*16+:16]<=clip16(rne(sx32($signed(xd[i*32+:32])),{1'b0,config_[12:8]}));
+                        norm_value[127:64]<=0;
+                    end
+                end
+            end
+            if(busy) begin
+                if(loading) phase_cycles[7]<=phase_cycles[7]+1'b1;
+                else if(state>=TGROUP && state<=TSTORE) phase_cycles[8]<=phase_cycles[8]+1'b1;
+                else if(state>=DREAD && state<=WWAIT) phase_cycles[9]<=phase_cycles[9]+1'b1;
+                else if(state>=PINIT && state<=RSAVE) begin
+                    if(projection==3) phase_cycles[4]<=phase_cycles[4]+1'b1;
+                    else phase_cycles[0]<=phase_cycles[0]+1'b1;
+                end else if(state>=SINIT && state<=SSAVE) phase_cycles[1]<=phase_cycles[1]+1'b1;
+                else if(state>=EREAD && state<=NCALC) phase_cycles[2]<=phase_cycles[2]+1'b1;
+                else if(state>=VINIT && state<=VSAVE) phase_cycles[3]<=phase_cycles[3]+1'b1;
+                else if(norm_second) phase_cycles[6]<=phase_cycles[6]+1'b1;
+                else phase_cycles[5]<=phase_cycles[5]+1'b1;
+                if(m_valid && !m_ready) dma_request_wait<=dma_request_wait+1'b1;
+                if(pending_count!=0 && !m_rsp_valid) dma_response_wait<=dma_response_wait+1'b1;
+                if(issue && retire) dma_retire_refill<=dma_retire_refill+1'b1;
+            end
+            if(issue) begin
                 if(m_read) read_commands<=read_commands+1'b1;else write_commands<=write_commands+1'b1;
             end
-            if(stopping) begin
-                abort_pending<=1;resident_valid<=0;z_valid<=0;done<=0;
-                if(state==LREQ && m_ready) state<=LWAIT;
-                else if(state==WREQ && m_ready) state<=WWAIT;
-                else if(state==TREQ && m_ready) state<=TWAIT;
-                else if((state==LWAIT || state==WWAIT || state==TWAIT) && m_rsp_valid) begin
-                    state<=IDLE;aborted<=1;abort_pending<=0;
-                end else if(state!=LREQ && state!=WREQ && state!=TREQ && state!=LWAIT && state!=WWAIT && state!=TWAIT) begin
-                    state<=IDLE;aborted<=1;abort_pending<=0;
+            if(stopping || (retire && m_err)) begin
+                if(abort_now || abort_pending) abort_pending<=1;
+                if(retire && m_err) dma_error_pending<=1;
+                resident_valid<=0;z_valid<=0;done<=0;
+                if(pending_next==0 && !(m_valid && !m_ready)) begin
+                    state<=IDLE;aborted<=abort_now || abort_pending;
+                    error<=dma_error_pending || (retire && m_err);
+                    abort_pending<=0;dma_error_pending<=0;
                 end
-            end else if((state==LWAIT || state==WWAIT || state==TWAIT) && m_rsp_valid && m_err) begin
-                state<=IDLE;error<=1;resident_valid<=0;z_valid<=0;done<=0;
             end else case(state)
-                LREQ:if(m_ready) state<=LWAIT;
-                LWAIT:if(m_rsp_valid) begin
+                LREQ,LWAIT:if(retire) begin
                     if(load_index==load_length-1'b1) begin
-                        load_index<=0;
+                        load_index<=0;issue_index<=0;
                         if(load_kind==0) begin load_kind<=1;state<=LREQ;end
                         else if(load_kind==1) begin load_kind<=2;projection<=0;state<=LREQ;end
                         else begin row<=0;group_<=0;k<=0;state<=PINIT;end
-                    end else begin load_index<=load_index+1'b1;state<=LREQ;end
+                    end else load_index<=load_index+1'b1;
                 end
                 PINIT:state<=PPRIME;
                 PPRIME:begin
@@ -304,14 +375,18 @@ module kwt_encoder(
                 end
                 PSAVE:begin
                     if(projection==3) state<=RSAVE;
-                    else if(group_!=15) begin group_<=group_+1'b1;state<=PINIT;end
-                    else if(row!=98) begin row<=row+1'b1;group_<=0;state<=PINIT;end
-                    else if(projection!=2) begin projection<=projection+1'b1;load_index<=0;state<=LREQ;end
+                    else if(another_group) begin
+                        row<=following_row;group_<=following_group;k<=0;state<=PMAC;
+                        for(i=0;i<4;i=i+1) acc[i]<=0;
+                    end
+                    else if(projection!=2) begin projection<=projection+1'b1;load_index<=0;issue_index<=0;state<=LREQ;end
                     else begin row<=0;keyrow<=0;row_max<=32'sh80000000;state<=SINIT;end
                 end
                 RSAVE:begin
-                    if(group_!=15) begin group_<=group_+1'b1;state<=PINIT;end
-                    else if(row!=98) begin row<=row+1'b1;group_<=0;state<=PINIT;end
+                    if(another_group) begin
+                        row<=following_row;group_<=following_group;k<=0;state<=PMAC;
+                        for(i=0;i<4;i=i+1) acc[i]<=sx32($signed(pd[i*32+:32]))<<<16;
+                    end
                     else begin row<=0;norm_second<=0;state<=SUMINIT;end
                 end
                 SINIT:begin acc[0]<=0;k<=0;state<=SPRIME;end
@@ -320,7 +395,7 @@ module kwt_encoder(
                 SSAVE:begin
                     if($signed(si)>row_max) row_max<=$signed(si);
                     if(keyrow==98) begin k<=0;exp_sum<=0;state<=EREAD;end
-                    else begin keyrow<=keyrow+1'b1;state<=SINIT;end
+                    else begin keyrow<=keyrow+1'b1;k<=0;acc[0]<=0;state<=SMAC;end
                 end
                 EREAD:state<=ECALC;
                 ECALC:begin
@@ -341,9 +416,12 @@ module kwt_encoder(
                     if(k==98) state<=VSAVE;else k<=k+1'b1;
                 end
                 VSAVE:begin
-                    if(group_!=15) begin group_<=group_+1'b1;state<=VINIT;end
+                    if(group_!=15) begin
+                        group_<=group_+1'b1;k<=0;state<=VMAC;
+                        for(i=0;i<4;i=i+1) acc[i]<=0;
+                    end
                     else if(row!=98) begin row<=row+1'b1;keyrow<=0;row_max<=32'sh80000000;state<=SINIT;end
-                    else begin projection<=3;load_index<=0;load_kind<=2;state<=LREQ;end
+                    else begin projection<=3;load_index<=0;load_kind<=2;issue_index<=0;state<=LREQ;end
                 end
                 SUMINIT:begin group_<=0;sum<=0;state<=SUMPRIME;end
                 SUMPRIME:state<=SUMMAC;
@@ -367,7 +445,7 @@ module kwt_encoder(
                     if(group_!=15) begin group_<=group_+1'b1;state<=APRIME;end
                     else if(row!=98) begin row<=row+1'b1;state<=SUMINIT;end
                     else if(norm_second && config_[1]) begin state<=IDLE;resident_valid<=1;done<=1;end
-                    else begin dump_group<=0;dump_lane<=0;state<=DREAD;end
+                    else begin dump_group<=0;dump_prefetch<=0;state<=DREAD;end
                 end
                 DREAD:state<=DCAP;
                 DCAP:begin
@@ -376,23 +454,33 @@ module kwt_encoder(
                         for(i=0;i<4;i=i+1) output_buffer[i*16+:16]<=clip16(rne(sx32($signed(xd[i*32+:32])),{1'b0,config_[12:8]}));
                         output_buffer[127:64]<=0;
                     end
-                    dump_lane<=0;state<=WREQ;
+                    dump_prefetch<=0;issue_index<=0;load_index<=0;state<=WREQ;
                 end
-                WREQ:if(m_ready) state<=WWAIT;
-                WWAIT:if(m_rsp_valid) begin
-                    if(dump_lane==(norm_second ? 2'd3 : 2'd1)) begin
-                        if(dump_group==1583) begin
+                WREQ,WWAIT:begin
+                    if(issue && (norm_second ? issue_index[1:0]==3 : issue_index[0]) && dump_group<1583) begin
+                        dump_group<=dump_group+1'b1;dump_prefetch<=0;
+                        // For packed pairs the next group arrives on this very
+                        // edge; bypass the prefetch register to sustain 1 word/clk.
+                        if(dump_prefetch==1) begin
+                            if(norm_second) output_buffer<=xd;
+                            else begin
+                                for(i=0;i<4;i=i+1) output_buffer[i*16+:16]<=clip16(rne(sx32($signed(xd[i*32+:32])),{1'b0,config_[12:8]}));
+                                output_buffer[127:64]<=0;
+                            end
+                        end else output_buffer<=norm_value;
+                    end
+                    if(retire) begin
+                        if(load_index==burst_length-1'b1) begin
                             state<=IDLE;done<=1;if(norm_second) resident_valid<=1;else z_valid<=1;
-                        end else begin dump_group<=dump_group+1'b1;state<=DREAD;end
-                    end else begin dump_lane<=dump_lane+1'b1;state<=WREQ;end
+                        end else load_index<=load_index+1'b1;
+                    end
                 end
-                TGROUP:state<=TREQ;
-                TREQ:if(m_ready) state<=TWAIT;
-                TWAIT:if(m_rsp_valid) begin
+                TGROUP:begin issue_index<=0;state<=TREQ;end
+                TREQ,TWAIT:if(retire) begin
                     if(!tail_index[0]) low_word<=m_rdata;
                     else output_buffer[tail_index[2:1]*32+:32]<=clip32(tail_value);
                     if(tail_index[2:0]==7) state<=TSTORE;
-                    else begin tail_index<=tail_index+1'b1;state<=TREQ;end
+                    else tail_index<=tail_index+1'b1;
                 end
                 TSTORE:begin
                     if(tail_index==12671) begin row<=0;norm_second<=1;state<=SUMINIT;end
@@ -411,6 +499,18 @@ module kwt_encoder(
                     20'h40:rsp_rdata<=cycles;20'h44:rsp_rdata<=mac_cycles;20'h48:rsp_rdata<=read_commands;
                     20'h4c:rsp_rdata<=write_commands;20'h50:rsp_rdata<=sram_reads;20'h54:rsp_rdata<=sram_writes;
                     20'h58:rsp_rdata<=saturations;20'h5c:rsp_rdata<={24'd0,div_busy,sqrt_busy,state};
+                    20'h60:rsp_rdata<=phase_cycles[0];
+                    20'h64:rsp_rdata<=phase_cycles[1];
+                    20'h68:rsp_rdata<=phase_cycles[2];
+                    20'h6c:rsp_rdata<=phase_cycles[3];
+                    20'h70:rsp_rdata<=phase_cycles[4];
+                    20'h74:rsp_rdata<=phase_cycles[5];
+                    20'h78:rsp_rdata<=phase_cycles[6];
+                    20'h7c:rsp_rdata<=phase_cycles[7];
+                    20'h80:rsp_rdata<=phase_cycles[8];
+                    20'h84:rsp_rdata<=phase_cycles[9];
+                    20'h88:rsp_rdata<=dma_request_wait;20'h8c:rsp_rdata<=dma_response_wait;
+                    20'h90:rsp_rdata<=dma_retire_refill;
                     default:begin rsp_err<=1;config_error<=1;end
                 endcase
                 else if(cmd_addr==0 && cmd_wdata==2) begin end
@@ -423,7 +523,10 @@ module kwt_encoder(
                         end else begin
                             done<=0;error<=0;aborted<=0;config_error<=0;resident_valid<=0;z_valid<=0;norm_second<=operation==1;
                             cycles<=0;mac_cycles<=0;read_commands<=0;write_commands<=0;sram_reads<=0;sram_writes<=0;saturations<=0;
-                            if(operation==0) begin load_kind<=config_[0] ? 2'd1 : 2'd0;load_index<=0;state<=LREQ;end
+                            issue_index<=0;pending_count<=0;offer_held<=0;dma_error_pending<=0;
+                            for(i=0;i<10;i=i+1) phase_cycles[i]<=0;
+                            dma_request_wait<=0;dma_response_wait<=0;dma_retire_refill<=0;
+                            if(operation==0) begin load_kind<=config_[0] ? 2'd1 : 2'd0;load_index<=0;issue_index<=0;state<=LREQ;end
                             else begin tail_index<=0;state<=TGROUP;end
                         end
                     end

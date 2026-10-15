@@ -7,14 +7,17 @@ module tb_encoder;
     reg [19:0] cmd_addr=0;reg [31:0] cmd_wdata=0;reg [3:0] cmd_wmask=15;
     wire cmd_ready,rsp_valid,rsp_err;wire [31:0] rsp_rdata;
     wire m_valid,m_read,m_rsp_ready;wire [31:0] m_addr,m_wdata;wire [3:0] m_mask;
-    reg pending=0;integer delay_=0;reg [31:0] pending_data;
-    wire m_ready=!pending && cycles%7!=0;
-    wire m_rsp_valid=pending && delay_==0;
-    wire [31:0] m_rdata=pending_data;wire m_err=0;
+    integer dma_mode=2,queued=0,due[0:1],max_queued=0,refills=0,read_streak=0,write_streak=0,max_read_streak=0,max_write_streak=0;
+    reg head=0,tail=0;reg [31:0] response_data[0:1];
+    wire m_ready=queued<(dma_mode==0 ? 1 : 2) && (dma_mode==1 || cycles%7!=0);
+    wire m_rsp_valid=queued!=0 && cycles>=due[head];
+    wire [31:0] m_rdata=response_data[head];wire m_err=0;
+    reg held=0;reg [31:0] held_addr,held_data;reg held_read;
     reg [31:0] mem[0:131071],params[0:16703],initial_x[0:6335],expected[0:6335],packed_x[0:3167],cfg[0:1];
     reg [63:0] ffn_expected[0:6335];
     reg [31:0] rd;
     integer cycles=0,j,li,layers=12,polls,constant_edge=0;
+    reg [31:0] counted_cycles;longint phase_sum;
     string folder;
 `ifdef ENCODER_TRACE
     reg [31:0] tq[0:6335],tk[0:6335],tv[0:6335],tc[0:6335],ta[0:6335],tr1[0:6335],tz[0:6335],tr2[0:6335];
@@ -41,16 +44,28 @@ module tb_encoder;
     always @(posedge clk) begin
         cycles<=cycles+1;
         if(cycles>30000000) $fatal(1,"Encoder timeout state=%0d",dut.state);
-        if(!rst_n) begin pending<=0;delay_<=0;end
+        if(!rst_n) begin queued<=0;head<=0;tail<=0;held<=0;end
         else begin
+            if(held && (!m_valid || m_addr!==held_addr || m_wdata!==held_data || m_read!==held_read)) $fatal(1,"DMA offer changed under backpressure");
+            held<=m_valid && !m_ready;held_addr<=m_addr;held_data<=m_wdata;held_read<=m_read;
+            case({m_valid && m_ready,m_rsp_valid && m_rsp_ready})
+                2'b10:queued<=queued+1;
+                2'b01:queued<=queued-1;
+                default:begin end
+            endcase
+            if(queued>max_queued) max_queued<=queued;
+            if(m_valid && m_ready && m_rsp_valid && m_rsp_ready) refills<=refills+1;
+            if(m_valid && m_ready && m_read) read_streak<=read_streak+1;else read_streak<=0;
+            if(m_valid && m_ready && !m_read) write_streak<=write_streak+1;else write_streak<=0;
+            if(read_streak>max_read_streak) max_read_streak<=read_streak;
+            if(write_streak>max_write_streak) max_write_streak<=write_streak;
             if(m_valid && m_ready) begin
                 if(m_addr<32'ha0010000 || m_addr>=32'ha0080000 || m_addr[1:0]!=0 || m_mask!=15) $fatal(1,"DMA range/mask");
-                pending<=1;delay_<=cycles%3;
-                pending_data<=mem[m_addr[18:2]];
+                due[tail]<=cycles+(dma_mode==1 ? 1 : dma_mode==0 ? 1+cycles%3 : 3+cycles%5);
+                response_data[tail]<=mem[m_addr[18:2]];tail<=!tail;
                 if(!m_read) mem[m_addr[18:2]]<=m_wdata;
             end
-            if(pending && delay_>0) delay_<=delay_-1;
-            if(m_rsp_valid && m_rsp_ready) pending<=0;
+            if(m_rsp_valid && m_rsp_ready) head<=!head;
         end
     end
     task automatic bus(input bit read_,input [19:0] addr,input [31:0] data,output [31:0] value);
@@ -71,10 +86,17 @@ module tb_encoder;
                 if(polls>20000 || rd[4:2]!=0) $fatal(1,"Execution failed status=%h state=%d",rd,dut.state);
             end
             if(!rd[1]) $fatal(1,"Missing completion");
+            bus(1,'h40,0,counted_cycles);phase_sum=0;
+            for(integer c=0;c<10;c++) begin bus(1,20'('h60+4*c),0,rd);phase_sum+=64'(rd);end
+            if(phase_sum!=64'(counted_cycles)) $fatal(1,"Register phase accounting");
+            bus(1,'h88,0,rd);if(rd!==dut.dma_request_wait) $fatal(1,"Request wait counter");
+            bus(1,'h8c,0,rd);if(rd!==dut.dma_response_wait) $fatal(1,"Response wait counter");
+            bus(1,'h90,0,rd);if(rd!==dut.dma_retire_refill) $fatal(1,"Retire/refill counter");
         end
     endtask
     initial begin
         if($value$plusargs("layers=%d",layers)) begin end
+        if($value$plusargs("dma_mode=%d",dma_mode)) begin end
         if($value$plusargs("constant_edge=%d",constant_edge)) begin end
         repeat(4) @(negedge clk);rst_n=1;
         $readmemh("output/encoder-vectors/task_00/input.hex",initial_x);
@@ -114,6 +136,9 @@ module tb_encoder;
             for(j=0;j<6336;j++) if(mem[102400+j]!==expected[j]) $fatal(1,"Tail mismatch layer=%0d word=%0d got=%h expected=%h",li,j,mem[102400+j],expected[j]);
             bus(1,20'h40,0,rd);$display("ENCODER_TAIL_PASS layer=%0d cycles=%0d",li,rd);$fflush();
         end
+        if(dma_mode==2 && (max_queued!=2 || refills==0)) $fatal(1,"Missing multi-outstanding coverage");
+        if(dma_mode==1 && (max_read_streak<6336 || max_write_streak<6336)) $fatal(1,"DMA not continuous read=%0d write=%0d",max_read_streak,max_write_streak);
+        $display("ENC_DMA_STREAM mode=%0d outstanding=%0d refill=%0d read_streak=%0d write_streak=%0d",dma_mode,max_queued,refills,max_read_streak,max_write_streak);
         $display("ENCODER_PASS layers=%0d constant_edge=%0d",layers,constant_edge);$finish;
     end
 endmodule

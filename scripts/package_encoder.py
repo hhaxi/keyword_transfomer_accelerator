@@ -12,7 +12,9 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def main():
     collect()  # Refuse a package with missing/failing tests or stale vectors.
-    names=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','-z'],cwd=ROOT).decode().split('\0')
+    # Package version-controlled sources; unrelated untracked drafts stay local.
+    # Stage new project files before packaging.
+    names=subprocess.check_output(['git','ls-files','--cached','-z'],cwd=ROOT).decode().split('\0')
     files={n:ROOT/n for n in names if n and (ROOT/n).is_file()}
     for name in source_files():files[name]=ROOT/name
     for folder in [SOC,ROOT/'assets/sources/keyword-transformer-237e4097afd4f6851e0b82f0a8d65c2dfe8eae30']:

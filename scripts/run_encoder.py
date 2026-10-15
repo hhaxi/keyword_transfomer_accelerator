@@ -4,6 +4,8 @@ import hashlib
 import json
 import shlex
 import sys
+import re
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from run_design import ROOT,OUT,CONFIG,RTL,SYSTEM_RTL,run,linux
 from build_soc import SOC,source_files
@@ -14,12 +16,25 @@ ENC_BUS=['integration/kwt_dma_arbiter.sv','integration/kwt_extended_system_bus.s
 DEST=ROOT/'output/encoder-design'
 
 
-def sim(top,files,extra=None,label=None,run_args=None):
+def sim(top,files,extra=None,label=None,run_args=None,shards=None):
     """Long encoder regressions have a separate timeout from small FFN tests."""
     label=label or top
     command=[CONFIG.get('wsl_verilator','verilator'),'--binary','--timing','--build-jobs','4','-Wno-fatal',
              '--top-module',top,'--Mdir','output/design/build_'+label]+(extra or [])+files
     linux(label+'-build',' '.join(shlex.quote(s) for s in command),1800)
+    if shards:
+        def run_shard(item):
+            first,count=item
+            name=label+'_shard'+str(first)
+            text=linux(name+'-run','output/design/build_'+label+'/V'+top+' +first='+str(first)+' +tasks='+str(count)+' +baseline=0',14400)
+            rows=re.findall(r'ENC_SOC_TASK_PASS task=(\d+) cycles=(\d+) baseline=0 outputs=6336',text)
+            if [int(t) for t,c in rows]!=list(range(first,first+count)) or 'ENC_SOC_PASS tasks='+str(count) not in text:
+                raise RuntimeError('Incomplete shard '+name)
+            return text,sum(int(c) for t,c in rows)
+        with ThreadPoolExecutor(max_workers=len(shards)) as pool:results=list(pool.map(run_shard,shards))
+        text='\n'.join(t for t,c in results)+'\nENC_SOC_SHARDS_PASS tasks='+str(sum(c for f,c in shards))+' total_cycles='+str(sum(c for t,c in results))+'\n'
+        (OUT/(label+'-run.log')).write_text(text)
+        return text
     return linux(label+'-run','output/design/build_'+label+'/V'+top+' '+
                  ' '.join(shlex.quote(s) for s in (run_args or [])),14400)
 
@@ -38,7 +53,7 @@ def firmware():
     (dest/'encoder_size.vh').write_text('`define ENC_FW_WORDS %d\n'%(len(data)//4))
 
 
-def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False):
+def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1):
     includes=['+incdir+output/encoder-design/firmware']
     if netlist:
         files=[str((SOC/'rtl/e203/general'/n).relative_to(ROOT)).replace('\\','/') for n in ['sirv_gnrl_ram.v','sirv_sim_ram.v']]
@@ -47,11 +62,13 @@ def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activ
         files=source_files()+SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv','integration/kwt_encoder_soc.sv']
         includes+=['+incdir+'+str((SOC/'rtl/e203/core').relative_to(ROOT)).replace('\\','/'),'+define+DISABLE_SV_ASSERTION']
     label=label or ('tb_encoder_soc_netlist' if netlist else 'tb_encoder_soc')
+    if not netlist:includes+=['+define+ENCODER_PHASE_METRICS']
     if metrics:includes+=['+define+ENCODER_MEMORY_METRICS','+incdir+tests']
     if activity:includes+=['--trace-fst']
     text=sim('tb_encoder_soc',files+['tests/tb_encoder_soc.sv'],includes,label=label,
-             run_args=['+tasks='+str(tasks),'+baseline='+str(baseline),'+first='+str(first)]+(['+activity'] if activity else []))
-    if 'ENC_SOC_PASS tasks='+str(tasks) not in text:raise RuntimeError('Encoder SoC incomplete')
+             run_args=['+tasks='+str(tasks),'+baseline='+str(baseline),'+first='+str(first)]+(['+activity'] if activity else []),
+             shards=[(first+i*tasks//jobs,(i+1)*tasks//jobs-i*tasks//jobs) for i in range(jobs)] if jobs>1 else None)
+    if 'ENC_SOC_PASS tasks='+str(tasks) not in text and 'ENC_SOC_SHARDS_PASS tasks='+str(tasks) not in text:raise RuntimeError('Encoder SoC incomplete')
 
 
 def synthesize():
@@ -99,11 +116,17 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('task',choices=['component','math','fourstate','faults','compat','compat-netlist','soc','profile','synth','netlist','lint'])
     p.add_argument('--tasks',type=int,default=12);p.add_argument('--first',type=int,default=0)
+    p.add_argument('--jobs',type=int,default=1,help='Independent RTL task shards; each task retains identical simulated timing')
     p.add_argument('--baseline',type=int,choices=[0,1],default=0)
     a=p.parse_args();DEST.mkdir(exist_ok=True)
+    if a.jobs<1 or a.jobs>a.tasks or (a.jobs>1 and (a.task!='soc' or a.baseline)):
+        p.error('--jobs must be 1..tasks, and sharding is supported for optimized RTL soc only')
     if a.task=='component':
         text=sim('tb_encoder',['rtl/kwt_sram16.sv']+ENC_RTL+['tests/tb_encoder.sv'],['+define+ENCODER_TRACE'])
         if 'ENCODER_PASS layers=12' not in text:raise RuntimeError('Component incomplete')
+        for mode in [0,1]:
+            text=linux('tb_encoder_dma'+str(mode)+'-run','output/design/build_tb_encoder/Vtb_encoder +layers=1 +dma_mode='+str(mode),1800)
+            if 'ENCODER_PASS layers=1' not in text:raise RuntimeError('DMA stream check incomplete')
         text=linux('tb_encoder_constant-run','output/design/build_tb_encoder/Vtb_encoder +layers=1 +constant_edge=1',1800)
         if 'ENCODER_PASS layers=1 constant_edge=1' not in text:raise RuntimeError('Constant LayerNorm/Softmax incomplete')
     elif a.task in ('math','fourstate'):
@@ -136,7 +159,7 @@ def main():
         linux('encoder-lint',CONFIG['wsl_verilator']+' --lint-only -Wall --top-module kwt_extended_system_bus '+
               ' '.join(SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv']))
     else:
-        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first)
+        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs)
 
 
 if __name__=='__main__':main()

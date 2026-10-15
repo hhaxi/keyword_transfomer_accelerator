@@ -16,6 +16,25 @@ module tb_encoder_soc;
     reg measure=0;
     `include "encoder_memory_monitor.svh"
 `endif
+`ifdef ENCODER_PHASE_METRICS
+    reg encoder_was_busy=0;
+    longint phase_total;
+    always @(negedge clk) begin
+        if(!rst_n) encoder_was_busy=0;
+        else begin
+            if(encoder_was_busy && !dut.bus.encoder.busy) begin
+                phase_total=0;
+                for(integer c=0;c<10;c++) begin
+                    phase_total+=64'(dut.bus.encoder.phase_cycles[c]);
+                    $display("ENC_PHASE task=%0d layer=%0d op=%0d index=%0d value=%0d",taskid,li,dut.bus.encoder.operation,c,dut.bus.encoder.phase_cycles[c]);
+                end
+                if(phase_total!=64'(dut.bus.encoder.cycles)) $fatal(1,"Phase cycle accounting");
+                $display("ENC_DMA_WAIT task=%0d layer=%0d op=%0d request=%0d response=%0d refill=%0d",taskid,li,dut.bus.encoder.operation,dut.bus.encoder.dma_request_wait,dut.bus.encoder.dma_response_wait,dut.bus.encoder.dma_retire_refill);
+            end
+            encoder_was_busy=dut.bus.encoder.busy;
+        end
+    end
+`endif
     always @(posedge clk) begin
         cycles<=cycles+1;
         if(cycles>600000000) $fatal(1,"Encoder SoC timeout pc=%h",inspect_pc);

@@ -6,6 +6,8 @@
 
 完整编码器新增独立 `ENC1` 伴随引擎和 `kwt_encoder_soc` 顶层；原 KWT5 两种模式继续保留。新流程运行 `.\encoder.ps1 all`，旧 FFN 流程仍运行 `.\design.ps1 all`。新设计说明见 [完整编码器](docs/full-encoder.md)，实测结果见 [编码器性能](docs/encoder-performance.md) 和 [验证记录](docs/encoder-validation.json)。本地 120 条验证样本预测与浮点模型全部一致，两者均正确 119 条；内部 SRAM 增至 235 KiB，正式面积仍需确认。第八版归档保存在本地 `deliverables/full-ffn-v8-baseline.zip` 和 `v8-source-baseline.zip`。
 
+**编码器第二版增加分阶段周期计数、矩阵组间预读与连续 DMA。** 完整 12 层任务由 **15,535,024 降至 14,808,628 周期（减少 4.68%，同频吞吐提升 4.91%）**。保持原 4 路编码器共享乘法器、16 路 FFN MAC、1 个 GELU 和 235 KiB 内部 SRAM；精确周期及与第一版的比较见 [编码器性能](docs/encoder-performance.md)。第一版编码器提交 `ccc7641` 和本地 `deliverables/encoder-v1-baseline.zip` 保留。
+
 **第八版通过重叠组间读取和 MAC 初始化优化完整 FFN。** 保持 16 个 MAC、1 个 GELU、88.5 KiB 内部 SRAM 和 40 个宏，完整任务由第七版 310,289 降至 **306,709 周期**，减少 **1.15%**；按 150 MHz 目标折算 **2.04473 ms、489.06292 任务/秒**。独立第一层仍为 **271,678 周期/任务**。详见 [第八版组间调度优化](docs/ffn-group-scheduling.md)。
 
 第四版必做基线固定在提交 `d501f0d`；本地历史交付包为 `deliverables/undergraduate-v4-baseline.zip`，源代码归档为 `deliverables/v4-source-baseline.zip`。第五版完整 FFN 基线为 `aa344f9`，本地另存 `deliverables/full-ffn-v5-baseline.zip` 和 `v5-source-baseline.zip`。第六版基线为 `411a151`，本地保存在 `deliverables/full-ffn-v6-baseline.zip`、`deliverables/v6-source-baseline.zip`。第七版基线为 `eefe431`，本地保存在 `deliverables/full-ffn-v7-baseline.zip`、`deliverables/v7-source-baseline.zip`。正式时序、面积和功耗仍待工艺验证。

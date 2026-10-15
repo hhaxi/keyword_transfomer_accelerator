@@ -6,23 +6,38 @@ module tb_encoder_faults;
     wire cmd_ready,rsp_valid,rsp_err;wire [31:0] rsp_rdata;
     wire m_valid,m_read,m_rsp_ready;wire [31:0] m_addr,m_wdata;wire [3:0] m_mask;
     reg block_request=0,block_response=0,inject_read_error=0,inject_write_error=0;
-    reg pending=0,pending_error=0;reg [31:0] pending_data=0;
-    wire m_ready=!pending && !block_request;
+    integer queued=0;reg head=0,tail=0;
+    reg response_error[0:1];reg [31:0] response_data[0:1];
+    wire pending=queued!=0;
+    wire m_ready=queued<2 && !block_request;
     wire m_rsp_valid=pending && !block_response;
-    wire [31:0] m_rdata=pending_data;wire m_err=pending_error;
+    wire [31:0] m_rdata=response_data[head];wire m_err=response_error[head];
+    reg last_write_accepted=0,offer_stalled=0;reg [31:0] stable_addr,stable_data;reg stable_read;
     reg [31:0] mem[0:131071],params[0:16703],initial_x[0:6335],packed_x[0:3167],cfg[0:1],rd;
     integer cycles=0,accepted=0,written=0,j,snapshot_;reg [31:0] held_addr,held_data;
     kwt_encoder dut(.*);
     always @(posedge clk) begin
         cycles<=cycles+1;if(cycles>12000000) $fatal(1,"Fault test timeout state=%d",dut.state);
-        if(!rst_n) pending<=0;
+        if(!rst_n) begin queued<=0;head<=0;tail<=0;offer_stalled<=0;last_write_accepted<=0;end
         else begin
+            if(offer_stalled && (!m_valid || m_addr!==stable_addr || m_wdata!==stable_data || m_read!==stable_read)) $fatal(1,"Offered DMA withdrawn/changed");
+            offer_stalled<=m_valid && !m_ready;stable_addr<=m_addr;stable_data<=m_wdata;stable_read<=m_read;
+            case({m_valid && m_ready,m_rsp_valid && m_rsp_ready})
+                2'b10:queued<=queued+1;
+                2'b01:queued<=queued-1;
+                default:begin end
+            endcase
             if(m_valid && m_ready) begin
-                pending<=1;pending_data<=mem[m_addr[18:2]];
-                pending_error<=m_read ? inject_read_error : inject_write_error;accepted<=accepted+1;
-                if(!m_read) begin mem[m_addr[18:2]]<=m_wdata;written<=written+1;end
+                response_data[tail]<=mem[m_addr[18:2]];
+                response_error[tail]<=m_read ? inject_read_error : inject_write_error;
+                tail<=!tail;accepted<=accepted+1;
+                if(!m_read) begin
+                    mem[m_addr[18:2]]<=m_wdata;written<=written+1;
+                    if(m_addr=='ha001b17c) last_write_accepted<=1;
+                end
             end
-            if(m_rsp_valid && m_rsp_ready) pending<=0;
+            if(m_rsp_valid && m_rsp_ready) head<=!head;
+            if(!dut.busy && queued!=0) $fatal(1,"Idle with undrained DMA");
         end
     end
     task automatic bus(input bit read_,input [19:0] addr,input [31:0] data,input bit expect_error);
@@ -93,6 +108,22 @@ module tb_encoder_faults;
         inject_read_error=1;bus(0,0,1,0);wait_idle();
         if(!rd[2] || rd[6:5]!=0 || rd[1]) $fatal(1,"Read fault state");inject_read_error=0;configure();
         $display("FAULT_STAGE read_error");$fflush();
+        // Abort with two accepted reads: the first response cannot end draining.
+        block_response=1;bus(0,0,1,0);while(queued!=2) @(negedge clk);
+        bus(0,0,2,0);snapshot_=accepted;
+        block_response=0;@(negedge clk);block_response=1;
+        repeat(8) begin @(negedge clk);if(!dut.busy || queued!=1 || m_valid) $fatal(1,"Multi-response abort drain");end
+        block_response=0;check_aborted();if(accepted!=snapshot_) $fatal(1,"Extra abort issue");configure();
+        // First response errors while a second request is held by backpressure.
+        inject_read_error=1;block_response=1;bus(0,0,1,0);
+        while(queued==0) @(negedge clk);block_request=1;
+        while(!m_valid) @(negedge clk);repeat(3) @(negedge clk);
+        held_addr=m_addr;block_response=0;@(negedge clk);block_response=1;
+        repeat(8) begin @(negedge clk);if(!dut.busy || !m_valid || m_addr!==held_addr) $fatal(1,"Error withdrew offer");end
+        inject_read_error=0;block_request=0;while(queued==0) @(negedge clk);
+        repeat(8) begin @(negedge clk);if(!dut.busy || dut.done) $fatal(1,"Error failed to drain later request");end
+        block_response=0;wait_idle();if(!rd[2] || rd[1] || queued!=0) $fatal(1,"Error drain status");configure();
+        $display("FAULT_STAGE two_outstanding_abort_error_held_offer");$fflush();
         // Abort a running arithmetic helper, then ensure no delayed completion survives.
         bus(0,0,1,0);while(!dut.sqrt_busy) @(negedge clk);bus(0,0,2,0);check_aborted();
         repeat(100) @(negedge clk);if(dut.sqrt_busy || dut.div_busy || dut.done) $fatal(1,"Math abort");configure();
@@ -105,12 +136,12 @@ module tb_encoder_faults;
         written=0;bus(0,0,1,0);
         while(!(m_valid && !m_read && m_addr=='ha001b17c)) @(negedge clk);
         block_response=1;inject_write_error=1;
-        while(!pending) @(negedge clk);
+        while(!last_write_accepted) @(negedge clk);
         repeat(20) begin @(negedge clk);if(!dut.busy || dut.done) $fatal(1,"Early done before final acknowledgement");end
         block_response=0;wait_idle();inject_write_error=0;
         if(!rd[2] || rd[1] || rd[6:5]!=0) $fatal(1,"Final write error validity");configure();
         bus(0,0,1,0);wait_idle();if(!rd[1] || !rd[6] || rd[4:2]!=0) $fatal(1,"Clean restart status=%h",rd);
         for(j=0;j<3168;j++) if(mem[24576+j]!==packed_x[j]) $fatal(1,"Clean restart value %0d",j);
-        $display("ENC_FAULTS_PASS config busy response_stall abort_offer abort_drain read_error math_abort reset final_write_error restart");$finish;
+        $display("ENC_FAULTS_PASS config busy response_stall abort_offer abort_drain read_error math_abort reset final_write_error restart two_outstanding error_held_offer");$finish;
     end
 endmodule
