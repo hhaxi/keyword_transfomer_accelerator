@@ -7,7 +7,10 @@
   "weight_shape": [64, 256],
   "output_shape": [99, 256],
   "parameter_sets": 12,
-  "optional_operations": ["GELU", "second feed-forward linear layer", "attention"],
+  "optional_operations": ["GELU", "second feed-forward linear layer", "attention", "residual", "LayerNorm", "12-layer PostNorm encoder"],
+  "selected_optional_tasks": [4, 5, 6, 7],
+  "encoder_order": "Q/K/V -> scaled QK^T -> row Softmax -> PV -> output projection -> residual + LN1 -> FFN1 + GELU + FFN2 -> residual + LN2",
+  "preserved_ffn_baseline_commit": "3461cf71deb5296f6b221e94a188ec94758a55d9",
   "soc_reference": {
     "url": "https://github.com/riscv-mcu/e203_hbirdv2",
     "role": "Official SoC reference identified by user",
@@ -16,7 +19,7 @@
     "local_directory": "assets/references/e203_hbirdv2-9f3e34f337f5d0a1236a285871ffa2032491617a"
   },
   "backend_environment": "Official server to be provided later, as confirmed by user",
-  "integration_interface": "System Bus ICB, KWT5 dual-mode FFN/FFN1 packed-input DMA controller at 0x40000000; E203/host/DMA round-robin bus and local pinned E203 integration implemented",
+  "integration_interface": "System Bus ICB: preserved KWT5 dual-mode FFN/FFN1 DMA at 0x40000000; ENC1 attention/PostNorm DMA at 0x40080000; shared E203/host/fair dual-DMA fabric",
   "competition_constraints": {
     "clock_mhz": 150,
     "shared_sram_kb": 512,

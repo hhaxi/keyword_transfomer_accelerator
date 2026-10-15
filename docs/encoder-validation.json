@@ -1,0 +1,2417 @@
+{
+  "generated_at_utc": "2026-10-15T13:29:21.499374+00:00",
+  "scope": "Local complete PostNorm encoder extension; official acceptance pending",
+  "floating_reference": "Pinned upstream KWT-1 best_weights; TensorFlow 2.4.0 development fallback, official runtime equivalence pending",
+  "base_commit": "3461cf71deb5296f6b221e94a188ec94758a55d9",
+  "preserved_source_files": [
+    "rtl/kwt_accel.sv",
+    "rtl/kwt_dma.sv",
+    "rtl/kwt_gelu.sv",
+    "rtl/kwt_mac40.sv",
+    "rtl/kwt_sram16.sv",
+    "integration/kwt_bus_fabric.sv",
+    "integration/kwt_soc.sv",
+    "integration/kwt_system_bus.sv",
+    "firmware/main.c",
+    "firmware/kwt_driver.c",
+    "tests/tb_soc.sv",
+    "tests/tb_soc_ffn.sv",
+    "model/format.json",
+    "model/ffn-format.json"
+  ],
+  "source_sha256": {
+    "rtl/kwt_accel.sv": "fdadfdc0e4d7e4bc6473f21cb457e48ad3dc2f9008f64423a5e2640366454622",
+    "rtl/kwt_dma.sv": "989bea3ef3734ae8afd5af6f668c06b7e9f137e05dabddeb957c2e45a838a28d",
+    "rtl/kwt_encoder.sv": "cdfcced6f12c3cdb7522977c1f34f91cb72820267ffa9e39954c5e4a16f79acc",
+    "rtl/kwt_exp_negative.sv": "78e6d41c8c85487b358d86d3ed8dcbe94bb57a1ba014ba4114cb12c58b3f8454",
+    "rtl/kwt_gelu.sv": "91339c5cf7f1597518441f07464655f6f500f7fc8b7aad7712fa687daf7e674d",
+    "rtl/kwt_isqrt64.sv": "aa64fce0751733ed735404f426d24db903910a4353ebdc2b27b304b68d224a04",
+    "rtl/kwt_mac40.sv": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63",
+    "rtl/kwt_sram16.sv": "faa45c19ca325427b60d5edcbaf650bcd63490daa7947c6d5b0a1d96975e6bf2",
+    "rtl/kwt_udiv64.sv": "1aa2b5f8b0d1c13d3dfd8d40d242dd698bbf087d2074359c84176120ec77f977",
+    "rtl/kwt_vecmem32.sv": "cde684a3c7dcb73a354d374a958d8d0327c36bed0f39a586f327b3de348de4ff",
+    "integration/e203_ram_boundary.v": "50ac226f2ec35fb889c54e9863fc54954325cb986aceedb7bd64569d27689a9e",
+    "integration/kwt_bus_fabric.sv": "3cc23fd51f33d9e17e817be066d439e8706f82b9958d26ffdae1f6ae0c647277",
+    "integration/kwt_dma_arbiter.sv": "f7ab60f6279f8094e4be881dd941782da146c91de6c8384b0266af7ca36fc644",
+    "integration/kwt_encoder_soc.sv": "dec45cd393748be43d71c38c436112eed07fb68d93337d9a28be19528143845a",
+    "integration/kwt_extended_system_bus.sv": "19c7aed44ff29a97a4f58db276241e31a863b8106c1db23f36c11a2463cfac37",
+    "integration/kwt_shared_sram.sv": "89aee640754231540e2689b3f442d70bcf1b9d11677cbe3ed5aae118491ac268",
+    "integration/kwt_soc.sv": "9efa584f7e6845030d8dddcfe6b6c19da13e5af011dfdf568d77a1b4105e7ae8",
+    "integration/kwt_system_bus.sv": "19b26d3f6fc79889886288f1c9f4d797c7d03f9298d82a93cdf38119ae770168",
+    "firmware/kwt_driver.c": "5a86c5e9d2600c0eab4ab23bb883e93ce9bd296bf44e2e39b4aa1e29b87ebfb5",
+    "firmware/kwt_driver.h": "0481205575001957c4be7ef5d911ac6eea71cc1f85331691d51b421d7a6d09be",
+    "firmware/kwt_encoder_driver.c": "0fc41a89612e5e2a8c3633a6f44aac04d807bd9066ca586e5814fa5f65ea3c72",
+    "firmware/kwt_encoder_driver.h": "804aeeff0f9d5ea81dff8eca66f76e6bd8febec73fbb82406bbc8041bead5140",
+    "firmware/link.ld": "6b92fa96a24bec6a9af0a6a74c1d542fa12fbdf7e65a595bd010c55e361d2e9b",
+    "firmware/main.c": "58b2aa44c65fef8bfd797f7bbdd9359601c95779bf162ee033ae769d2af21f86",
+    "firmware/main_encoder.c": "5dc50c86473c93703e210c5d7b8f62ddf0869891447de0f8376c912ed0411c1e",
+    "firmware/start.S": "14cd16d89ca9e5f14c8f00686adfa6e64c318b6116ac04ceb4be505eda9781ac",
+    "model/encoder-format.json": "f701fce4e3a27ada7a15f248175bc9d3959ef79143ce354f26befbaf226938e7",
+    "model/encoder_numeric.py": "1116c5408cf4cffb284435c7a0f933559074ecd7053c39fb4c04c51dbcda2486",
+    "model/ffn-format.json": "23ec3ff30d76e281294fbd747ce7913ec7d86bf2782bf739f742397c3c31b149",
+    "model/ffn_numeric.py": "81494b665a4dffa1c44ce64d834245aab94213173da32a4409884b833030c1e6",
+    "model/format.json": "f4960b79ac9b0157ae26d2d783e5efef21c335496809a023e935b9b8c3685294",
+    "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
+    "model/training-samples.json": "f396304990e6347a8a478a5cfc40b1e4e5aebdce4b40c2a6689c8c98caeccc5b",
+    "model/validation-samples.json": "5a9f14076bff9097c9514bcefea97c4d56b73b5deff50f752e14cf87f61f75c0",
+    "tests/tb_accel.sv": "7a81034653d8676882c80ab254687fd0edb1dd993440e635fef6d56b683a2188",
+    "tests/tb_bus.sv": "b434b839f70641b7d10a29d2355c0f784d69b1bad53550b42d1a320cfb4a4a35",
+    "tests/tb_dma.sv": "8dfa001f2630b268b771d709e696e0b6101a58fe39bd18d52f71c81d96818052",
+    "tests/tb_dma_arbiter.sv": "886e3e25c72716102e5b9ef57664ea356cdd8d36f1f5eaf09f5bedf72b06db74",
+    "tests/tb_encoder.sv": "b8fb370ab43f059bd4fad8f65f937a00f912c7b0ed349fcad31898afa75c4665",
+    "tests/tb_encoder_faults.sv": "e4724f577f070071fe8c6f94a1cf37bd70069a146ceaf9619cbc29aff6c1ecef",
+    "tests/tb_encoder_math.sv": "81d42d9de251ca1209dce9877dc541f11c4ff73174ea5eb5de2153c8f2e87bae",
+    "tests/tb_encoder_soc.sv": "77c1a5b24b4e94d04a9aae4a32f06997e6452a9ed60817d5b83e6c4fcea8af1f",
+    "tests/tb_ffn.sv": "e4f8dbfa1ae49884a368a120afa3d48d79b3a9d33edf5bec4ddf5cce7a722356",
+    "tests/tb_ffn_edges.sv": "62d1e11db019d6dd815e203072441b72ca61ba45e3f658e063b925db291d2e6d",
+    "tests/tb_gelu.sv": "a679501971d5297264283a4380dd7b60801f8b870aa96252ebb4c37531688f87",
+    "tests/tb_mac.sv": "eb29e21ffa6e14c9c6a94b8e8de3d76cb1d64fc44eb97007d45a65bdda736499",
+    "tests/tb_soc.sv": "279ec672d04a69ae43f74e3b19a9c7480815364eb021034c58b18dbd0c47cfbc",
+    "tests/tb_soc_ffn.sv": "9db1a9e0f43f0392b55c70e31cd781bf85c4b9b994428ee04d41155694c8301d",
+    "tests/test_encoder.py": "aeaf4ad2e7a8e14d627b2c9135be72a8bfc3d1e6c5ee28ed24f1ab354e7a9588",
+    "tests/test_ffn.py": "67fc39e45247a9e8fcdd7c07f68bb57f5233163cb403c5390fefe0789925a15d",
+    "tests/test_numeric.py": "2988fef329e14b008746520c0072af208f3bcc7c9e1dca51fa362fb15a1c9e4b",
+    "tests/test_packing.py": "ea3f59487a862f763fb456d2b77847b903424b02239aa4b7b20a170f953a6c04",
+    "constraints/kwt_accel.sdc": "eb0d5f8826445e474a36bf3025659446020996735b8dafeee8f9f99f2adabb5d",
+    "constraints/kwt_dma.sdc": "f3d6366ae35176f4c59f0423d6a55bd3d2b0b1315aeb3851e08cec0cbd4c94ac",
+    "constraints/kwt_encoder_soc.sdc": "54e1f0fd7a87a357cf664a358185bda4b8783e70ce04a3d62d994123a4ab9e38",
+    "constraints/kwt_soc.sdc": "c623b5a95d63dbe0d3fb618dc7e3e9bd2fac2e5d28b5ba02f18fb3b231312c8c",
+    "scripts/build_soc.py": "d49a82e9c07c967d1067899d6b10d15b7db29eba713194afc0478e2fa6911ffa",
+    "scripts/capture_activity.py": "51bbc8bad73fc6e7426a49735d34ad3b6f8b679f7b190b23ed90ae2b52c0fb75",
+    "scripts/capture_encoder_activity.py": "6814816b8f6d7e63b02e64b6248096101a297ef8e73a084b2cb2f748cbd4a559",
+    "scripts/check_environment.py": "d4f381a53138e7709480c9d15306387eb8e28458caec59a93c814cf80d8d3778",
+    "scripts/check_model_environment.py": "2771fc3b6c7827731c0b7400f76f03dbaebf236e309658855cdc25465c517054",
+    "scripts/collect_encoder.py": "1dcb6812166927445b583f473f9c5e9a31d08d56ad5180d8597aa18fa96009c7",
+    "scripts/collect_ffn.py": "bef8cfe1616e9d09150840004fe4403f3d8e12c1300da9711355d9a77b0693c0",
+    "scripts/collect_results.py": "b928f6448573cc2b4eabbe65315484bc02419ab4a5e28d7576342dd1edf82f97",
+    "scripts/compare_ffn_performance.py": "afeba9c4c598a287bba1102b0f08ed45907b22cd6286dbbe198905875acbc8c3",
+    "scripts/compare_performance.py": "cd6bc0f01691919d3ea4c58a3c041348a03cf2af031488394c03bd3640bdbe36",
+    "scripts/convert_ffn.py": "a2578702d088b4d289a72c591a277cb496d125fd3c65f2d5f4ecc40dcfc90c61",
+    "scripts/convert_task.py": "8d9c306eeeb5af9bbee3fb4364c34cc36f4b60a8fe08c5ae24622261380e674d",
+    "scripts/decode_output.py": "d7b2f10a438b11a3917b1befb2c1e44ae5149f1e00be66fd0e7f4e5e9599ecd4",
+    "scripts/download_competition_assets.py": "90d41b697b20a680bdc071636795539c1b9db66fdf66c802ee58ce266035675d",
+    "scripts/evaluate_numeric.py": "726dbf19adaefa22eb24849edd02cc7b49d24ed2ff0f941b2c0519cd20fdcbda",
+    "scripts/export_encoder.py": "f20bc08f61a53fee58e744c67747aeff5a0cf8dc547bf66fb26db15f8af196d7",
+    "scripts/export_ffn.py": "ff0ec0ee7f66fa9676f3afafe17f2ecc18f3191a7ac0ecb2750f7138c36c20c4",
+    "scripts/export_vectors.py": "f18d717e0f320f9cf4a9779ac430c6ba7cdb18ef1be2a9538b13f1b0787b12e0",
+    "scripts/fetch_model_wheel.py": "adf7d118997788438b2c93dd04e0303ec8375c14e5ce5344ee3ae30a4aefdafb",
+    "scripts/generate_exp.py": "3ff7ed81c4ca8761e65eff157fc31e53db0595a61f5089690c51b6ee95d4d90c",
+    "scripts/generate_gelu.py": "3cf79af3e2d7f03be323dd504e674016fbbe82ee3613881aae79f83f3692c234",
+    "scripts/install_native_toolchain.py": "2d87867f7fcf207a113857a55efc4c8e8e41c5c64c161c996783b5dc5bdb6509",
+    "scripts/pack_vectors.py": "1e6c0927d3124603ae0e9ade54b4bd409e77ee7076a675a4a4ac6eeaa5d1879d",
+    "scripts/package_encoder.py": "9fa747d364c42aac98fcca17befbd9f392289a1a4e66e21fa3a583d4ed519ee7",
+    "scripts/package_submission.py": "3f053aa56d304f25706d7e8b544f594a6fb0e1026445ed0363376030a9f909f9",
+    "scripts/run_design.py": "06d653b2fe64b69e49cc6677def5ec7260ebaded56a894aea68f309c8767cab5",
+    "scripts/run_encoder.py": "76aee6d7ea40210387423160d7e7f27abeec3bdc62b78fc304e4bdecc1ee1982",
+    "scripts/synth_design.py": "00a695c01a52b49c805fa766af6d9a4861dcd220beb3c0ae8f82367c3e01e5e4",
+    "scripts/synth_dma.py": "86a2bb757d1d0d3005ef6ed48ec0696b198cbb5217efe91d7c88a78893ebde5b",
+    "scripts/synth_gelu.py": "9f529a349bbac533c24f430aaf02b0caee1bc6a149374ba75d16d30f98ec9d9f",
+    "scripts/synth_soc.py": "bb27a02b9ea7ed04d74a82ba4fb321b7f2ed8d4e9ddc224cb607f56837643202"
+  },
+  "numeric": {
+    "validation": {
+      "split": "validation",
+      "samples": 120,
+      "float_correct": 119,
+      "integer_correct": 119,
+      "agreement": 120,
+      "accuracy_drop_percentage_points": 0.0,
+      "layer_nrmse": [
+        0.0004070926119791717,
+        0.0005726936940813618,
+        0.0007406528338028914,
+        0.0008751070185117081,
+        0.0009542278799016008,
+        0.0010783843226599304,
+        0.0011125955439170072,
+        0.0011743366884856546,
+        0.001230900760831615,
+        0.0013022688670866762,
+        0.0014121672887917945,
+        0.0017171269335389116
+      ],
+      "max_layer_nrmse": 0.0017171269335389116,
+      "gelu_saturation_count": 0,
+      "passed": true,
+      "official_evaluation": false,
+      "precision_gate": "local <=2 percentage point classification drop; official 600 samples pending",
+      "report_sha256": "122375b8355d52616ddd3998b9781fe6b1191cafbb062c9db30627bab1bbfb2c",
+      "manifest_sha256": "af70e00b25296745e76bf2c7c6965059d2aaafbed5a78dc22e6322fac7137ce3"
+    },
+    "training": {
+      "split": "training",
+      "samples": 24,
+      "float_correct": 24,
+      "integer_correct": 24,
+      "agreement": 24,
+      "accuracy_drop_percentage_points": 0.0,
+      "layer_nrmse": [
+        0.0004043418574652756,
+        0.0005779883848441717,
+        0.0007385345902287663,
+        0.00087312444824079,
+        0.0009487106983455401,
+        0.001083061844037567,
+        0.0011167326162483213,
+        0.001180574358905903,
+        0.0012389139477423077,
+        0.0013112889575883102,
+        0.0014302534954690807,
+        0.001760056888600131
+      ],
+      "max_layer_nrmse": 0.001760056888600131,
+      "gelu_saturation_count": 0,
+      "passed": true,
+      "official_evaluation": false,
+      "precision_gate": "local <=2 percentage point classification drop; official 600 samples pending",
+      "report_sha256": "64b8d79f249f451ece300068c423d1f98957ecb1c5ed17acac47e7f30c41a267",
+      "manifest_sha256": "270fa3ed953a6a79bf01aa0a3d03ced10fd4b5c12003c744f29d0775364a6635"
+    }
+  },
+  "checks": {
+    "tb_encoder-run.log": {
+      "passed": true,
+      "sha256": "f099bc3e3f952d1930b3549de2d24d023cbd2a25b093adb24ec990601608fcb5"
+    },
+    "tb_encoder_constant-run.log": {
+      "passed": true,
+      "sha256": "e15cf2fe5b09ea51b7eff902c44150c75012cd255bf5cf5e911e4ff01a72818c"
+    },
+    "icarus-tb_encoder.log": {
+      "passed": true,
+      "sha256": "059cdbe3fe24e00f3bd69544f9b88f284083053a133e43f9bdc3bdb57fed2c6d"
+    },
+    "tb_encoder_math-run.log": {
+      "passed": true,
+      "sha256": "2e1253ba20351a0cc4a97ae35cdef97dd2f821be0de95c0c960d47c315fbfd5d"
+    },
+    "icarus-tb_encoder_math.log": {
+      "passed": true,
+      "sha256": "c2f4f50644737a3f537aecb8d2f7b2eed447edcc0f8c3e0a6b25cbeb9e3f93ac"
+    },
+    "tb_encoder_faults-run.log": {
+      "passed": true,
+      "sha256": "726a2272b4374b834bea1b71b2173b615d29702fcf215a80a5886e2e7dc4478c"
+    },
+    "icarus-tb_encoder_faults.log": {
+      "passed": true,
+      "sha256": "2502111f3fc8249da77e68d7a3950ad6e6dd5c7b3eba6840389807c431d44cf6"
+    },
+    "tb_dma_arbiter-run.log": {
+      "passed": true,
+      "sha256": "0a541d277177a1a8e0dd9e487d12c2552c7c47df218966e34e8ac1747dc2e67d"
+    },
+    "icarus-tb_dma_arbiter.log": {
+      "passed": true,
+      "sha256": "f5c002a714e1e9c544f33677f636c662d4c26ca0abe805fc86798f0ed25d7448"
+    },
+    "encoder-lint.log": {
+      "passed": true,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "compatibility": {
+    "tb_soc_encoder_compat-run.log": {
+      "cycles_per_task": 271678,
+      "tasks": 12,
+      "sha256": "22bc13d97005a82d74323264c0a6a1ca21ed4d79d1887f18fdf13240ddd3d704"
+    },
+    "tb_soc_encoder_compat_netlist-run.log": {
+      "cycles_per_task": 271678,
+      "tasks": 12,
+      "sha256": "22bc13d97005a82d74323264c0a6a1ca21ed4d79d1887f18fdf13240ddd3d704"
+    },
+    "tb_soc_ffn_encoder_compat-run.log": {
+      "cycles_per_task": 306709,
+      "tasks": 12,
+      "sha256": "3ae68707f81fa33a911487fc0eba247e92fdc67a83c984613215a80198ef0a7c"
+    },
+    "tb_soc_ffn_encoder_compat_netlist-run.log": {
+      "cycles_per_task": 306709,
+      "tasks": 12,
+      "sha256": "3ae68707f81fa33a911487fc0eba247e92fdc67a83c984613215a80198ef0a7c"
+    }
+  },
+  "rtl": {
+    "passed": true,
+    "tasks": [
+      {
+        "task": 0,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 1,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 2,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 3,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 4,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 5,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 6,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 7,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 8,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 9,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 10,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      },
+      {
+        "task": 11,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      }
+    ],
+    "memory": [],
+    "log": "output/design/tb_encoder_soc-run.log",
+    "sha256": "ae26c8831a545522bc6684cba8586c38dd0e6602e78801a01a835650cfd42e2b"
+  },
+  "netlist": {
+    "passed": true,
+    "tasks": [
+      {
+        "task": 0,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      }
+    ],
+    "memory": [],
+    "log": "output/design/tb_encoder_soc_netlist-run.log",
+    "sha256": "d01ce758d32619d9bf7546e87a8573226fc90e1ac481fef17d422e0acb4932e8"
+  },
+  "optimized_profile": {
+    "passed": true,
+    "tasks": [
+      {
+        "task": 0,
+        "cycles": 15535024,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880831,
+            "tail_cycles": 46785,
+            "ffn_dma_cycles": 226155,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 3168,
+            "encoder_sram_read16": 8348868,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 880833,
+            "tail_cycles": 62646,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 29376,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 193590,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10582676,
+          "tail_cycles": 577281,
+          "ffn_dma_cycles": 2713868,
+          "encoder_dma_read32": 358848,
+          "encoder_dma_write32": 44352,
+          "encoder_sram_read16": 100199088,
+          "encoder_sram_write16": 2335752,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1661199
+      }
+    ],
+    "memory": [
+      {
+        "task": 0,
+        "ffn_read16": 44559744,
+        "ffn_write16": 781056,
+        "shared_read32": 4177506,
+        "shared_write32": 603948,
+        "ffn_dma_read32": 238464,
+        "ffn_dma_write32": 152064
+      }
+    ],
+    "log": "output/design/tb_encoder_soc_profile-run.log",
+    "sha256": "e9e8a7c1d3c4ededdcad86ef6cab158e574a76f796654374dafec0a443505578"
+  },
+  "baseline_profile": {
+    "passed": true,
+    "tasks": [
+      {
+        "task": 0,
+        "cycles": 15840312,
+        "outputs": 6336,
+        "layers": [
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893529,
+            "tail_cycles": 62650,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          },
+          {
+            "front_cycles": 893526,
+            "tail_cycles": 62648,
+            "ffn_dma_cycles": 226157,
+            "encoder_dma_read32": 35712,
+            "encoder_dma_write32": 9504,
+            "encoder_sram_read16": 8361540,
+            "encoder_sram_write16": 206262,
+            "encoder_saturations": 0
+          }
+        ],
+        "sums": {
+          "front_cycles": 10722345,
+          "tail_cycles": 751798,
+          "ffn_dma_cycles": 2713884,
+          "encoder_dma_read32": 428544,
+          "encoder_dma_write32": 114048,
+          "encoder_sram_read16": 100338480,
+          "encoder_sram_write16": 2475144,
+          "encoder_saturations": 0
+        },
+        "load_cpu_and_notification_cycles": 1652285
+      }
+    ],
+    "memory": [
+      {
+        "task": 0,
+        "ffn_read16": 44559744,
+        "ffn_write16": 781056,
+        "shared_read32": 4316665,
+        "shared_write32": 673644,
+        "ffn_dma_read32": 238464,
+        "ffn_dma_write32": 152064
+      }
+    ],
+    "log": "output/design/tb_encoder_soc_baseline-run.log",
+    "sha256": "36da218653be8533c5cb4d2d425377fa9c35ad269a94b31895515303e1122672"
+  },
+  "reuse_comparison": {
+    "baseline_cycles": 15840312,
+    "optimized_cycles": 15535024,
+    "saved_cycles": 305288,
+    "cycle_reduction_percent": 1.927285270643659,
+    "speedup": 1.0196515950023637,
+    "same_hardware_and_firmware": true,
+    "changed_configuration": "resident input and suppressed intermediate output only",
+    "baseline_dma_words": 933120,
+    "baseline_internal_sram_read16": 144898224,
+    "baseline_internal_sram_write16": 3256200,
+    "optimized_dma_words": 793728,
+    "optimized_internal_sram_read16": 144758832,
+    "optimized_internal_sram_write16": 3116808,
+    "saved_dma_words": 139392,
+    "saved_dma_bytes": 557568,
+    "dma_reduction_percent": 14.938271604938272
+  },
+  "hardware": {
+    "ffn_mac_lanes": 16,
+    "encoder_shared_multiply_lanes": 4,
+    "gelu_units": 1,
+    "auxiliary_arithmetic": "exp interpolation and GELU operators are additional; MAC lane count is not total multiplier count",
+    "internal_sram_bytes": 240640,
+    "internal_sram_macro_count": 122,
+    "internal_sram_macros_by_address_bits": {
+      "7": 12,
+      "10": 108,
+      "12": 2
+    },
+    "shared_sram_bytes": 524288,
+    "generic_soc_cells": 171449,
+    "scopeinfo_cells": 303,
+    "synthesis": "Yosys synth -flatten -noabc; abc -fast; preserved SRAM leaves; no technology mapping",
+    "upstream_clock_gate_latches": 8
+  },
+  "ppa": {
+    "target_clock_hz": 150000000,
+    "timing_closed": false,
+    "official_area_mm2": null,
+    "power_mw": null,
+    "energy_per_inference_mj": null,
+    "physical_area_limit_mm2": 2.25,
+    "official_600_sample_evaluation": false,
+    "gate_simulation": "Zero-delay generic netlist; no SRAM timing models",
+    "scope": "Both accelerators, DMA/controllers, added bus/arbiter/interface and all internal SRAM; shared SRAM/CPU reported separately",
+    "activity_available": false,
+    "missing": [
+      "official standard-cell and SRAM libraries",
+      "mapped STA and physical area",
+      "mapped switching activity and SRAM power",
+      "official 600-sample/platform evaluation"
+    ]
+  },
+  "sdc_port_coverage_checked": true,
+  "firmware_sha256": "d8ab3e0e0f47699d39fa6e09b783315c508fab51e56dea53392bcf1f79c09854",
+  "netlist_sha256": "81bec13dbf6385fe2e8c58a0d6543ed74a3b972bd2ab5a958f088b6e08593000",
+  "synthesis_log_sha256": "38b69879db2b4cbb7570c5b9a40c7c357fd927a003e3c77b7b413cb4e696fb1c",
+  "synthesis_script_sha256": "6846f9201c4718ee62cefe0255d672ed754b76bcc066e529ed05d6ea633a285b",
+  "synthesis_source_manifest_sha256": "a3726c79d8d74428e309ef3f24ae96879d12f90b789147c26d56c778eac84a35"
+}

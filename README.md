@@ -1,8 +1,10 @@
-# KWT-1 关键词识别线性层加速器（本科生组）
+# KWT-1 关键词识别加速器（本科生组：必做与完整编码器拓展）
 
-本项目面向芯片设计赛题的本科生组，以 KWT-1 模型和 E203 蜂鸟 SoC 为参考，开发 Transformer 前馈网络第一线性层加速器。
+本项目以 KWT-1 模型和 E203 蜂鸟 SoC 为参考，保留本科必做第一线性层和第八版完整 FFN，并增加第 4—7 项完整编码器拓展：注意力 → 残差/LN1 → FFN1/GELU/FFN2 → 残差/LN2，按模型顺序执行 12 层。
 
 **当前阶段：已实现本科组线性加速器 RTL、冻结数值模型、参数转换、E203 驱动与 System Bus 集成，并完成本地功能和通用综合验证。正式工艺时序、面积、功耗及官方平台验收仍待官方服务器和工艺资料，不能将当前结果称为全部赛题验收通过。** `environment/smoke/` 仅用于环境检查，实际设计位于 `rtl/`。
+
+完整编码器新增独立 `ENC1` 伴随引擎和 `kwt_encoder_soc` 顶层；原 KWT5 两种模式继续保留。新流程运行 `.\encoder.ps1 all`，旧 FFN 流程仍运行 `.\design.ps1 all`。新设计说明见 [完整编码器](docs/full-encoder.md)，实测结果见 [编码器性能](docs/encoder-performance.md) 和 [验证记录](docs/encoder-validation.json)。本地 120 条验证样本预测与浮点模型全部一致，两者均正确 119 条；内部 SRAM 增至 235 KiB，正式面积仍需确认。第八版归档保存在本地 `deliverables/full-ffn-v8-baseline.zip` 和 `v8-source-baseline.zip`。
 
 **第八版通过重叠组间读取和 MAC 初始化优化完整 FFN。** 保持 16 个 MAC、1 个 GELU、88.5 KiB 内部 SRAM 和 40 个宏，完整任务由第七版 310,289 降至 **306,709 周期**，减少 **1.15%**；按 150 MHz 目标折算 **2.04473 ms、489.06292 任务/秒**。独立第一层仍为 **271,678 周期/任务**。详见 [第八版组间调度优化](docs/ffn-group-scheduling.md)。
 
@@ -79,7 +81,7 @@ X: 99 × 64    W: 64 × 256    b: 256    Y: 99 × 256
 支持 12 个编码器层的参数切换，并完成 SoC 集成及验证。
 ```
 
-记录的约束包括 150 MHz 时钟、512 KB 共享 SRAM、加速器面积不超过 2.25 mm²、NRMSE 不超过 3%；完整定义及验收口径以指南和官方后续通知为准。GELU、第二线性层和注意力属于选做；当前已完成前两者，注意力未实现。机器可读范围见 [project-context.json](environment/project-context.json)。
+记录的约束包括 150 MHz 时钟、512 KB 共享 SRAM、加速器面积不超过 2.25 mm²、必做 NRMSE 不超过 3%；完整定义及验收口径以指南和官方后续通知为准。GELU、第二线性层、注意力、残差与 LayerNorm 属于选做，当前完整编码器按用户选定的第 4—7 项实现；官方分类精度和 PPA 验收仍待评测。机器可读范围见 [project-context.json](environment/project-context.json)。
 
 官方 SoC 参考为 [riscv-mcu/e203_hbirdv2](https://github.com/riscv-mcu/e203_hbirdv2)。本项目固定其提交作为开发基线，不代表组委会指定了该提交。正式后端环境由官方后期提供服务器，届时对接工艺库、SRAM 宏及评测条件。
 

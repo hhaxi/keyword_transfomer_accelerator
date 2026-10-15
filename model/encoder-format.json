@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "activation_and_attention_parameter_exponent": -16,
+  "probability_exponent": -24,
+  "rounding": "dense and affine RNE; mean, variance, reciprocal and normalized value floor",
+  "saturation": "signed int32 at dense, residual, centered difference and affine; unchanged int16 FFN input",
+  "epsilon_q32": 4295,
+  "exp2_table": "257 mathematical entries Q24, step 1/256, linear interpolation",
+  "exp_cutoff_q16": 1048576,
+  "log2e_q16": 94548,
+  "inverse_std_numerator": 68719476736,
+  "layers": 12,
+  "tokens": 99,
+  "features": 64,
+  "attention_heads": 1,
+  "scale_source": "fixed mathematical format, no sample fitting"
+}
