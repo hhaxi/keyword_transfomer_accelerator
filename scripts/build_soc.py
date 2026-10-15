@@ -1,7 +1,7 @@
 """Build real RV32 firmware and simulate the pinned E203 CPU plus our System Bus."""
 import json
 from pathlib import Path
-from run_design import ROOT,OUT,RTL,run,sim
+from run_design import ROOT,OUT,SYSTEM_RTL,run,sim
 
 SOC=ROOT/'assets/references/e203_hbirdv2-9f3e34f337f5d0a1236a285871ffa2032491617a'
 
@@ -30,11 +30,11 @@ def firmware():
 
 def build_and_simulate():
     firmware()
-    files=source_files()+RTL+['integration/kwt_shared_sram.sv','integration/kwt_system_bus.sv',
+    files=source_files()+SYSTEM_RTL+['integration/kwt_shared_sram.sv','integration/kwt_system_bus.sv',
                              'integration/kwt_soc.sv','tests/tb_soc.sv']
     includes=['+incdir+'+str((SOC/'rtl/e203/core').relative_to(ROOT)).replace('\\','/'),
               '+incdir+output/design/firmware','+define+DISABLE_SV_ASSERTION']
-    text=sim('tb_soc',files,includes)
+    text=sim('tb_soc',files,includes,run_args=['+profile'])
     if 'SOC_PASS' not in text: raise RuntimeError('SoC test did not pass')
 
 if __name__=='__main__': build_and_simulate()

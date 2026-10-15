@@ -1,0 +1,276 @@
+{
+  "tasks": [
+    {
+      "task": 0,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 1,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 2,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 3,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 4,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 5,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 6,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 7,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 8,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 9,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 10,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    },
+    {
+      "task": 11,
+      "cycles": {
+        "dma_total": 499598,
+        "load": 30717,
+        "compute_writeback": 468879,
+        "control": 2,
+        "mac_active": 405504,
+        "fifo_full_wait": 0,
+        "core_elapsed": 468874,
+        "dma_request_wait": 23511,
+        "dma_response_wait": 0,
+        "dma_read_commands": 22976,
+        "dma_write_commands": 50688,
+        "first_output": 30794,
+        "last_output": 499593,
+        "last_write_ack": 499598,
+        "producer_wait": 380277,
+        "host_load_and_ready_notification": 91907,
+        "cpu_setup_and_completion_observation": 761
+      }
+    }
+  ],
+  "additive_phases": [
+    "host_load_and_ready_notification",
+    "load",
+    "compute_writeback",
+    "control",
+    "cpu_setup_and_completion_observation"
+  ],
+  "note": "Other counters are overlapping activity/wait diagnostics; do not add them to the phase total. All timestamps are relative to DMA start. Profiles are read after the measured interval."
+}

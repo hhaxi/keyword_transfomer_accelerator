@@ -3,35 +3,29 @@ static inline void fence(void) { __asm__ volatile("fence iorw,iorw" ::: "memory"
 static inline volatile uint32_t *reg(uint32_t offset) {
     return (volatile uint32_t *)(uintptr_t)(KWT_BASE+offset);
 }
-static void load_words(uint32_t offset, const volatile int32_t *src, uint32_t count) {
-    volatile uint32_t *dst=reg(offset);
-    // All three fixed tensor lengths are multiples of four.
-    for (uint32_t i=0;i<count;i+=4) {
-        dst[i]=(uint32_t)src[i]; dst[i+1]=(uint32_t)src[i+1];
-        dst[i+2]=(uint32_t)src[i+2]; dst[i+3]=(uint32_t)src[i+3];
-    }
+static int abort_wait(void) {
+    *reg(0)=2;
+    for (uint32_t n=0;n<100000;n++) if (!(*reg(4)&1)) return 0;
+    return -4; /* Bus did not drain: memory must not be reused before reset. */
 }
 int kwt_linear(const volatile int32_t *x, const volatile int32_t *w,
                const volatile int32_t *b, volatile uint32_t *output) {
-    *reg(0)=2; /* Invalidate previous task; every task reloads X/W/b. */
-    load_words(0x10000,x,KWT_ROWS*KWT_INNER);
-    load_words(0x20000,w,KWT_INNER*KWT_COLS);
-    load_words(0x30000,b,KWT_COLS);
-    fence(); *reg(0)=1;
-    for (uint32_t i=0;i<KWT_ROWS*KWT_COLS;i+=4) {
-        uint32_t timeout=100000;
-        uint32_t status;
-        do {
-            status=*reg(4);
-            if (status&8) return -1;
-            if (!--timeout) return -2;
-        } while (!(status&16)); // Four results are guaranteed until consumed.
-        output[2*i]=*reg(0x10);
-        output[2*i+1]=*reg(0x14); /* Pop only after reading the low half. */
-        output[2*i+2]=*reg(0x10); output[2*i+3]=*reg(0x14);
-        output[2*i+4]=*reg(0x10); output[2*i+5]=*reg(0x14);
-        output[2*i+6]=*reg(0x10); output[2*i+7]=*reg(0x14);
+    if (*reg(0x0c)!=0x4b575433u) return -3;
+    int rc=abort_wait();
+    if (rc) return rc;
+    *reg(0x20)=(uint32_t)(uintptr_t)x;
+    *reg(0x24)=(uint32_t)(uintptr_t)w;
+    *reg(0x28)=(uint32_t)(uintptr_t)b;
+    *reg(0x2c)=(uint32_t)(uintptr_t)output;
+    fence();*reg(0)=1;
+    for (uint32_t n=0;n<1000000;n++) {
+        uint32_t status=*reg(4);
+        if (status&0x1c) { rc=abort_wait();return rc?rc:-1; }
+        if ((status&3)==2) { fence();return 0; }
     }
-    fence();
-    return ((*reg(4)&0xf)==2)?0:-3;
+    rc=abort_wait();return rc?rc:-2;
+}
+void kwt_profile(volatile uint32_t *out) {
+    for (uint32_t i=0;i<15;i++) out[i]=*reg(0x40+4*i);
+    fence();out[15]=0x50524633u; /* Publish only after all counters were copied. */
 }

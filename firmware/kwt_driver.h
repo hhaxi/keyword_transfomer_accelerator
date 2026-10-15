@@ -9,4 +9,5 @@
  * Output: sign-extended int40 carried in int64, row-major. */
 int kwt_linear(const volatile int32_t *x, const volatile int32_t *w,
                const volatile int32_t *b, volatile uint32_t *output);
+void kwt_profile(volatile uint32_t *out);
 #endif

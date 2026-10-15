@@ -3,7 +3,15 @@
 int main(void) {
     volatile uint32_t *mail=(volatile uint32_t *)0xa000f000u;
     for (;;) {
-        while (mail[0]!=1) { }
+        uint32_t request;
+        do { request=mail[0]; } while (request!=1 && request!=3);
+        if (request==3) {
+            // Host requests statistics only after stopping its task timer.
+            kwt_profile(mail+8);
+            __asm__ volatile("fence iorw,iorw" ::: "memory");
+            mail[0]=4;
+            continue;
+        }
         int rc=kwt_linear((const volatile int32_t *)0xa0010000u,
                           (const volatile int32_t *)0xa0018000u,
                           (const volatile int32_t *)0xa0028000u,

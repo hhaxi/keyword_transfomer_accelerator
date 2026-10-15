@@ -11,6 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'output/design'
 CONFIG=json.loads((ROOT/'environment/local-tools.json').read_text(encoding='utf-8-sig')) if (ROOT/'environment/local-tools.json').exists() else {}
 RTL=['rtl/kwt_mac40.sv','rtl/kwt_sram16.sv','rtl/kwt_accel.sv']
+SYSTEM_RTL=RTL+['rtl/kwt_dma.sv','integration/kwt_bus_fabric.sv']
 
 def run(name,cmd,timeout=900):
     OUT.mkdir(parents=True,exist_ok=True)
@@ -44,10 +45,15 @@ def four_state():
     if 'MAC_PASS' not in run('mac-icarus',[runtime,OUT/'mac.vvp','+vcd']):raise RuntimeError('MAC test incomplete')
     run('icarus-accel-build',[compiler,'-g2012','-s','tb_accel','-o',OUT/'accel.vvp']+RTL+['tests/tb_accel.sv'])
     if 'ACCEL_PASS' not in run('icarus-accel',[runtime,OUT/'accel.vvp','+tasks=1']):raise RuntimeError('Accelerator test incomplete')
+    for top,files,marker in [
+        ('tb_dma',RTL+['rtl/kwt_dma.sv','tests/tb_dma.sv'],'DMA_PASS'),
+        ('tb_bus',['integration/kwt_bus_fabric.sv','integration/kwt_shared_sram.sv','tests/tb_bus.sv'],'BUS_PASS')]:
+        run('icarus-'+top+'-build',[compiler,'-g2012','-s',top,'-o',OUT/(top+'.vvp')]+files)
+        if marker not in run('icarus-'+top,[runtime,OUT/(top+'.vvp')]):raise RuntimeError(top+' four-state check failed')
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('task',choices=['numeric','mac','fourstate','accel','soc','synth','synth-soc','all'])
+    p.add_argument('task',choices=['numeric','mac','fourstate','accel','dma','bus','soc','synth','synth-dma','synth-soc','all'])
     task=p.parse_args().task
     if task in ('numeric','all'):
         run('numeric-tests',[sys.executable,'tests/test_numeric.py'])
@@ -59,6 +65,12 @@ def main():
     if task in ('accel','all'):
         text=sim('tb_accel',RTL+['tests/tb_accel.sv'])
         assert 'ACCEL_PASS' in text
+    if task in ('dma','all'):
+        text=sim('tb_dma',RTL+['rtl/kwt_dma.sv','tests/tb_dma.sv'])
+        assert 'DMA_PASS' in text
+    if task in ('bus','all'):
+        text=sim('tb_bus',['integration/kwt_bus_fabric.sv','integration/kwt_shared_sram.sv','tests/tb_bus.sv'])
+        assert 'BUS_PASS' in text
     if task in ('soc','all'):
         from build_soc import build_and_simulate
         build_and_simulate()
@@ -68,5 +80,8 @@ def main():
     if task in ('synth-soc','all'):
         from synth_soc import main as synth_soc
         synth_soc()
+    if task in ('synth-dma','all'):
+        from synth_dma import main as synth_dma
+        synth_dma()
 
 if __name__=='__main__': main()

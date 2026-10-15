@@ -74,6 +74,25 @@ module tb_soc;
                 host(1,32'ha0030000+32'(8*j),0,lo);host(1,32'ha0030004+32'(8*j),0,hi);
                 if({hi,lo}!==expected[j]) $fatal(1,"SoC mismatch task=%0d index=%0d actual=%h expected=%h",taskid,j,{hi,lo},expected[j]);
             end
+            // PROFILE_BEGIN: optional reads after the measured interval and result verification.
+            if($test$plusargs("profile")) begin
+                host(0,32'ha000f000,3,rd);
+                rd=0;j=0;
+                while(rd!=4) begin
+                    host(1,32'ha000f000,0,rd);j=j+1;
+                    if(j>10000) $fatal(1,"Profile request timeout");
+                end
+                host(1,32'ha000f05c,0,rd);
+                if(rd!==32'h50524633) $fatal(1,"Profile publication missing");
+                for(j=0;j<15;j=j+1) begin
+                    host(1,32'ha000f020+32'(4*j),0,rd);
+                    if(j==4 && rd!=405504) $fatal(1,"MAC cycle count mismatch");
+                    if(j==9 && rd!=22976) $fatal(1,"DMA read count mismatch");
+                    if(j==10 && rd!=50688) $fatal(1,"DMA write count mismatch");
+                    $display("SOC_PROFILE task=%0d index=%0d value=%0d",taskid,j,rd);
+                end
+            end
+            // PROFILE_END
             $display("SOC_TASK_PASS task=%0d cycles=%0d outputs=25344",taskid,task_cycles);
             $fflush();
         end

@@ -4,7 +4,7 @@
 
 **当前阶段：已实现本科组线性加速器 RTL、冻结数值模型、参数转换、E203 驱动与 System Bus 集成，并完成本地功能和通用综合验证。正式工艺时序、面积、功耗及官方平台验收仍待官方服务器和工艺资料，不能将当前结果称为全部赛题验收通过。** `environment/smoke/` 仅用于环境检查，实际设计位于 `rtl/`。
 
-第二版采用四路流水 MAC、8 项输出 FIFO 和批量驱动，同一 SoC 任务从 6,803,004 降至 **2,298,840 周期（2.9593 倍加速）**，内部 SRAM 仍为 52 KiB。按 150 MHz 目标折算为 15.32560 ms/任务、65.25030 任务/秒；实际时序与面积代价待工艺验证。详见 [前端性能优化记录](docs/frontend-performance.md)。
+第三版增加输入/权重 DMA、结果直接写回、三方轮转连续传输和分阶段周期统计，同一 SoC 任务从第二版的 2,298,840 降至 **592,266 周期（再加速 3.8814 倍）**，相对第一版共加速 11.4864 倍。四路 MAC 和 52 KiB 内部 SRAM 保持不变。按 150 MHz 目标折算为 **3.94844 ms/任务、253.26458 任务/秒**；实际时序、面积和功耗仍待工艺验证。详见 [DMA 与周期分析](docs/dma-performance.md)。
 
 ## 设计复现入口
 
@@ -14,19 +14,22 @@
 .\design.ps1 all
 ```
 
-依次执行：24 条训练样本的无梯度标定检查、120 条验证样本的逐层参考提取与数值检查、数值边界测试、MAC、Icarus 四态检查、12 层加速器 RTL、真实 E203 固件仿真、加速器通用综合/网表仿真、E203 整机通用综合/网表仿真。整机回归可能需要十几分钟或更久，日志保存在 `output/design/`。
+依次执行：24 条训练样本的无梯度标定检查、120 条验证样本的逐层参考提取与数值检查、数值边界测试、MAC、Icarus 四态检查、12 层计算核 RTL、DMA 异常恢复、总线吞吐/仲裁、真实 E203 固件仿真，以及计算核、DMA、总线和 E203 整机的通用综合/网表验证。完整回归可能需要十几分钟或更久，日志保存在 `output/design/`。
 
 - [设计说明与寄存器协议](docs/architecture.md)：数值格式、存储布局、驱动及计时范围。
 - [本科必做项验收记录](docs/acceptance.md)：已验证项目和官方验收缺口。
-- [前端性能优化记录](docs/frontend-performance.md)：基线、整机周期比较、流水及 FIFO 设计、资源代价和回归方式。
-- `rtl/`：MAC、矩阵控制器和 SRAM 工艺边界。
-- `integration/`：E203 CPU、System Bus 与 512 KiB 共享 SRAM 集成。
+- [DMA 与周期分析](docs/dma-performance.md)：第三版周期分解、DMA 协议、连续传输、资源代价和验证。
+- [第二版优化记录](docs/frontend-performance.md)：流水 MAC 和 FIFO 的历史基线。
+- `rtl/`：MAC、矩阵控制器、自主 DMA 和 SRAM 工艺边界。
+- `integration/`：E203 CPU、三方轮转 System Bus 与 512 KiB 共享 SRAM 集成。
 - `firmware/`：实际由 E203 执行的驱动、启动代码和链接脚本。
 - `model/`：冻结逐层指数及与 RTL 一致的整数模型。
 - `tests/`：组件、矩阵、整机测试平台。
 - `constraints/`：150 MHz 目标 SDC，无掩盖违例的路径例外。
 
-按需运行 `calibrate`、`export`、`numeric`、`mac`、`fourstate`、`accel`、`soc`、`synth` 或 `synth-soc`，例如 `.\design.ps1 soc`。`tools.ps1` 保留为环境自检入口，不能替代 `design.ps1` 的设计验证。
+按需运行 `calibrate`、`export`、`numeric`、`mac`、`fourstate`、`accel`、`dma`、`bus`、`soc`、`synth`、`synth-dma` 或 `synth-soc`，例如 `.\design.ps1 soc`。SoC 仿真在停止计时后请求周期快照；`scripts/collect_results.py` 汇总为 `docs/cycle-analysis.json`。`tools.ps1` 保留为环境自检入口，不能替代设计验证。
+
+第三版 SoC 基址仍为 `0x40000000`，但控制器 ID 为 `KWT3`、寄存器协议改为 DMA 地址配置，须使用配套固件。旧逐字搬运驱动不能用于第三版 SoC；独立计算核保留原端口供组件验证。
 
 任意实际层输入可用以下命令转换；输入 NPZ 包含浮点 `x[99,64]`、`w[64,256]`、`b[256]` 和可选参考 `y[99,256]`：
 
@@ -55,7 +58,7 @@
 
 输出 `output/design/soc.fst` 和 `soc.vcd.gz`，日志给出计时窗口。改为 `--tasks 12` 可记录全部本地性能任务。活动文件需在正式工具中检查映射和覆盖，并补全 SRAM 功耗模型后才能用于正式功耗估算。
 
-验证完成后运行 `python scripts/collect_results.py` 汇总记录并校验相对第一版的性能回归，再运行 `python scripts/package_submission.py` 生成本地交付包 `deliverables/undergraduate-local-submission.zip`。包内含源码、约束、真实测试向量、固件、通用网表和验证记录；若为当前版本采集了整机活动波形，大文件作为独立附属文件保留在 `output/design/`。第一版活动文件已移至 `output/baseline-v1/`，不作为第二版活动证据。这份包标记为本地实现交付，官方 PPA/平台验收仍待完成。
+验证完成后运行 `python scripts/collect_results.py` 汇总记录并校验相对第二版的性能回归，再运行 `python scripts/package_submission.py` 生成本地交付包 `deliverables/undergraduate-local-submission.zip`。包内含源码、约束、真实测试向量、固件、四类通用网表和验证记录；若为当前版本采集了整机活动波形，大文件作为独立附属文件保留在 `output/design/`。第一版活动文件位于 `output/baseline-v1/`，第二版报告和日志位于 `output/baseline-v2/`，不作为第三版活动证据。这份包标记为本地实现交付，官方 PPA/平台验收仍待完成。
 
 ## 赛题范围
 

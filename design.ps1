@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('calibrate','export','numeric','mac','fourstate','accel','soc','synth','synth-soc','all')]
+    [ValidateSet('calibrate','export','numeric','mac','fourstate','accel','dma','bus','soc','synth','synth-dma','synth-soc','all')]
     [string]$Task='all'
 )
 $ErrorActionPreference='Stop'
@@ -19,7 +19,7 @@ try {
         & $DesignPython scripts/run_design.py numeric
         if ($LASTEXITCODE) { throw 'Numeric model checks failed' }
     }
-    if ($Task -in @('mac','fourstate','accel','soc','synth','synth-soc','all')) {
+    if ($Task -in @('mac','fourstate','accel','dma','bus','soc','synth','synth-dma','synth-soc','all')) {
         & $DesignPython scripts/run_design.py $Task
         if ($LASTEXITCODE) { throw 'Design checks failed' }
     }

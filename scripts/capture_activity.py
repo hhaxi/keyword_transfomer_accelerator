@@ -10,7 +10,7 @@ import json
 import shutil
 import subprocess
 from pathlib import Path
-from run_design import ROOT,RTL,CONFIG,sim
+from run_design import ROOT,SYSTEM_RTL,CONFIG,sim
 from build_soc import SOC,source_files,firmware
 
 def main():
@@ -30,7 +30,7 @@ def main():
         files+=['rtl/kwt_sram16.sv','integration/kwt_shared_sram.sv','output/design/kwt_soc_netlist.v','tests/tb_soc.sv']
     else:
         includes+=['+incdir+'+str((SOC/'rtl/e203/core').relative_to(ROOT)).replace('\\','/')]
-        files=source_files()+RTL+['integration/kwt_shared_sram.sv','integration/kwt_system_bus.sv','integration/kwt_soc.sv','tests/tb_soc.sv']
+        files=source_files()+SYSTEM_RTL+['integration/kwt_shared_sram.sv','integration/kwt_system_bus.sv','integration/kwt_soc.sv','tests/tb_soc.sv']
     result=sim('tb_soc',files,includes,label='soc_activity',run_args=['+vcd','+tasks='+str(args.tasks)]+(['+fst'] if args.compressed else []))
     if 'SOC_PASS' not in result:raise RuntimeError('Activity simulation did not pass')
     if args.compressed:

@@ -13,7 +13,10 @@ module tb_accel;
     integer taskid,j,transactions=0,num_tasks=12;
     longint cycles=0,start_cycle;
     string folder;
-    kwt_accel dut(.*);
+    kwt_accel dut(.dma_mode(1'b0),.dma_load_valid(1'b0),.dma_load_addr(20'b0),
+        .dma_load_data(32'b0),.dma_load_ready(),.dma_start(1'b0),.dma_clear(1'b0),
+        .dma_out_valid(),.dma_out_data(),.dma_out_ready(1'b0),.dma_done(),.dma_fault(),
+        .perf_cycles(),.perf_mac_cycles(),.perf_fifo_wait(),.*);
     always @(posedge clk) begin cycles<=cycles+1; if(cycles>100000000) $fatal(1,"timeout"); end
     task automatic bus(input bit read_,input [19:0] addr_,input [31:0] data_,input bit error_,output [31:0] data_out);
         begin
