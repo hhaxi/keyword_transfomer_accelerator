@@ -105,7 +105,7 @@ module tb_soc_ffn;
                 if(rd!==32'h50524633) $fatal(1,"Profile publication missing");
                 for(j=0;j<15;j=j+1) begin
                     host(1,32'ha000f020+32'(4*j),0,rd);
-                    if(j==4 && rd!=405504) $fatal(1,"MAC cycle count mismatch");
+                    if(j==4 && rd!=202752) $fatal(1,"MAC cycle count mismatch");
                     if(j==9 && rd!=19872) $fatal(1,"DMA read count mismatch");
                     if(j==10 && rd!=12672) $fatal(1,"DMA write count mismatch");
                     $display("FFN_SOC_PROFILE task=%0d index=%0d value=%0d",taskid,j,rd);
@@ -114,7 +114,7 @@ module tb_soc_ffn;
             if($test$plusargs("profile")) begin
                 for(j=0;j<3;j=j+1) begin
                     host(1,32'ha000f060+32'(4*j),0,rd);
-                    if(j==0 && rd!=202752) $fatal(1,"Second MAC count mismatch");
+                    if(j==0 && rd!=101376) $fatal(1,"Second MAC count mismatch");
                     if(j==1 && rd!=25344) $fatal(1,"GELU count mismatch");
                     if(j==2 && rd!=0) $fatal(1,"Unexpected GELU saturation");
                     $display("FFN_EXTRA task=%0d index=%0d value=%0d",taskid,j,rd);

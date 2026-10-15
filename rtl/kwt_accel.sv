@@ -20,11 +20,17 @@ module kwt_accel(
     output reg [31:0] perf_second_mac,perf_gelu,perf_saturation
 );
     localparam IDLE=4'd0, BREQ=4'd1, BLOAD=4'd2, PRIME=4'd3,
-               MAC=4'd4, LAST=4'd5, EMIT=4'd6, DRAIN=4'd7, GELU=4'd8;
+               MAC=4'd4, LAST=4'd5, EMIT=4'd6, DRAIN=4'd7, GELU=4'd8, MERGE=4'd9;
     reg [3:0] state;
     reg second_stage;
     reg [2:0] gelu_lane;
     wire full_ffn=dma_mode && ffn_mode;
+    // Full FFN reads both existing parity banks each cycle. Independent FFN1
+    // retains its original scalar-k schedule and cycle contract.
+    wire [7:0] k_step=full_ffn ? 8'd2 : 8'd1;
+    wire mac_enable=state==MAC || state==LAST;
+    wire signed [39:0] odd_acc [0:7];
+    reg signed [39:0] merged [0:7];
     reg [14:0] nw2;
     reg [6:0] nb2;
     reg [6:0] row;
@@ -74,11 +80,12 @@ module kwt_accel(
     // Eight column lanes, each split into even/odd k banks of 16x1024.
     // A packed DMA word writes both parity banks on the same edge.
     wire [9:0] wa = wwrite ? {load_addr[15:11],load_addr[7:3]} : {col[7:3],k[5:1]};
-    wire prefetch_req = state==MAC && k<=15 && k[0];
-    wire prefetch_capture = state==MAC && k>=2 && k<=16 && !k[0];
+    wire prefetch_req = state==MAC && (full_ffn ? (k<=30 && k[1]) : (k<=15 && k[0]));
+    wire prefetch_capture = state==MAC && (full_ffn ? (k>=4 && k<=32 && !k[1]) : (k>=2 && k<=16 && !k[0]));
+    wire [2:0] prefetch_lane=full_ffn ? k[4:2] : k[3:1];
     wire [4:0] next_group = col[7:3]+5'd1;
     wire [9:0] ba = bwrite ? {2'b0,load_addr[9:2]} :
-        (prefetch_req ? {2'b0,next_group,k[3:1]} : {2'b0,col[7:3],bias_lane});
+        (prefetch_req ? {2'b0,next_group,prefetch_lane} : {2'b0,col[7:3],bias_lane});
     wire [15:0] xd [0:1];
     wire [15:0] wd [0:7][0:1];
     wire [15:0] bl, bh, b2l,b2h;
@@ -87,38 +94,44 @@ module kwt_accel(
     wire [9:0] wa2=w2write ? {load_addr[15:13],load_addr[9:3]} : {col[5:3],k[7:1]};
     wire [2:0] next_group2=col[5:3]+3'd1;
     wire [6:0] ba2=b2write ? {1'b0,load_addr[7:2]} :
-        (prefetch_req ? {1'b0,next_group2,k[3:1]} : {1'b0,col[5:3],bias_lane});
+        (prefetch_req ? {1'b0,next_group2,prefetch_lane} : {1'b0,col[5:3],bias_lane});
     wire signed [15:0] gelu_result;
     wire gelu_saturated;
     wire [6:0] ga=state==GELU ? {col[7:3],gelu_lane[2:1]} : k[7:1];
-    kwt_gelu activation(.value(acc[gelu_lane]),.input_shift(gelu_input_shift),
+    kwt_gelu activation(.value(merged[gelu_lane]),.input_shift(gelu_input_shift),
         .output_shift(gelu_output_shift),.result(gelu_result),.saturated(gelu_saturated));
     reg xb;
     wire signed [39:0] acc [0:7];
     genvar i,p;
     generate for (i=0;i<2;i=i+1) begin: xbanks
         kwt_sram16 xm(.clk(clk),
-            .cs((xwrite && (dma_mode || xa[0]==(i==1))) || (read_operands && !second_stage && xa[0]==(i==1))),
+            .cs((xwrite && (dma_mode || xa[0]==(i==1))) || (read_operands && !second_stage && (full_ffn || xa[0]==(i==1)))),
             .we(xwrite),.addr(xa[12:1]),.din(dma_mode && i==1 ? load_data[31:16] : load_data[15:0]),.dout(xd[i]));
     end
     for (i=0;i<8;i=i+1) begin: wbanks
         for(p=0;p<2;p=p+1) begin: parity
             kwt_sram16 #(.AW(10)) wm(.clk(clk),
-                .cs((read_operands && !second_stage && k[0]==(p==1)) ||
+                .cs((read_operands && !second_stage && (full_ffn || k[0]==(p==1))) ||
                     (wwrite && load_addr[10:8]==i && (dma_mode || load_addr[2]==(p==1)))),
                 .we(wwrite),.addr(wa),.din(dma_mode && p==1 ? load_data[31:16] : load_data[15:0]),.dout(wd[i][p]));
         end
         for(p=0;p<2;p=p+1) begin: second_weights
             kwt_sram16 #(.AW(10)) wm2(.clk(clk),
-                .cs((read_operands && second_stage && k[0]==(p==1)) || (w2write && load_addr[12:10]==i)),
+                .cs((read_operands && second_stage && (full_ffn || k[0]==(p==1))) || (w2write && load_addr[12:10]==i)),
                 .we(w2write),.addr(wa2),.din(p==1 ? load_data[31:16] : load_data[15:0]),.dout(wd2[i][p]));
         end
         kwt_mac40 mac(.clk(clk),.rst_n(rst_n),.init(state==PRIME),
-            .enable(state==MAC || state==LAST),.x(second_stage ? gd[xb] : xd[xb]),.w(second_stage ? wd2[i][xb] : wd[i][xb]),.bias(next_bias[i]),.acc(acc[i]));
+            .enable(mac_enable),.x(second_stage ? gd[xb] : xd[xb]),.w(second_stage ? wd2[i][xb] : wd[i][xb]),.bias(next_bias[i]),.acc(acc[i]));
+        kwt_mac40 odd_mac(.clk(clk),.rst_n(rst_n),.init(state==PRIME && full_ffn),
+            .enable(mac_enable && full_ffn),.x(second_stage ? gd[1] : xd[1]),
+            .w(second_stage ? wd2[i][1] : wd[i][1]),.bias(32'sd0),.acc(odd_acc[i]));
+        // Register the exact partial-sum merge before GELU to avoid adding a
+        // 40-bit adder to its combinational path. Payload validity is the FSM.
+        always @(posedge clk) if(state==MERGE) merged[i]<=acc[i]+odd_acc[i];
     end
     for(i=0;i<2;i=i+1) begin: intermediate
         kwt_sram16 #(.AW(7)) gm(.clk(clk),
-            .cs((state==GELU && gelu_lane[0]==(i==1)) || (read_operands && second_stage && k[0]==(i==1))),
+            .cs((state==GELU && gelu_lane[0]==(i==1)) || (read_operands && second_stage && (full_ffn || k[0]==(i==1)))),
             .we(state==GELU),.addr(ga),.din(gelu_result),.dout(gd[i]));
     end
     endgenerate
@@ -178,16 +191,17 @@ module kwt_accel(
                 else state<=BREQ;
             end
             // Registered SRAM operands from the preceding edge are consumed
-            // while the next pair is read. LAST drains operand 63 or 255 exactly once.
-            if (prefetch_req) bias_return_lane<=k[3:1];
+            // while the next operands are read. LAST drains the final scalar or pair.
+            if (prefetch_req) bias_return_lane<=prefetch_lane;
             if (read_operands) xb<=xa[0];
-            if (state==PRIME) begin k<=1; state<=MAC; end
+            if (state==PRIME) begin k<=k_step; state<=MAC; end
             if (state==MAC) begin
-                if (k==(second_stage ? 8'd255 : 8'd63)) state<=LAST;
-                else k<=k+1'b1;
+                if (k==(second_stage ? 8'd255 : 8'd63)-(full_ffn ? 8'd1 : 8'd0)) state<=LAST;
+                else k<=k+k_step;
             end
-            if (state==LAST) begin
-                if(full_ffn && !second_stage) begin state<=GELU;gelu_lane<=0;end
+            if (state==LAST) state<=full_ffn ? MERGE : EMIT;
+            if (state==MERGE) begin
+                if(!second_stage) begin state<=GELU;gelu_lane<=0;end
                 else state<=EMIT;
             end
             case ({push,pop})
@@ -197,7 +211,7 @@ module kwt_accel(
                 default: begin end
             endcase
             if (push) begin
-                for(lane=0;lane<8;lane=lane+1) fifo[tail+4'(lane)]<=acc[lane];
+                for(lane=0;lane<8;lane=lane+1) fifo[tail+4'(lane)]<=full_ffn ? merged[lane] : acc[lane];
                 tail<=tail+4'd8;
                 if (col==(second_stage ? 8'd56 : 8'd248) && row==98) state<=DRAIN;
                 else begin

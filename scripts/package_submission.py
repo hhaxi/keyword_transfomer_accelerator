@@ -19,11 +19,12 @@ def main():
         if p.suffix in ['.hex','.npz']:files[p.relative_to(ROOT).as_posix()]=p
     for name in ['numeric-report.json','manifest.json','packed-manifest.json']:
         p=ROOT/'output/vectors'/name;files[p.relative_to(ROOT).as_posix()]=p
-    for folder in ['output/ffn-vectors','output/ffn-calibration']:
+    for folder in ['output/ffn-vectors','output/ffn-calibration','output/ffn-edges']:
         for p in (ROOT/folder).rglob('*'):
             if p.is_file() and p.suffix in ['.hex','.json','.npz','.txt']:
                 files[p.relative_to(ROOT).as_posix()]=p
     for name in ['kwt_gelu_netlist.v','gelu-synthesis-stat.json','synth_gelu.ys',
+                 'tb_ffn_edges-run.log','tb_ffn_edges_netlist-run.log','icarus-tb_ffn_edges.log',
                  'ffn-numeric-tests.log','tb_gelu-run.log','tb_gelu_netlist-run.log','icarus-tb_gelu.log',
                  'tb_ffn-run.log','tb_ffn_netlist-run.log','icarus-tb_ffn.log','tb_soc_ffn-run.log','tb_soc_ffn_netlist-run.log',
                  'kwt_accel_netlist.v','kwt_soc_netlist.v','synthesis-stat.json','soc-synthesis-stat.json',

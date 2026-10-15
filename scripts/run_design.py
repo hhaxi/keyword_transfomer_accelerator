@@ -48,6 +48,7 @@ def four_state():
     if 'ACCEL_PASS' not in run('icarus-accel',[runtime,OUT/'accel.vvp','+tasks=1']):raise RuntimeError('Accelerator test incomplete')
     for top,files,marker in [
         ('tb_gelu',['rtl/kwt_gelu.sv','tests/tb_gelu.sv'],'GELU_PASS'),
+        ('tb_ffn_edges',RTL+['tests/tb_ffn_edges.sv'],'FFN_EDGES_PASS'),
         ('tb_ffn',RTL+['rtl/kwt_dma.sv','tests/tb_ffn.sv'],'FFN_PASS'),
         ('tb_dma',RTL+['rtl/kwt_dma.sv','tests/tb_dma.sv'],'DMA_PASS'),
         ('tb_bus',['integration/kwt_bus_fabric.sv','integration/kwt_shared_sram.sv','tests/tb_bus.sv'],'BUS_PASS')]:
@@ -73,6 +74,9 @@ def main():
         text=sim('tb_dma',RTL+['rtl/kwt_dma.sv','tests/tb_dma.sv'])
         assert 'DMA_PASS' in text
     if task in ('ffn','all'):
+        run('ffn-numeric-tests',[sys.executable,'tests/test_ffn.py'])
+        edge=sim('tb_ffn_edges',RTL+['tests/tb_ffn_edges.sv'])
+        assert 'FFN_EDGES_PASS cases=3' in edge
         text=sim('tb_ffn',RTL+['rtl/kwt_dma.sv','tests/tb_ffn.sv'])
         assert 'FFN_PASS' in text
     if task in ('gelu','all'):

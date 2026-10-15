@@ -127,6 +127,8 @@ def main():
     (OUT/'ppa-status.json').write_text(json.dumps(report['ppa'],indent=2)+'\n')
     from collect_ffn import collect as collect_ffn
     report['optional_ffn']=collect_ffn()
+    from compare_ffn_performance import compare as compare_ffn
+    report['full_ffn_optimization']=compare_ffn(report)
     # Compare the same workload; bus/DMA changes are the optimization under test.
     from compare_performance import compare
     comparison=compare(report)

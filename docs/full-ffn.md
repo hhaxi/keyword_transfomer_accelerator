@@ -1,5 +1,7 @@
 # 第五版：完整 FFN 与第一线性层独立模式
 
+> 本文保留第五版 `aa344f9` 的历史结果与协议说明。当前第六版性能见 [完整 FFN 优化对比](full-ffn-performance.md)。
+
 第五版在同一个 E203/DMA/计算引擎中支持两种运行模式。模式 0 保留本科必做的第一线性层，模式 1 完成 `Linear1 → GELU → Linear2`。完整 FFN 不包含残差、LayerNorm、注意力或分类头，不能称为完整 Transformer 编码器。
 
 第四版基线固定为提交 `d501f0dee548969ee397622a42ced29ca8219239`，记录在 `performance-baseline-v4.json`。本地还保存了 `deliverables/undergraduate-v4-baseline.zip`、`deliverables/v4-source-baseline.zip` 和 `output/baseline-v4/`；当前交付包与这些历史文件分开。

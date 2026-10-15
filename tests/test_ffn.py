@@ -6,7 +6,7 @@ import unittest
 import numpy as np
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'model'))
-from ffn_numeric import gelu,rshift_even,second_linear,GELU_TABLE
+from ffn_numeric import gelu,rshift_even,second_linear,GELU_TABLE,ffn
 
 
 def export_gelu_vectors():
@@ -29,6 +29,39 @@ def export_gelu_vectors():
             result,sat=gelu([v],si,so)
             out.write('%010x %02x %02x %04x %01x\n'%(v&((1<<40)-1),si,so,int(result[0])&65535,sat))
     return len(cases)
+
+
+def export_edge_vectors():
+    """Full-range tensors exercise split accumulators, cancellation and saturation."""
+    rng=np.random.RandomState(610)
+    for case in range(3):
+        if case==0:
+            x=np.full((99,64),-32768,dtype=np.int64)
+            w=np.full((64,256),-32768,dtype=np.int64)
+            w2=np.full((256,64),-32768,dtype=np.int64)
+            w2[:,1::2]=32767
+        elif case==1:
+            x=np.full((99,64),32767,dtype=np.int64)
+            w=np.full((64,256),32767,dtype=np.int64);w[1::2,:]=-32767
+            w2=np.full((256,64),32767,dtype=np.int64);w2[1::2,:]=-32767
+        else:
+            x=rng.randint(-32768,32768,(99,64),dtype=np.int64)
+            w=rng.randint(-32768,32768,(64,256),dtype=np.int64)
+            w2=rng.randint(-32768,32768,(256,64),dtype=np.int64)
+        b=np.where(np.arange(256)%2, -(1<<31),(1<<31)-1).astype(np.int64)
+        b2=np.where(np.arange(64)%2, -(1<<31),(1<<31)-1).astype(np.int64)
+        y,g,sat=ffn(x,w,b,w2,b2,0,0)
+        dest=ROOT/('output/ffn-edges/case_%d'%case);dest.mkdir(parents=True,exist_ok=True)
+        def write(name,values,bits):
+            mask=(1<<bits)-1
+            (dest/name).write_text(''.join(('%0*x\n'%(bits//4,int(v)&mask)) for v in np.asarray(values).ravel()))
+        def packed(a):
+            a=np.asarray(a).ravel()&65535
+            return a[::2] | (a[1::2]<<16)
+        write('x.hex',packed(x),32);write('w.hex',packed(w.T),32)
+        write('b.hex',b,32);write('w2.hex',packed(w2.T),32);write('b2.hex',b2,32)
+        write('expected.hex',y,64);write('sat.hex',[sat],32)
+    return 3
 
 
 class FFNTests(unittest.TestCase):
@@ -66,4 +99,5 @@ class FFNTests(unittest.TestCase):
 
 if __name__=='__main__':
     print('GELU hardware vectors:',export_gelu_vectors(),flush=True)
+    print('FFN full-range cases:',export_edge_vectors(),flush=True)
     unittest.main()

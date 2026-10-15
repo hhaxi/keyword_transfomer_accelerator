@@ -54,6 +54,7 @@
   "resources": {
     "mac_lanes_before": 8,
     "mac_lanes_after": 8,
+    "physical_mac_units_after": 16,
     "internal_sram_bytes_before": 53248,
     "internal_sram_bytes_after": 87040,
     "compute_fifo_payload_register_bits": 640,
@@ -62,8 +63,8 @@
     "sram_macros_after": 40,
     "dma_output_hold_bits": 64,
     "generic_compute_core_cells_before": 21894,
-    "generic_compute_core_cells_after": 27380,
-    "generic_dma_engine_cells_after": 33786,
+    "generic_compute_core_cells_after": 46115,
+    "generic_dma_engine_cells_after": 53064,
     "generic_bus_cells_after": 453
   },
   "note": "Same canonical tensors, shared SRAM, CPU wiring, bus, numeric contract and timing boundaries. Mandatory-mode testbench is byte-identical to v4; packed transport and canonical tensors are unchanged. All loading and writeback remain timed. Full FFN is a separate task and must not be described as a speedup or regression of FFN1. Optional profile reads occur after timing. Generic cell counts are not physical area or power; compute-core-only counts exclude the DMA engine and must not be used as total accelerator area."

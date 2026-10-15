@@ -4,62 +4,62 @@
   "tasks": [
     {
       "task": 0,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 1,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 2,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 3,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 4,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 5,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 6,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 7,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 8,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 9,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 10,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     },
     {
       "task": 11,
-      "cycles": 545654,
+      "cycles": 346838,
       "outputs": 6336
     }
   ],
@@ -68,28 +68,28 @@
       "task": 0,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -98,28 +98,28 @@
       "task": 1,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -128,28 +128,28 @@
       "task": 2,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -158,28 +158,28 @@
       "task": 3,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -188,28 +188,28 @@
       "task": 4,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -218,28 +218,28 @@
       "task": 5,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -248,28 +248,28 @@
       "task": 6,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -278,28 +278,28 @@
       "task": 7,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -308,28 +308,28 @@
       "task": 8,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -338,28 +338,28 @@
       "task": 9,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -368,28 +368,28 @@
       "task": 10,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -398,28 +398,28 @@
       "task": 11,
       "host_load": 79495,
       "dma_load": 26567,
-      "compute_writeback": 438800,
+      "compute_writeback": 240007,
       "dma_control": 2,
-      "cpu_completion_residual": 790,
+      "cpu_completion_residual": 767,
       "profile": {
-        "0": 465369,
+        "0": 266576,
         "1": 26567,
-        "2": 438800,
+        "2": 240007,
         "3": 2,
-        "4": 405504,
+        "4": 202752,
         "5": 0,
-        "6": 438795,
-        "7": 11778,
+        "6": 240002,
+        "7": 11676,
         "8": 0,
         "9": 19872,
         "10": 12672,
-        "11": 29196,
-        "12": 465364,
-        "13": 465369,
-        "14": 415110
+        "11": 28077,
+        "12": 266571,
+        "13": 266576,
+        "14": 216331
       },
       "extra": {
-        "0": 202752,
+        "0": 101376,
         "1": 25344,
         "2": 0
       }
@@ -1496,9 +1496,9 @@
     "note": "Optional full FFN engineering metric, not undergraduate mandatory FFN1 score"
   },
   "performance": {
-    "total_cycles": 6547848,
+    "total_cycles": 4162056,
     "target_clock_hz": 150000000,
-    "nominal_tasks_per_second": 274.89947842405627,
+    "nominal_tasks_per_second": 432.47856347920356,
     "timing_closed": false,
     "macs_per_task": 3244032,
     "output_elements": 6336
@@ -1506,19 +1506,31 @@
   "component_tests": {
     "tb_ffn-run.log": {
       "passed": true,
-      "sha256": "2fa413301444f56fb6828b450849bb0562d90c9b2dfa7ad38344633895b69009"
+      "sha256": "5ec7f002605c5bc823cd42cf8ca6b0707a1e20589f7730a70472d966752f8103"
+    },
+    "tb_ffn_edges-run.log": {
+      "passed": true,
+      "sha256": "b171344e40b06489785314cb101a2ae27497e28b883f063b429dd4c9283d736b"
+    },
+    "tb_ffn_edges_netlist-run.log": {
+      "passed": true,
+      "sha256": "b171344e40b06489785314cb101a2ae27497e28b883f063b429dd4c9283d736b"
+    },
+    "icarus-tb_ffn_edges.log": {
+      "passed": true,
+      "sha256": "cf8188fd34879b177cd9562bc6078ea0d9e0e5ef4da8032a53290a6da1d17244"
     },
     "tb_ffn_netlist-run.log": {
       "passed": true,
-      "sha256": "2fa413301444f56fb6828b450849bb0562d90c9b2dfa7ad38344633895b69009"
+      "sha256": "5ec7f002605c5bc823cd42cf8ca6b0707a1e20589f7730a70472d966752f8103"
     },
     "icarus-tb_ffn.log": {
       "passed": true,
-      "sha256": "23ef74bffc60a6e47fb5c23d005fe0bdd377e51cfce3e1444a787cc2423c7c88"
+      "sha256": "789539ef020434d0df58b81fddbb002b931c27bb16e5a7998c2275c1cb87cfc0"
     },
     "ffn-numeric-tests.log": {
       "passed": true,
-      "sha256": "4f447d1b0d22a68c49742103656440dd31f650b652dde3f9d0f1e656ef9c11ea"
+      "sha256": "d5500f87027c87c49b30b5ff539bd88fa7500f35005894e567e2ca29719517e6"
     },
     "tb_gelu-run.log": {
       "passed": true,
@@ -1534,14 +1546,54 @@
     },
     "tb_soc_ffn-run.log": {
       "passed": true,
-      "sha256": "aa0fa3aa3ba787862ddc38b9f8630b9acfe5bbb0987bfda88bb084ad2097bb3b"
+      "sha256": "c2acfd508a0e5e85bd77ea069ad96ac4cd03e9f8a4c276e68dc01a2aab9ab727"
     },
     "tb_soc_ffn_netlist-run.log": {
       "passed": true,
-      "sha256": "aa0fa3aa3ba787862ddc38b9f8630b9acfe5bbb0987bfda88bb084ad2097bb3b"
+      "sha256": "c2acfd508a0e5e85bd77ea069ad96ac4cd03e9f8a4c276e68dc01a2aab9ab727"
     }
   },
   "mode_switch_without_reset_verified": true,
+  "full_range_cases": [
+    [
+      "0",
+      "6336",
+      "25344"
+    ],
+    [
+      "1",
+      "6336",
+      "12672"
+    ],
+    [
+      "2",
+      "6336",
+      "12573"
+    ]
+  ],
+  "full_range_vector_sha256": {
+    "output/ffn-edges/case_0/b.hex": "adb9dae361eeb7c6a2633787aeda827fffadf40874e270a2f86c37a46115e340",
+    "output/ffn-edges/case_0/b2.hex": "ac533d723c3fd8eecefa8c7fae24cf9fc8c9c575db8f38b2865869dcf8257c16",
+    "output/ffn-edges/case_0/expected.hex": "8f8b1d414890a8ffa54cd6cea1fb17d5e5863c3250ac635affc408629f5de8c6",
+    "output/ffn-edges/case_0/sat.hex": "1555447901397a634052e3dd21704f2d6ad7d0161ec9b3560ac58b5e529a3a65",
+    "output/ffn-edges/case_0/w.hex": "05814f057b64a364492365e68327d266f7f92432a45bf024ecca8dd779b893ae",
+    "output/ffn-edges/case_0/w2.hex": "764d6af4e0cb571b484cca7d4157a904f55eef461204ac253881ee237ca8b921",
+    "output/ffn-edges/case_0/x.hex": "7177bff59e0f18adcb0d11e29a3d14c9f9a5568f348eeb4634b6228d75f5cd3c",
+    "output/ffn-edges/case_1/b.hex": "adb9dae361eeb7c6a2633787aeda827fffadf40874e270a2f86c37a46115e340",
+    "output/ffn-edges/case_1/b2.hex": "ac533d723c3fd8eecefa8c7fae24cf9fc8c9c575db8f38b2865869dcf8257c16",
+    "output/ffn-edges/case_1/expected.hex": "26e5710383c07e36bda090c735838f4dd4593f54db1e9e49c20eae79dccf15c2",
+    "output/ffn-edges/case_1/sat.hex": "8a7f61e05895608fb756d975e88144c39a4ba292dedbba063851cd9cd6547bba",
+    "output/ffn-edges/case_1/w.hex": "76a615032634b44a900bd246f02431dd8c9a0e9548deb1c3735631850f789ca4",
+    "output/ffn-edges/case_1/w2.hex": "76a615032634b44a900bd246f02431dd8c9a0e9548deb1c3735631850f789ca4",
+    "output/ffn-edges/case_1/x.hex": "75a443d2f2db38e3b0a3951a945578fe3e3107fbff6a6c5a369d30a4fd35a4ff",
+    "output/ffn-edges/case_2/b.hex": "adb9dae361eeb7c6a2633787aeda827fffadf40874e270a2f86c37a46115e340",
+    "output/ffn-edges/case_2/b2.hex": "ac533d723c3fd8eecefa8c7fae24cf9fc8c9c575db8f38b2865869dcf8257c16",
+    "output/ffn-edges/case_2/expected.hex": "b82308295c1493fb71b08ce9c99273eff87a0f5186c0badb517583bf32b7b63e",
+    "output/ffn-edges/case_2/sat.hex": "a96df7a9321a98afb890558e1f6e86803756852804213aa57554b1fa6b88fc04",
+    "output/ffn-edges/case_2/w.hex": "ebd5a8f879f91ff6d375f22e6ebddd3ee0db2dcbd220b957d5e383d5ef5a5218",
+    "output/ffn-edges/case_2/w2.hex": "63b20c6a7afcc72cf0fa479472a834c097fbcd48bd9d8795ec0e6eedcce0abca",
+    "output/ffn-edges/case_2/x.hex": "107530324e8e45b3013de7aa6c6b76ff808651aea96b87e536c8790ed3506e83"
+  },
   "intermediate_shared_sram_transactions": 0,
   "row_buffer_bytes": 512,
   "internal_sram_bytes": 87040,

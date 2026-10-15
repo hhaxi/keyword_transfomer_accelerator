@@ -162,10 +162,10 @@ module tb_ffn;
             bus(1,20'h40+20'(4*j),0,0,profile[j]);
             $display("FFN_PROFILE index=%0d value=%0d",j,profile[j]);
         end
-        if(profile[0]!=profile[1]+profile[2]+profile[3] || profile[4]!=405504 ||
+        if(profile[0]!=profile[1]+profile[2]+profile[3] || profile[4]!=202752 ||
            profile[5]==0 || profile[9]!=19872 || profile[10]!=12672 ||
            profile[13]!=profile[0] || profile[12]>=profile[13]) $fatal(1,"Cycle accounting mismatch");
-        bus(1,20'h7c,0,0,rd);if(rd!=202752) $fatal(1,"Second MAC counter");
+        bus(1,20'h7c,0,0,rd);if(rd!=101376) $fatal(1,"Second MAC counter");
         bus(1,20'h80,0,0,rd);if(rd!=25344) $fatal(1,"GELU counter");
         bus(1,20'h84,0,0,rd);if(rd!=0) $fatal(1,"GELU saturated");
         // Switch FFN -> independent first layer -> FFN without resetting chip.

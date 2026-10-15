@@ -19,6 +19,8 @@ def synthesize():
     # SRAM black boxes are replaced by the same synchronous functional macro model.
     result=sim('tb_accel',['rtl/kwt_sram16.sv','output/design/kwt_accel_netlist.v','tests/tb_accel.sv'],label='tb_accel_netlist')
     if 'ACCEL_PASS' not in result: raise RuntimeError('Post-synthesis mismatch')
+    edge=sim('tb_ffn_edges',['rtl/kwt_sram16.sv','output/design/kwt_accel_netlist.v','tests/tb_ffn_edges.sv'],label='tb_ffn_edges_netlist')
+    if 'FFN_EDGES_PASS cases=3' not in edge:raise RuntimeError('Full-range FFN netlist mismatch')
     report={'synthesis':'compute-core generic gates, SRAM leaves preserved','post_synthesis_simulation':'12 compute-core tasks bit-exact; DMA/bus/SoC checks are collected separately',
             'area_scope':'Include DMA engine and added bus/interface logic in addition to the compute core and SRAM macros',
             'clock_target_mhz':150,'timing_met':None,'standard_cell_area_mm2':None,'sram_area_mm2':None,
