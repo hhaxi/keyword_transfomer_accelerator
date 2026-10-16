@@ -97,9 +97,9 @@ ENC1 的新增计数位于偏移 `0x60—0x90`。地址布局、状态位、中�
 | 中间矩阵 | 12 层 Q/K/V、分数、概率、PV、输出投影和残差/LN 逐位核对 |
 | 数学与边界 | 除法 1,029 例、平方根 1,031 例、指数近似 34,855 例；覆盖常量输入、零方差等边界 |
 | 总线与异常 | 覆盖背压、连续收发、两笔在途中止排空、错误后受阻请求保持、读写错误、复位及重启 |
-| 软件数值参考 | 120 条本地验证样本中，浮点与整数模型均正确 **119/120**，预测一致 **120/120**；最大逐层聚合 NRMSE **0.171713%** |
+| 软件数值参考 | 完整 validation 索引 **4,445 条**，浮点与整数模型均正确 **4,351/4,445（97.8853%）**；预测全部一致，实际饱和 **0**；最大逐层聚合 NRMSE **0.171308%** |
 
-软件数值验证的 120 条样本与 RTL 整机的 12 条输入是不同验证范围。模型与整数格式保持冻结，不使用测试集调节尺度。
+扩展数值验证包含 **4,074 个不同音频文件 + 371 个重复静音条目**，与 RTL 整机的 12 条输入是不同验证范围。逐层误差、最差样本、分类差异、各阶段饱和及完整明细见 [扩展验证报告](docs/encoder-validation-expanded.md)。原 120 条样本复测仍为 119/120，12 层聚合误差与历史报告完全一致。模型与整数格式保持冻结，不使用测试集调节尺度。
 
 机器可读证据、源文件和日志校验值见 [encoder-validation.json](docs/encoder-validation.json)。通用网表仿真不含工艺延时；正式 **150 MHz、≤2.25 mm²、功耗、能耗及官方 600 条样本评测**仍待完成。
 
@@ -173,6 +173,15 @@ uv run --no-project --python 3.13 scripts/download_competition_assets.py
 ```
 
 `tools.ps1 all` 是环境自检入口，报告位于 `output/environment/`；它不能替代 `design.ps1` 和 `encoder.ps1` 的设计验证。前端日常开发可先执行 `component`、`faults`、`lint`、`compat` 和 `soc`，需要完整交付证据时再完成其余步骤。
+
+冻结格式的完整 validation 数值评估与报告导出（使用新的输出目录）：
+
+```powershell
+.venv-model\Scripts\python.exe scripts/evaluate_encoder.py --sample-list docs/encoder-validation-expanded.samples.json --output output/encoder-validation-replay
+python scripts/report_encoder_evaluation.py --evaluation output/encoder-validation-replay --publish output/encoder-validation-replay-summary
+```
+
+省略 `--sample-list` 可按上游规则重新选择完整 validation 索引；使用仓库清单可固定 unknown 抽样和样本顺序。评估保存每条样本的逐层误差、分类 logits 与差异、各阶段实际饱和、Softmax 固定截断及文件校验值。完整说明与结果见 [扩展数值验证](docs/encoder-validation-expanded.md)。该流程不修改格式、权重或硬件验证向量。
 
 官方样本清单到位后的编码器导出入口：
 

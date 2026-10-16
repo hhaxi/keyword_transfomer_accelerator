@@ -1,0 +1,1553 @@
+{
+  "schema_version": 1,
+  "split": "validation",
+  "official_evaluation": false,
+  "selection": "upstream full validation index",
+  "covers_upstream_index": true,
+  "labels": [
+    "_silence_",
+    "_unknown_",
+    "yes",
+    "no",
+    "up",
+    "down",
+    "left",
+    "right",
+    "on",
+    "off",
+    "stop",
+    "go"
+  ],
+  "classification": {
+    "samples": 4445,
+    "float_correct": 4351,
+    "integer_correct": 4351,
+    "prediction_differences": 0,
+    "float_accuracy": 0.9788526434195726,
+    "integer_accuracy": 0.9788526434195726,
+    "accuracy_drop_percentage_points": 0.0,
+    "regressions": 0,
+    "improvements": 0
+  },
+  "layers": [
+    {
+      "layer": 0,
+      "aggregate_nrmse": 0.0004046836404215101,
+      "rmse": 0.0003861953838060027,
+      "max_absolute_error": 0.003266468644142151,
+      "p95_sample_nrmse": 0.00042802608748150704,
+      "worst_sample": {
+        "index": 2233,
+        "file": "down/b0c0197e_nohash_0.wav",
+        "sse": 0.0010978747602643955,
+        "reference_energy": 5429.42500096136,
+        "nrmse": 0.0004496757640655214,
+        "max_absolute_error": 0.0016298070549964905
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 157507
+    },
+    {
+      "layer": 1,
+      "aggregate_nrmse": 0.0005697023284115636,
+      "rmse": 0.0005499756011295579,
+      "max_absolute_error": 0.004238232970237732,
+      "p95_sample_nrmse": 0.0006281115180285818,
+      "worst_sample": {
+        "index": 1631,
+        "file": "stop/1a73dcd1_nohash_0.wav",
+        "sse": 0.003444104086973055,
+        "reference_energy": 6122.6412696269945,
+        "nrmse": 0.0007500128889679613,
+        "max_absolute_error": 0.0029250923544168472
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 1876999
+    },
+    {
+      "layer": 2,
+      "aggregate_nrmse": 0.0007377956611765598,
+      "rmse": 0.0007330040718609848,
+      "max_absolute_error": 0.0051110535860061646,
+      "p95_sample_nrmse": 0.0007936766206755082,
+      "worst_sample": {
+        "index": 1631,
+        "file": "stop/1a73dcd1_nohash_0.wav",
+        "sse": 0.006306849370106861,
+        "reference_energy": 6513.159984143867,
+        "nrmse": 0.0009840345710884924,
+        "max_absolute_error": 0.004048705101013184
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 0
+    },
+    {
+      "layer": 3,
+      "aggregate_nrmse": 0.000871823667211637,
+      "rmse": 0.0008775954288566285,
+      "max_absolute_error": 0.0076004862785339355,
+      "p95_sample_nrmse": 0.0009432397797760803,
+      "worst_sample": {
+        "index": 1631,
+        "file": "stop/1a73dcd1_nohash_0.wav",
+        "sse": 0.007530878476613115,
+        "reference_energy": 6495.329052571906,
+        "nrmse": 0.0010767682496570605,
+        "max_absolute_error": 0.006171107292175293
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 0
+    },
+    {
+      "layer": 4,
+      "aggregate_nrmse": 0.0009482908724499017,
+      "rmse": 0.0009790231028789587,
+      "max_absolute_error": 0.010011255741119385,
+      "p95_sample_nrmse": 0.0010375012937974394,
+      "worst_sample": {
+        "index": 4037,
+        "file": "on/826268f8_nohash_0.wav",
+        "sse": 0.008643970203763283,
+        "reference_energy": 6842.9996859033945,
+        "nrmse": 0.0011239147492848264,
+        "max_absolute_error": 0.00546032190322876
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 0
+    },
+    {
+      "layer": 5,
+      "aggregate_nrmse": 0.0010735088072455746,
+      "rmse": 0.0010865781510186318,
+      "max_absolute_error": 0.012995898723602295,
+      "p95_sample_nrmse": 0.0011794682352886455,
+      "worst_sample": {
+        "index": 2983,
+        "file": "on/826268f8_nohash_1.wav",
+        "sse": 0.011403464859743681,
+        "reference_energy": 6498.709950099028,
+        "nrmse": 0.0013246612655979264,
+        "max_absolute_error": 0.006758928298950195
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 40222
+    },
+    {
+      "layer": 6,
+      "aggregate_nrmse": 0.0011053197043464874,
+      "rmse": 0.0011128914728109757,
+      "max_absolute_error": 0.0129547119140625,
+      "p95_sample_nrmse": 0.0012163188771188115,
+      "worst_sample": {
+        "index": 442,
+        "file": "go/5b32733e_nohash_0.wav",
+        "sse": 0.013008547829384882,
+        "reference_energy": 6476.364610826744,
+        "nrmse": 0.0014172574988253511,
+        "max_absolute_error": 0.007573127746582031
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 10
+    },
+    {
+      "layer": 7,
+      "aggregate_nrmse": 0.001164199940051254,
+      "rmse": 0.001159902223780864,
+      "max_absolute_error": 0.012919187545776367,
+      "p95_sample_nrmse": 0.0012832373690188459,
+      "worst_sample": {
+        "index": 2992,
+        "file": "up/826268f8_nohash_0.wav",
+        "sse": 0.014092986488705214,
+        "reference_energy": 6273.44188063155,
+        "nrmse": 0.0014988168895484668,
+        "max_absolute_error": 0.007748901844024658
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 0
+    },
+    {
+      "layer": 8,
+      "aggregate_nrmse": 0.0012214054633642865,
+      "rmse": 0.0012305768497016493,
+      "max_absolute_error": 0.015804648399353027,
+      "p95_sample_nrmse": 0.0013516496905756274,
+      "worst_sample": {
+        "index": 2992,
+        "file": "up/826268f8_nohash_0.wav",
+        "sse": 0.015560091477502456,
+        "reference_energy": 6415.310101180108,
+        "nrmse": 0.0015573895129059755,
+        "max_absolute_error": 0.008133046329021454
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 0
+    },
+    {
+      "layer": 9,
+      "aggregate_nrmse": 0.0012955539914908127,
+      "rmse": 0.0013008065510213497,
+      "max_absolute_error": 0.014570504426956177,
+      "p95_sample_nrmse": 0.001448393212136947,
+      "worst_sample": {
+        "index": 2992,
+        "file": "up/826268f8_nohash_0.wav",
+        "sse": 0.018479888634210434,
+        "reference_energy": 6431.9916668940705,
+        "nrmse": 0.0016950282405771733,
+        "max_absolute_error": 0.008777737617492676
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 0
+    },
+    {
+      "layer": 10,
+      "aggregate_nrmse": 0.0014037425066058692,
+      "rmse": 0.001387476476880287,
+      "max_absolute_error": 0.015018105506896973,
+      "p95_sample_nrmse": 0.0015907392549530425,
+      "worst_sample": {
+        "index": 3261,
+        "file": "no/e95c70e2_nohash_0.wav",
+        "sse": 0.0238070914333623,
+        "reference_energy": 6252.675824918804,
+        "nrmse": 0.001951282787005634,
+        "max_absolute_error": 0.010630488395690918
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 0
+    },
+    {
+      "layer": 11,
+      "aggregate_nrmse": 0.0017130782494377025,
+      "rmse": 0.0021587027267556936,
+      "max_absolute_error": 0.025412678718566895,
+      "p95_sample_nrmse": 0.0019695012971417047,
+      "worst_sample": {
+        "index": 1239,
+        "file": "up/439c84f4_nohash_1.wav",
+        "sse": 0.05602989716042478,
+        "reference_energy": 9906.590064885402,
+        "nrmse": 0.002378196943171003,
+        "max_absolute_error": 0.02141857147216797
+      },
+      "saturation": {
+        "q": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "k": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "v": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "score": {
+          "elements": 43565445,
+          "saturated": 0
+        },
+        "context": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "attention": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "residual1": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln1_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ffn_input": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "gelu": {
+          "elements": 112654080,
+          "saturated": 0
+        },
+        "residual2": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_center": {
+          "elements": 28163520,
+          "saturated": 0
+        },
+        "ln2_affine": {
+          "elements": 28163520,
+          "saturated": 0
+        }
+      },
+      "softmax_cutoff_count": 0
+    }
+  ],
+  "max_layer_nrmse": 0.0017130782494377025,
+  "prediction_differences": [],
+  "saturation_samples": [],
+  "saturation_count": 0,
+  "parameter_saturation": [
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    },
+    {
+      "w1": 0,
+      "b1": 0,
+      "w2": 0,
+      "b2": 0
+    }
+  ],
+  "non_silence": {
+    "samples": 4074,
+    "float_correct": 3980,
+    "integer_correct": 3980,
+    "prediction_differences": 0,
+    "float_accuracy": 0.976926853215513,
+    "integer_accuracy": 0.976926853215513,
+    "accuracy_drop_percentage_points": 0.0,
+    "regressions": 0,
+    "improvements": 0
+  },
+  "newly_added_audio": {
+    "samples": 3973,
+    "float_correct": 3880,
+    "integer_correct": 3880,
+    "prediction_differences": 0,
+    "float_accuracy": 0.9765919959728165,
+    "integer_accuracy": 0.9765919959728165,
+    "accuracy_drop_percentage_points": 0.0,
+    "regressions": 0,
+    "improvements": 0
+  },
+  "unique_audio_files": 4074,
+  "silence_entries": 371,
+  "duplicate_non_silence_entries": 0,
+  "historical_manifest_unique_overlap": 102,
+  "per_class": [
+    {
+      "label": "_silence_",
+      "samples": 371,
+      "float_correct": 371,
+      "integer_correct": 371,
+      "prediction_differences": 0,
+      "float_accuracy": 1.0,
+      "integer_accuracy": 1.0,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "_unknown_",
+      "samples": 371,
+      "float_correct": 358,
+      "integer_correct": 358,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9649595687331537,
+      "integer_accuracy": 0.9649595687331537,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "yes",
+      "samples": 397,
+      "float_correct": 395,
+      "integer_correct": 395,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9949622166246851,
+      "integer_accuracy": 0.9949622166246851,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "no",
+      "samples": 406,
+      "float_correct": 389,
+      "integer_correct": 389,
+      "prediction_differences": 0,
+      "float_accuracy": 0.958128078817734,
+      "integer_accuracy": 0.958128078817734,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "up",
+      "samples": 350,
+      "float_correct": 333,
+      "integer_correct": 333,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9514285714285714,
+      "integer_accuracy": 0.9514285714285714,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "down",
+      "samples": 377,
+      "float_correct": 373,
+      "integer_correct": 373,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9893899204244032,
+      "integer_accuracy": 0.9893899204244032,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "left",
+      "samples": 352,
+      "float_correct": 347,
+      "integer_correct": 347,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9857954545454546,
+      "integer_accuracy": 0.9857954545454546,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "right",
+      "samples": 363,
+      "float_correct": 358,
+      "integer_correct": 358,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9862258953168044,
+      "integer_accuracy": 0.9862258953168044,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "on",
+      "samples": 363,
+      "float_correct": 353,
+      "integer_correct": 353,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9724517906336089,
+      "integer_accuracy": 0.9724517906336089,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "off",
+      "samples": 373,
+      "float_correct": 363,
+      "integer_correct": 363,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9731903485254692,
+      "integer_accuracy": 0.9731903485254692,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "stop",
+      "samples": 350,
+      "float_correct": 346,
+      "integer_correct": 346,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9885714285714285,
+      "integer_accuracy": 0.9885714285714285,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    },
+    {
+      "label": "go",
+      "samples": 372,
+      "float_correct": 365,
+      "integer_correct": 365,
+      "prediction_differences": 0,
+      "float_accuracy": 0.9811827956989247,
+      "integer_accuracy": 0.9811827956989247,
+      "accuracy_drop_percentage_points": 0.0,
+      "regressions": 0,
+      "improvements": 0
+    }
+  ],
+  "float_confusion_matrix": [
+    [
+      371,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      358,
+      1,
+      0,
+      0,
+      3,
+      0,
+      1,
+      4,
+      0,
+      2,
+      2
+    ],
+    [
+      0,
+      1,
+      395,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      3,
+      0,
+      389,
+      0,
+      6,
+      0,
+      1,
+      1,
+      2,
+      0,
+      4
+    ],
+    [
+      0,
+      3,
+      0,
+      0,
+      333,
+      0,
+      4,
+      1,
+      0,
+      7,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      2,
+      0,
+      373,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2
+    ],
+    [
+      0,
+      0,
+      2,
+      1,
+      0,
+      0,
+      347,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      2,
+      0,
+      1,
+      0,
+      0,
+      2,
+      358,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      2,
+      0,
+      1,
+      2,
+      0,
+      0,
+      1,
+      353,
+      4,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      6,
+      0,
+      0,
+      1,
+      1,
+      363,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      1,
+      346,
+      0
+    ],
+    [
+      0,
+      2,
+      1,
+      1,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      365
+    ]
+  ],
+  "integer_confusion_matrix": [
+    [
+      371,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      358,
+      1,
+      0,
+      0,
+      3,
+      0,
+      1,
+      4,
+      0,
+      2,
+      2
+    ],
+    [
+      0,
+      1,
+      395,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      3,
+      0,
+      389,
+      0,
+      6,
+      0,
+      1,
+      1,
+      2,
+      0,
+      4
+    ],
+    [
+      0,
+      3,
+      0,
+      0,
+      333,
+      0,
+      4,
+      1,
+      0,
+      7,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      2,
+      0,
+      373,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2
+    ],
+    [
+      0,
+      0,
+      2,
+      1,
+      0,
+      0,
+      347,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      2,
+      0,
+      1,
+      0,
+      0,
+      2,
+      358,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      2,
+      0,
+      1,
+      2,
+      0,
+      0,
+      1,
+      353,
+      4,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      6,
+      0,
+      0,
+      1,
+      1,
+      363,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      1,
+      346,
+      0
+    ],
+    [
+      0,
+      2,
+      1,
+      1,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      365
+    ]
+  ],
+  "frozen_files_sha256": {
+    "model/format.json": "f4960b79ac9b0157ae26d2d783e5efef21c335496809a023e935b9b8c3685294",
+    "model/ffn-format.json": "23ec3ff30d76e281294fbd747ce7913ec7d86bf2782bf739f742397c3c31b149",
+    "model/encoder-format.json": "f701fce4e3a27ada7a15f248175bc9d3959ef79143ce354f26befbaf226938e7",
+    "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
+    "model/ffn_numeric.py": "81494b665a4dffa1c44ce64d834245aab94213173da32a4409884b833030c1e6",
+    "model/encoder_numeric.py": "1116c5408cf4cffb284435c7a0f933559074ecd7053c39fb4c04c51dbcda2486"
+  },
+  "evaluation_sources_sha256": {
+    "scripts/evaluate_encoder.py": "2ad352fa5f5399adda440458dbdd4aaa2a4bcbf3a4fc7a822c1f5c075500aad1",
+    "model/encoder_observer.py": "bfd6405857bd297cce4e36952495bf7ca8b459a68ab20700e751c0281c272380",
+    "scripts/export_vectors.py": "f18d717e0f320f9cf4a9779ac430c6ba7cdb18ef1be2a9538b13f1b0787b12e0",
+    "scripts/check_model_environment.py": "2771fc3b6c7827731c0b7400f76f03dbaebf236e309658855cdc25465c517054"
+  },
+  "checkpoint_files_sha256": {
+    "assets/sources/keyword-transformer-237e4097afd4f6851e0b82f0a8d65c2dfe8eae30/models_data_v2_12_labels/kwt1/best_weights.data-00000-of-00001": "ae993f6ed995938c1ab584b0857b35ca18f31f88001c7e17c7d7c3868bd33ad3",
+    "assets/sources/keyword-transformer-237e4097afd4f6851e0b82f0a8d65c2dfe8eae30/models_data_v2_12_labels/kwt1/best_weights.index": "5a60a0fa78a1855572084a42669768e2998d37e7d93c833962960fdb0db70fbc",
+    "assets/sources/keyword-transformer-237e4097afd4f6851e0b82f0a8d65c2dfe8eae30/models_data_v2_12_labels/kwt1/flags.json": "fcd480d309f96d2029a3ba764634f9e46dd73b667c0ebb84b66af02680494c58",
+    "assets/sources/keyword-transformer-237e4097afd4f6851e0b82f0a8d65c2dfe8eae30/models_data_v2_12_labels/kwt1/labels.txt": "d19753ae642d3a5ab8eb8042f5df4d1d8c40afc6bb8ae4b7b16a808bc8ce6efd"
+  },
+  "evidence_sha256": {
+    "samples.json": "1e40af8db0bdb5b7570faa4ac12f162b3cfeb16b2e882a65dcd5a0035339440d",
+    "samples.jsonl": "64b563ea689dca8c40cd5731bdff583a4008f4354017da18b4d900b8f844e558"
+  },
+  "checkpoint_tensors_verified": 162,
+  "observation_matches_oracle_first_sample": true,
+  "software": {
+    "python": "3.8.20",
+    "numpy": "1.19.5",
+    "tensorflow": "2.4.0"
+  },
+  "base_commit": "ab12a6ae18d79aaaae0ce82f8f9b44de89bf6770",
+  "elapsed_seconds": 1174.562,
+  "passed": true,
+  "precision_gate": "local classification drop <= 2 percentage points; no official acceptance asserted",
+  "scope": "Integer encoder with floating software embedding and classification head; no expanded RTL simulation",
+  "saturation_definition": "Count values strictly outside signed range BEFORE clipping; legal endpoints are not saturation. Q16 conversion overflow raises. FFN int40 accumulation is exact for legal int16 inputs.",
+  "softmax_cutoff_definition": "Score difference >=16 maps exp to zero by frozen design; reported separately, not arithmetic saturation",
+  "silence_definition": "Upstream silence entries all use identical zero input without augmentation; included with original weighting, also report non-silence separately",
+  "published_samples_gzip_sha256": "7d5841155638347d7191a8878c9e8535624bd8c89626a21af2988a69da877fe0",
+  "published_samples_manifest_sha256": "819df9a3c25ee2c9d06252f8c6957f1367bf5ec5d7b7c6f0ad0479d2a5d4de9a"
+}
