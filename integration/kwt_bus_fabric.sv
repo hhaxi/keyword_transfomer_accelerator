@@ -1,6 +1,6 @@
 // Three-master round-robin ICB fabric. One response slot, retire/refill in
 // the same cycle. The synchronous single-port SRAM remains single-ported.
-module kwt_bus_fabric(
+module kwt_bus_fabric #(parameter integer DMA_BURST=1)(
     input wire clk,rst_n,
     input wire c_valid,output wire c_ready,input wire [31:0] c_addr,c_wdata,
     input wire c_read,input wire [3:0] c_mask,
@@ -20,6 +20,11 @@ module kwt_bus_fabric(
     reg pending,acc_route,ram_route,response_read;
     reg [1:0] owner,next_owner,locked_owner;
     reg locked;
+    // Weighted round robin: retain the DMA turn for a bounded number of
+    // accepted commands, then visit CPU and host in the original order.
+    // Count handshakes, never clocks; held grants and response stalls are intact.
+    localparam BURST_W=DMA_BURST>1 ? $clog2(DMA_BURST) : 1;
+    reg [BURST_W-1:0] dma_turn;
     reg [1:0] grant;
     always @* begin
         grant=0;
@@ -66,12 +71,18 @@ module kwt_bus_fabric(
         if(!rst_n) begin
             pending<=0;owner<=0;next_owner<=0;acc_route<=0;ram_route<=0;response_read<=0;
             locked<=0;locked_owner<=0;
+            dma_turn<=0;
         end else begin
             if(retire) pending<=0;
             if(slot_free && chosen_valid && !ready) begin locked<=1;locked_owner<=grant;end
             if(accept) begin
                 pending<=1;owner<=grant;acc_route<=sel_acc;ram_route<=sel_ram;response_read<=read_;
-                next_owner<=grant==2?2'd0:grant+1'b1;locked<=0;
+                if(grant==2 && DMA_BURST>1 && dma_turn<BURST_W'(DMA_BURST-1)) begin
+                    next_owner<=2;dma_turn<=dma_turn+1'b1;
+                end else begin
+                    next_owner<=grant==2?2'd0:grant+1'b1;dma_turn<=0;
+                end
+                locked<=0;
             end
         end
     end

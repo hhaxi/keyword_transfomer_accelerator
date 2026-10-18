@@ -110,12 +110,12 @@ def compatibility(netlist=False):
     includes=['+incdir+output/design/firmware']
     if netlist:
         wrapper=DEST/'encoder_compat_netlist.v'
-        wrapper.write_text((DEST/'encoder_soc_netlist.v').read_text().replace('module kwt_encoder_soc(', 'module kwt_soc('))
+        wrapper.write_text((DEST/'encoder_soc_netlist.v').read_text().replace('module kwt_encoder_soc', 'module kwt_soc'))
         files=[str((SOC/'rtl/e203/general'/n).relative_to(ROOT)).replace('\\','/') for n in ['sirv_gnrl_ram.v','sirv_sim_ram.v']]
         files+=['rtl/kwt_sram16.sv','integration/kwt_shared_sram.sv',str(wrapper.relative_to(ROOT)).replace('\\','/')]
     else:
         wrapper=DEST/'kwt_soc_compat.sv'
-        wrapper.write_text((ROOT/'integration/kwt_encoder_soc.sv').read_text().replace('module kwt_encoder_soc(', 'module kwt_soc('))
+        wrapper.write_text((ROOT/'integration/kwt_encoder_soc.sv').read_text().replace('module kwt_encoder_soc', 'module kwt_soc'))
         files=source_files()+SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv',str(wrapper.relative_to(ROOT)).replace('\\','/')]
         includes+=['+incdir+'+str((SOC/'rtl/e203/core').relative_to(ROOT)).replace('\\','/'),'+define+DISABLE_SV_ASSERTION']
     for top in ['tb_soc','tb_soc_ffn']:

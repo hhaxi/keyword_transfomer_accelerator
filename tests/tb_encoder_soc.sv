@@ -46,9 +46,16 @@ module tb_encoder_soc;
     integer taskid,li,j,n,num_tasks=12,first_task=0,baseline=0,transport=2,num_layers=12,input_stream=0;
     longint cycles=0,start_cycle,task_cycles,total_cycles=0;
     string folder;
+`ifdef BUS_BURST8
+    kwt_encoder_soc #(.DMA_BURST(8)) dut(.*);
+`else
     kwt_encoder_soc dut(.*);
+`endif
 `ifdef ENCODER_QKV_METRICS
     `include "encoder_qkv_monitor.svh"
+`endif
+`ifdef BUS_STUDY
+    `include "bus_study_monitor.svh"
 `endif
 `ifdef ENCODER_FIFO_METRICS
     `include "encoder_fifo_monitor.svh"
@@ -114,6 +121,9 @@ module tb_encoder_soc;
             host(0,32'ha000f000,0,rd);host(0,32'ha000f004,0,rd);
             for(j=0;j<6336;j++) host(0,32'ha0064000+32'(4*j),32'hdeadbeef,rd);
             boot_hold=0;repeat(500) @(negedge clk);start_cycle=cycles;
+`ifdef BUS_STUDY
+            bus_begin();
+`endif
 `ifdef ENCODER_MEMORY_METRICS
             measure=1;
 `endif
@@ -142,6 +152,9 @@ module tb_encoder_soc;
                 $display("ENC_LAYER_DONE task=%0d layer=%0d cycle=%0d",taskid,li,cycles);$fflush();
             end
             task_cycles=cycles-start_cycle;total_cycles+=task_cycles;
+`ifdef BUS_STUDY
+            bus_end();
+`endif
 `ifdef ENCODER_MEMORY_METRICS
             measure=0;
             $display("ENC_MEMORY task=%0d ffn_read16=%0d ffn_write16=%0d shared_read32=%0d shared_write32=%0d ffn_dma_read32=%0d ffn_dma_write32=%0d",taskid,ffn_read16,ffn_write16,shared_read32,shared_write32,ffn_dma_read32,ffn_dma_write32);

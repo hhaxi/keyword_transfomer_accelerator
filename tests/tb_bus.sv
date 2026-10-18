@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module tb_bus;
+module tb_bus #(parameter integer DMA_BURST=1);
     reg clk=0;always #3.333 clk=~clk;
     reg rst_n=0,allow_a=1,pattern_stalls=0,check_fair=0;
     reg [2:0] run_mask=0,rr=7;
@@ -9,6 +9,7 @@ module tb_bus;
     wire [2:0][31:0] data,addr;
     reg [2:0][31:0] base;
     integer issued[0:2],received[0:2],missed[0:2];
+    integer max_missed[0:2],wait_age[0:2],max_wait[0:2];
     integer target=128,cycles=0,start_cycle,i,streak=0,max_streak=0;
     reg [2:0] was_stalled=0;reg [32:0] held[0:2];
     wire a_valid,a_ready,a_read,a_rsp_ready,ram_cs,ram_we;
@@ -21,7 +22,7 @@ module tb_bus;
         assign addr[g]=base[g]+32'(issued[g]*4);
     end endgenerate
     assign a_ready=allow_a && (!a_rsp_valid || a_rsp_ready);
-    kwt_bus_fabric dut(.clk(clk),.rst_n(rst_n),
+    kwt_bus_fabric #(.DMA_BURST(DMA_BURST)) dut(.clk(clk),.rst_n(rst_n),
         .c_valid(v[0]),.c_ready(r[0]),.c_addr(addr[0]),.c_wdata(32'b0),.c_read(1'b1),.c_mask(4'hf),
         .c_rsp_valid(rv[0]),.c_rsp_ready(rr[0]),.c_rdata(data[0]),.c_err(err[0]),
         .h_valid(v[1]),.h_ready(r[1]),.h_addr(addr[1]),.h_wdata(32'b0),.h_read(1'b1),.h_mask(4'hf),
@@ -34,7 +35,10 @@ module tb_bus;
         if(cycles>30000) $fatal(1,"Bus timeout");
         if(!rst_n) begin
             a_rsp_valid<=0;was_stalled<=0;streak<=0;max_streak<=0;
-            for(integer n=0;n<3;n=n+1) begin issued[n]<=0;received[n]<=0;missed[n]<=0;end
+            for(integer n=0;n<3;n=n+1) begin
+                issued[n]<=0;received[n]<=0;missed[n]<=0;
+                max_missed[n]<=0;wait_age[n]<=0;max_wait[n]<=0;
+            end
         end else begin
             if(a_rsp_valid && a_rsp_ready) a_rsp_valid<=0;
             if(a_valid && a_ready) begin a_rsp_valid<=1;a_rdata<=32'hc0decafe;a_err<=0;end
@@ -45,10 +49,15 @@ module tb_bus;
             for(integer n=0;n<3;n=n+1) begin
                 if(was_stalled[n] && (!rv[n] || {err[n],data[n]}!==held[n])) $fatal(1,"Response changed under stall");
                 was_stalled[n]<=rv[n] && !rr[n];held[n]<={err[n],data[n]};
+                if(v[n] && !r[n]) begin
+                    wait_age[n]<=wait_age[n]+1;
+                    if(wait_age[n]+1>max_wait[n]) max_wait[n]<=wait_age[n]+1;
+                end else wait_age[n]<=0;
                 if(v[n] && r[n]) begin issued[n]<=issued[n]+1;missed[n]<=0;end
                 else if(v[n] && (v&r)!=0) begin
                     missed[n]<=missed[n]+1;
-                    if(check_fair && missed[n]>=2) $fatal(1,"Round-robin starvation");
+                    if(missed[n]+1>max_missed[n]) max_missed[n]<=missed[n]+1;
+                    if(check_fair && missed[n]>=(n==2 ? 2 : DMA_BURST+1)) $fatal(1,"Weighted round-robin starvation");
                 end
                 if(rv[n] && rr[n]) begin
                     if(received[n]>=issued[n]) $fatal(1,"Unrequested response");
@@ -77,6 +86,8 @@ module tb_bus;
             while((run_mask[0] && received[0]<target) || (run_mask[1] && received[1]<target) ||
                   (run_mask[2] && received[2]<target)) @(negedge clk);
             run_mask=0;
+            if(check_fair) for(integer n=0;n<3;n++)
+                $display("BUS_FAIR_PASS burst=%0d patterned=%0d master=%0d max_bypasses=%0d max_wait=%0d",DMA_BURST,pattern_stalls,n,max_missed[n],max_wait[n]);
         end
     endtask
     initial begin

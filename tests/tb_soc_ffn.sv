@@ -20,7 +20,14 @@ module tb_soc_ffn;
     integer taskid,j,num_tasks=12,max_cycles=250000000;
     longint cycles=0,start_cycle,total_cycles=0,task_cycles;
     string folder;
+`ifdef BUS_BURST8
+    kwt_soc #(.DMA_BURST(8)) dut(.*);
+`else
     kwt_soc dut(.*);
+`endif
+`ifdef BUS_STUDY
+    `include "bus_study_monitor.svh"
+`endif
     always @(posedge clk) begin
         cycles<=cycles+1;
         if(cycles>max_cycles) $fatal(1,"SoC timeout pc=%h mail=%h",inspect_pc,rd);
@@ -68,6 +75,9 @@ module tb_soc_ffn;
             for(j=0;j<12672;j=j+1) host(0,32'ha0030000+32'(4*j),0,rd);
             boot_hold=0;repeat(500) @(negedge clk);
             start_cycle=cycles;
+`ifdef BUS_STUDY
+            bus_begin();
+`endif
             if($test$plusargs("vcd")) $dumpon;
             $display("MEASURE_BEGIN task=%0d time_ps=%0t cycle=%0d",taskid,$time,cycles);$fflush();
             // Real external loader transactions; included in measured task interval.
@@ -86,6 +96,9 @@ module tb_soc_ffn;
                 if(rd==32'hdead || rd==32'hbad) $fatal(1,"Firmware failure %h pc=%h",rd,inspect_pc);
             end
             task_cycles=cycles-start_cycle;total_cycles+=task_cycles;
+`ifdef BUS_STUDY
+            bus_end();
+`endif
             if($test$plusargs("vcd")) $dumpoff;
             $display("MEASURE_END task=%0d time_ps=%0t cycle=%0d",taskid,$time,cycles);$fflush();
             host(1,32'ha000f004,0,rd);if(rd!=0) $fatal(1,"Driver returned error");

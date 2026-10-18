@@ -1,6 +1,6 @@
 // Same E203/host/shared-SRAM fabric, with an additional encoder register window
 // at 0x40080000 and a fair arbiter for the two hardware DMA masters.
-module kwt_extended_system_bus(
+module kwt_extended_system_bus #(parameter integer DMA_BURST=1)(
     input wire clk,rst_n,
     input wire c_valid,output wire c_ready,input wire [31:0] c_addr,c_wdata,
     input wire c_read,input wire [3:0] c_mask,
@@ -28,7 +28,7 @@ module kwt_extended_system_bus(
     assign a_rsp_valid=register_owner ? ea_rsp_valid : fa_rsp_valid;
     assign a_rdata=register_owner ? ea_rdata : fa_rdata;
     assign a_err=register_owner ? ea_err : fa_err;
-    kwt_bus_fabric fabric(.*);
+    kwt_bus_fabric #(.DMA_BURST(DMA_BURST)) fabric(.*);
     kwt_dma_arbiter dma_arbiter(.*);
     kwt_shared_sram shared(.clk(clk),.cs(ram_cs),.we(ram_we),.addr(ram_addr),.mask(ram_mask),.din(ram_wdata),.dout(ram_rdata));
     wire result_valid,result_ready,tail_valid,tail_ready,ffn_abort,enc_abort;
