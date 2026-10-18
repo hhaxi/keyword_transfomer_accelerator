@@ -46,10 +46,18 @@ module tb_encoder_soc;
     integer taskid,li,j,n,num_tasks=12,first_task=0,baseline=0,transport=2,num_layers=12,input_stream=0;
     longint cycles=0,start_cycle,task_cycles,total_cycles=0;
     string folder;
+`ifdef HOST_BURST2
+`ifdef BUS_BURST8
+    kwt_encoder_soc #(.DMA_BURST(8),.HOST_BURST(2)) dut(.*);
+`else
+    kwt_encoder_soc #(.HOST_BURST(2)) dut(.*);
+`endif
+`else
 `ifdef BUS_BURST8
     kwt_encoder_soc #(.DMA_BURST(8)) dut(.*);
 `else
     kwt_encoder_soc dut(.*);
+`endif
 `endif
 `ifdef ENCODER_QKV_METRICS
     `include "encoder_qkv_monitor.svh"
@@ -89,6 +97,9 @@ module tb_encoder_soc;
     end
     task automatic host(input bit read_,input [31:0] addr_,input [31:0] data_,output [31:0] result);
         begin
+`ifdef BUS_STUDY
+            host_enter(read_,addr_);
+`endif
             @(negedge clk);h_valid=1;h_read=read_;h_addr=addr_;h_wdata=data_;h_rsp_ready=0;
             do @(posedge clk);while(!h_ready);
             @(negedge clk);h_valid=0;
@@ -96,6 +107,9 @@ module tb_encoder_soc;
             if(h_err) $fatal(1,"Host bus error %h",addr_);
             result=h_rdata;h_rsp_ready=1;
             @(negedge clk);h_rsp_ready=0;
+`ifdef BUS_STUDY
+            host_leave();
+`endif
         end
     endtask
     initial begin

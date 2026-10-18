@@ -1,20 +1,36 @@
 `timescale 1ns/1ps
 // Actual linked engines and shared single-port SRAM; no CPU timing claims here.
-module tb_input_link;
+module tb_input_link #(parameter integer DMA_BURST=1, HOST_BURST=0, BACKGROUND_HOST=0);
     reg clk=0;always #5 clk=~clk;
     reg rst_n=0,h_valid=0,h_read=0,h_rsp_ready=1;
     reg [31:0] h_addr=0,h_wdata=0;wire [3:0] h_mask=15;
     wire h_ready,h_rsp_valid,h_err;wire [31:0] h_rdata;
     wire c_ready,c_rsp_valid,c_err;wire [31:0] c_rdata;
-    kwt_extended_system_bus dut(.clk(clk),.rst_n(rst_n),
+    reg bg_run=1,bg_ready=1,bg_held=0;
+    wire bg_valid=BACKGROUND_HOST!=0 && rst_n && bg_run;
+    integer bg_sent=0,bg_received=0,bg_wait=0,bg_max_wait=0,bg_stalls=0;
+    kwt_extended_system_bus #(.DMA_BURST(DMA_BURST),.HOST_BURST(HOST_BURST)) dut(.clk(clk),.rst_n(rst_n),
         .c_valid(h_valid),.c_addr(h_addr),.c_wdata(h_wdata),.c_read(h_read),.c_mask(h_mask),.c_rsp_ready(h_rsp_ready),
         .c_ready(h_ready),.c_rsp_valid(h_rsp_valid),.c_rdata(h_rdata),.c_err(h_err),
-        .h_valid(1'b0),.h_addr(32'd0),.h_wdata(32'd0),.h_read(1'b0),.h_mask(4'd0),.h_rsp_ready(1'b1),
+        .h_valid(bg_valid),.h_addr(32'ha007f000),.h_wdata(32'd0),.h_read(1'b1),.h_mask(4'hf),.h_rsp_ready(bg_ready),
         .h_ready(c_ready),.h_rsp_valid(c_rsp_valid),.h_rdata(c_rdata),.h_err(c_err));
     reg [31:0] x[0:6335],params[0:16703],w1[0:8191],w2[0:8191],b1[0:255],b2[0:63],cfg[0:1];
     reg [31:0] packed_x[0:3167],expected[0:6335],rd;reg [63:0] ffn_expected[0:6335];
     integer cycle=0,j,trial,in_count=0,out_count=0,full_wait=0,simultaneous=0,peak=0;
     reg held=0;reg [31:0] held_data;
+    always @(negedge clk) bg_ready=BACKGROUND_HOST==0 || cycle%11>3;
+    always @(posedge clk) if(rst_n && BACKGROUND_HOST!=0) begin
+        if(bg_held && (!c_rsp_valid || c_err || c_rdata!==32'h51a7cafe)) $fatal(1,"Background response changed");
+        bg_held=c_rsp_valid && !bg_ready;
+        if(bg_held) bg_stalls++;
+        if(bg_valid && c_ready) bg_sent++;
+        if(c_rsp_valid && bg_ready) begin
+            if(c_err || c_rdata!==32'h51a7cafe || bg_received>=bg_sent) $fatal(1,"Background response ownership");
+            bg_received++;
+        end
+        if(bg_valid && !c_ready) begin bg_wait++;if(bg_wait>bg_max_wait) bg_max_wait=bg_wait;end
+        else bg_wait=0;
+    end
     always @(posedge clk) begin
         cycle++;
         if(cycle>8000000) $fatal(1,"Linked timeout");
@@ -66,6 +82,7 @@ module tb_input_link;
         end
     endtask
     initial begin
+        dut.shared.mem[130048]=32'h51a7cafe;
         $readmemh("output/encoder-vectors/task_00/input.hex",x);
         $readmemh("output/encoder-vectors/task_00/layer_00/ffn_input.hex",packed_x);
         $readmemh("output/encoder-vectors/task_00/layer_00/ffn.hex",ffn_expected);
@@ -106,6 +123,13 @@ module tb_input_link;
         for(j=0;j<6336;j++) if(dut.shared.mem[102400+j]!==expected[j]) $fatal(1,"Linked restart output %0d",j);
         if(peak!=4 || full_wait==0 || simultaneous==0) $fatal(1,"Linked FIFO coverage");
         $display("INPUT_LINK_PASS single_port cancellation_both_directions idle_front_cancel restart words=%0d outputs=%0d peak=%0d full_wait=%0d simultaneous=%0d",in_count,out_count,peak,full_wait,simultaneous);
+        if(BACKGROUND_HOST!=0) begin
+            do @(posedge clk);while(!c_ready);
+            @(negedge clk);bg_run=0;
+            while(bg_received!=bg_sent) @(negedge clk);
+            if(bg_stalls==0 || bg_sent<1000) $fatal(1,"Background coverage");
+            $display("HOST_BACKGROUND_PASS requests=%0d responses=%0d response_stalls=%0d max_wait=%0d",bg_sent,bg_received,bg_stalls,bg_max_wait);
+        end
         $finish;
     end
 endmodule

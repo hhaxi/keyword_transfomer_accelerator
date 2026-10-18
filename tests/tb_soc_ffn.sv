@@ -20,10 +20,18 @@ module tb_soc_ffn;
     integer taskid,j,num_tasks=12,max_cycles=250000000;
     longint cycles=0,start_cycle,total_cycles=0,task_cycles;
     string folder;
+`ifdef HOST_BURST2
+`ifdef BUS_BURST8
+    kwt_soc #(.DMA_BURST(8),.HOST_BURST(2)) dut(.*);
+`else
+    kwt_soc #(.HOST_BURST(2)) dut(.*);
+`endif
+`else
 `ifdef BUS_BURST8
     kwt_soc #(.DMA_BURST(8)) dut(.*);
 `else
     kwt_soc dut(.*);
+`endif
 `endif
 `ifdef BUS_STUDY
     `include "bus_study_monitor.svh"
@@ -34,6 +42,9 @@ module tb_soc_ffn;
     end
     task automatic host(input bit read_,input [31:0] addr_,input [31:0] data_,output [31:0] result);
         begin
+`ifdef BUS_STUDY
+            host_enter(read_,addr_);
+`endif
             @(negedge clk);h_valid=1;h_read=read_;h_addr=addr_;h_wdata=data_;h_rsp_ready=0;
             do @(posedge clk);while(!h_ready);
             @(negedge clk);h_valid=0;
@@ -41,6 +52,9 @@ module tb_soc_ffn;
             if(h_err) $fatal(1,"Host bus error %h",addr_);
             result=h_rdata;h_rsp_ready=1;
             @(negedge clk);h_rsp_ready=0;
+`ifdef BUS_STUDY
+            host_leave();
+`endif
         end
     endtask
     initial begin

@@ -50,11 +50,19 @@ def gate():
         if len(r)!=1 or r[0]>=base:raise RuntimeError('No pilot benefit '+k)
 
 
+def cancel_source(b):
+    source=(ROOT/'tests/tb_input_link.sv').read_text()
+    if 'module tb_input_link #(parameter integer DMA_BURST=1' in source:
+        return source.replace('module tb_input_link #(parameter integer DMA_BURST=1',
+                              'module tb_input_link #(parameter integer DMA_BURST='+str(b))
+    return source.replace('kwt_extended_system_bus dut(',
+                          'kwt_extended_system_bus #(.DMA_BURST('+str(b)+')) dut(')
+
+
 def protocol():
     for b in [1,8]:
         generated=DEST/('bus_cancel_'+str(b)+'.sv')
-        generated.write_text((ROOT/'tests/tb_input_link.sv').read_text().replace('kwt_extended_system_bus dut(',
-                             'kwt_extended_system_bus #(.DMA_BURST('+str(b)+')) dut('))
+        generated.write_text(cancel_source(b))
     capture('bus-protocol')
     for b in [1,8]:
         files=['integration/kwt_bus_fabric.sv','integration/kwt_shared_sram.sv','tests/tb_bus.sv']
@@ -79,7 +87,7 @@ def build(kind,label,tasks=1,flags=None,layers=12):
     includes=['+incdir+'+(SOC/'rtl/e203/core').relative_to(ROOT).as_posix(),
               '+incdir+output/'+('encoder-design' if encoder else 'design')+'/firmware',
               '+incdir+tests','+define+DISABLE_SV_ASSERTION','+define+BUS_STUDY']
-    if encoder:includes+=['+define+ENCODER_PHASE_METRICS','+define+ENCODER_QKV_METRICS']
+    if encoder:includes+=['+define+ENCODER_PHASE_METRICS','+define+ENCODER_QKV_METRICS','+define+HOST_ENCODER']
     return sim(top,files,includes+(flags or []),label=label,
                run_args=['+tasks='+str(tasks),'+profile']+(['+layers='+str(layers),'+input_stream=1','+transport=2'] if encoder else []))
 

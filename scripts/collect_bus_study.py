@@ -5,7 +5,7 @@ import json
 import re
 import subprocess
 import zipfile
-from run_bus_study import ROOT,OUT,DEST,BASE,sha
+from run_bus_study import ROOT,OUT,DEST,BASE,sha,cancel_source
 
 CAUSES=['accepted','slot_target','slot_sink','target','dma_slot','dma_peer',
         'grant_ifu','grant_poll','grant_cpu','grant_host','grant_ffn','grant_enc','other']
@@ -154,8 +154,7 @@ def collect():
         require(not log('bus-lint-'+str(b),'').strip(),'Strict lint diagnostics')
         protocols[str(b)]=dict(fairness=fair[0],cancel_phases=[0,1,2],restart_bit_exact=True)
         generated=DEST/('bus_cancel_'+str(b)+'.sv')
-        expected=(ROOT/'tests/tb_input_link.sv').read_text().replace('kwt_extended_system_bus dut(',
-                 'kwt_extended_system_bus #(.DMA_BURST('+str(b)+')) dut(')
+        expected=cancel_source(b)
         require(generated.read_text()==expected,'Generated protocol test changed')
         checks[generated.relative_to(ROOT).as_posix()]=sha(generated)
     archives={p.relative_to(ROOT).as_posix():sha(p) for p in (ROOT/'deliverables/c0724ce-baseline').glob('*.zip')}

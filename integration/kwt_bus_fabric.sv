@@ -1,6 +1,6 @@
 // Three-master round-robin ICB fabric. One response slot, retire/refill in
 // the same cycle. The synchronous single-port SRAM remains single-ported.
-module kwt_bus_fabric #(parameter integer DMA_BURST=1)(
+module kwt_bus_fabric #(parameter integer DMA_BURST=1, HOST_BURST=0)(
     input wire clk,rst_n,
     input wire c_valid,output wire c_ready,input wire [31:0] c_addr,c_wdata,
     input wire c_read,input wire [3:0] c_mask,
@@ -25,15 +25,26 @@ module kwt_bus_fabric #(parameter integer DMA_BURST=1)(
     // Count handshakes, never clocks; held grants and response stalls are intact.
     localparam BURST_W=DMA_BURST>1 ? $clog2(DMA_BURST) : 1;
     reg [BURST_W-1:0] dma_turn;
+    // Optional bounded host priority. Count all host accepts since the last
+    // CPU accept, including offers separated by blocking-driver gaps. Never
+    // replenish on DMA service: doing so could starve CPU under H/D traffic.
+    // Once exhausted, the original weighted round robin resumes. If CPU is
+    // absent, ordinary arbitration still makes progress; no slot is reserved.
+    localparam HOST_W=HOST_BURST>0 ? $clog2(HOST_BURST+1) : 1;
+    reg [HOST_W-1:0] host_turn;
     reg [1:0] grant;
+    reg host_boost;
     always @* begin
-        grant=0;
+        grant=0;host_boost=0;
         if(locked) grant=locked_owner;
         else case(next_owner)
             0: if(c_valid) grant=0;else if(h_valid) grant=1;else grant=2;
             1: if(h_valid) grant=1;else if(d_valid) grant=2;else grant=0;
             default: if(d_valid) grant=2;else if(c_valid) grant=0;else grant=1;
         endcase
+        if(!locked && HOST_BURST>0 && h_valid && host_turn<HOST_W'(HOST_BURST) && grant!=1) begin
+            grant=1;host_boost=1;
+        end
     end
     wire chosen_valid=grant==0?c_valid:(grant==1?h_valid:d_valid);
     wire [31:0] addr=grant==0?c_addr:(grant==1?h_addr:d_addr);
@@ -72,12 +83,19 @@ module kwt_bus_fabric #(parameter integer DMA_BURST=1)(
             pending<=0;owner<=0;next_owner<=0;acc_route<=0;ram_route<=0;response_read<=0;
             locked<=0;locked_owner<=0;
             dma_turn<=0;
+            host_turn<=0;
         end else begin
             if(retire) pending<=0;
             if(slot_free && chosen_valid && !ready) begin locked<=1;locked_owner<=grant;end
             if(accept) begin
                 pending<=1;owner<=grant;acc_route<=sel_acc;ram_route<=sel_ram;response_read<=read_;
-                if(grant==2 && DMA_BURST>1 && dma_turn<BURST_W'(DMA_BURST-1)) begin
+                if(grant==0) host_turn<=0;
+                else if(grant==1 && HOST_BURST>0 && host_turn<HOST_W'(HOST_BURST)) host_turn<=host_turn+1'b1;
+                // An inserted host grant must not restart a partly consumed
+                // DMA turn or move the saved cursor past a waiting CPU.
+                if(host_boost) begin
+                    next_owner<=next_owner;dma_turn<=dma_turn;
+                end else if(grant==2 && DMA_BURST>1 && dma_turn<BURST_W'(DMA_BURST-1)) begin
                     next_owner<=2;dma_turn<=dma_turn+1'b1;
                 end else begin
                     next_owner<=grant==2?2'd0:grant+1'b1;dma_turn<=0;

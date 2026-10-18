@@ -16,8 +16,10 @@
         else if(dut.c_read && (dut.c_addr==32'h40000004 || dut.c_addr==32'h40080004)) cpu_source=1;
         else cpu_source=2;
     endfunction
+    `include "host_study_monitor.svh"
     task automatic bus_begin;
         begin
+            host_clear();
             bus_measure=bus_stats!=0;bus_ticks=0;bslot_idle=0;bslot_refill=0;bunion=0;bcritical=0;
             for(integer s=0;s<8;s++) begin
                 bmax[s]=0;
@@ -89,6 +91,7 @@
     task automatic bus_end;
         longint occupied;
         begin
+            host_report();
             bus_measure=0;
             if(bus_stats!=0) begin
                 occupied=bslot_idle;
