@@ -26,7 +26,7 @@ def sim(top,files,extra=None,label=None,run_args=None,shards=None):
         def run_shard(item):
             first,count=item
             name=label+'_shard'+str(first)
-            text=linux(name+'-run','output/design/build_'+label+'/V'+top+' +first='+str(first)+' +tasks='+str(count)+' +baseline=0 '+ ' '.join(shlex.quote(s) for s in (run_args or []) if s.startswith('+transport=')),14400)
+            text=linux(name+'-run','output/design/build_'+label+'/V'+top+' +first='+str(first)+' +tasks='+str(count)+' +baseline=0 '+ ' '.join(shlex.quote(s) for s in (run_args or []) if s.startswith(('+transport=','+layers=','+input_stream='))),14400)
             rows=re.findall(r'ENC_SOC_TASK_PASS task=(\d+) cycles=(\d+) baseline=0 outputs=6336',text)
             if [int(t) for t,c in rows]!=list(range(first,first+count)) or 'ENC_SOC_PASS tasks='+str(count) not in text:
                 raise RuntimeError('Incomplete shard '+name)
@@ -53,7 +53,7 @@ def firmware():
     (dest/'encoder_size.vh').write_text('`define ENC_FW_WORDS %d\n'%(len(data)//4))
 
 
-def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1,transport=2,fifo_metrics=False,extra_flags=None):
+def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1,transport=2,fifo_metrics=False,extra_flags=None,layers=12,input_stream=0):
     includes=['+incdir+output/encoder-design/firmware']
     if netlist:
         files=[str((SOC/'rtl/e203/general'/n).relative_to(ROOT)).replace('\\','/') for n in ['sirv_gnrl_ram.v','sirv_sim_ram.v']]
@@ -67,8 +67,18 @@ def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activ
     if fifo_metrics:includes+=['+define+ENCODER_FIFO_METRICS','+incdir+tests']
     includes+=extra_flags or []
     if activity:includes+=['--trace-fst']
-    text=sim('tb_encoder_soc',files+['tests/tb_encoder_soc.sv'],includes,label=label,
-             run_args=['+transport='+str(transport),'+tasks='+str(tasks),'+baseline='+str(baseline),'+first='+str(first)]+(['+activity'] if activity else []),
+    testbench='tests/tb_encoder_soc.sv'
+    if netlist:
+        # The new input-link observer names RTL registers. Strip that observer
+        # for a flattened netlist; retain host traffic and all output/stat checks.
+        source=(ROOT/testbench).read_text()
+        first_observer=source.index('    integer in_words=')
+        after_observer=source.index('    integer taskid,',first_observer)
+        generated=DEST/'tb_encoder_soc_netlist.sv'
+        generated.write_text(source[:first_observer]+source[after_observer:])
+        testbench=generated.relative_to(ROOT).as_posix()
+    text=sim('tb_encoder_soc',files+[testbench],includes,label=label,
+             run_args=['+layers='+str(layers),'+input_stream='+str(input_stream),'+transport='+str(transport),'+tasks='+str(tasks),'+baseline='+str(baseline),'+first='+str(first)]+(['+activity'] if activity else []),
              shards=[(first+i*tasks//jobs,(i+1)*tasks//jobs-i*tasks//jobs) for i in range(jobs)] if jobs>1 else None)
     if 'ENC_SOC_PASS tasks='+str(tasks) not in text and 'ENC_SOC_SHARDS_PASS tasks='+str(tasks) not in text:raise RuntimeError('Encoder SoC incomplete')
 
@@ -120,6 +130,8 @@ def main():
     p.add_argument('--tasks',type=int,default=12);p.add_argument('--first',type=int,default=0)
     p.add_argument('--jobs',type=int,default=1,help='Independent RTL task shards; each task retains identical simulated timing')
     p.add_argument('--transport',type=int,choices=[0,1,2],default=2,help='0 legacy int64, 1 packed int40, 2 FIFO int40')
+    p.add_argument('--layers',type=int,choices=[1,12],default=12)
+    p.add_argument('--input-stream',type=int,choices=[0,1],default=0)
     p.add_argument('--baseline',type=int,choices=[0,1],default=0)
     a=p.parse_args();DEST.mkdir(exist_ok=True)
     if a.jobs<1 or a.jobs>a.tasks or (a.jobs>1 and (a.task!='soc' or a.baseline)):
@@ -181,7 +193,7 @@ def main():
         linux('encoder-lint',CONFIG['wsl_verilator']+' --lint-only -Wall --top-module kwt_extended_system_bus '+
               ' '.join(SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv']))
     else:
-        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs,transport=a.transport)
+        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs,transport=a.transport,layers=a.layers,input_stream=a.input_stream)
 
 
 if __name__=='__main__':main()

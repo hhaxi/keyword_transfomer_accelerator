@@ -16,7 +16,22 @@ module tb_encoder;
     reg [31:0] mem[0:131071],params[0:16703],initial_x[0:6335],expected[0:6335],packed_x[0:3167],cfg[0:1];
     reg [63:0] ffn_expected[0:6335];
     reg [31:0] rd;
-    integer cycles=0,j,li,layers=12,polls,constant_edge=0,transport=0,stream_index=0;
+    integer cycles=0,j,li,layers=12,polls,constant_edge=0,transport=0,stream_index=0,input_stream=0,input_count=0,input_stalls=0;
+    wire input_valid;wire [31:0] input_data;reg block_input=0,input_held=0;
+    reg [31:0] input_held_data;
+    wire input_ready=!block_input && cycles%11>3;
+    always @(posedge clk) if(rst_n) begin
+        if(link_abort_in || dut.abort_now) input_held<=0;
+        else begin
+            if(input_held && (!input_valid || input_data!==input_held_data)) $fatal(1,"LN1 offer changed");
+            input_held<=input_valid && !input_ready;input_held_data<=input_data;
+            if(input_valid && !input_ready) input_stalls++;
+            if(input_valid && input_ready) begin
+                if(input_count>=3168 || input_data!==packed_x[input_count]) $fatal(1,"LN1 packed mismatch");
+                input_count++;
+            end
+        end
+    end
     reg stream_feed=0,link_abort_in=0;
     wire result_valid=stream_feed && stream_index<6336;
     wire result_ready,link_abort_out;
@@ -46,7 +61,7 @@ module tb_encoder;
         end
     end
 `endif
-    kwt_encoder #(.STREAM_ENABLE(1)) dut(.*);
+    kwt_encoder #(.STREAM_ENABLE(1)) dut(.preload_permit(),.*);
     always @(posedge clk) begin
         cycles<=cycles+1;
         if(cycles>30000000) $fatal(1,"Encoder timeout state=%0d",dut.state);
@@ -105,6 +120,7 @@ module tb_encoder;
         if($value$plusargs("dma_mode=%d",dma_mode)) begin end
         if($value$plusargs("constant_edge=%d",constant_edge)) begin end
         if($value$plusargs("transport=%d",transport)) begin end
+        if($value$plusargs("input_stream=%d",input_stream)) begin end
         repeat(4) @(negedge clk);rst_n=1;
         $readmemh("output/encoder-vectors/task_00/input.hex",initial_x);
         if(constant_edge) for(j=0;j<6336;j++) initial_x[j]=32'h80000000;
@@ -135,8 +151,9 @@ module tb_encoder;
                 for(j=0;j<9801;j++) begin ts[j]=0;tp[j]=32'd169466;end
             end
 `endif
-            bus(0,20'h34,cfg[1]|(li==0 ? 32'd0 : 32'd1)|(transport==2 ? 32'd8 : transport==1 ? 32'd4 : 32'd0),rd);bus(0,20'h38,0,rd);execute();
-            for(j=0;j<3168;j++) if(mem[24576+j]!==packed_x[j]) $fatal(1,"Front mismatch layer=%0d word=%0d got=%h expected=%h",li,j,mem[24576+j],packed_x[j]);
+            bus(0,20'h34,cfg[1]|(input_stream!=0 ? 32'd16 : 32'd0)|(li==0 ? 32'd0 : 32'd1)|(transport==2 ? 32'd8 : transport==1 ? 32'd4 : 32'd0),rd);bus(0,20'h38,0,rd);input_count=0;execute();
+            if(input_stream!=0 && input_count!=3168) $fatal(1,"Input length");
+            if(input_stream==0) for(j=0;j<3168;j++) if(mem[24576+j]!==packed_x[j]) $fatal(1,"Front mismatch layer=%0d word=%0d got=%h expected=%h",li,j,mem[24576+j],packed_x[j]);
             bus(1,20'h40,0,rd);$display("ENCODER_FRONT_PASS layer=%0d cycles=%0d",li,rd);$fflush();
             for(j=0;j<6336;j++) begin mem[49152+2*j]=ffn_expected[j][31:0];mem[49153+2*j]=ffn_expected[j][63:32];end
             if(transport==1) for(j=0;j<1584;j++) begin
@@ -150,7 +167,17 @@ module tb_encoder;
                 repeat(3) @(negedge clk);link_abort_in=0;
                 bus(1,4,0,rd);
                 if(rd[0] || !rd[2] || rd[6:5]!=0 || result_ready) $fatal(1,"Tail cancel validity");
-                bus(0,20'h38,0,rd);execute();
+                bus(0,20'h38,0,rd);
+                if(input_stream!=0) begin
+                    input_count=0;bus(0,0,1,rd);
+                    while(input_count<3167) @(negedge clk);
+                    block_input=1;repeat(20) @(negedge clk);
+                    if(!input_valid || dut.issue_index!=3167) $fatal(1,"Last word not stalled");
+                    bus(0,0,2,rd);repeat(5) @(negedge clk);
+                    if(dut.busy || dut.z_valid || input_valid) $fatal(1,"Last-word cancellation");
+                    block_input=0;input_count=0;
+                end
+                execute();
             end
             stream_index=0;stream_feed=transport==2;
             bus(0,20'h38,1,rd);execute();stream_feed=0;
@@ -161,6 +188,7 @@ module tb_encoder;
         if(dma_mode==2 && (max_queued!=2 || refills==0)) $fatal(1,"Missing multi-outstanding coverage");
         if(dma_mode==1 && (max_read_streak<6336 || max_write_streak<6336)) $fatal(1,"DMA not continuous read=%0d write=%0d",max_read_streak,max_write_streak);
         $display("ENC_DMA_STREAM mode=%0d outstanding=%0d refill=%0d read_streak=%0d write_streak=%0d",dma_mode,max_queued,refills,max_read_streak,max_write_streak);
+        $display("LN1_INPUT_COVERAGE mode=%0d stalls=%0d words=%0d",input_stream,input_stalls,input_count);
         $display("ENCODER_PASS layers=%0d constant_edge=%0d transport=%0d",layers,constant_edge,transport);$finish;
     end
 endmodule

@@ -8,7 +8,42 @@ module tb_encoder_soc;
     reg [31:0] fw[0:`ENC_FW_WORDS-1],input_x[0:6335],expected[0:6335];
     reg [31:0] params[0:16703],w1[0:8191],w2[0:8191],b1[0:255],b2[0:63],cfg[0:1];
     reg [31:0] rd,configuration;
-    integer taskid,li,j,n,num_tasks=12,first_task=0,baseline=0,transport=2;
+    reg [31:0] packed_x[0:3167];reg [63:0] ffn_expected[0:6335];
+    integer in_words=0,out_values=0,in_stall=0,in_empty=0,in_peak=0,tile_wait=0,x_overlap=0;
+    reg input_epoch=0,ffn_was_active=0,input_held=0;reg [31:0] input_held_data;
+    always @(posedge clk) if(rst_n) begin
+        if(dut.bus.accelerator.start) begin
+            in_words=0;out_values=0;in_stall=0;in_empty=0;in_peak=0;tile_wait=0;x_overlap=0;input_epoch=0;
+        end
+        if(dut.bus.accelerator.core.xwrite && dut.bus.accelerator.core.read_operands && !dut.bus.accelerator.core.second_stage) $fatal(1,"X single-port collision");
+        if(dut.bus.input_valid) input_epoch=1;
+        if(input_epoch && in_words<3168) begin
+            if(dut.bus.input_valid && !dut.bus.input_ready) in_stall++;
+            if(dut.bus.feed_ready && !dut.bus.feed_valid) in_empty++;
+        end
+        if(integer'(dut.bus.input_fifo.count)>in_peak) in_peak=integer'(dut.bus.input_fifo.count);
+        if(dut.bus.accelerator.core.state==10) tile_wait++;
+        if(dut.bus.accelerator.core.xwrite && dut.bus.accelerator.core.second_stage) x_overlap++;
+        if(input_held && (!dut.bus.input_valid || dut.bus.input_data!==input_held_data)) $fatal(1,"LN1 stalled offer changed");
+        input_held=dut.bus.input_valid && !dut.bus.input_ready;input_held_data=dut.bus.input_data;
+        if(dut.bus.feed_valid && dut.bus.feed_ready) begin
+            if(in_words>=3168 || dut.bus.feed_data!==packed_x[in_words]) $fatal(1,"LN1 stream mismatch");
+            in_words++;
+        end
+        if(dut.bus.result_valid && dut.bus.result_ready) begin
+            if(out_values>=6336 || {{24{dut.bus.result_data[39]}},dut.bus.result_data}!==ffn_expected[out_values]) $fatal(1,"FFN per-layer stream mismatch");
+            out_values++;
+        end
+    end
+    always @(negedge clk) begin
+        if(rst_n && ffn_was_active && !dut.bus.accelerator.active && dut.bus.accelerator.done) begin
+            if(transport==2 && out_values!=6336) $fatal(1,"FFN stream count");
+            if(input_stream && in_words!=3168) $fatal(1,"LN1 stream count");
+            $display("INPUT_LINK task=%0d layer=%0d mode=%0d words=%0d full_wait=%0d empty_wait=%0d peak=%0d tile_wait=%0d x_l2_writes=%0d dma_reads=%0d core_cycles=%0d",taskid,li,input_stream,in_words,in_stall,in_empty,in_peak,tile_wait,x_overlap,dut.bus.accelerator.read_commands,dut.bus.accelerator.core_cycles);
+        end
+        ffn_was_active=rst_n && dut.bus.accelerator.active;
+    end
+    integer taskid,li,j,n,num_tasks=12,first_task=0,baseline=0,transport=2,num_layers=12,input_stream=0;
     longint cycles=0,start_cycle,task_cycles,total_cycles=0;
     string folder;
     kwt_encoder_soc dut(.*);
@@ -58,6 +93,10 @@ module tb_encoder_soc;
         if($value$plusargs("first=%d",first_task)) begin end
         if($value$plusargs("baseline=%d",baseline)) begin end
         if($value$plusargs("transport=%d",transport)) begin end
+        if($value$plusargs("layers=%d",num_layers)) begin end
+        if($value$plusargs("input_stream=%d",input_stream)) begin end
+        if(num_layers!=1 && num_layers!=12) $fatal(1,"Unsupported layer count");
+        if(input_stream && transport!=2) $fatal(1,"Input stream requires output FIFO");
         if(transport<0 || transport>2) $fatal(1,"Invalid transport");
         if(first_task<0 || num_tasks<1 || first_task+num_tasks>12) $fatal(1,"Invalid task range");
         if($test$plusargs("activity")) begin $dumpfile("output/encoder-design/encoder-soc.fst");$dumpvars(0,dut);$dumpoff;end
@@ -67,6 +106,7 @@ module tb_encoder_soc;
         for(taskid=first_task;taskid<first_task+num_tasks;taskid++) begin
             folder=$sformatf("output/encoder-vectors/task_%02d",taskid);
             $readmemh({folder,"/input.hex"},input_x);$readmemh({folder,"/expected.hex"},expected);
+            if(num_layers==1) $readmemh({folder,"/layer_00/expected.hex"},expected);
             @(negedge clk);rst_n=0;boot_hold=1;repeat(5) @(negedge clk);rst_n=1;
             host(0,32'ha000f000,0,rd);host(0,32'ha000f004,0,rd);
             for(j=0;j<6336;j++) host(0,32'ha0064000+32'(4*j),32'hdeadbeef,rd);
@@ -77,17 +117,19 @@ module tb_encoder_soc;
             if($test$plusargs("activity")) $dumpon;
             $display("ENC_MEASURE_BEGIN task=%0d cycle=%0d baseline=%0d",taskid,cycles,baseline);$fflush();
             for(j=0;j<6336;j++) host(0,32'ha0010000+32'(4*j),input_x[j],rd);
-            for(li=0;li<12;li++) begin
+            for(li=0;li<num_layers;li++) begin
                 folder=$sformatf("output/encoder-vectors/layer_%02d",li);
                 $readmemh({folder,"/params.hex"},params);$readmemh({folder,"/w1.hex"},w1);$readmemh({folder,"/w2.hex"},w2);
                 $readmemh({folder,"/b1.hex"},b1);$readmemh({folder,"/b2.hex"},b2);$readmemh({folder,"/config.hex"},cfg);
+                $readmemh($sformatf("output/encoder-vectors/task_%02d/layer_%02d/ffn_input.hex",taskid,li),packed_x);
+                $readmemh($sformatf("output/encoder-vectors/task_%02d/layer_%02d/ffn.hex",taskid,li),ffn_expected);
                 for(j=0;j<16704;j++) host(0,32'ha0050000+32'(4*j),params[j],rd);
                 for(j=0;j<8192;j++) host(0,32'ha0020000+32'(4*j),w1[j],rd);
                 for(j=0;j<256;j++) host(0,32'ha0028000+32'(4*j),b1[j],rd);
                 for(j=0;j<8192;j++) host(0,32'ha0040000+32'(4*j),w2[j],rd);
                 for(j=0;j<64;j++) host(0,32'ha0048000+32'(4*j),b2[j],rd);
-                configuration=cfg[1] | (transport==2 ? 32'd8 : transport==1 ? 32'd4 : 32'd0);
-                if(!baseline) begin if(li!=0) configuration|=1;if(li!=11) configuration|=2;end
+                configuration=cfg[1] | (input_stream ? 32'd16 : 32'd0) | (transport==2 ? 32'd8 : transport==1 ? 32'd4 : 32'd0);
+                if(!baseline) begin if(li!=0) configuration|=1;if(li!=num_layers-1) configuration|=2;end
                 host(0,32'ha000f008,cfg[0],rd);host(0,32'ha000f00c,configuration,rd);host(0,32'ha000f010,32'(li),rd);
                 host(0,32'ha000f000,11,rd);rd=0;n=0;
                 while(rd!=2) begin
@@ -108,14 +150,14 @@ module tb_encoder_soc;
                 host(1,32'ha0064000+32'(4*j),0,rd);
                 if(rd!==expected[j]) $fatal(1,"Encoder output mismatch task=%0d index=%0d got=%h expected=%h",taskid,j,rd,expected[j]);
             end
-            for(li=0;li<12;li++) for(j=0;j<8;j++) begin
+            for(li=0;li<num_layers;li++) for(j=0;j<8;j++) begin
                 host(1,32'ha000f100+32'(32*li+4*j),0,rd);
                 if(j==3 && rd!=(li==0 || baseline ? 23040 : 16704)+(transport==2 ? 0 : transport==1 ? 7920 : 12672)) $fatal(1,"Encoder read count");
-                if(j==4 && rd!=(li==11 || baseline ? 9504 : 3168)) $fatal(1,"Encoder write count");
+                if(j==4 && rd!=(li==num_layers-1 || baseline ? 9504 : 3168)-(input_stream ? 3168 : 0)) $fatal(1,"Encoder write count");
                 if(j==7 && rd!=0) $fatal(1,"Encoder saturation");
                 $display("ENC_LAYER_STATS task=%0d layer=%0d index=%0d value=%0d",taskid,li,j,rd);
             end
-            $display("ENC_SOC_TASK_PASS task=%0d cycles=%0d baseline=%0d outputs=6336 transport=%0d",taskid,task_cycles,baseline,transport);$fflush();
+            $display("ENC_SOC_TASK_PASS task=%0d cycles=%0d baseline=%0d outputs=6336 transport=%0d layers=%0d input_stream=%0d",taskid,task_cycles,baseline,transport,num_layers,input_stream);$fflush();
         end
         $display("ENC_SOC_PASS tasks=%0d total_cycles=%0d baseline=%0d",num_tasks,total_cycles,baseline);$finish;
     end

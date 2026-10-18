@@ -2,9 +2,9 @@
 
 面向本科生组芯片设计赛题，基于 **E203 蜂鸟 SoC** 实现第一线性层、完整 FFN 和 **12 层 PostNorm Transformer 编码器**。工程包含可综合 RTL、冻结整数模型、参数转换、RISC-V 固件、SoC 集成及自动化验证。
 
-**当前版本：编码器第四版 + FFN 第十版。** FIFO 分析确认当前主要受 FFN 供给限制：尾段等待占 **88.40%**，FIFO 满等待为零。按结果合并输出调度后，完整编码器为 **14,549,345 周期/次**，较第三版减少 **12,303 周期（0.08449%）**；独立第一线性层为 **167,134 周期**，完整 FFN 为 **305,708 周期**。本轮完成前端 RTL 与四态验证，新版综合、网表和工艺 PPA 尚未执行。
+**当前版本：编码器第五版 + FFN 第十版。** 基于 `b716312` 增加可切换的 LN1→FFN 输入直传和权重预装载，保持 16 路 FFN MAC 与冻结整数运算。单层同条件周期从 **1,250,753 降至 1,231,235**，减少 **19,518 拍（1.5605%）**，输入交接每层减少 **6,336 个32位 DMA 字**。两种独立模式仍为 **167,134 / 305,708 周期**。十二层为 **14,315,119 周期**，减少 **1.6099%**；加速器 DMA 流量减少 **15.5294%**。
 
-[设计与接口](docs/full-encoder.md) · [FIFO 分析与最新性能](docs/fifo-study.md) · [验证记录](docs/fifo-study-validation.json) · [赛题指南](芯片设计赛题指南.pdf) · [第三方来源](NOTICE.md)
+[设计与接口](docs/full-encoder.md) · [输入直传与最新性能](docs/input-stream.md) · [验证记录](docs/input-stream-validation.json) · [赛题指南](芯片设计赛题指南.pdf) · [第三方来源](NOTICE.md)
 
 ## 1. 实现范围
 
@@ -44,29 +44,22 @@
 
 ## 2. 最新性能与优化
 
-以下为真实 E203 整机仿真周期，对照第三版 `59487c7`。同固件、同参数和输入，仅改变输出组合并调度，保留原整数运算：
+本轮使用同一 RTL 可执行文件、同一固件与冻结向量，通过配置位选择 SRAM 交接或输入直传。SRAM 路径保留 `b716312` 的数据通路；新固件的控制调度与历史固件稍有不同，因此严格对照采用本轮两种模式，历史第四版数据单独保留。
 
-| 工作负载 | 优化前 | 当前 | 变化 |
+| 工作负载 | SRAM 输入对照 | 输入直传 | 变化 |
 | --- | ---: | ---: | --- |
-| 完整 12 层编码器 | 14,561,648 | **14,549,345** | 周期减少 **0.08449%** |
-| 第一线性层独立任务 | 170,236 | **167,134** | 周期减少 **1.822%** |
-| 完整 FFN 独立任务 | 306,703 | **305,708** | 周期减少 **0.3244%** |
+| 单层完整任务（task 0） | 1,250,753 | **1,231,235** | 减少 **19,518 拍，1.5605%** |
+| 十二层完整任务（task 0） | 14,549,345 | **14,315,119** | 减少 **234,226 拍，1.6099%** |
+| 第一线性层独立任务 | 167,134 | **167,134** | 无回退 |
+| 完整 FFN 独立任务 | 305,708 | **305,708** | 无回退 |
 
-编码器计时包含初始输入加载、12 次参数加载、CPU 调度与统计、硬件计算、最终写回确认及通知观察；不含固件初次装载和计时后的输出比较。三个工作负载的计算量不同，不能直接用其周期比作为相互加速比。
+编码器计时包含初始输入加载、各层参数加载、CPU 调度与统计、硬件计算、最终写回确认及通知观察；不含固件初次装载和计时后的输出比较。
 
-按目标 **150 MHz** 折算，完整编码器为 **96.996 ms/次、10.310 次/秒**；该折算不代表已完成正式工艺的频率验证。第三版三种传输方式的历史对照见 [传输优化报告](docs/frontend-transfer.md)。
+本版新增 **4×32位输入 FIFO**，保留已有 **4×40位输出 FIFO**。输入的最近偶数舍入、缩放、饱和，以及 FFN 后的原始残差相加和 LN2 顺序完全不变。权重提前加载到既有存储体，并避让编码器读装载阶段；首个8行块完整到达后开始 FFN。X SRAM 单端口在 L1 读周期阻止写入，L2 阶段及输出堵塞时继续接收后续输入，防止互相等待。
 
-本轮新增 FIFO/尾段观测并将输出部分和直接写入已有结果 FIFO，省去每层 FFN 的 **792 个独立 MERGE 拍**；进入 GELU 前的合并寄存器保留。12 层 FFN 硬件累计少 9,504 拍，完整任务的其余收益来自轮询观察相位变化。计数是仿真观察器，不增加 CPU MMIO 访问或综合逻辑。
+单层 DMA 从 **52,416 降至 46,080 个32位字**；十二层从 **489,600 降至 413,568 字**。正常单层输入 FIFO 满等待 **8,190 拍**、空等待 **1 拍**、最大占用 **4/4**。前段本身因背压变长，完整任务仍缩短；收益来自搬运与重叠，MAC 运算量没有减少。FFN 命令现在从预装载开始计时，与注意力及尾段重叠，三个命令周期不能直接相加。
 
-第三版的以下优化继续保留：
-
-- **独立第一线性层使用已有 16 路 MAC**：并行读取奇偶 k 存储体，精确合并部分和；MAC 活动周期从 202,752 降至 **101,376**。
-- **FFN 装载与写回优化**：两笔顺序在途读事务，清核与首请求重叠，结果寄存器同拍发送与补入。理想总线连续装载 **19,872 个 32 位字**。
-- **无损 40 位紧凑打包**：只去除原 64 位结果中的符号扩展，4 个结果打成 5 个 32 位字。全编码器 DMA 字数减少 **14.37%**；解包开销使周期仅减少 366。
-- **4 × 40 位 FIFO 直传**：FFN 输出直接进入编码器尾段，支持背压和双端取消。全编码器 DMA 数据从 **793,728 降至 489,600 字**，节省共享 SRAM 写入与重读。
-- **数值与兼容性保持**：最近偶数舍入、缩放、原始残差相加和 LN2 顺序不变；保留旧 64 位接口、第二版矩阵预读及细分周期计数。
-
-十项阶段计数互斥，求和等于编码器命令总周期。FIFO 模式下 FFN 与编码器尾段并发，不能将两者周期相加。基线12层空等待 **2,598,648 拍**、满等待 **0**、最大占用 **3/4**；当前空等待降为 **2,589,144 拍**。编码器到 FFN 的紧凑 int16 输入仍经共享 SRAM。逐层分解、实际传输周期及下一次单层直传实验方案见 [FIFO 分析报告](docs/fifo-study.md)。
+原有16路 MAC、奇偶 k 部分和、输出合并、两笔在途 DMA、紧凑40位写回和输出 FIFO 均保留。第四版性能及尾段分析见 [FIFO 研究](docs/fifo-study.md)，更早的传输模式对照见 [传输报告](docs/frontend-transfer.md)。
 
 ## 3. 硬件组织与接口
 
@@ -74,7 +67,7 @@
 | --- | --- | --- |
 | 编码器伴随引擎 | `rtl/kwt_encoder.sv` | 注意力、残差、LayerNorm、编码器 DMA 和周期计数 |
 | FFN 引擎 | `rtl/kwt_accel.sv`、`rtl/kwt_dma.sv` | 两种独立模式、矩阵计算、GELU、输入/权重加载与结果写回 |
-| 结果 FIFO | `rtl/kwt_result_fifo.sv` | 4 深度、40 位结果直传，背压与取消清空 |
+| 输入/结果 FIFO | `rtl/kwt_result_fifo.sv` | 参数化位宽，4深度；32位输入与40位输出，背压与取消清空 |
 | 数学与存储模块 | `rtl/kwt_exp_negative.sv`、`kwt_udiv64.sv`、`kwt_isqrt64.sv`、`kwt_vecmem32.sv` | 指数近似、整数除法/平方根及同步 SRAM 接口 |
 | 扩展总线 | `integration/kwt_extended_system_bus.sv`、`kwt_dma_arbiter.sv` | CPU、主机与共享 SRAM 连接，两个 DMA 的公平仲裁 |
 | 完整 SoC 顶层 | `integration/kwt_encoder_soc.sv` | E203 CPU 与两个硬件引擎集成 |
@@ -82,14 +75,14 @@
 
 资源配置保持 **16 路 FFN MAC、1 个 GELU、4 路编码器共享 32 位乘法通路**；指数插值等另有辅助算术，不能将这些主通路数当作整个 SoC 的全部乘法器数。
 
-完整加速器内部 SRAM 的 RTL 组织仍为 **235 KiB / 240,640 B / 122 个 16 位宏**，其中原 FFN 占 88.5 KiB。新增 FIFO 负载为 **20 B 寄存器**，另有打包与控制寄存器；本轮未重新测量综合面积。System Bus 的 **512 KiB 共享 SRAM** 与 E203 自有存储边界单独统计。Q/K/V/O 复用投影权重缓存，LN2 结果可驻留供下一层使用。
+完整加速器内部 SRAM 的 RTL 组织仍为 **235 KiB / 240,640 B / 122 个 16 位宏**，其中原 FFN 占 88.5 KiB。输入和结果 FIFO 负载合计为 **36 B 寄存器**，另有打包与控制寄存器；本轮未重新测量综合面积。System Bus 的 **512 KiB 共享 SRAM** 与 E203 自有存储边界单独统计。Q/K/V/O 复用投影权重缓存，LN2 结果可驻留供下一层使用。
 
 | 寄存器窗口 | 标识 | 操作 |
 | --- | --- | --- |
-| `0x40000000` | `KWT5` | `0x38`：0=第一线性层，1=完整 FFN 64 位写回，2=完整 FFN 紧凑40位写回，3=完整 FFN FIFO 直传 |
-| `0x40080000` | `ENC1` | 操作寄存器 `0x38`：0=注意力至 LN1 并写出 FFN 输入，1=读取 FFN 结果并完成残差/LN2 |
+| `0x40000000` | `KWT5` | `0x38`：0=第一线性层，1=完整 FFN 64 位写回，2=完整 FFN 紧凑40位写回，3=结果 FIFO 直传，4=输入/结果 FIFO 直传及权重预装载 |
+| `0x40080000` | `ENC1` | 操作寄存器 `0x38`：0=注意力至 LN1 并输出 FFN 输入，1=读取 FFN 结果并完成残差/LN2 |
 
-ENC1 的细分计数位于偏移 `0x60—0x90`，配置 `0x34` 的 bit2/bit3 分别选择紧凑40位/FIFO，互斥。KWT5 `0x94` 统计直传结果数。接口与并发启动顺序见 [编码器接口文档](docs/full-encoder.md) 和 [直传协议](docs/frontend-transfer.md)；旧 FFN 协议见 [基础架构](docs/architecture.md)。
+ENC1 的细分计数位于偏移 `0x60—0x90`，配置 `0x34` 的 bit2/bit3 分别选择紧凑40位/FIFO，互斥。bit4 选择本版输入直传，须与 bit3 配合。KWT5 `0x94` 统计直传结果数、`0x98` 统计输入字数。接口与并发启动顺序见 [编码器接口文档](docs/full-encoder.md) 和 [直传协议](docs/frontend-transfer.md)；旧 FFN 协议见 [基础架构](docs/architecture.md)。
 
 ## 4. 验证结果与适用边界
 
@@ -98,14 +91,14 @@ ENC1 的细分计数位于偏移 `0x60—0x90`，配置 `0x34` 的 bit2/bit3 分
 | 编码器 RTL 整机 | **12 条输入 × 12 层**，每条最终 6,336 个整数输出逐位一致 |
 | 编码器通用网表整机 | 第二版历史结果：1 条输入 × 12 层通过；本轮新版尚未重新综合及网表回归 |
 | 两种独立 FFN 模式 | 本轮 RTL 各执行 12 个任务，结果正确，完整 FFN 无性能回退 |
-| 中间矩阵 | 12 层 Q/K/V、分数、概率、PV、输出投影和残差/LN 逐位核对 |
+| 中间矩阵 | 本轮单层注意力/残差/LN 逐位核对，整机逐层核对 LN1 打包输入和 FFN 输出；历史12层完整中间矩阵证据保留 |
 | 数学与边界 | 除法 1,029 例、平方根 1,031 例、指数近似 34,855 例；覆盖常量输入、零方差等边界 |
-| 总线与异常 | 覆盖两笔在途排空、受阻请求保持、40 位打包、FIFO 随机背压和满队列补入、取消、复位及重启 |
+| 总线与异常 | 本轮覆盖单端口仲裁、慢输入、权重就绪、两笔在途排空、满 FIFO、末字背压取消、双端取消及重启；Verilator/Icarus 通过 |
 | 软件数值参考 | 完整 validation 索引 **4,445 条**，浮点与整数模型均正确 **4,351/4,445（97.8853%）**；预测全部一致，实际饱和 **0**；最大逐层聚合 NRMSE **0.171308%** |
 
 扩展数值验证包含 **4,074 个不同音频文件 + 371 个重复静音条目**，与 RTL 整机的 12 条输入是不同验证范围。逐层误差、最差样本、分类差异、各阶段饱和及完整明细见 [扩展验证报告](docs/encoder-validation-expanded.md)。原 120 条样本复测仍为 119/120，12 层聚合误差与历史报告完全一致。模型与整数格式保持冻结，不使用测试集调节尺度。
 
-本轮逐层观测、输入指纹和日志校验值见 [fifo-study-validation.json](docs/fifo-study-validation.json)；[frontend-transfer-validation.json](docs/frontend-transfer-validation.json) 保留第三版证据，[encoder-validation.json](docs/encoder-validation.json) 保留第二版历史网表证据。本轮未重跑 4,445 条软件评估，冻结数学文件未变。新版综合/网表以及正式 **150 MHz、≤2.25 mm²、功耗、能耗及官方 600 条样本评测**仍待完成。
+本轮逐层观测、输入指纹和日志校验值见 [input-stream-validation.json](docs/input-stream-validation.json)；[fifo-study-validation.json](docs/fifo-study-validation.json) 保留第四版证据；[frontend-transfer-validation.json](docs/frontend-transfer-validation.json) 保留第三版证据，[encoder-validation.json](docs/encoder-validation.json) 保留第二版历史网表证据。本轮未重跑 4,445 条软件评估，冻结数学文件未变。新版综合/网表以及正式 **150 MHz、≤2.25 mm²、功耗、能耗及官方 600 条样本评测**仍待完成。
 
 ## 5. 首次配置
 
@@ -158,6 +151,9 @@ uv run --no-project --python 3.13 scripts/download_competition_assets.py
 
 | 命令 | 内容 |
 | --- | --- |
+| `.\encoder.ps1 input-single` | 单层同固件 SRAM/直传对照及逐层数据核对 |
+| `.\encoder.ps1 input-protocol` | 输入分块、单端口、背压、双端取消、末字取消及四态恢复 |
+| `.\encoder.ps1 input-full` | 单层收益及协议门槛通过后，1条 SRAM 对照和12条直传输入的十二层回归 |
 | `.\encoder.ps1 component` | 12 层中间矩阵、连续 DMA 和常量输入检查 |
 | `.\encoder.ps1 transfer` | 40 位打包、FIFO、真实 FFN DMA、12 层中间值和四态传输检查 |
 | `.\encoder.ps1 fourstate` | Icarus 四态数学与组件检查 |
@@ -179,7 +175,7 @@ uv run --no-project --python 3.13 scripts/download_competition_assets.py
 .venv-model\Scripts\python.exe scripts/run_encoder.py soc --tasks 12 --jobs 4
 ```
 
-默认 SoC 使用 FIFO；`--transport 0/1/2` 可选择旧64位/紧凑40位/FIFO40。`tools.ps1 all` 是环境自检入口，不能替代设计验证。当前 FIFO 研究复现见 [专门流程](docs/fifo-study.md#复现)。`all` 还会执行耗时的综合与网表流程，本轮未执行这部分。
+默认 SoC 使用输出 FIFO 和 SRAM 输入；`--input-stream 1` 启用输入直传，`--layers 1` 用于单层对照。`--transport 0/1/2` 可选择旧64位/紧凑40位/FIFO40。`tools.ps1 all` 是环境自检入口，不能替代设计验证。当前输入直传复现见 [专门流程](docs/input-stream.md)。`all` 还会执行耗时的综合与网表流程，本轮未执行这部分。
 
 冻结格式的完整 validation 数值评估与报告导出（使用新的输出目录）：
 
@@ -223,8 +219,9 @@ setup.ps1 / env.ps1          首次安装 / 当前终端环境
 | `output/design/` | 仿真、lint、综合日志及构建目录 |
 | `output/encoder-design/` | 编码器固件、通用网表与综合记录 |
 | `output/encoder-vectors/`、`output/encoder-calibration/` | 编码器验证/训练检查向量与数值报告 |
-| `docs/fifo-study.md`、`docs/fifo-study-validation.json` | 最新前端性能报告与机器可读证据 |
-| `deliverables/undergraduate-encoder-frontend-v4.zip` | 本轮前端交付包，排除旧版网表 |
+| `docs/input-stream.md`、`docs/input-stream-validation.json` | 最新前端性能报告与机器可读证据 |
+| `docs/fifo-study.md`、`docs/fifo-study-validation.json` | 第四版 FIFO 分析与历史证据 |
+| `deliverables/undergraduate-encoder-frontend-v5.zip` | 本轮前端交付包，排除旧版网表 |
 | `deliverables/encoder-submission-sha256.txt` | 交付包 SHA-256 |
 
 当前 `collect` 检查 FIFO A/B 同固件同向量、12 条候选 SoC 覆盖、尾段/FIFO计数守恒、独立模式性能及冻结数学文件。它不替代新版网表验证。`package` 打包源码、参数、向量、已检查日志、输入指纹及固件，排除历史网表并校验归档内容。新增工程文件应先纳入 Git 暂存区，打包仅采集已跟踪/已暂存的源码文件。
@@ -238,15 +235,19 @@ setup.ps1 / env.ps1          首次安装 / 当前终端环境
 | 第四版本科必做 | `d501f0d` | 保留第一线性层必做基线 |
 | 第八版完整 FFN | `3461cf7` | 当前两种独立模式的功能与性能对照 |
 | 第一版完整编码器 | `ccc7641` | 15,535,024 周期的编码器优化对照 |
-| 第二版完整编码器 | `08b1969` | 组间调度、编码器连续 DMA 与细分计数；本轮优化对照 |
-| 第三版编码器 / 第九版 FFN | `59487c7` | 16 路独立线性层、40 位 FIFO；本轮 FIFO 研究基线 |
+| 第二版完整编码器 | `08b1969` | 组间调度、编码器连续 DMA 与细分计数；历史基线 |
+| 第三版编码器 / 第九版 FFN | `59487c7` | 16 路独立线性层、40 位 FIFO；第四版 FIFO 研究基线 |
+| 第四版编码器 / 第十版 FFN | `b716312` | 输出合并调度；本轮输入直传基线 |
 
 本机分别保留 `deliverables/undergraduate-v4-baseline.zip`、`full-ffn-v8-baseline.zip` 和 `encoder-v1-baseline.zip` 等历史归档。第五至第七版 FFN 的过程记录仍保留在 Git 历史和对应文档中。
 
-本轮另存 `encoder-v3-59487c7-source.zip` 和 `encoder-v3-59487c7-baseline.zip`，包含第三版源码、向量、日志与性能证据，校验值见 [冻结清单](docs/fifo-study-baseline.json)。
+本轮基线的源码、验证包和固件保存在本地 `deliverables/b716312-baseline/`，哈希收录在最新验证报告。
+
+此前另存 `encoder-v3-59487c7-source.zip` 和 `encoder-v3-59487c7-baseline.zip`，包含第三版源码、向量、日志与性能证据，校验值见 [冻结清单](docs/fifo-study-baseline.json)。
 
 - [完整编码器设计](docs/full-encoder.md)：执行顺序、数值契约、寄存器和内存布局。
-- [最新 FIFO 分析](docs/fifo-study.md)：供需判断、尾段分解及单项 RTL 对照。
+- [最新输入直传](docs/input-stream.md)：预装载、分块、单端口仲裁、背压、取消恢复与同条件对照。
+- [第四版 FIFO 分析](docs/fifo-study.md)：供需判断、尾段分解及单项 RTL 对照。
 - [第三版前端性能](docs/frontend-transfer.md)：16 路独立线性层、连续装载、紧凑打包及 FIFO 对比。
 - [第二版编码器性能](docs/encoder-performance.md)：历史阶段周期及跨层驻留 A/B。
 - [第八版 FFN 调度](docs/ffn-group-scheduling.md)：两种独立模式的当前基线。

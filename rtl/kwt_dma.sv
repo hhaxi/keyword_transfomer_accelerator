@@ -12,6 +12,8 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
     input wire m_rsp_valid, output wire m_rsp_ready, input wire [31:0] m_rdata,
     input wire m_err,
     output wire result_valid,input wire result_ready,output wire [39:0] result_data,
+    input wire preload_permit,
+    input wire input_valid,output wire input_ready,input wire [31:0] input_data,
     input wire link_abort_in,output wire link_abort_out
 );
     localparam IDLE=3'd0, CLEAR=3'd1, LOAD=3'd2, LAUNCH=3'd3, RUN=3'd4, DRAIN=3'd5;
@@ -19,9 +21,13 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
     reg [31:0] xbase,wbase,bbase,ybase,w2base,b2base,mode,gelu_config;
     wire ffn_mode=mode!=0;
     wire compact_mode=mode==2;
-    wire stream_mode=STREAM_ENABLE!=0 && mode==3;
+    wire input_mode=STREAM_ENABLE!=0 && mode==4;
+    wire stream_mode=STREAM_ENABLE!=0 && (mode==3 || mode==4);
+    reg [12:0] input_words;
+    wire [15:0] load_index=read_received+(input_mode ? 16'd3168 : 16'd0);
+    wire [15:0] read_index=read_scheduled+(input_mode ? 16'd3168 : 16'd0);
     wire [31:0] ybytes=compact_mode ? 32'd31680 : ffn_mode ? 32'd50688 : 32'd202752;
-    wire [15:0] read_words=ffn_mode ? 16'd19872 : 16'd11616;
+    wire [15:0] read_words=input_mode ? 16'd16704 : ffn_mode ? 16'd19872 : 16'd11616;
     wire [15:0] write_words=compact_mode ? 16'd7920 : ffn_mode ? 16'd12672 : 16'd50688;
     reg done,error,aborted,config_error;
     reg req_valid;
@@ -47,7 +53,7 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
     wire start_request=wr && cmd_addr==0 && cmd_wdata==1;
     // Keep code, stack and mailbox outside all DMA ranges. Bounds are checked
     // using subtraction from the fixed end, so 32-bit address wrap is rejected.
-    wire addresses_ok=(mode<=2 || (STREAM_ENABLE!=0 && mode==3)) && (!ffn_mode || ((gelu_config & 32'hffffe0e0)==0 &&
+    wire addresses_ok=(mode<=2 || (STREAM_ENABLE!=0 && (mode==3 || mode==4))) && (!ffn_mode || ((gelu_config & 32'hffffe0e0)==0 &&
         w2base[1:0]==0 && b2base[1:0]==0 &&
         w2base>=32'ha0010000 && w2base<=32'ha0080000-32'd32768 &&
         b2base>=32'ha0010000 && b2base<=32'ha0080000-32'd256 &&
@@ -77,14 +83,20 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
     wire core_clear=phase==CLEAR || (phase==DRAIN && !req_valid && !outstanding) || (abort_now && !active);
     wire last_output_word=compact_mode ? packed_word==4 : output_high;
     wire core_take=phase==RUN && !stopping && (stream_mode ? result_ready : (!output_have || (schedule_write && last_output_word)));
-    wire core_load=load_response && !stopping;
+    // Weight responses own the load port. Input is backpressured until all
+    // weights are resident, then the core arbitrates X writes against L1 reads.
+    assign input_ready=input_mode && (phase==LOAD || phase==RUN) &&
+        read_received==read_words && input_words<3168 && core_load_ready && !stopping;
+    wire input_fire=input_valid && input_ready;
+    wire core_load=(load_response || input_fire) && !stopping;
     // Core addresses refer to the first element of each packed pair. Bias is
     // still a full signed 32-bit word; output representation is unchanged.
-    wire [19:0] load_addr=read_received<3168 ? 20'h10000+{1'b0,read_received,3'b0} :
-        (read_received<11360 ? 20'h20000+(({4'b0,read_received}-20'd3168)<<3) :
-                              (read_received<11616 ? 20'h30000+(({4'b0,read_received}-20'd11360)<<2) :
-        (read_received<19808 ? 20'h40000+(({4'b0,read_received}-20'd11616)<<3) :
-                              20'h50000+(({4'b0,read_received}-20'd19808)<<2))));
+    wire [19:0] weight_addr=load_index<3168 ? 20'h10000+{1'b0,load_index,3'b0} :
+        (load_index<11360 ? 20'h20000+(({4'b0,load_index}-20'd3168)<<3) :
+                              (load_index<11616 ? 20'h30000+(({4'b0,load_index}-20'd11360)<<2) :
+        (load_index<19808 ? 20'h40000+(({4'b0,load_index}-20'd11616)<<3) :
+                              20'h50000+(({4'b0,load_index}-20'd19808)<<2))));
+    wire [19:0] load_addr=input_mode && !load_response ? 20'h10000+{4'd0,input_words,3'd0} : weight_addr;
     assign cmd_ready=!rsp_valid || rsp_ready;
     assign m_valid=req_valid;
     assign m_mask=4'hf;
@@ -96,7 +108,7 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
     wire retire=m_rsp_valid && m_rsp_ready;
     wire [2:0] credits_next={1'b0,outstanding_count}+{2'b0,accept}-{2'b0,retire};
     wire refill=(!req_valid || m_ready) && !stopping && credits_next<2;
-    wire schedule_read=refill && (phase==CLEAR || phase==LOAD || phase==LAUNCH || phase==RUN) && read_scheduled<read_words;
+    wire schedule_read=refill && (!input_mode || preload_permit) && (phase==CLEAR || phase==LOAD || phase==LAUNCH || phase==RUN) && read_scheduled<read_words;
     wire schedule_write=refill && phase==RUN && !stream_mode && output_have && !schedule_read;
 
     kwt_accel core(.clk(clk),.rst_n(rst_n),.cmd_valid(1'b0),.cmd_ready(unused_cmd_ready),.cmd_addr(20'b0),
@@ -105,7 +117,7 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
         .ffn_mode(ffn_mode),.gelu_input_shift(gelu_config[4:0]),.gelu_output_shift(gelu_config[12:8]),
         .perf_second_mac(second_mac),.perf_gelu(gelu_cycles),.perf_saturation(gelu_saturation),
         .perf_gelu_overlap(gelu_overlap),.perf_parameter_wait(parameter_wait),
-        .dma_mode(1'b1),.dma_load_valid(core_load),.dma_load_addr(load_addr),.dma_load_data(m_rdata),
+        .dma_mode(1'b1),.dma_load_valid(core_load),.dma_load_addr(load_addr),.dma_load_data(load_response ? m_rdata : input_data),.dma_input_stream(input_mode),
         .dma_load_ready(core_load_ready),.dma_start(phase==LAUNCH && !stopping),.dma_clear(core_clear),
         .dma_out_valid(core_valid),.dma_out_data(core_data),.dma_out_ready(core_take),
         .dma_done(core_done),.dma_fault(core_fault),.perf_cycles(core_cycles),
@@ -117,7 +129,7 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
             done<=0;error<=0;aborted<=0;config_error<=0;
             req_valid<=0;outstanding_count<=0;response_head<=0;response_tail<=0;m_addr<=0;m_wdata<=0;m_read<=1;
             read_scheduled<=0;read_received<=0;write_scheduled<=0;write_received<=0;
-            output_hold<=0;output_have<=0;output_high<=0;collect_lane<=0;packed_word<=0;streamed<=0;
+            output_hold<=0;output_have<=0;output_high<=0;collect_lane<=0;packed_word<=0;streamed<=0;input_words<=0;
             total_cycles<=0;load_cycles<=0;run_cycles<=0;other_cycles<=0;tail_load_cycles<=0;
             request_wait<=0;response_wait<=0;read_commands<=0;write_commands<=0;
             first_output<=0;last_output<=0;last_write<=0;producer_wait<=0;first_seen<=0;
@@ -145,11 +157,11 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
             if(accept) req_valid<=0;
             if(schedule_read) begin
                 req_valid<=1;m_read<=1;m_wdata<=0;
-                if(read_scheduled<3168) m_addr<=xbase+({16'b0,read_scheduled}<<2);
-                else if(read_scheduled<11360) m_addr<=wbase+(({16'b0,read_scheduled}-3168)<<2);
-                else if(read_scheduled<11616) m_addr<=bbase+(({16'b0,read_scheduled}-11360)<<2);
-                else if(read_scheduled<19808) m_addr<=w2base+(({16'b0,read_scheduled}-11616)<<2);
-                else m_addr<=b2base+(({16'b0,read_scheduled}-19808)<<2);
+                if(read_index<3168) m_addr<=xbase+({16'b0,read_index}<<2);
+                else if(read_index<11360) m_addr<=wbase+(({16'b0,read_index}-3168)<<2);
+                else if(read_index<11616) m_addr<=bbase+(({16'b0,read_index}-11360)<<2);
+                else if(read_index<19808) m_addr<=w2base+(({16'b0,read_index}-11616)<<2);
+                else m_addr<=b2base+(({16'b0,read_index}-19808)<<2);
                 read_scheduled<=read_scheduled+1'b1;
             end
             if(schedule_write) begin
@@ -173,13 +185,15 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
             if(stream_mode && phase==RUN && streamed==6336 && core_done && !req_valid && !outstanding && !stopping) begin
                 phase<=IDLE;done<=1;last_write<=total_cycles+1;
             end
+            if(input_fire) input_words<=input_words+1'b1;
+            if(input_mode && phase==LOAD && input_words>=256 && read_received==read_words && !stopping) phase<=LAUNCH;
             if(phase==CLEAR) phase<=LOAD;
             if(phase==LAUNCH) phase<=RUN;
             if(retire && !stopping) begin
                 if(load_response) begin
                     read_received<=read_received+1'b1;
                     // Launch L1 as soon as its inputs are resident; W2/b2 continue loading.
-                    if(read_received==11615) phase<=LAUNCH;
+                    if(!input_mode && read_received==11615) phase<=LAUNCH;
                 end
                 if(phase==RUN && !outstanding_read) begin
                     write_received<=write_received+1'b1;
@@ -202,7 +216,7 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
             if(start) begin
                 phase<=CLEAR;done<=0;error<=0;aborted<=0;config_error<=0;
                 read_scheduled<=0;read_received<=0;write_scheduled<=0;write_received<=0;
-                output_have<=0;output_high<=0;collect_lane<=0;packed_word<=0;streamed<=0;
+                output_have<=0;output_high<=0;collect_lane<=0;packed_word<=0;streamed<=0;input_words<=0;
                 total_cycles<=0;load_cycles<=0;run_cycles<=0;other_cycles<=0;tail_load_cycles<=0;
                 request_wait<=0;response_wait<=0;read_commands<=0;write_commands<=0;
                 first_output<=0;last_output<=0;last_write<=0;producer_wait<=0;first_seen<=0;
@@ -227,6 +241,7 @@ module kwt_dma #(parameter STREAM_ENABLE=0)(
                         20'h88: rsp_rdata<=gelu_overlap;
                         20'h8c: rsp_rdata<=parameter_wait;
                         20'h90: rsp_rdata<=tail_load_cycles;
+                        20'h98: rsp_rdata<={19'd0,input_words};
                         20'h94: rsp_rdata<={18'd0,streamed};
                         20'h40: rsp_rdata<=total_cycles;
                         20'h44: rsp_rdata<=load_cycles;

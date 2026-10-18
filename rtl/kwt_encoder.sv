@@ -11,6 +11,8 @@ module kwt_encoder #(parameter STREAM_ENABLE=0)(
     output wire m_read,output wire [3:0] m_mask,input wire m_rsp_valid,
     output wire m_rsp_ready,input wire [31:0] m_rdata,input wire m_err,
     input wire result_valid,output wire result_ready,input wire [39:0] result_data,
+    output wire preload_permit,
+    output wire input_valid,input wire input_ready,output wire [31:0] input_data,
     input wire link_abort_in,output wire link_abort_out
 );
     localparam IDLE=0,LREQ=1,LWAIT=2,PINIT=3,PPRIME=4,PMAC=5,PSAVE=6,RSAVE=7,
@@ -36,6 +38,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0)(
     reg [159:0] compact_buffer;
     reg [2:0] compact_word;
     wire compact_mode=config_[2];
+    wire input_mode=STREAM_ENABLE!=0 && config_[4];
     wire stream_mode=STREAM_ENABLE!=0 && config_[3];
     reg [31:0] cycles,mac_cycles,read_commands,write_commands,sram_reads,sram_writes,saturations;
     // Phase counters are disjoint; wait counters overlap their DMA phase.
@@ -49,17 +52,25 @@ module kwt_encoder #(parameter STREAM_ENABLE=0)(
     wire wr=take && !cmd_read && cmd_wmask==15 && cmd_addr[1:0]==0;
     wire abort_now=wr && cmd_addr==0 && cmd_wdata==2;
     wire stopping=abort_pending || abort_now || dma_error_pending || (stream_mode && link_abort_in);
-    assign link_abort_out=stream_mode && busy && (abort_now || abort_pending || dma_error_pending || (retire && m_err));
+    // A front command may be idle while its peer still computes/holds results.
+    assign link_abort_out=stream_mode && ((busy && (abort_now || abort_pending || dma_error_pending || (retire && m_err))) ||
+        (input_mode && z_valid && abort_now));
     assign result_ready=state==TSTREAM && !stopping;
     wire result_fire=result_valid && result_ready;
     assign cmd_ready=!rsp_valid || rsp_ready;
     wire loading=state==LREQ || state==LWAIT;
+    assign preload_permit=!loading;
     wire dumping=state==WREQ || state==WWAIT;
+    wire input_dump=input_mode && dumping && !norm_second;
+    assign input_valid=input_dump && issue_index<3168 && !stopping;
+    assign input_data=output_buffer[issue_index[0]*32+:32];
+    wire input_fire=input_valid && input_ready;
+    wire dump_fire=input_dump ? input_fire : issue;
     wire tail_loading=state==TREQ || state==TWAIT;
     wire [13:0] burst_length=loading ? load_length : tail_loading ? (compact_mode ? 14'd5 : 14'd8) : norm_second ? 14'd6336 : 14'd3168;
     // Two in-order credits allow retirement/refill every clock. A stalled offer
     // is irrevocable, including on abort/error; all accepted requests drain.
-    assign m_valid=(loading || dumping || tail_loading) && issue_index<burst_length &&
+    assign m_valid=(loading || (dumping && !input_dump) || tail_loading) && issue_index<burst_length &&
         pending_count<2 && (!(abort_pending || dma_error_pending) || offer_held);
     wire issue=m_valid && m_ready;
     wire retire=m_rsp_valid && pending_count!=0;
@@ -117,7 +128,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0)(
     function automatic range_ok(input [31:0] base,input [31:0] bytes_);
         range_ok=base[1:0]==0 && base>=32'ha0010000 && base<=32'ha0080000-bytes_;
     endfunction
-    wire addresses_ok=operation<=1 && (config_&32'hffe0e0f0)==0 && (!config_[3] || STREAM_ENABLE!=0) && !(config_[2] && config_[3]) &&
+    wire addresses_ok=operation<=1 && (!config_[4] || config_[3]) && (config_&32'hffe0e0e0)==0 && (!config_[3] || STREAM_ENABLE!=0) && !(config_[2] && config_[3]) &&
         range_ok(xbase,25344) && range_ok(pbase,66816) && range_ok(fxbase,12672) &&
         range_ok(fybase,compact_mode ? 31680 : 50688) && range_ok(ybase,25344) &&
         (fxbase+12672<=pbase || pbase+66816<=fxbase) &&
@@ -324,7 +335,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0)(
             end
             pending_count<=pending_next[1:0];
             offer_held<=m_valid && !m_ready;
-            if(issue) issue_index<=issue_index+1'b1;
+            if(issue || input_fire) issue_index<=issue_index+1'b1;
             // norm_value is dead during output DMA, so reuse it as the next
             // group's write buffer rather than adding SRAM or arithmetic.
             if(dumping && !stopping) begin
@@ -468,7 +479,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0)(
                     dump_prefetch<=0;issue_index<=0;load_index<=0;state<=WREQ;
                 end
                 WREQ,WWAIT:begin
-                    if(issue && (norm_second ? issue_index[1:0]==3 : issue_index[0]) && dump_group<1583) begin
+                    if(dump_fire && (norm_second ? issue_index[1:0]==3 : issue_index[0]) && dump_group<1583) begin
                         dump_group<=dump_group+1'b1;dump_prefetch<=0;
                         // For packed pairs the next group arrives on this very
                         // edge; bypass the prefetch register to sustain 1 word/clk.
@@ -480,7 +491,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0)(
                             end
                         end else output_buffer<=norm_value;
                     end
-                    if(retire) begin
+                    if(retire || input_fire) begin
                         if(load_index==burst_length-1'b1) begin
                             state<=IDLE;done<=1;if(norm_second) resident_valid<=1;else z_valid<=1;
                         end else load_index<=load_index+1'b1;

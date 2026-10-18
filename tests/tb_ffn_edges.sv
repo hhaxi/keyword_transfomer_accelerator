@@ -14,7 +14,7 @@ module tb_ffn_edges;
     reg [31:0] x[0:3167],w[0:8191],b[0:255],w2[0:8191],b2[0:63],sat[0:0];
     reg [63:0] expected[0:6335];
     string base;
-    kwt_accel dut(.clk(clk),.rst_n(rst_n),.cmd_valid(1'b0),.cmd_ready(unused_ready),
+    kwt_accel dut(.dma_input_stream(1'b0),.clk(clk),.rst_n(rst_n),.cmd_valid(1'b0),.cmd_ready(unused_ready),
         .cmd_addr(20'd0),.cmd_read(1'b0),.cmd_wdata(32'd0),.cmd_wmask(4'd0),
         .rsp_valid(unused_valid),.rsp_ready(1'b1),.rsp_rdata(unused_data),.rsp_err(unused_error),
         .dma_mode(1'b1),.dma_load_valid(load_valid),.dma_load_addr(load_addr),

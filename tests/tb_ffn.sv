@@ -17,7 +17,7 @@ module tb_ffn;
     reg was_stalled=0;reg [68:0] stalled_command;
     reg last_busy_checked=0,stall_second_load=0;
     reg [31:0] pending_addr=0;
-    kwt_dma dut(.result_valid(),.result_ready(1'b0),.result_data(),.link_abort_in(1'b0),.link_abort_out(),.*);
+    kwt_dma dut(.preload_permit(1'b1),.input_valid(1'b0),.input_ready(),.input_data(32'd0),.result_valid(),.result_ready(1'b0),.result_data(),.link_abort_in(1'b0),.link_abort_out(),.*);
     always @(posedge clk) begin
         cycles<=cycles+1;
         if(cycles>5000000) $fatal(1,"DMA test timeout");

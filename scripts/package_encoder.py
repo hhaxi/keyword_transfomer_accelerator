@@ -5,7 +5,7 @@ from pathlib import Path
 import subprocess
 import zipfile
 from build_soc import source_files,SOC
-from collect_fifo_study import main as collect
+from collect_input_study import main as collect
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -36,13 +36,13 @@ def main():
             raise RuntimeError('Local environment leaked into package: '+name)
     manifest={n:{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for n,p in sorted(files.items())}
     dest=ROOT/'deliverables';dest.mkdir(exist_ok=True)
-    target=dest/'undergraduate-encoder-frontend-v4.zip'
+    target=dest/'undergraduate-encoder-frontend-v5.zip'
     with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
         for name,p in sorted(files.items()):z.write(p,name)
         z.writestr('submission-manifest.json',json.dumps(manifest,indent=2)+'\n')
         z.writestr('SUBMISSION-STATUS.txt',
             'LOCAL FULL ENCODER EXTENSION; NOT OFFICIAL ACCEPTANCE\n'
-            'See docs/fifo-study.md and docs/fifo-study-validation.json. This package contains frontend evidence; historical netlists are excluded.\n'
+            'See docs/input-stream.md and docs/input-stream-validation.json. This package contains frontend evidence; historical netlists are excluded.\n'
             'Original FFN entry points and v8 reports remain as a separately identified baseline.\n'
             'Official cell/SRAM timing/area/power libraries and official sample/platform evaluation remain pending.\n'
             'Toolchains, audio dataset, caches and credentials are excluded.\n')

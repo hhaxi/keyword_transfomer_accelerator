@@ -50,11 +50,13 @@ int kwt_encoder_layer(uint32_t layer,uint32_t gelu_config,uint32_t encoder_confi
     enc[0x20/4]=(layer && !(encoder_config&1u)) ? 0xa0064000u : 0xa0010000u;
     enc[0x24/4]=0xa0050000u;enc[0x28/4]=0xa0018000u;
     enc[0x2c/4]=0xa0030000u;enc[0x30/4]=0xa0064000u;enc[0x34/4]=encoder_config;
-    int rc=execute(0);if(rc) return rc;
+    int rc=0;
+    if(encoder_config&16u) { rc=start_ffn(4u,gelu_config);if(rc) return rc; }
+    rc=execute(0);if(rc) { if(encoder_config&16u) stop_ffn();return rc; }
     statistics[0]=enc[0x40/4];
     for(uint32_t n=0;n<5;n++) statistics[3+n]=enc[0x48/4+n];
     if(encoder_config&12u) {
-        rc=start_ffn((encoder_config&8u)?3u:2u,gelu_config);
+        if(!(encoder_config&16u)) rc=start_ffn((encoder_config&8u)?3u:2u,gelu_config);
         if(rc) { abort_encoder();return rc; }
         if(encoder_config&8u) {
             /* Tail consumes the FIFO concurrently; waiting for FFN first

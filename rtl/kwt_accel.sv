@@ -11,7 +11,7 @@ module kwt_accel(
     // Dedicated DMA streaming interface; legacy MMIO is disabled in this mode.
     input wire dma_mode, dma_load_valid, input wire [19:0] dma_load_addr,
     input wire [31:0] dma_load_data, output wire dma_load_ready,
-    input wire dma_start, dma_clear, input wire ffn_mode,
+    input wire dma_start, dma_clear, input wire ffn_mode, dma_input_stream,
     input wire [4:0] gelu_input_shift,gelu_output_shift,
     output wire dma_out_valid,
     output wire [63:0] dma_out_data, input wire dma_out_ready,
@@ -20,7 +20,7 @@ module kwt_accel(
     output reg [31:0] perf_second_mac,perf_gelu,perf_saturation,perf_gelu_overlap,perf_parameter_wait
 );
     localparam IDLE=4'd0, BREQ=4'd1, BLOAD=4'd2, PRIME=4'd3,
-               MAC=4'd4, LAST=4'd5, EMIT=4'd6, DRAIN=4'd7, GELU=4'd8, MERGE=4'd9;
+               MAC=4'd4, LAST=4'd5, EMIT=4'd6, DRAIN=4'd7, GELU=4'd8, MERGE=4'd9, WAIT_X=4'd10;
     reg [3:0] state;
     // A/B switch: output groups can merge directly into the existing FIFO.
     // GELU still receives a separately registered merge, exactly as before.
@@ -76,7 +76,7 @@ module kwt_accel(
     wire b2sel=load_addr>=20'h50000 && load_addr<20'h50100;
     wire w2write=load && full_ffn && w2sel && load_addr[2:0]==0 && load_addr[15:2]==nw2[13:0] && nw2<16384;
     wire b2write=load && full_ffn && b2sel && load_addr[1:0]==0 && load_addr[7:2]==nb2[5:0] && nb2<64;
-    wire complete_load = nx == 6336 && nw == 16384 && nb == 256;
+    wire complete_load = (dma_input_stream ? nx>=512 : nx==6336) && nw == 16384 && nb == 256;
     wire second_ready=nw2==16384 && nb2==64;
     wire start = !busy && complete_load && (dma_mode ? dma_start :
                  (load && cmd_addr == 0 && cmd_wdata == 1));
@@ -166,8 +166,10 @@ module kwt_accel(
         .we(b2write),.addr(ba2),.din(load_data[31:16]),.dout(b2h));
     wire [39:0] result = fifo[head];
     assign cmd_ready = !dma_mode && (!rsp_valid || rsp_ready);
-    // While L1 is running, only the physically separate W2/b2 banks may load.
-    assign dma_load_ready = !busy || (full_ffn && !second_stage && (w2sel || b2sel));
+    // X writes use idle input-bank slots, including a stalled L2 output.
+    // This lets LN1 finish even while the tail consumer has not started.
+    assign dma_load_ready = !busy || (full_ffn && !second_stage && (w2sel || b2sel)) ||
+        (dma_input_stream && xsel && !(read_operands && !second_stage));
     assign dma_out_valid = count != 0;
     assign dma_out_data = {{24{result[39]}},result};
     assign dma_done=done;
@@ -214,6 +216,7 @@ module kwt_accel(
             if (state==EMIT && !push) fifo_wait<=fifo_wait+1;
             if (dma_mode && ((load && !(xwrite || wwrite || bwrite || w2write || b2write)) ||
                 (dma_start && (busy || !complete_load)))) fault<=1;
+            if(state==WAIT_X && nx >= (row>=96 ? 13'd6336 : ({6'd0,row[6:3],3'd0}+13'd8)<<6)) state<=BREQ;
             if (state==BREQ) state<=BLOAD;
             if (state==BLOAD) begin
                 bias_lane<=bias_lane+1'b1;
@@ -257,7 +260,7 @@ module kwt_accel(
                     k<=prime_next ? 8'd2 : 8'd0; state<=prime_next ? MAC : PRIME;
                     if(second_stage && col==56) begin
                         row<=row+1'b1;col<=0;
-                        if(row[2:0]==7) begin second_stage<=0;bias_lane<=0;state<=BREQ;end
+                        if(row[2:0]==7) begin second_stage<=0;bias_lane<=0;state<=dma_input_stream ? WAIT_X : BREQ;end
                     end else if(!second_stage && col==248) row<=row+1'b1;
                 end
             end

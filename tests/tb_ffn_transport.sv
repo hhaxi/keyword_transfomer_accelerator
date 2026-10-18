@@ -22,7 +22,7 @@ module tb_ffn_transport;
     reg [159:0] packed_group;
     reg [39:0] unpacked;
     integer mode_,case_,j,k,polls;string folder;
-    kwt_dma #(.STREAM_ENABLE(1)) dut(.*);
+    kwt_dma #(.STREAM_ENABLE(1)) dut(.preload_permit(1'b1),.input_valid(1'b0),.input_ready(),.input_data(32'd0),.*);
     always @(posedge clk) begin
         cycle<=cycle+1;
         if(cycle>4000000) $fatal(1,"Transport timeout");

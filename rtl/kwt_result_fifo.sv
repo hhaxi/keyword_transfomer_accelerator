@@ -1,10 +1,10 @@
 // Four exact int40 FFN results. Payload unreset; clear invalidates both ends.
-module kwt_result_fifo(
+module kwt_result_fifo #(parameter WIDTH=40)(
     input wire clk,rst_n,clear,
-    input wire in_valid,output wire in_ready,input wire [39:0] in_data,
-    output wire out_valid,input wire out_ready,output wire [39:0] out_data
+    input wire in_valid,output wire in_ready,input wire [WIDTH-1:0] in_data,
+    output wire out_valid,input wire out_ready,output wire [WIDTH-1:0] out_data
 );
-    reg [39:0] data[0:3];
+    reg [WIDTH-1:0] data[0:3];
     reg [1:0] head,tail;
     reg [2:0] count;
     assign out_valid=count!=0 && !clear;
