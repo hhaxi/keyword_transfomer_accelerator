@@ -22,6 +22,13 @@ module kwt_accel(
     localparam IDLE=4'd0, BREQ=4'd1, BLOAD=4'd2, PRIME=4'd3,
                MAC=4'd4, LAST=4'd5, EMIT=4'd6, DRAIN=4'd7, GELU=4'd8, MERGE=4'd9;
     reg [3:0] state;
+    // A/B switch: output groups can merge directly into the existing FIFO.
+    // GELU still receives a separately registered merge, exactly as before.
+`ifdef KWT_BASELINE_OUTPUT_MERGE
+    localparam OUTPUT_MERGE_FUSED=0;
+`else
+    localparam OUTPUT_MERGE_FUSED=1;
+`endif
     reg second_stage;
     reg [2:0] gelu_lane,gelu_row;
     reg [4:0] gelu_group;
@@ -222,7 +229,7 @@ module kwt_accel(
                 if (k==(second_stage ? 8'd255 : 8'd63)-8'd1) state<=LAST;
                 else k<=k+k_step;
             end
-            if (state==LAST) state<=MERGE;
+            if (state==LAST) state<=(OUTPUT_MERGE_FUSED!=0 && !(full_ffn && !second_stage)) ? EMIT : MERGE;
             if (merge_fire) begin
                 if(full_ffn && !second_stage) begin
                     gelu_busy<=1;gelu_lane<=0;gelu_group<=col[7:3];gelu_row<=row[2:0];
@@ -240,7 +247,9 @@ module kwt_accel(
                 default: begin end
             endcase
             if (push) begin
-                for(lane=0;lane<8;lane=lane+1) fifo[tail+4'(lane)]<=merged[lane];
+                // Nonblocking writes capture the old sums before prime_next
+                // initializes the MACs. Under backpressure the sums stay held.
+                for(lane=0;lane<8;lane=lane+1) fifo[tail+4'(lane)]<=OUTPUT_MERGE_FUSED!=0 ? acc[lane]+odd_acc[lane] : merged[lane];
                 tail<=tail+4'd8;
                 if (col==(second_stage ? 8'd56 : 8'd248) && row==98) state<=DRAIN;
                 else begin

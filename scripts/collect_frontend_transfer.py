@@ -20,6 +20,10 @@ def digest(path):
 
 
 def main():
+    # Preserve the v3 report as a frozen baseline after later core revisions.
+    old_core = subprocess.check_output(['git', 'show', '59487c7:rtl/kwt_accel.sv'], cwd=ROOT)
+    require(old_core.replace(b'\r\n', b'\n') == (ROOT/'rtl/kwt_accel.sv').read_bytes().replace(b'\r\n', b'\n'),
+            'This collector belongs to frozen v3; use collect_fifo_study.py for the current revision')
     checks = {}
 
     def evidence(name, marker):

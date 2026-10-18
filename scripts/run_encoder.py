@@ -53,7 +53,7 @@ def firmware():
     (dest/'encoder_size.vh').write_text('`define ENC_FW_WORDS %d\n'%(len(data)//4))
 
 
-def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1,transport=2):
+def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1,transport=2,fifo_metrics=False,extra_flags=None):
     includes=['+incdir+output/encoder-design/firmware']
     if netlist:
         files=[str((SOC/'rtl/e203/general'/n).relative_to(ROOT)).replace('\\','/') for n in ['sirv_gnrl_ram.v','sirv_sim_ram.v']]
@@ -64,6 +64,8 @@ def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activ
     label=label or ('tb_encoder_soc_netlist' if netlist else 'tb_encoder_soc')
     if not netlist:includes+=['+define+ENCODER_PHASE_METRICS']
     if metrics:includes+=['+define+ENCODER_MEMORY_METRICS','+incdir+tests']
+    if fifo_metrics:includes+=['+define+ENCODER_FIFO_METRICS','+incdir+tests']
+    includes+=extra_flags or []
     if activity:includes+=['--trace-fst']
     text=sim('tb_encoder_soc',files+['tests/tb_encoder_soc.sv'],includes,label=label,
              run_args=['+transport='+str(transport),'+tasks='+str(tasks),'+baseline='+str(baseline),'+first='+str(first)]+(['+activity'] if activity else []),

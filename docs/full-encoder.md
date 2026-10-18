@@ -1,4 +1,4 @@
-# 完整编码器拓展：第 4—7 项与第三版结果直传
+# 完整编码器拓展：第 4—7 项、结果直传与调度优化
 
 用户确认的范围是全部编码器拓展。结构遵循固定 KWT-1 检查点的 **PostNorm** 顺序，注意力在 FFN 之前。原有 FFN1 独立模式、完整 FFN 模式、驱动和必做基线保留。本文对应前端实现与本地验证，正式工艺 PPA 和官方评测仍待完成。
 
@@ -22,7 +22,7 @@ Z ─┬────────────────────────
 | 6：12 层系统 | E203 执行命令、切换参数、调用两个真实硬件 DMA；同一分类头比较浮点/定点预测；支持跨层驻留 | 音频前处理、嵌入及最后分类头属于软件参考边界；官方 600 条清单待提供 |
 | 7：综合与性能 | 可复现通用网表、综合后整机测试、周期/访问计数、同配置跨层复用 A/B、150 MHz 目标约束 | 正式库 STA、总面积、功耗和每次推理能耗待官方环境，不能认定 2.25 mm²/150 MHz 已达标 |
 
-当前前端机器结果在 [frontend-transfer-validation.json](frontend-transfer-validation.json)，实测对比在 [frontend-transfer.md](frontend-transfer.md)。[encoder-validation.json](encoder-validation.json) 和 [encoder-performance.md](encoder-performance.md) 保留第二版历史综合/网表证据；本轮未重新执行综合和网表。`design-validation.json`、`ffn-group-scheduling.md` 表示第八版 FFN 工作负载。
+当前前端机器结果在 [fifo-study-validation.json](fifo-study-validation.json)，实测对比在 [fifo-study.md](fifo-study.md)。第三版传输对照见 [frontend-transfer.md](frontend-transfer.md)；[encoder-validation.json](encoder-validation.json) 和 [encoder-performance.md](encoder-performance.md) 保留第二版历史综合/网表证据。本轮未重新执行综合和网表。`design-validation.json`、`ffn-group-scheduling.md` 表示第八版 FFN 工作负载。
 
 ## 硬件与资源
 
@@ -45,7 +45,11 @@ Z ─┬────────────────────────
 
 每次只保留一行 99 个注意力分数/概率。查询行完成后，其 Q 缓存位置覆写为 PV 输出；K/V 仍保留用于后续行。投影权重缓存被 Q、K、V、O 依次复用。LN2 结果保留为下一层 X，可省掉中间 11 层的输出写回和再次读取。FFN 输入仍经共享 SRAM，输出默认经 4×40 位 FIFO 直接送至编码器 tail；旧64位和紧凑40位 SRAM 交接保留。
 
-## 第三版计算与传输
+## 第四版输出合并调度
+
+FIFO 观测表明满等待为零、最大占用3/4，瓶颈主要在 FFN 供给。输出组将40位奇偶部分和直接写入现有 FIFO，省掉独立 MERGE 拍；进入 GELU 前仍保留合并寄存器。每层 FFN 和并发 tail 各减少792拍，两者不能重复相加。独立线性层为167,134周期，完整 FFN 为305,708周期，完整编码器为14,549,345周期。接口与数学运算顺序不变；计数来自仿真观察器，无新增硬件寄存器。详细拆分见 [FIFO研究](fifo-study.md)。
+
+## 第三版计算与传输（保留实现）
 
 独立第一线性层也启用现有 16 路 MAC，奇偶 k 同时读取、分别累加，再合并 40 位结果。FFN DMA 使用两笔顺序在途请求及同拍结果补入，独立线性层降至 170,236 周期，完整 FFN 为 306,703 周期。
 
