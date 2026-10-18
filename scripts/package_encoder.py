@@ -5,13 +5,13 @@ from pathlib import Path
 import subprocess
 import zipfile
 from build_soc import source_files,SOC
-from collect_encoder import main as collect
+from collect_frontend_transfer import main as collect
 
 ROOT=Path(__file__).resolve().parents[1]
 
 
 def main():
-    collect()  # Refuse a package with missing/failing tests or stale vectors.
+    report=collect()  # Refuse a package with missing/failing frontend evidence.
     # Package version-controlled sources; unrelated untracked drafts stay local.
     # Stage new project files before packaging.
     names=subprocess.check_output(['git','ls-files','--cached','-z'],cwd=ROOT).decode().split('\0')
@@ -25,7 +25,7 @@ def main():
             if p.is_file() and p.suffix in ['.hex','.json','.npz','.vh','.txt']:files[p.relative_to(ROOT).as_posix()]=p
     for folder in ['output/design','output/encoder-design']:
         for p in (ROOT/folder).glob('*'):
-            if p.is_file() and p.suffix in ['.log','.v','.json','.ys']:files[p.relative_to(ROOT).as_posix()]=p
+            if p.is_file() and p.relative_to(ROOT).as_posix() in report['checks']:files[p.relative_to(ROOT).as_posix()]=p
         for p in (ROOT/folder/'firmware').glob('*'):
             if p.is_file():files[p.relative_to(ROOT).as_posix()]=p
     for name in ['encoder-validation-export.log','encoder-training-export.log']:
@@ -36,13 +36,13 @@ def main():
             raise RuntimeError('Local environment leaked into package: '+name)
     manifest={n:{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for n,p in sorted(files.items())}
     dest=ROOT/'deliverables';dest.mkdir(exist_ok=True)
-    target=dest/'undergraduate-encoder-local-submission.zip'
+    target=dest/'undergraduate-encoder-frontend-v3.zip'
     with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
         for name,p in sorted(files.items()):z.write(p,name)
         z.writestr('submission-manifest.json',json.dumps(manifest,indent=2)+'\n')
         z.writestr('SUBMISSION-STATUS.txt',
             'LOCAL FULL ENCODER EXTENSION; NOT OFFICIAL ACCEPTANCE\n'
-            'See docs/full-encoder.md and docs/encoder-validation.json.\n'
+            'See docs/frontend-transfer.md and docs/frontend-transfer-validation.json. This package contains frontend evidence; historical netlists are excluded.\n'
             'Original FFN entry points and v8 reports remain as a separately identified baseline.\n'
             'Official cell/SRAM timing/area/power libraries and official sample/platform evaluation remain pending.\n'
             'Toolchains, audio dataset, caches and credentials are excluded.\n')

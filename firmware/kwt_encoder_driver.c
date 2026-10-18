@@ -16,6 +16,29 @@ static int execute(uint32_t operation) {
     }
     int r=abort_encoder();return r?r:-2;
 }
+/* Transport mode 2 packs four int40 results into five bus words; mode 3
+ * sends exact int40 values through the hardware FIFO. No scaling occurs here. */
+static volatile uint32_t *const ffn=(volatile uint32_t *)0x40000000u;
+static int stop_ffn(void) {
+    ffn[0]=2;
+    for(uint32_t n=0;n<100000;n++) if(!(ffn[1]&1)) return 0;
+    return -4;
+}
+static int start_ffn(uint32_t mode,uint32_t gelu) {
+    if(ffn[3]!=0x4b575435u) return -3;
+    int rc=stop_ffn();if(rc) return rc;
+    ffn[0x20/4]=0xa0018000u;ffn[0x24/4]=0xa0020000u;ffn[0x28/4]=0xa0028000u;
+    ffn[0x2c/4]=0xa0030000u;ffn[0x30/4]=0xa0040000u;ffn[0x34/4]=0xa0048000u;
+    ffn[0x38/4]=mode;ffn[0x3c/4]=gelu;fence();ffn[0]=1;return 0;
+}
+static int wait_ffn(void) {
+    for(uint32_t n=0;n<1000000;n++) {
+        uint32_t s=ffn[1];
+        if(s&0x1c) { int r=stop_ffn();return r?r:-1; }
+        if((s&3)==2) { fence();return 0; }
+    }
+    int r=stop_ffn();return r?r:-2;
+}
 int kwt_encoder_layer(uint32_t layer,uint32_t gelu_config,uint32_t encoder_config,
                       volatile uint32_t *statistics) {
     if(layer>=12 || enc[3]!=0x454e4331u || (enc[1]&1)) return -3;
@@ -30,13 +53,30 @@ int kwt_encoder_layer(uint32_t layer,uint32_t gelu_config,uint32_t encoder_confi
     int rc=execute(0);if(rc) return rc;
     statistics[0]=enc[0x40/4];
     for(uint32_t n=0;n<5;n++) statistics[3+n]=enc[0x48/4+n];
-    rc=kwt_ffn((const volatile uint32_t *)0xa0018000u,
-               (const volatile uint32_t *)0xa0020000u,(const volatile int32_t *)0xa0028000u,
-               (const volatile uint32_t *)0xa0040000u,(const volatile int32_t *)0xa0048000u,
-               (volatile uint32_t *)0xa0030000u,gelu_config);
-    if(rc) { abort_encoder();return rc; }
-    statistics[2]=*(volatile uint32_t *)0x40000040u;
-    rc=execute(1);if(rc) return rc;
+    if(encoder_config&12u) {
+        rc=start_ffn((encoder_config&8u)?3u:2u,gelu_config);
+        if(rc) { abort_encoder();return rc; }
+        if(encoder_config&8u) {
+            /* Tail consumes the FIFO concurrently; waiting for FFN first
+             * would deadlock as soon as the small FIFO fills. */
+            rc=execute(1);
+            if(rc) { stop_ffn();return rc; }
+            rc=wait_ffn();
+        } else {
+            rc=wait_ffn();
+            if(!rc) rc=execute(1);
+        }
+        if(rc) { stop_ffn();abort_encoder();return rc; }
+        statistics[2]=ffn[0x40/4];
+    } else {
+        rc=kwt_ffn((const volatile uint32_t *)0xa0018000u,
+                   (const volatile uint32_t *)0xa0020000u,(const volatile int32_t *)0xa0028000u,
+                   (const volatile uint32_t *)0xa0040000u,(const volatile int32_t *)0xa0048000u,
+                   (volatile uint32_t *)0xa0030000u,gelu_config);
+        if(rc) { abort_encoder();return rc; }
+        statistics[2]=*(volatile uint32_t *)0x40000040u;
+        rc=execute(1);if(rc) return rc;
+    }
     statistics[1]=enc[0x40/4];
     for(uint32_t n=0;n<5;n++) statistics[3+n]+=enc[0x48/4+n];
     fence();return 0;

@@ -8,7 +8,7 @@ module tb_encoder_soc;
     reg [31:0] fw[0:`ENC_FW_WORDS-1],input_x[0:6335],expected[0:6335];
     reg [31:0] params[0:16703],w1[0:8191],w2[0:8191],b1[0:255],b2[0:63],cfg[0:1];
     reg [31:0] rd,configuration;
-    integer taskid,li,j,n,num_tasks=12,first_task=0,baseline=0;
+    integer taskid,li,j,n,num_tasks=12,first_task=0,baseline=0,transport=2;
     longint cycles=0,start_cycle,task_cycles,total_cycles=0;
     string folder;
     kwt_encoder_soc dut(.*);
@@ -54,6 +54,8 @@ module tb_encoder_soc;
         if($value$plusargs("tasks=%d",num_tasks)) begin end
         if($value$plusargs("first=%d",first_task)) begin end
         if($value$plusargs("baseline=%d",baseline)) begin end
+        if($value$plusargs("transport=%d",transport)) begin end
+        if(transport<0 || transport>2) $fatal(1,"Invalid transport");
         if(first_task<0 || num_tasks<1 || first_task+num_tasks>12) $fatal(1,"Invalid task range");
         if($test$plusargs("activity")) begin $dumpfile("output/encoder-design/encoder-soc.fst");$dumpvars(0,dut);$dumpoff;end
         $readmemh("output/encoder-design/firmware/encoder.hex",fw);
@@ -81,7 +83,7 @@ module tb_encoder_soc;
                 for(j=0;j<256;j++) host(0,32'ha0028000+32'(4*j),b1[j],rd);
                 for(j=0;j<8192;j++) host(0,32'ha0040000+32'(4*j),w2[j],rd);
                 for(j=0;j<64;j++) host(0,32'ha0048000+32'(4*j),b2[j],rd);
-                configuration=cfg[1];
+                configuration=cfg[1] | (transport==2 ? 32'd8 : transport==1 ? 32'd4 : 32'd0);
                 if(!baseline) begin if(li!=0) configuration|=1;if(li!=11) configuration|=2;end
                 host(0,32'ha000f008,cfg[0],rd);host(0,32'ha000f00c,configuration,rd);host(0,32'ha000f010,32'(li),rd);
                 host(0,32'ha000f000,11,rd);rd=0;n=0;
@@ -105,12 +107,12 @@ module tb_encoder_soc;
             end
             for(li=0;li<12;li++) for(j=0;j<8;j++) begin
                 host(1,32'ha000f100+32'(32*li+4*j),0,rd);
-                if(j==3 && rd!=(li==0 || baseline ? 35712 : 29376)) $fatal(1,"Encoder read count");
+                if(j==3 && rd!=(li==0 || baseline ? 23040 : 16704)+(transport==2 ? 0 : transport==1 ? 7920 : 12672)) $fatal(1,"Encoder read count");
                 if(j==4 && rd!=(li==11 || baseline ? 9504 : 3168)) $fatal(1,"Encoder write count");
                 if(j==7 && rd!=0) $fatal(1,"Encoder saturation");
                 $display("ENC_LAYER_STATS task=%0d layer=%0d index=%0d value=%0d",taskid,li,j,rd);
             end
-            $display("ENC_SOC_TASK_PASS task=%0d cycles=%0d baseline=%0d outputs=6336",taskid,task_cycles,baseline);$fflush();
+            $display("ENC_SOC_TASK_PASS task=%0d cycles=%0d baseline=%0d outputs=6336 transport=%0d",taskid,task_cycles,baseline,transport);$fflush();
         end
         $display("ENC_SOC_PASS tasks=%0d total_cycles=%0d baseline=%0d",num_tasks,total_cycles,baseline);$finish;
     end

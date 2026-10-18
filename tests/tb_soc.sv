@@ -96,7 +96,7 @@ module tb_soc;
                 if(rd!==32'h50524633) $fatal(1,"Profile publication missing");
                 for(j=0;j<15;j=j+1) begin
                     host(1,32'ha000f020+32'(4*j),0,rd);
-                    if(j==4 && rd!=202752) $fatal(1,"MAC cycle count mismatch");
+                    if(j==4 && rd!=101376) $fatal(1,"MAC cycle count mismatch");
                     if(j==9 && rd!=11616) $fatal(1,"DMA read count mismatch");
                     if(j==10 && rd!=50688) $fatal(1,"DMA write count mismatch");
                     $display("SOC_PROFILE task=%0d index=%0d value=%0d",taskid,j,rd);

@@ -2,21 +2,23 @@
 // Command 0: Q/K/V -> row Softmax -> PV -> O -> residual -> LN1 -> packed FFN input.
 // Command 1: FFN result -> residual -> LN2 -> resident next-layer input / final DMA.
 // E203 supplies commands/addresses only; all encoder arithmetic is hardware.
-module kwt_encoder(
+module kwt_encoder #(parameter STREAM_ENABLE=0)(
     input wire clk,rst_n,
     input wire cmd_valid,output wire cmd_ready,input wire [19:0] cmd_addr,
     input wire cmd_read,input wire [31:0] cmd_wdata,input wire [3:0] cmd_wmask,
     output reg rsp_valid,input wire rsp_ready,output reg [31:0] rsp_rdata,output reg rsp_err,
     output wire m_valid,input wire m_ready,output wire [31:0] m_addr,m_wdata,
     output wire m_read,output wire [3:0] m_mask,input wire m_rsp_valid,
-    output wire m_rsp_ready,input wire [31:0] m_rdata,input wire m_err
+    output wire m_rsp_ready,input wire [31:0] m_rdata,input wire m_err,
+    input wire result_valid,output wire result_ready,input wire [39:0] result_data,
+    input wire link_abort_in,output wire link_abort_out
 );
     localparam IDLE=0,LREQ=1,LWAIT=2,PINIT=3,PPRIME=4,PMAC=5,PSAVE=6,RSAVE=7,
         SINIT=8,SPRIME=9,SMAC=10,SSAVE=11,EREAD=12,ECALC=13,EDIV=14,EDWAIT=15,
         NREAD=16,NCALC=17,VINIT=18,VPRIME=19,VMAC=20,VSAVE=21,
         SUMINIT=22,SUMPRIME=23,SUMMAC=24,MEAN=25,VARPRIME=26,VARMAC=27,
         SQSTART=28,SQWAIT=29,NDIV=30,NDWAIT=31,APRIME=32,ANORM=33,AFFINE=34,
-        DREAD=35,DCAP=36,WREQ=37,WWAIT=38,TGROUP=39,TREQ=40,TWAIT=41,TSTORE=42;
+        DREAD=35,DCAP=36,WREQ=37,WWAIT=38,TGROUP=39,TREQ=40,TWAIT=41,TSTORE=42,TUNPACK=43,TSTREAM=44;
     reg [5:0] state;
     reg [31:0] xbase,pbase,fxbase,fybase,ybase,config_,operation;
     reg done,error,aborted,config_error,abort_pending,resident_valid,z_valid,norm_second;
@@ -31,6 +33,10 @@ module kwt_encoder(
     reg signed [39:0] sum,mean;
     reg [31:0] exp_sum,reciprocal,low_word;
     reg [127:0] output_buffer,norm_value,gamma;
+    reg [159:0] compact_buffer;
+    reg [2:0] compact_word;
+    wire compact_mode=config_[2];
+    wire stream_mode=STREAM_ENABLE!=0 && config_[3];
     reg [31:0] cycles,mac_cycles,read_commands,write_commands,sram_reads,sram_writes,saturations;
     // Phase counters are disjoint; wait counters overlap their DMA phase.
     reg [31:0] phase_cycles[0:9];
@@ -42,12 +48,15 @@ module kwt_encoder(
     wire take=cmd_valid && cmd_ready;
     wire wr=take && !cmd_read && cmd_wmask==15 && cmd_addr[1:0]==0;
     wire abort_now=wr && cmd_addr==0 && cmd_wdata==2;
-    wire stopping=abort_pending || abort_now || dma_error_pending;
+    wire stopping=abort_pending || abort_now || dma_error_pending || (stream_mode && link_abort_in);
+    assign link_abort_out=stream_mode && busy && (abort_now || abort_pending || dma_error_pending || (retire && m_err));
+    assign result_ready=state==TSTREAM && !stopping;
+    wire result_fire=result_valid && result_ready;
     assign cmd_ready=!rsp_valid || rsp_ready;
     wire loading=state==LREQ || state==LWAIT;
     wire dumping=state==WREQ || state==WWAIT;
     wire tail_loading=state==TREQ || state==TWAIT;
-    wire [13:0] burst_length=loading ? load_length : tail_loading ? 14'd8 : norm_second ? 14'd6336 : 14'd3168;
+    wire [13:0] burst_length=loading ? load_length : tail_loading ? (compact_mode ? 14'd5 : 14'd8) : norm_second ? 14'd6336 : 14'd3168;
     // Two in-order credits allow retirement/refill every clock. A stalled offer
     // is irrevocable, including on abort/error; all accepted requests drain.
     assign m_valid=(loading || dumping || tail_loading) && issue_index<burst_length &&
@@ -60,7 +69,7 @@ module kwt_encoder(
     assign m_rsp_ready=1'b1;
     wire [13:0] load_length=load_kind==0 ? 14'd6336 : load_kind==1 ? 14'd320 : 14'd4096;
     wire [31:0] load_base=load_kind==0 ? xbase : load_kind==1 ? pbase+32'd65536 : pbase+{16'b0,projection,14'b0};
-    assign m_addr=(state==TREQ || state==TWAIT) ? fybase+{16'd0,tail_index[13:3],3'd0,2'b0}+{16'd0,issue_index,2'b0} :
+    assign m_addr=(state==TREQ || state==TWAIT) ? fybase+(compact_mode ? ({21'd0,tail_index[13:3]}<<4)+({21'd0,tail_index[13:3]}<<2) : {16'd0,tail_index[13:3],3'd0,2'b0})+{16'd0,issue_index,2'b0} :
         (state==WREQ || state==WWAIT) ?
             (norm_second ? ybase : fxbase)+{16'd0,issue_index,2'b0} :
             load_base+{16'd0,issue_index,2'b0};
@@ -108,9 +117,9 @@ module kwt_encoder(
     function automatic range_ok(input [31:0] base,input [31:0] bytes_);
         range_ok=base[1:0]==0 && base>=32'ha0010000 && base<=32'ha0080000-bytes_;
     endfunction
-    wire addresses_ok=operation<=1 && (config_&32'hffe0e0fc)==0 &&
+    wire addresses_ok=operation<=1 && (config_&32'hffe0e0f0)==0 && (!config_[3] || STREAM_ENABLE!=0) && !(config_[2] && config_[3]) &&
         range_ok(xbase,25344) && range_ok(pbase,66816) && range_ok(fxbase,12672) &&
-        range_ok(fybase,50688) && range_ok(ybase,25344) &&
+        range_ok(fybase,compact_mode ? 31680 : 50688) && range_ok(ybase,25344) &&
         (fxbase+12672<=pbase || pbase+66816<=fxbase) &&
         (fxbase+12672<=fybase || fybase+50688<=fxbase) &&
         (ybase+25344<=pbase || pbase+66816<=ybase) &&
@@ -166,7 +175,9 @@ module kwt_encoder(
         .denominator(state==EDIV ? exp_sum : root),.busy(div_busy),.done(div_done),.quotient(quotient));
     kwt_isqrt64 sqrt_unit(.clk(clk),.rst_n(rst_n),.clear(math_clear),.start(state==SQSTART),
         .value(variance_wide[63:0]),.busy(sqrt_busy),.done(sqrt_done),.root(root));
-    wire signed [71:0] tail_value=rne(sx64($signed({m_rdata,low_word})),{1'b0,config_[20:16]})+
+    wire [39:0] narrow_result=stream_mode ? result_data : compact_buffer[tail_index[2:1]*40+:40];
+    wire signed [63:0] tail_source=(stream_mode || compact_mode) ? {{24{narrow_result[39]}},narrow_result} : {m_rdata,low_word};
+    wire signed [71:0] tail_value=rne(sx64(tail_source),{1'b0,config_[20:16]})+
         sx32($signed(xd[tail_index[2:1]*32+:32]));
     reg [3:0] sat_events;
     integer i;
@@ -275,7 +286,7 @@ module kwt_encoder(
         if(dumping && dump_prefetch==0 && dump_group<1583) begin xcs=1;xa=dump_group+1'b1;end
         if(state==TGROUP) begin xcs=1;xa=tail_index[13:3];end
         if(state==TSTORE) begin xcs=1;xwe=1;xa=tail_index[13:3];xi=output_buffer;end
-        if(tail_loading && retire && !m_err && tail_index[0] && overflow32(tail_value)) sat_events=sat_events+1'b1;
+        if((((tail_loading && !compact_mode && retire && !m_err && tail_index[0]) || state==TUNPACK || result_fire) && overflow32(tail_value))) sat_events=sat_events+1'b1;
         if(state==VARMAC) for(integer u=0;u<4;u=u+1)
             if(overflow32(sx32($signed(xd[u*32+:32]))-{{32{mean[39]}},mean})) sat_events=sat_events+1'b1;
         if((state==DCAP || (dumping && dump_prefetch==1)) && !norm_second) for(integer u=0;u<4;u=u+1)
@@ -296,7 +307,7 @@ module kwt_encoder(
             done<=0;error<=0;aborted<=0;config_error<=0;abort_pending<=0;resident_valid<=0;z_valid<=0;norm_second<=0;
             load_kind<=0;load_index<=0;tail_index<=0;projection<=0;dump_group<=0;dump_prefetch<=0;
             row<=0;keyrow<=0;k<=0;group_<=0;row_max<=0;sum<=0;mean<=0;exp_sum<=0;reciprocal<=0;low_word<=0;
-            output_buffer<=0;norm_value<=0;gamma<=0;
+            output_buffer<=0;norm_value<=0;gamma<=0;compact_word<=0;
             cycles<=0;mac_cycles<=0;read_commands<=0;write_commands<=0;sram_reads<=0;sram_writes<=0;saturations<=0;
             issue_index<=0;pending_count<=0;offer_held<=0;dma_error_pending<=0;
             for(i=0;i<10;i=i+1) phase_cycles[i]<=0;
@@ -329,7 +340,7 @@ module kwt_encoder(
             end
             if(busy) begin
                 if(loading) phase_cycles[7]<=phase_cycles[7]+1'b1;
-                else if(state>=TGROUP && state<=TSTORE) phase_cycles[8]<=phase_cycles[8]+1'b1;
+                else if(state>=TGROUP && state<=TSTREAM) phase_cycles[8]<=phase_cycles[8]+1'b1;
                 else if(state>=DREAD && state<=WWAIT) phase_cycles[9]<=phase_cycles[9]+1'b1;
                 else if(state>=PINIT && state<=RSAVE) begin
                     if(projection==3) phase_cycles[4]<=phase_cycles[4]+1'b1;
@@ -348,11 +359,11 @@ module kwt_encoder(
             end
             if(stopping || (retire && m_err)) begin
                 if(abort_now || abort_pending) abort_pending<=1;
-                if(retire && m_err) dma_error_pending<=1;
+                if((retire && m_err) || (stream_mode && link_abort_in)) dma_error_pending<=1;
                 resident_valid<=0;z_valid<=0;done<=0;
                 if(pending_next==0 && !(m_valid && !m_ready)) begin
                     state<=IDLE;aborted<=abort_now || abort_pending;
-                    error<=dma_error_pending || (retire && m_err);
+                    error<=dma_error_pending || (retire && m_err) || (stream_mode && link_abort_in);
                     abort_pending<=0;dma_error_pending<=0;
                 end
             end else case(state)
@@ -475,12 +486,23 @@ module kwt_encoder(
                         end else load_index<=load_index+1'b1;
                     end
                 end
-                TGROUP:begin issue_index<=0;state<=TREQ;end
+                TGROUP:begin issue_index<=0;compact_word<=0;state<=stream_mode ? TSTREAM : TREQ;end
                 TREQ,TWAIT:if(retire) begin
+                    if(compact_mode) begin
+                        compact_buffer[compact_word*32+:32]<=m_rdata;
+                        compact_word<=compact_word+1'b1;
+                        if(compact_word==4) state<=TUNPACK;
+                    end else begin
                     if(!tail_index[0]) low_word<=m_rdata;
                     else output_buffer[tail_index[2:1]*32+:32]<=clip32(tail_value);
                     if(tail_index[2:0]==7) state<=TSTORE;
                     else tail_index<=tail_index+1'b1;
+                    end
+                end
+                TUNPACK,TSTREAM:if(state==TUNPACK || result_fire) begin
+                    output_buffer[tail_index[2:1]*32+:32]<=clip32(tail_value);
+                    if(tail_index[2:1]==3) begin tail_index<=tail_index+1'b1;state<=TSTORE;end
+                    else tail_index<=tail_index+14'd2;
                 end
                 TSTORE:begin
                     if(tail_index==12671) begin row<=0;norm_second<=1;state<=SUMINIT;end

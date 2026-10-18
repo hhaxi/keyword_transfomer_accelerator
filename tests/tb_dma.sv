@@ -15,7 +15,7 @@ module tb_dma;
     integer j,polls,read_count=0,write_count=0,cycles=0,transactions=0;
     reg was_stalled=0;reg [68:0] stalled_command;
     reg last_busy_checked=0;
-    kwt_dma dut(.*);
+    kwt_dma dut(.result_valid(),.result_ready(1'b0),.result_data(),.link_abort_in(1'b0),.link_abort_out(),.*);
     always @(posedge clk) begin
         cycles<=cycles+1;
         if(cycles>5000000) $fatal(1,"DMA test timeout");
@@ -149,7 +149,7 @@ module tb_dma;
             bus(1,20'h40+20'(4*j),0,0,profile[j]);
             $display("DMA_PROFILE index=%0d value=%0d",j,profile[j]);
         end
-        if(profile[0]!=profile[1]+profile[2]+profile[3] || profile[4]!=202752 ||
+        if(profile[0]!=profile[1]+profile[2]+profile[3] || profile[4]!=101376 ||
            profile[5]==0 || profile[9]!=11616 || profile[10]!=50688 ||
            profile[13]!=profile[0] || profile[12]>=profile[13]) $fatal(1,"Cycle accounting mismatch");
         $display("DMA_PASS bit-exact outputs, delayed final write, burst loading, stalls, faults, abort, reset, counters");

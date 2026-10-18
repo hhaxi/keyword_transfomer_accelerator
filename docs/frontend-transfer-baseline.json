@@ -1,0 +1,9 @@
+{
+  "commit": "ccc5e72f571df2e2c64b0c280377289fddf7ad44",
+  "linear_soc_cycles": 271678,
+  "full_ffn_soc_cycles": 306709,
+  "encoder_soc_cycles": 14808628,
+  "linear_mac_cycles": 202752,
+  "encoder_ffn_result_bytes_per_layer": 50688,
+  "numeric_formats": "unchanged; model/format.json, ffn-format.json, encoder-format.json"
+}

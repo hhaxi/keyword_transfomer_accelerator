@@ -1,0 +1,2305 @@
+{
+  "version": "encoder-v3/ffn-v9",
+  "scope": "Frontend RTL, E203 SoC and four-state simulation; no new netlist/PPA claim",
+  "baseline_commit": "ccc5e72f571df2e2c64b0c280377289fddf7ad44",
+  "independent": {
+    "linear": {
+      "cycles": [
+        170236,
+        170236,
+        170236,
+        170236,
+        170236,
+        170236,
+        170236,
+        170236,
+        170236,
+        170236,
+        170236,
+        170236
+      ],
+      "baseline_cycles": 271678,
+      "cycle_reduction_percent": 37.33905579399141
+    },
+    "ffn": {
+      "cycles": [
+        306703,
+        306703,
+        306703,
+        306703,
+        306703,
+        306703,
+        306703,
+        306703,
+        306703,
+        306703,
+        306703,
+        306703
+      ],
+      "baseline_cycles": 306709,
+      "cycle_reduction_percent": 0.001956251691342608
+    }
+  },
+  "transport_comparison": {
+    "legacy64": {
+      "task": 0,
+      "cycles": 14808649,
+      "encoder_dma_read32": 358848,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 152064,
+      "total_dma_words32": 793728,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 39360,
+          "ffn": 226146
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 39364,
+          "ffn": 226146
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 47825,
+          "ffn": 226146
+        }
+      ]
+    },
+    "packed40": {
+      "task": 0,
+      "cycles": 14808283,
+      "encoder_dma_read32": 301824,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 95040,
+      "total_dma_words32": 679680,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 39363,
+          "ffn": 226144
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 39341,
+          "ffn": 226143
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 39343,
+          "ffn": 226144
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 39340,
+          "ffn": 226144
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 39340,
+          "ffn": 226144
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 39340,
+          "ffn": 226144
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 39340,
+          "ffn": 226144
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 39340,
+          "ffn": 226144
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 39340,
+          "ffn": 226144
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 39340,
+          "ffn": 226144
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 39340,
+          "ffn": 226144
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 47803,
+          "ffn": 226143
+        }
+      ]
+    },
+    "fifo40": {
+      "task": 0,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    }
+  },
+  "stream_soc_tasks": [
+    {
+      "task": 0,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 1,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 2,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 3,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 4,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 5,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 6,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 7,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 8,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 9,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 10,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    },
+    {
+      "task": 11,
+      "cycles": 14561648,
+      "encoder_dma_read32": 206784,
+      "encoder_dma_write32": 44352,
+      "ffn_dma_read32": 238464,
+      "ffn_dma_write32": 0,
+      "total_dma_words32": 489600,
+      "phase_cycles": [
+        {
+          "layer": 0,
+          "front": 837792,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 1,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 2,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 3,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 4,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 5,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 6,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 7,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 8,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 9,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 10,
+          "front": 829337,
+          "tail": 244274,
+          "ffn": 226131
+        },
+        {
+          "layer": 11,
+          "front": 829337,
+          "tail": 252735,
+          "ffn": 226131
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "output/design/tb_accel-run.log": {
+      "sha256": "f0d38f4259fe2aa19abd4112a0f82701912f3e30a4e34d160599b8c86aae26cf",
+      "marker": "ACCEL_PASS 12 parameter sets"
+    },
+    "output/design/tb_dma-run.log": {
+      "sha256": "bcfe7285c53b3893adfc64ee343b97ed26579453e88e07303b25230f6bd5f852",
+      "marker": "DMA_PASS"
+    },
+    "output/design/tb_ffn-run.log": {
+      "sha256": "98dd2f81bf7f6ac0435e638b3a184d5a91850bd4bb8d6a48ce2f3d42571d2235",
+      "marker": "FFN_PASS"
+    },
+    "output/design/tb_ffn_edges-run.log": {
+      "sha256": "b171344e40b06489785314cb101a2ae27497e28b883f063b429dd4c9283d736b",
+      "marker": "FFN_EDGES_PASS cases=3"
+    },
+    "output/design/tb_result_fifo-run.log": {
+      "sha256": "e16d78d710c2ee99822866f275d9d5ed7b5bf0c64d8fe73741729d6c59a59b96",
+      "marker": "RESULT_FIFO_PASS"
+    },
+    "output/design/tb_ffn_transport-run.log": {
+      "sha256": "400b10dfd8c3da4b87e0f41411aca1cbe56649f25f58f0092c509e62102c72e4",
+      "marker": "abort_drain error_drain cancellation restart"
+    },
+    "output/design/tb_ffn_transport_ideal-run.log": {
+      "sha256": "593ba3bf41a91536dc344d2e5fd7be588b15337be9f7d452a2c6d5026b591cb1",
+      "marker": "read_streak=19872 write_streak=5"
+    },
+    "output/design/tb_encoder_transfers-run.log": {
+      "sha256": "f96d45ea093433f0582558e48d8eeb6d2381cf51c3d041d19c01d37ae92195c5",
+      "marker": "ENCODER_PASS layers=12 constant_edge=0 transport=1"
+    },
+    "output/design/tb_encoder_stream40-run.log": {
+      "sha256": "7f6dd1cec49052d5bde0e8678eb934c5e293064d0a1b1d7c8ee8551a0213548e",
+      "marker": "ENCODER_PASS layers=12 constant_edge=0 transport=2"
+    },
+    "output/design/tb_encoder_faults-run.log": {
+      "sha256": "9af6087ff5e929efd9fa87673383cc880edd7bfa988faec5d4f95b16538a0d03",
+      "marker": "ENC_FAULTS_PASS"
+    },
+    "output/design/tb_dma_arbiter-run.log": {
+      "sha256": "0a541d277177a1a8e0dd9e487d12c2552c7c47df218966e34e8ac1747dc2e67d",
+      "marker": "ENC_ARBITER_PASS"
+    },
+    "output/design/icarus-accel.log": {
+      "sha256": "3245844a30b93b13bc96fcd5e7876b70ecfa80d6a2e58b09d6c8110dc587cb93",
+      "marker": "ACCEL_PASS 1 parameter sets"
+    },
+    "output/design/icarus-tb_ffn_edges.log": {
+      "sha256": "4428c547457071f5439533d2f037df0efcf918e1b6a16dbf7e8f7add7255ddfc",
+      "marker": "FFN_EDGES_PASS cases=3"
+    },
+    "output/design/icarus-tb_ffn.log": {
+      "sha256": "04fc84be73b3869c0cd5ca1def839c57e3cdf00101404d106220c268fa0d2cfe",
+      "marker": "FFN_PASS"
+    },
+    "output/design/icarus-tb_dma.log": {
+      "sha256": "965b711a9e30df2425518ecaca5ba812100dcc20dd456bb1ae43446824b4398d",
+      "marker": "DMA_PASS"
+    },
+    "output/design/icarus-tb_result_fifo.log": {
+      "sha256": "92bd46d2db7dfb288a1163e6b167f22bb165767e5b1f59e336b2a15ef96986bd",
+      "marker": "RESULT_FIFO_PASS"
+    },
+    "output/design/icarus-tb_ffn_transport.log": {
+      "sha256": "649733031ca49696e56d8034fa877e02e1b3c5129ef0b85e83eab632f7d13e72",
+      "marker": "abort_drain error_drain cancellation restart"
+    },
+    "output/design/icarus-tb_encoder_faults.log": {
+      "sha256": "f35614193e7e517a9e451419b57e1c6844ba2b92c242a0e524d25a21dfa48140",
+      "marker": "ENC_FAULTS_PASS"
+    },
+    "output/design/icarus-tb_dma_arbiter.log": {
+      "sha256": "f5c002a714e1e9c544f33677f636c662d4c26ca0abe805fc86798f0ed25d7448",
+      "marker": "ENC_ARBITER_PASS"
+    },
+    "output/design/icarus-tb_encoder_packed40.log": {
+      "sha256": "befc57f41dce0b687734900d1aea1e5101523801febe0d4090744fa68a7ca119",
+      "marker": "ENCODER_PASS layers=1 constant_edge=0 transport=1"
+    },
+    "output/design/icarus-tb_encoder_stream40.log": {
+      "sha256": "c57a3844acce044f8edd1250b7bf7550be9bed9dc719275cbf9573cb8c9aba9d",
+      "marker": "ENCODER_PASS layers=1 constant_edge=0 transport=2"
+    },
+    "output/design/encoder-lint.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "marker": "empty strict lint log"
+    },
+    "output/design/tb_soc_encoder_compat-run.log": {
+      "sha256": "4bd32a66d6f03fe14de00237976e7311790ee7770e5474e20834b4084947387c",
+      "marker": "SOC_PASS tasks=12"
+    },
+    "output/design/tb_soc_ffn_encoder_compat-run.log": {
+      "sha256": "2e8322dcb6956edf1b530d4b7f1533f0c1d0285b92a4324322e093b6b270f26a",
+      "marker": "SOC_PASS tasks=12"
+    },
+    "output/design/tb_encoder_soc-run.log": {
+      "sha256": "82aa94b56426ebc817716a97da08cced39f8f534fcb45d3a3b23ec231e330d4d",
+      "marker": "ENC_SOC_"
+    },
+    "output/design/tb_encoder_soc_stream_shard1-run.log": {
+      "sha256": "0150d29ef14c939635f9a2b557525a7e31ccc9db3c716ed53929a1d40e8e6958",
+      "marker": "ENC_SOC_"
+    },
+    "output/design/tb_encoder_soc_stream_shard10-run.log": {
+      "sha256": "75a840081efb4c40abe737628c2cf73150d1605c00bf9413e5928c1133d7da58",
+      "marker": "ENC_SOC_"
+    },
+    "output/design/tb_encoder_soc_stream_shard4-run.log": {
+      "sha256": "e653b6133263e3117e2ad004189862d53b63abdaba54ac1af1a6e7bcafd9b891",
+      "marker": "ENC_SOC_"
+    },
+    "output/design/tb_encoder_soc_stream_shard7-run.log": {
+      "sha256": "f06b3d9068968db1436e1e8e8c1a92690bb7dbe2b2310240391a415cb618a609",
+      "marker": "ENC_SOC_"
+    },
+    "output/design/tb_encoder_soc_legacy64-run.log": {
+      "sha256": "74d0ca3ed974f9950931169a84cc3111de144d15449b1b5069af89d53a0609f4",
+      "marker": "ENC_SOC_"
+    },
+    "output/design/tb_encoder_soc_packed40-run.log": {
+      "sha256": "e002276587c41718d4ac488c1a0cc48bfa823a67e5fb9b08f85c4ddd075a64e2",
+      "marker": "ENC_SOC_"
+    }
+  },
+  "frozen_numeric_sha256": {
+    "model/format.json": "f4960b79ac9b0157ae26d2d783e5efef21c335496809a023e935b9b8c3685294",
+    "model/ffn-format.json": "23ec3ff30d76e281294fbd747ce7913ec7d86bf2782bf739f742397c3c31b149",
+    "model/encoder-format.json": "f701fce4e3a27ada7a15f248175bc9d3959ef79143ce354f26befbaf226938e7",
+    "model/numeric.py": "7b8dba29a9685f64dddf72e5fc7302ec83453bc96d41e36771432bb1773a1218",
+    "model/ffn_numeric.py": "81494b665a4dffa1c44ce64d834245aab94213173da32a4409884b833030c1e6",
+    "model/encoder_numeric.py": "1116c5408cf4cffb284435c7a0f933559074ecd7053c39fb4c04c51dbcda2486"
+  },
+  "source_hash_method": "Captured at evidence collection; source line endings normalized to LF",
+  "sources_sha256": {
+    "rtl/kwt_accel.sv": "bb2b238718add28949c2be8b4d8b4c1d479a13c6e2509376187f7260056a3435",
+    "rtl/kwt_dma.sv": "7aa1a13b9e3a26746a2027411c1897a70e10a4fadf7307d2dec862c916f94081",
+    "rtl/kwt_encoder.sv": "f6f7dcbe4325aa0ff7c34ce0ccbf477e79effbd6030ed85116db02e0a21024d5",
+    "rtl/kwt_exp_negative.sv": "8ec02693db2045c3bb2d89c6418ab7a4192d8344274995f4c55bc014ed14d1c3",
+    "rtl/kwt_gelu.sv": "c90731e826a9e8878d2d15c905a30017aaa9d7af116baf72984a980aae873a7b",
+    "rtl/kwt_isqrt64.sv": "2949b76ab53fcd1ebef521e0541c589d8bd21d87766bb85f51c29b4aa2170afb",
+    "rtl/kwt_mac40.sv": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63",
+    "rtl/kwt_result_fifo.sv": "039b594ec6d6a42f175c3fbd8012a8057acbfc490e438f3151e32f30503c0ffa",
+    "rtl/kwt_sram16.sv": "3c14d9652dc4550a016274910d1b6a4721d0e1e84621a57fe6355e00a9ea6a9d",
+    "rtl/kwt_udiv64.sv": "6c709c56148c5cb5c5918f8e50481639e2134597a080a8a84c1f0b6d3ed7f942",
+    "rtl/kwt_vecmem32.sv": "d26cc73489b369520cb2eeea2ec5d11e2dff08fbe3d8e22e186a10e7050ea01d",
+    "integration/e203_ram_boundary.v": "50ac226f2ec35fb889c54e9863fc54954325cb986aceedb7bd64569d27689a9e",
+    "integration/kwt_bus_fabric.sv": "3cc23fd51f33d9e17e817be066d439e8706f82b9958d26ffdae1f6ae0c647277",
+    "integration/kwt_dma_arbiter.sv": "f7ab60f6279f8094e4be881dd941782da146c91de6c8384b0266af7ca36fc644",
+    "integration/kwt_encoder_soc.sv": "82e5da1f6c2229435d59e10c59bfe5480206ffcdfb71da8d3955a9480f82e7d1",
+    "integration/kwt_extended_system_bus.sv": "fd1c39eabe6936bb50e334d72913c9360b3c1ca5e616129b98bfd16d1c7f53e9",
+    "integration/kwt_shared_sram.sv": "89aee640754231540e2689b3f442d70bcf1b9d11677cbe3ed5aae118491ac268",
+    "integration/kwt_soc.sv": "4920d021a803965c3d054c7aee036cf86d41079ec466d1ff84ad2ec6e32b2451",
+    "integration/kwt_system_bus.sv": "ce81c5089367adf44324c65b6da6177775d32f4f167bbe0c1ebf40d0da999a0a",
+    "firmware/kwt_driver.c": "e3c967e1f9e2dae0267ac1f8586032794ca977b13cc93eebdaf77eb03b99efd0",
+    "firmware/kwt_driver.h": "fe4b1e8c323592ae6483b12d2560642b04794049f556893fa4138d4ddb54b032",
+    "firmware/kwt_encoder_driver.c": "728eef786d9887675608a7a059bc258eebfeb31422c5913bd788a96b301c2e92",
+    "firmware/kwt_encoder_driver.h": "804aeeff0f9d5ea81dff8eca66f76e6bd8febec73fbb82406bbc8041bead5140",
+    "firmware/link.ld": "6b92fa96a24bec6a9af0a6a74c1d542fa12fbdf7e65a595bd010c55e361d2e9b",
+    "firmware/main.c": "295a7e6c9b00cc2428eee47e2827a7b7a99df390125cb1431e4badddc19aa9d6",
+    "firmware/main_encoder.c": "5dc50c86473c93703e210c5d7b8f62ddf0869891447de0f8376c912ed0411c1e",
+    "firmware/start.S": "14cd16d89ca9e5f14c8f00686adfa6e64c318b6116ac04ceb4be505eda9781ac",
+    "tests/tb_accel.sv": "6b4e0d810c89876c4e5ec730e9bb92894058df64c874102e8a906fba1507ef39",
+    "tests/tb_bus.sv": "b434b839f70641b7d10a29d2355c0f784d69b1bad53550b42d1a320cfb4a4a35",
+    "tests/tb_dma.sv": "0234fc29357a67e7fc1eb94088d0fa294f8a30b5918408b1e736c9d1f23f0845",
+    "tests/tb_dma_arbiter.sv": "886e3e25c72716102e5b9ef57664ea356cdd8d36f1f5eaf09f5bedf72b06db74",
+    "tests/tb_encoder.sv": "ab8b1029f626068feeb8c9686987e8d266721c731747a2f91e86d47c18a5da92",
+    "tests/tb_encoder_faults.sv": "b1d232dbe7990614c19653591bfc6ebd3ba6cec0bda21b79fcf7927d60689839",
+    "tests/tb_encoder_math.sv": "81d42d9de251ca1209dce9877dc541f11c4ff73174ea5eb5de2153c8f2e87bae",
+    "tests/tb_encoder_soc.sv": "7901daa11dc8bb13344db2063ff775fb380b5b73582afa2a4b17577314ce2676",
+    "tests/tb_ffn.sv": "bd74dfe0a64654ab68777f3e4b08e030943fff0e8e9a4b3d649aa42f083e20b0",
+    "tests/tb_ffn_edges.sv": "64b15316bd9710abce9f837052ca924eb1458b4d2bed62a8cfd25e70381fd31c",
+    "tests/tb_ffn_transport.sv": "e06927875a1ab5b35843fdad78468650ee9e48575b0525826378607fbfc76f84",
+    "tests/tb_gelu.sv": "a3b82f7229fbeada166bc22e9c85351414abcbbb8814d3e5a4756cadc085862e",
+    "tests/tb_mac.sv": "eb29e21ffa6e14c9c6a94b8e8de3d76cb1d64fc44eb97007d45a65bdda736499",
+    "tests/tb_result_fifo.sv": "4b01511d12f8b0f15c13cfd358f819455369d22ab215b0e3ec732e87c0288687",
+    "tests/tb_soc.sv": "975bcefaad4d6a9b0b799aecc58283c2247b59e32a55be51915a196df9e45eac",
+    "tests/tb_soc_ffn.sv": "138fe6517066ca7c746dec4b32e61156aef18dabce7a49a9cc24b60d5290f837"
+  },
+  "vector_sha256": {
+    "output/vectors/evaluation-manifest.json": "71a235a752878f86f344bf4ab88c3649bb57ca5e632640ac48f2ad96a67c74bc",
+    "output/vectors/manifest.json": "973549c721411fc19083861d0125803189a385c354b165dfddfcd9d3d9780f3e",
+    "output/vectors/numeric-report.json": "6477bde16dc73ffa45f5048995603246992a827295a135e1aade6f39ef282901",
+    "output/vectors/packed-manifest.json": "91b9f162587c6df031a94e77a1f1f260f271c8be9df940e5845c5f166e8a616d",
+    "output/vectors/task_00/b.hex": "d1122381f7ba11c4978807997c6d82dac9cca1a102a5524a67606322595f1400",
+    "output/vectors/task_00/expected.hex": "46615b5c5e327817e374916b67e02bb58d1cdbfcfa4a6c0b7e961ef4839db3dc",
+    "output/vectors/task_00/w.hex": "02f0029114eda330351df926809eff147e430515730c7d2b0b53b7e8479795c0",
+    "output/vectors/task_00/w_packed.hex": "4288351bd559ff3988d96271e707b7108acd565eec1ab14bfadd4b371380683b",
+    "output/vectors/task_00/x.hex": "e0b696d5f5ab453d7df9102a939b8d99f61f1aaac775ebc7892c496d8335af54",
+    "output/vectors/task_00/x_packed.hex": "0430ce1d9d4f31bc777cf1e224465bc24f7c1c04fb6d19550a6ae6dda2cad80a",
+    "output/vectors/task_01/b.hex": "32237cea4cd2c8a2340612cc1a33ee5e0e755e296b6c58318e2463480e2ce9c2",
+    "output/vectors/task_01/expected.hex": "c41cd56b93e7c69f09cf367f8e969dfbfd4abcd19054c6d14a1ebb5488ce1eff",
+    "output/vectors/task_01/w.hex": "ddf793a875d60f20b82c8ad3c82d6631d1e195b9014912bd6648c162114c6fef",
+    "output/vectors/task_01/w_packed.hex": "1ec5f7c3ae67d03d3481408d59da239d245516eb00114ad5ff2e26e148cb03ba",
+    "output/vectors/task_01/x.hex": "f5578408c9e400f512ebcc6d406cedf8129a09bbf1e5447d428a24b1d6de231f",
+    "output/vectors/task_01/x_packed.hex": "3f74c4ed54e40b0a70ec9d676a647d4f9e20bf93ad21517d9c6e920619430157",
+    "output/vectors/task_02/b.hex": "089bb30edf7fdcfecd55f95b3f348f1bc8490346e8750888d68c9c59f05111db",
+    "output/vectors/task_02/expected.hex": "9caeac94efe5b0d726e5c2854620b19f0f378503f484e3905f6a47a9afee1a32",
+    "output/vectors/task_02/w.hex": "78befb0fb46e5842c521d58fab46e39c8787799e7bf51d2048846b9b5b66dc9a",
+    "output/vectors/task_02/w_packed.hex": "ef036afd7f62a9b975df178cc67a47cf52d8915d946d6c840f4f537170a51a87",
+    "output/vectors/task_02/x.hex": "e8175c500ef3d7f597accacd7beb76579dbc80375df6e0152e93c0f508a25f34",
+    "output/vectors/task_02/x_packed.hex": "ec45a07e16d37d37703f7a25e57a515cfc2b61c3da46120d4a51a8ec1a4aa23f",
+    "output/vectors/task_03/b.hex": "1ef12f8ca17595687053496d1d371d390376352b5d06c744bea1df460d6affe4",
+    "output/vectors/task_03/expected.hex": "b07cdfd685a15d6deb39618a59e214912530be405e07336c4e9a460a03094486",
+    "output/vectors/task_03/w.hex": "9e84b676147da5ecc1caf74b60688bf791468c69c3e5a91e458d362bd8ede560",
+    "output/vectors/task_03/w_packed.hex": "6a55e0b03c707621036d33375e57059c167cd91bfd259ac2bc384c83ea63cc72",
+    "output/vectors/task_03/x.hex": "ddc81eb11b89deba4bdd81ee1b63e016ee29acafb00a60684409467fca6541ba",
+    "output/vectors/task_03/x_packed.hex": "c15f332aaa9ff90f1fdb495a2b29117715f02103d9283f522e8672d83ba8bbcf",
+    "output/vectors/task_04/b.hex": "55c61141df10cf429517ca71eb0f0f9861eeae59aedbc3202a74f8a885e7709f",
+    "output/vectors/task_04/expected.hex": "02baa6f4c63a72452ffb2b406143551bb2e8aa1220a50e2407014d65588babb1",
+    "output/vectors/task_04/w.hex": "58f54182fb2fa1d5c3d7620297f0a0bd15837da4fe3e23bec8a9d9eedc97f02e",
+    "output/vectors/task_04/w_packed.hex": "4f31db23f8f716b53f1a3de91ce04dc2f25e27274551e65bf5a6c3e9d388f32d",
+    "output/vectors/task_04/x.hex": "f5f9191b80d60e6fd1ba9aba57d2eddbad64de0a16ced80a5438ce320478dbbd",
+    "output/vectors/task_04/x_packed.hex": "9e0f613925de37dc39506e972924b02abdee95d64675eb836ef3f067ea47a1ba",
+    "output/vectors/task_05/b.hex": "085c994e2efb3329a6ce9542ac55f2dae199fd6e6231b73d2b651cbe5d6fac41",
+    "output/vectors/task_05/expected.hex": "b457cd8028de44f02099dbcdf2b35b44fe5984186e433f7ed31a39b645feb420",
+    "output/vectors/task_05/w.hex": "a077c2e466d05f172d63c7b62955dede4ad2242e6d5779c7071ae5550a5b56a1",
+    "output/vectors/task_05/w_packed.hex": "101914dfddc38ba73e4d62fe3adfd516080d6fef5ec1bd200328ba5a61d9d84e",
+    "output/vectors/task_05/x.hex": "369a0ea5cb64916fefebe4b4b4946cf8b2c8370a05324caf5a2c2032a8d22dd5",
+    "output/vectors/task_05/x_packed.hex": "63d0e8985ec1bc7b397163ef5b55f471612b395e0a5ad96f9beb293b09805143",
+    "output/vectors/task_06/b.hex": "18a7c5f77d2600e3ebc2db2372becd186516fd021928ada2334f9626d367990b",
+    "output/vectors/task_06/expected.hex": "982245a0b3ab196d3aa192aa91320f4990b32defb9209793f499b9baefc37abb",
+    "output/vectors/task_06/w.hex": "13d694e147ebbdc49bc6c32c2e71b443f4ced7a45eed4b707989871b913b516f",
+    "output/vectors/task_06/w_packed.hex": "7d8ee8fb30d6d42b6107825b77ba33e2933568f6d590f3908cafe1a52695661c",
+    "output/vectors/task_06/x.hex": "a31bfd4d0b44205caa4253ffe794d9bbf7ca5240c7bafa761b9e75936b8dcb95",
+    "output/vectors/task_06/x_packed.hex": "1c90c71f3c5409f6592edba66ea1e2dee46b341cf4decfb6cd2978397d1c7839",
+    "output/vectors/task_07/b.hex": "b9841315b410c530ffdf7084bc19c14ed44be2239541848c08bb0002af48477f",
+    "output/vectors/task_07/expected.hex": "b96defba1cbae245c53dbe4ed61949d8272cb18562b246795b0dcaa0a2acb60d",
+    "output/vectors/task_07/w.hex": "4e06e36ec21fcccf9ead781e5d6e624f2dbd4fb6f1ac3d612ebc03663b5ca6bb",
+    "output/vectors/task_07/w_packed.hex": "3c32eeb58acdf0d30d015841dab4f8bb6790f391983ca43bab091be808accce1",
+    "output/vectors/task_07/x.hex": "9e5545cad8f392dbffcefaa059605a9afb2319ec873a2bdd3864d405fe331a41",
+    "output/vectors/task_07/x_packed.hex": "7aaa719b5c80fe5eb7a32cb84d069bde6b0ddb9f635dbee1bfa4c585245f670e",
+    "output/vectors/task_08/b.hex": "480e5f9290b8f6deb205680523392679c6d81fed107552eeb06dfcfbfc703d12",
+    "output/vectors/task_08/expected.hex": "6243ef1a189c087c6a689f96c728762ba7f534cfc3c5cffe4f61639c8dd1d501",
+    "output/vectors/task_08/w.hex": "21d7576a2fbffbd4314b3e78ef901ea01329021550ff335cf3bd0c481b20eddd",
+    "output/vectors/task_08/w_packed.hex": "f4b131568d65b596f2ba11fd8e73c70e4da8a5732ccf3235160695e7d924e1cf",
+    "output/vectors/task_08/x.hex": "7aa382ca4bdcec0cc030515f0af0d9fed15b023acda87d62fe1487a7ce039f9b",
+    "output/vectors/task_08/x_packed.hex": "83a5d03d5b91fc8be81511b21c21e6ade832402b7c438b60aa8fc3e489ba0fc9",
+    "output/vectors/task_09/b.hex": "42a44ce360b7831cfc4b20abb6c6b478ff572333d84f80f9e449fae5e4e53c21",
+    "output/vectors/task_09/expected.hex": "91b5806d716a7cbeaf2fd5492bc4186f92142475c47336a437db87c3c79a9bab",
+    "output/vectors/task_09/w.hex": "4c29f0ce05035243bb37bc42ab9370831bb51b274bb855012cd3796554a208fb",
+    "output/vectors/task_09/w_packed.hex": "59af02897cc19c5a99b178a0f86e75127a47f1a310f1d9b3589ac5b1f628692f",
+    "output/vectors/task_09/x.hex": "6cd30023fee027b0107c9759aadee361e6c39198d672e196ad9b86895d7b2a21",
+    "output/vectors/task_09/x_packed.hex": "8e18c40d7df5cb407a27f48d8e13ddfd46480b578eb01876243705f66c6c6053",
+    "output/vectors/task_10/b.hex": "a05dd939258d462b9c23bd665a02405baaa7d5d1e06d372a1ef05d6e030cd169",
+    "output/vectors/task_10/expected.hex": "df63134d0a296d4d719c8577d9d722c2d5e4a52bc4f6e474fcc4370d3498d96a",
+    "output/vectors/task_10/w.hex": "4fe4709e49fd2c0966d4d24c12208633bbf1d7083328788bbc130caf504f3b85",
+    "output/vectors/task_10/w_packed.hex": "1279c8f5e23442205a83e3b9893ec794b3cdc2d7532f3fc7a7c8630ed7fbfb96",
+    "output/vectors/task_10/x.hex": "feea1e7181c02a608f04a6c9d58fda3629e4b43edb127e4d9671400640ec1fd2",
+    "output/vectors/task_10/x_packed.hex": "cb888a53f689c577acc8ec2201e3b7f09bb8240bc196a64f60a16fbff9a2162e",
+    "output/vectors/task_11/b.hex": "d0f5ed35810216aaca5b110ee506a795aa30cf6bc58e5f000da10e1f6e482813",
+    "output/vectors/task_11/expected.hex": "14554a7012deadff2e4a2703759145bfc8e880a7a44b8294708f4b0d2dc6591f",
+    "output/vectors/task_11/w.hex": "3995aee338ec6f602b712ac94efc0122c72ca8479e4d83a66d895016692e6186",
+    "output/vectors/task_11/w_packed.hex": "0ccbcd3765532fba824b57762ea475f1d23b028db8f6bf53565b19f0a327a0f1",
+    "output/vectors/task_11/x.hex": "a19f7d8574ccbd3eee23202197ff5fe06afd32323b40e7a65fcfdb32216c7503",
+    "output/vectors/task_11/x_packed.hex": "621f803a652e642e3171e2b73928ae7e53edc549ea39fc6c18a49f43dd129892",
+    "output/ffn-vectors/manifest.json": "03f18a1291dad8561c748739a597b18145ffdc877978c0ded163e885e43c1022",
+    "output/ffn-vectors/numeric-report.json": "f99b5ec60ff461152114e30730cd905c03e0dd6b973240142c29d50a2b7edaa6",
+    "output/ffn-vectors/task_00/b2.hex": "73df1127ad2fe43b3b549fa499f45f4b642de4906e797898cbf4a49ece75347f",
+    "output/ffn-vectors/task_00/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_00/expected.hex": "4dec3be482d1ac31d1c64b9fd6b8ff88dd73a383a2742f856932ecc478f53420",
+    "output/ffn-vectors/task_00/gelu.hex": "dc83b009ebe413df9b701eb3528b49bb4b45f1835efdc217b308ae741f576ae2",
+    "output/ffn-vectors/task_00/w2.hex": "e317469a8035dfec48447315f40971e54173637289ee5841ff34066a14b68529",
+    "output/ffn-vectors/task_00/w2_packed.hex": "3236983f69b279385fa94ea89909424a952e937dd5b5a84ef6c6cdf41e5d4d86",
+    "output/ffn-vectors/task_01/b2.hex": "64803553163cb3c625983ea1a5cb786783a5a65aa2f48b8871268d62ed8ec6d6",
+    "output/ffn-vectors/task_01/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_01/expected.hex": "0f28db10a85b4262459f673421f9ae4743d5662c573adcfe1495d454d00a58a9",
+    "output/ffn-vectors/task_01/gelu.hex": "6899445c49b6bd06abd4687e06d97c01550f965c26bc0d1886cdc25c1a11e0d0",
+    "output/ffn-vectors/task_01/w2.hex": "ca8e1c0d7adabbd573e720ba457629167d11098e4e62a231436b08e5e42b5c56",
+    "output/ffn-vectors/task_01/w2_packed.hex": "73a12e65c80fa56f6a508e916dedf2305d54cb9e76bcadd1f1b120634aa618a2",
+    "output/ffn-vectors/task_02/b2.hex": "b93b7fe004bdbfce2d9599037f085ae3591ef442a749823b8f95baf1a96edc33",
+    "output/ffn-vectors/task_02/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_02/expected.hex": "78c5c96e3b13fbe9594df2849fa1e1c7cf833de15c51be14779cf092bf265eba",
+    "output/ffn-vectors/task_02/gelu.hex": "801f80fa28db08b24eb7a3fa6adeffea589b7f42410233ecdf0c200982b0857a",
+    "output/ffn-vectors/task_02/w2.hex": "edc077a1a5346916637eda5d92b299114ce1a80e0e38b1c89ab3e3b20c21f0d4",
+    "output/ffn-vectors/task_02/w2_packed.hex": "08d3331563077923f118e48e9ad67a5694f0768b47e3b1afded8f0f54aa5064b",
+    "output/ffn-vectors/task_03/b2.hex": "00f51a9754920b85eb10a7aeca50501dd989b002ea2639df685bfc79d202792b",
+    "output/ffn-vectors/task_03/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_03/expected.hex": "e3f1f85c99dc345f81489a4301c5ca427cb012ddd7a485fb8e21dd2dbbd7f935",
+    "output/ffn-vectors/task_03/gelu.hex": "34b13fa4bbc5fba7ea493475be438abfb8f24a215a8209ca4c82d8e1dec4ea8a",
+    "output/ffn-vectors/task_03/w2.hex": "4542021cb383dad6dbfd295732e28d9a6bbe8ed7623d0c8a451e9faa9b5ae220",
+    "output/ffn-vectors/task_03/w2_packed.hex": "9f9e188e9f78dcc8188053cad1437ba42c2e5c4e3127779c8594ea32832b289d",
+    "output/ffn-vectors/task_04/b2.hex": "824f83a9c73ef5ecc4eacb1994014a3574f2dbc44315938043f5b4d42837e410",
+    "output/ffn-vectors/task_04/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_04/expected.hex": "a9a70465334190fb3be8944c185552f11273eb7720b0646fbab06b6694707995",
+    "output/ffn-vectors/task_04/gelu.hex": "d9896d1ea06a1e90d27ee7c23767cf39ebe99eb662d36115259368e418ae735c",
+    "output/ffn-vectors/task_04/w2.hex": "01a12d6234c28dbd0cf7a0ce6c55524b69243955fd7c05d373a4bc4fbc434ca4",
+    "output/ffn-vectors/task_04/w2_packed.hex": "ba2bad1527c4734765c59ca4279bb12af041a8903dd55f306049b60d871f9c42",
+    "output/ffn-vectors/task_05/b2.hex": "322b4c85ea9db095ccbb93f93f2081fa9f286cf80fada7203be3be538e1fc173",
+    "output/ffn-vectors/task_05/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_05/expected.hex": "bb3aa1a75150512891b368d964061221dbd5b50b2b94ec94609a40f033f7e1f2",
+    "output/ffn-vectors/task_05/gelu.hex": "1e3ec20d8795395c751201ca42cc5a664641be91c416426869e1c37d84f47460",
+    "output/ffn-vectors/task_05/w2.hex": "f16840a2c7bcdb098ce359fadd0fb9dda12305f3fac9d6c34e9d6ec9d3cdad9c",
+    "output/ffn-vectors/task_05/w2_packed.hex": "f2be10fb86a34c29b9a6914e7c85bee9e7861fc8480f4c70c758a0d3874d0030",
+    "output/ffn-vectors/task_06/b2.hex": "99b60ab81e021f38bbe57341a4ad4e8158814d45f8b00ebaa7c9b19f2cca7f2d",
+    "output/ffn-vectors/task_06/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_06/expected.hex": "a0eb5f117c7178a390acc63ba5cca16a728a0deb5b714a27421b300b4d1b3f98",
+    "output/ffn-vectors/task_06/gelu.hex": "14e7d24e9d70c08ad2459f336a9d3e642a604f7f5376beef932fe936ecc27fde",
+    "output/ffn-vectors/task_06/w2.hex": "5196151756189b4b0ef39917cfc2465337ff44de4ef75de9ae68efc442aad04f",
+    "output/ffn-vectors/task_06/w2_packed.hex": "fef9fb8f0fecbee1c036736aed646c4543b1aa9f1fba367d54ab2ffe3bebdf2d",
+    "output/ffn-vectors/task_07/b2.hex": "afc55d91548210ac2620c183d8ee3555b8a622ec3ca9f3c660101b9be68e7f61",
+    "output/ffn-vectors/task_07/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_07/expected.hex": "7d45856d75f143bf54d689bb091883b132d14c5941a2718129209706c6475a2b",
+    "output/ffn-vectors/task_07/gelu.hex": "31997542998ce77feffafb5eb312894b9f8e6bc3ea6a31953c5a891b7481b1c0",
+    "output/ffn-vectors/task_07/w2.hex": "b0978dcf17c89cc1515909c9de8ecc5a74205055f7a77b0156f2ff140ff1a2be",
+    "output/ffn-vectors/task_07/w2_packed.hex": "baf3d5c221ce8223dfebb1e731185b459390f14c07846d9d65b943cf0d4d7029",
+    "output/ffn-vectors/task_08/b2.hex": "cdcbf2a08bdfcf54434c97079eb10010210ab35dcc01f737483c1c287b70e9a0",
+    "output/ffn-vectors/task_08/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_08/expected.hex": "a71828f99d60a3b2578d9ab8e0273823a2abb513ddc4d5ccecb8033c97beb66d",
+    "output/ffn-vectors/task_08/gelu.hex": "ee70efa1f20f1df39f968b3aa1bc0ccaa2d052cb18e0f6d08314650da6c666d7",
+    "output/ffn-vectors/task_08/w2.hex": "1e4c6a79ba6bd9e8f4a0fb25f09d297ec0bae30866e9f5f2837f0a11a0c4321a",
+    "output/ffn-vectors/task_08/w2_packed.hex": "4d23518c930b115f4a148d3e841aef879b3234e872362d584b5da1ead4e20ada",
+    "output/ffn-vectors/task_09/b2.hex": "4836cefc1f50ade2c16cfcfafed9012d390837e09e89944d9eccf8ee4d0e7eec",
+    "output/ffn-vectors/task_09/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_09/expected.hex": "62e3757fd014711668b58469e28ff75f55af9a549bbd3d0cfa7c21761a594a9f",
+    "output/ffn-vectors/task_09/gelu.hex": "0e1833471a80b80c4fa9166e10d21d2779eb96f9ca4efbf4078e2ae5fcc98a43",
+    "output/ffn-vectors/task_09/w2.hex": "773b551815d488f36a1e5204b723a0298651d4bb7eb059bfab5896f1638ea13e",
+    "output/ffn-vectors/task_09/w2_packed.hex": "311c24c9afb9b1a9fa0271c942e524ef03852e12543221d9f96d401d7f836b61",
+    "output/ffn-vectors/task_10/b2.hex": "1555665af8494b0ce2534a27f0ce27051f766528b4f292365ac34d451559d103",
+    "output/ffn-vectors/task_10/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_10/expected.hex": "76229167455b5a06ed737e480d5dd32e3335425803c9208ad12ee7b08436d4b3",
+    "output/ffn-vectors/task_10/gelu.hex": "d787964db970a2147cc4e77267b86a1a10ae24646e30b96de85cb7280802a7e0",
+    "output/ffn-vectors/task_10/w2.hex": "0a292e3a8c57ece950bfff818c6ab73ba746ed4d4112c56134e68f9d8c48f8ff",
+    "output/ffn-vectors/task_10/w2_packed.hex": "89cd387c0571cfdbfa9f2451da8d02278ba68f25c2438e2398d850e38680a54e",
+    "output/ffn-vectors/task_11/b2.hex": "316e300490afac8d87d5b848de541307d93934e6656f4ddbe730b67c2f174867",
+    "output/ffn-vectors/task_11/config.hex": "d2e226084010c01d6fa08a8e21b56b0e393f7ee50c6867a3e1499abaae956d80",
+    "output/ffn-vectors/task_11/expected.hex": "2d2c4080d831573630ef3511a2f7123cce9cde1bbbd61a7f211a959caf24c888",
+    "output/ffn-vectors/task_11/gelu.hex": "5d3cc4c16b76ab37fd59680e275df5c42d5aa07c33e890e3aa706cff11a11565",
+    "output/ffn-vectors/task_11/w2.hex": "b0bf82d92c17e9fdff566e6088e63c7b7390a1eb14fbd928603e1b2d6fbd9319",
+    "output/ffn-vectors/task_11/w2_packed.hex": "3fccc0393e5390e482530b6d11bff59fc959eff5b0ba4162389c385fce6a902b",
+    "output/ffn-edges/case_0/b.hex": "adb9dae361eeb7c6a2633787aeda827fffadf40874e270a2f86c37a46115e340",
+    "output/ffn-edges/case_0/b2.hex": "ac533d723c3fd8eecefa8c7fae24cf9fc8c9c575db8f38b2865869dcf8257c16",
+    "output/ffn-edges/case_0/expected.hex": "8f8b1d414890a8ffa54cd6cea1fb17d5e5863c3250ac635affc408629f5de8c6",
+    "output/ffn-edges/case_0/sat.hex": "1555447901397a634052e3dd21704f2d6ad7d0161ec9b3560ac58b5e529a3a65",
+    "output/ffn-edges/case_0/w.hex": "05814f057b64a364492365e68327d266f7f92432a45bf024ecca8dd779b893ae",
+    "output/ffn-edges/case_0/w2.hex": "764d6af4e0cb571b484cca7d4157a904f55eef461204ac253881ee237ca8b921",
+    "output/ffn-edges/case_0/x.hex": "7177bff59e0f18adcb0d11e29a3d14c9f9a5568f348eeb4634b6228d75f5cd3c",
+    "output/ffn-edges/case_1/b.hex": "adb9dae361eeb7c6a2633787aeda827fffadf40874e270a2f86c37a46115e340",
+    "output/ffn-edges/case_1/b2.hex": "ac533d723c3fd8eecefa8c7fae24cf9fc8c9c575db8f38b2865869dcf8257c16",
+    "output/ffn-edges/case_1/expected.hex": "26e5710383c07e36bda090c735838f4dd4593f54db1e9e49c20eae79dccf15c2",
+    "output/ffn-edges/case_1/sat.hex": "8a7f61e05895608fb756d975e88144c39a4ba292dedbba063851cd9cd6547bba",
+    "output/ffn-edges/case_1/w.hex": "76a615032634b44a900bd246f02431dd8c9a0e9548deb1c3735631850f789ca4",
+    "output/ffn-edges/case_1/w2.hex": "76a615032634b44a900bd246f02431dd8c9a0e9548deb1c3735631850f789ca4",
+    "output/ffn-edges/case_1/x.hex": "75a443d2f2db38e3b0a3951a945578fe3e3107fbff6a6c5a369d30a4fd35a4ff",
+    "output/ffn-edges/case_2/b.hex": "adb9dae361eeb7c6a2633787aeda827fffadf40874e270a2f86c37a46115e340",
+    "output/ffn-edges/case_2/b2.hex": "ac533d723c3fd8eecefa8c7fae24cf9fc8c9c575db8f38b2865869dcf8257c16",
+    "output/ffn-edges/case_2/expected.hex": "b82308295c1493fb71b08ce9c99273eff87a0f5186c0badb517583bf32b7b63e",
+    "output/ffn-edges/case_2/sat.hex": "a96df7a9321a98afb890558e1f6e86803756852804213aa57554b1fa6b88fc04",
+    "output/ffn-edges/case_2/w.hex": "ebd5a8f879f91ff6d375f22e6ebddd3ee0db2dcbd220b957d5e383d5ef5a5218",
+    "output/ffn-edges/case_2/w2.hex": "63b20c6a7afcc72cf0fa479472a834c097fbcd48bd9d8795ec0e6eedcce0abca",
+    "output/ffn-edges/case_2/x.hex": "107530324e8e45b3013de7aa6c6b76ff808651aea96b87e536c8790ed3506e83",
+    "output/encoder-vectors/manifest.json": "af70e00b25296745e76bf2c7c6965059d2aaafbed5a78dc22e6322fac7137ce3",
+    "output/encoder-vectors/numeric-report.json": "122375b8355d52616ddd3998b9781fe6b1191cafbb062c9db30627bab1bbfb2c",
+    "output/encoder-vectors/layer_00/b1.hex": "d1122381f7ba11c4978807997c6d82dac9cca1a102a5524a67606322595f1400",
+    "output/encoder-vectors/layer_00/b2.hex": "73df1127ad2fe43b3b549fa499f45f4b642de4906e797898cbf4a49ece75347f",
+    "output/encoder-vectors/layer_00/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_00/params.hex": "0eebe36b89ce9eb369cffc1713c55e01df596312fb7e7d3f9f4b8c2e5cb3370c",
+    "output/encoder-vectors/layer_00/w1.hex": "4288351bd559ff3988d96271e707b7108acd565eec1ab14bfadd4b371380683b",
+    "output/encoder-vectors/layer_00/w2.hex": "3236983f69b279385fa94ea89909424a952e937dd5b5a84ef6c6cdf41e5d4d86",
+    "output/encoder-vectors/layer_01/b1.hex": "32237cea4cd2c8a2340612cc1a33ee5e0e755e296b6c58318e2463480e2ce9c2",
+    "output/encoder-vectors/layer_01/b2.hex": "64803553163cb3c625983ea1a5cb786783a5a65aa2f48b8871268d62ed8ec6d6",
+    "output/encoder-vectors/layer_01/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_01/params.hex": "a3c5c7b2ae7aa88db37bdd3a93cdb08d82af0fc9f479cb5e3f625ca06a78f691",
+    "output/encoder-vectors/layer_01/w1.hex": "1ec5f7c3ae67d03d3481408d59da239d245516eb00114ad5ff2e26e148cb03ba",
+    "output/encoder-vectors/layer_01/w2.hex": "73a12e65c80fa56f6a508e916dedf2305d54cb9e76bcadd1f1b120634aa618a2",
+    "output/encoder-vectors/layer_02/b1.hex": "089bb30edf7fdcfecd55f95b3f348f1bc8490346e8750888d68c9c59f05111db",
+    "output/encoder-vectors/layer_02/b2.hex": "b93b7fe004bdbfce2d9599037f085ae3591ef442a749823b8f95baf1a96edc33",
+    "output/encoder-vectors/layer_02/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_02/params.hex": "c72206dc8fc7add36e84d53427081534519cecf11a3cf727d573c1a0e9cbaf4b",
+    "output/encoder-vectors/layer_02/w1.hex": "ef036afd7f62a9b975df178cc67a47cf52d8915d946d6c840f4f537170a51a87",
+    "output/encoder-vectors/layer_02/w2.hex": "08d3331563077923f118e48e9ad67a5694f0768b47e3b1afded8f0f54aa5064b",
+    "output/encoder-vectors/layer_03/b1.hex": "1ef12f8ca17595687053496d1d371d390376352b5d06c744bea1df460d6affe4",
+    "output/encoder-vectors/layer_03/b2.hex": "00f51a9754920b85eb10a7aeca50501dd989b002ea2639df685bfc79d202792b",
+    "output/encoder-vectors/layer_03/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_03/params.hex": "5c4643210ea1c355dff9e99b8e2bf6c3bf5f5abb87d1ccede1f09d874abdd6f5",
+    "output/encoder-vectors/layer_03/w1.hex": "6a55e0b03c707621036d33375e57059c167cd91bfd259ac2bc384c83ea63cc72",
+    "output/encoder-vectors/layer_03/w2.hex": "9f9e188e9f78dcc8188053cad1437ba42c2e5c4e3127779c8594ea32832b289d",
+    "output/encoder-vectors/layer_04/b1.hex": "55c61141df10cf429517ca71eb0f0f9861eeae59aedbc3202a74f8a885e7709f",
+    "output/encoder-vectors/layer_04/b2.hex": "824f83a9c73ef5ecc4eacb1994014a3574f2dbc44315938043f5b4d42837e410",
+    "output/encoder-vectors/layer_04/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_04/params.hex": "6fa7a50fa3a20891a188e0d0845168e0dce13b1a0cd48ae4a0996f54001bb377",
+    "output/encoder-vectors/layer_04/w1.hex": "4f31db23f8f716b53f1a3de91ce04dc2f25e27274551e65bf5a6c3e9d388f32d",
+    "output/encoder-vectors/layer_04/w2.hex": "ba2bad1527c4734765c59ca4279bb12af041a8903dd55f306049b60d871f9c42",
+    "output/encoder-vectors/layer_05/b1.hex": "085c994e2efb3329a6ce9542ac55f2dae199fd6e6231b73d2b651cbe5d6fac41",
+    "output/encoder-vectors/layer_05/b2.hex": "322b4c85ea9db095ccbb93f93f2081fa9f286cf80fada7203be3be538e1fc173",
+    "output/encoder-vectors/layer_05/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_05/params.hex": "6021a50a7e62929c0e553ebbb4417de249b82fd22b44e3f36671482e8c3a1b5f",
+    "output/encoder-vectors/layer_05/w1.hex": "101914dfddc38ba73e4d62fe3adfd516080d6fef5ec1bd200328ba5a61d9d84e",
+    "output/encoder-vectors/layer_05/w2.hex": "f2be10fb86a34c29b9a6914e7c85bee9e7861fc8480f4c70c758a0d3874d0030",
+    "output/encoder-vectors/layer_06/b1.hex": "18a7c5f77d2600e3ebc2db2372becd186516fd021928ada2334f9626d367990b",
+    "output/encoder-vectors/layer_06/b2.hex": "99b60ab81e021f38bbe57341a4ad4e8158814d45f8b00ebaa7c9b19f2cca7f2d",
+    "output/encoder-vectors/layer_06/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_06/params.hex": "2141d4688a6f5758965a71d8f64ab9fd715e440bb35de8b33fda287014bc7eb3",
+    "output/encoder-vectors/layer_06/w1.hex": "7d8ee8fb30d6d42b6107825b77ba33e2933568f6d590f3908cafe1a52695661c",
+    "output/encoder-vectors/layer_06/w2.hex": "fef9fb8f0fecbee1c036736aed646c4543b1aa9f1fba367d54ab2ffe3bebdf2d",
+    "output/encoder-vectors/layer_07/b1.hex": "b9841315b410c530ffdf7084bc19c14ed44be2239541848c08bb0002af48477f",
+    "output/encoder-vectors/layer_07/b2.hex": "afc55d91548210ac2620c183d8ee3555b8a622ec3ca9f3c660101b9be68e7f61",
+    "output/encoder-vectors/layer_07/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_07/params.hex": "8cdc4eb09649cf8ae4f7ac108bb850f4765e019b2590a86e57c0ae53181cec03",
+    "output/encoder-vectors/layer_07/w1.hex": "3c32eeb58acdf0d30d015841dab4f8bb6790f391983ca43bab091be808accce1",
+    "output/encoder-vectors/layer_07/w2.hex": "baf3d5c221ce8223dfebb1e731185b459390f14c07846d9d65b943cf0d4d7029",
+    "output/encoder-vectors/layer_08/b1.hex": "480e5f9290b8f6deb205680523392679c6d81fed107552eeb06dfcfbfc703d12",
+    "output/encoder-vectors/layer_08/b2.hex": "cdcbf2a08bdfcf54434c97079eb10010210ab35dcc01f737483c1c287b70e9a0",
+    "output/encoder-vectors/layer_08/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_08/params.hex": "810bdac839be37624dd70b73ece3b9148a3169aebf6227ebc1fa2c650f530c77",
+    "output/encoder-vectors/layer_08/w1.hex": "f4b131568d65b596f2ba11fd8e73c70e4da8a5732ccf3235160695e7d924e1cf",
+    "output/encoder-vectors/layer_08/w2.hex": "4d23518c930b115f4a148d3e841aef879b3234e872362d584b5da1ead4e20ada",
+    "output/encoder-vectors/layer_09/b1.hex": "42a44ce360b7831cfc4b20abb6c6b478ff572333d84f80f9e449fae5e4e53c21",
+    "output/encoder-vectors/layer_09/b2.hex": "4836cefc1f50ade2c16cfcfafed9012d390837e09e89944d9eccf8ee4d0e7eec",
+    "output/encoder-vectors/layer_09/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_09/params.hex": "7fcfb07399ed4138e68e17a0b3d38a867d524b364be7f002a8bbf99aeb71da2e",
+    "output/encoder-vectors/layer_09/w1.hex": "59af02897cc19c5a99b178a0f86e75127a47f1a310f1d9b3589ac5b1f628692f",
+    "output/encoder-vectors/layer_09/w2.hex": "311c24c9afb9b1a9fa0271c942e524ef03852e12543221d9f96d401d7f836b61",
+    "output/encoder-vectors/layer_10/b1.hex": "a05dd939258d462b9c23bd665a02405baaa7d5d1e06d372a1ef05d6e030cd169",
+    "output/encoder-vectors/layer_10/b2.hex": "1555665af8494b0ce2534a27f0ce27051f766528b4f292365ac34d451559d103",
+    "output/encoder-vectors/layer_10/config.hex": "274dd7851b7e1470a7c549480edf65186de612a78c3b187f65d9eaa5d42801bb",
+    "output/encoder-vectors/layer_10/params.hex": "bd3cf1e5e98180675dfbbe41f015d468aee1db5b8ea5b9e2107045a6f318ac76",
+    "output/encoder-vectors/layer_10/w1.hex": "1279c8f5e23442205a83e3b9893ec794b3cdc2d7532f3fc7a7c8630ed7fbfb96",
+    "output/encoder-vectors/layer_10/w2.hex": "89cd387c0571cfdbfa9f2451da8d02278ba68f25c2438e2398d850e38680a54e",
+    "output/encoder-vectors/layer_11/b1.hex": "d0f5ed35810216aaca5b110ee506a795aa30cf6bc58e5f000da10e1f6e482813",
+    "output/encoder-vectors/layer_11/b2.hex": "316e300490afac8d87d5b848de541307d93934e6656f4ddbe730b67c2f174867",
+    "output/encoder-vectors/layer_11/config.hex": "4787987abc7846639f540534cf68e3cfa8a66b9944e97366bf5c7978089bb23a",
+    "output/encoder-vectors/layer_11/params.hex": "2828ca207b24522a102880a12769b087831b956172f882abab35f30848909c30",
+    "output/encoder-vectors/layer_11/w1.hex": "0ccbcd3765532fba824b57762ea475f1d23b028db8f6bf53565b19f0a327a0f1",
+    "output/encoder-vectors/layer_11/w2.hex": "3fccc0393e5390e482530b6d11bff59fc959eff5b0ba4162389c385fce6a902b",
+    "output/encoder-vectors/task_00/expected.hex": "f31a2451bde2d98fb31880dd8f7a643e81d24f3349e93c4280d6be7742e1c4dd",
+    "output/encoder-vectors/task_00/input.hex": "d1b0520f132086238308fd099b20c4290856f973dde4b1cf7146540f44c07068",
+    "output/encoder-vectors/task_00/layer_00/attention.hex": "8d62d1aa7184153c05333d294cbbd5015ec4c63529214ea06050d0500bac43a2",
+    "output/encoder-vectors/task_00/layer_00/context.hex": "362f64478efb87754eab5cab9ebff7234fa06e7c1fd9c2f37a9b33a7f911c31e",
+    "output/encoder-vectors/task_00/layer_00/expected.hex": "124e6af7f04e333d73ea88988e158ee515f948689931aaa513e2d0cebd69459f",
+    "output/encoder-vectors/task_00/layer_00/ffn.hex": "df62ecb5f9e378b60e418df140ffb96340f33399775710c863950c2f4e39a337",
+    "output/encoder-vectors/task_00/layer_00/ffn_input.hex": "c4e308bda8f403f8d1f0c9cd3056cb73e2be6b0fcd44714d8c9940ac0d5beaf6",
+    "output/encoder-vectors/task_00/layer_00/k.hex": "d6e2365325b5f22ddf47649d24de5d288bd3ddee0cc61b34c0acdd3afc507407",
+    "output/encoder-vectors/task_00/layer_00/prob.hex": "4fb9cd8cfd0b8f5522c898d4c7bb64222e7ba9335ff1917810880c515be6fc14",
+    "output/encoder-vectors/task_00/layer_00/q.hex": "9a0a2c4ee915a88b1663759dba8df68b6a294a1f944dc446e49ba56fb624e5f1",
+    "output/encoder-vectors/task_00/layer_00/residual1.hex": "68f691e643eec5818979c07bbd4c0d95cb78c4ded50eb9084416b46a8cd51595",
+    "output/encoder-vectors/task_00/layer_00/residual2.hex": "e7f9ede8544331ae558b522ca5d7c0b2059bb5b64d8987368f535c3f0d6ecf57",
+    "output/encoder-vectors/task_00/layer_00/score.hex": "9719e78b1c005073a79f071564cb8e41233f464ae6f7cc3edede437cdfa9f57f",
+    "output/encoder-vectors/task_00/layer_00/v.hex": "4b6330791eba1afcad363af94686dbbb62c384d79ca481e874e98ec7d6d989a2",
+    "output/encoder-vectors/task_00/layer_00/z.hex": "37d85772aa33facd3affb4040705d2ab07eebf41ea7c46890cabf43c8fcff63b",
+    "output/encoder-vectors/task_00/layer_01/attention.hex": "88cb4cc28b15efc42d7eaaab24d458a9260e541825eb2922b3aca8f8657479af",
+    "output/encoder-vectors/task_00/layer_01/context.hex": "4ecbd57916b8c40cd247f68f67f4c8d80fafe5e5781c515315ece622775b4bbe",
+    "output/encoder-vectors/task_00/layer_01/expected.hex": "fda6307659599ee01f7a1d9735a7066601af2e8bd1fae3ad41bb825d2e5e63ae",
+    "output/encoder-vectors/task_00/layer_01/ffn.hex": "419842bb528f3f756c7a28489a2d24fd17866c6461273f9e3e3a99e4e120ba68",
+    "output/encoder-vectors/task_00/layer_01/ffn_input.hex": "1d6b94f2e6580d616addb3415e128c00930e5e72ade440298f6b232cdd18f475",
+    "output/encoder-vectors/task_00/layer_01/k.hex": "0ceef254dc78a38c4fbae725ddda402d310f379e0936c9404f956aa2305423df",
+    "output/encoder-vectors/task_00/layer_01/prob.hex": "523663e40141029fa5f1956eeb37e849f4b70622ac4ac5b99046f093a4668ad8",
+    "output/encoder-vectors/task_00/layer_01/q.hex": "2743afc62c5885b7a26d606dcd4799a582d45b979cfcc8ee2fe6a839bc28d358",
+    "output/encoder-vectors/task_00/layer_01/residual1.hex": "33fa794a2293681b1b61be866deb68fc13d1b9e9202a28d539e614bbece808b1",
+    "output/encoder-vectors/task_00/layer_01/residual2.hex": "faaaa4e27347fa5b7b9b3181a27838374d0c8028f1ea9b1e5622f9423f5162e9",
+    "output/encoder-vectors/task_00/layer_01/score.hex": "5fd9e829d0dcd42a72a3030dd87807afe79dccb8ec980cd1fc8636cb1ddcb63a",
+    "output/encoder-vectors/task_00/layer_01/v.hex": "313b4dc2775bb77b043b94712f7516498520daf8dc4a384277ff22c4437f9edc",
+    "output/encoder-vectors/task_00/layer_01/z.hex": "b4690ddb670c1d514c47bf1122f6e28c7417c1d929bdeaa677b6588d97738a51",
+    "output/encoder-vectors/task_00/layer_02/attention.hex": "5055581f5cefacc90abae9ef7f059bb5282e2641605d24b7b09fa3b3c7e75e94",
+    "output/encoder-vectors/task_00/layer_02/context.hex": "bdd7d2f195d54f8df8669c11b52eefa1de6d17bd3ed6463c322f4c53b743200c",
+    "output/encoder-vectors/task_00/layer_02/expected.hex": "254b22fc0cb843ce4c15d40215ada4c16bf834929aa34a54f2557a9fffdccee5",
+    "output/encoder-vectors/task_00/layer_02/ffn.hex": "ee50c253647b637df5ce74e601d8156d5ce4b5f75f58a7c694d452da92e41a31",
+    "output/encoder-vectors/task_00/layer_02/ffn_input.hex": "345c83c01fe0b0cec941dd82422caf57cec23d77bd80ae301b768bb879acd6cf",
+    "output/encoder-vectors/task_00/layer_02/k.hex": "ee31c15a649c54416a1bacad3476ef356d421c86a14a74a89d872483e282954a",
+    "output/encoder-vectors/task_00/layer_02/prob.hex": "66bf329e83598bc5b47a6306bacb5161565f54d298c12600cb00c861cc235514",
+    "output/encoder-vectors/task_00/layer_02/q.hex": "2ae59ad4166957f3fb9eeba99883ec1230d2bf255909a3bb1db5a1f61605f931",
+    "output/encoder-vectors/task_00/layer_02/residual1.hex": "01c16975549843b23a3911ac50f3ba4ca9c1bdb8133571518eea3457103bc64d",
+    "output/encoder-vectors/task_00/layer_02/residual2.hex": "8cda54c063b4156c7b7ca7bf4ade24971e580fd6a3bc82feb05f3a137728b484",
+    "output/encoder-vectors/task_00/layer_02/score.hex": "aaf0f687a41aecbafb8f7490904d2ff96e935cbe4c589244a9ef49120045e0da",
+    "output/encoder-vectors/task_00/layer_02/v.hex": "eab8cb879ee76603341f84abece8b5cc7fa80cae65148ebdef7f2f57e450cc4e",
+    "output/encoder-vectors/task_00/layer_02/z.hex": "197d7b506e519c1ea209194902e24a7b53e0152bbb8df0a4456223be86337c63",
+    "output/encoder-vectors/task_00/layer_03/attention.hex": "0b9784adfda784f51195ab3dfef25b52007c420e7fc36dd5c8e371623c516a3a",
+    "output/encoder-vectors/task_00/layer_03/context.hex": "7ad2b468a52854844cdd8c0d971d27b2f4f54ac55525f29ce9230c75ab733443",
+    "output/encoder-vectors/task_00/layer_03/expected.hex": "5590139ebe4f64c9026c32fc7fcad9ec06b55bd6603c9b386ebdfeba3da7bb40",
+    "output/encoder-vectors/task_00/layer_03/ffn.hex": "4f502d40107f6753604c8ab1455f928465448d962c178b8f9a9f0bddb9796f94",
+    "output/encoder-vectors/task_00/layer_03/ffn_input.hex": "3669a9393c8bd5426fd57776d1ea4b29df901d71729cda7159613e9cdcae5c99",
+    "output/encoder-vectors/task_00/layer_03/k.hex": "077a48f45dafbb269a6e8c3a80c46923bb2a7e6accb80785ee14ca874800cda5",
+    "output/encoder-vectors/task_00/layer_03/prob.hex": "44e14f9df67862362eb45567f985477da2ab2f02d6fd55d2df5cfee58b22f0f7",
+    "output/encoder-vectors/task_00/layer_03/q.hex": "c6723fa2ffba19b5183f8cee152438e84b30ef13a8b95c01306b972019f13457",
+    "output/encoder-vectors/task_00/layer_03/residual1.hex": "3886599b9bf402db8ea6cbd725abd51748d03d9fc90e4a7e1469746656b6e249",
+    "output/encoder-vectors/task_00/layer_03/residual2.hex": "fa993bdc238f2febe92045ad08aa54d93905442ff2404d9ed197f71e244c903f",
+    "output/encoder-vectors/task_00/layer_03/score.hex": "7e84632587bdf114119796d7126d5214a3a85d9913db661cfa4840e60212b8a8",
+    "output/encoder-vectors/task_00/layer_03/v.hex": "384c83410c5729e154d5413d3ac91a2286b673d0a7296fc639e5ee5425af9a5f",
+    "output/encoder-vectors/task_00/layer_03/z.hex": "f5d63d3a669a3e00cdcd540aa6175987a4dcbaa9802d66dbb3c06b77f2e0869a",
+    "output/encoder-vectors/task_00/layer_04/attention.hex": "d71b6a921cddd6255726549577ce56db2a3559cc254c0aa90a6c505fb589ec42",
+    "output/encoder-vectors/task_00/layer_04/context.hex": "34dc5212b7df4518c8e06207ec369c59a0699d96611909edb24edc7ad66ccedc",
+    "output/encoder-vectors/task_00/layer_04/expected.hex": "cefe86a442202edec9fb401b11010a3d0ef7312174e5cfe1499f3c6f994ee4af",
+    "output/encoder-vectors/task_00/layer_04/ffn.hex": "51fe75a2b7f5d6a7746b15547d0523cf8b96f957eb871b9ebdc878e77857dfde",
+    "output/encoder-vectors/task_00/layer_04/ffn_input.hex": "38b6c8c760d7fe974ba8d3e7047dc1e6d4a436e956a6da9a59eab0f9a85a2f5c",
+    "output/encoder-vectors/task_00/layer_04/k.hex": "fd7ff7479de71061d8d3779bf651a2e5ac402a9d3c5b314cdf2f210403864ce2",
+    "output/encoder-vectors/task_00/layer_04/prob.hex": "c323a7481eb3e72cee980770921360534bde0854b390b9ef71f6b1731c3c95b3",
+    "output/encoder-vectors/task_00/layer_04/q.hex": "06d24b87f8b015a046beb66109c51eb9e5d233a11ee1be065864acb96f2aa8e7",
+    "output/encoder-vectors/task_00/layer_04/residual1.hex": "76261770688b1a69d3b9a0a1fcd101c3cdceee66c7e19bc213531f098e30aa45",
+    "output/encoder-vectors/task_00/layer_04/residual2.hex": "79deab8619257fc2df5b7756dd770803f6c0539f052b2632fab2a098fef6f253",
+    "output/encoder-vectors/task_00/layer_04/score.hex": "5c34021ab59d555b68a37370607f07069b42bf9e0d13e3233ee6dea045d01a96",
+    "output/encoder-vectors/task_00/layer_04/v.hex": "401bb52e7705b60db29933d393c39b72d03ad66ba591d793432a045905452088",
+    "output/encoder-vectors/task_00/layer_04/z.hex": "6ba9a249072c60871b0fa742278f72fea8bed0ba5a52911949390ebe8f213818",
+    "output/encoder-vectors/task_00/layer_05/attention.hex": "2f2743fca347588483d7f2084770a616eb2d952a1f3b4029021c202e2dc1027f",
+    "output/encoder-vectors/task_00/layer_05/context.hex": "e3fa847262e90f17b8b1e15df560cab59e3f5bfb1291734d2ae5d383fcb47638",
+    "output/encoder-vectors/task_00/layer_05/expected.hex": "c30ab3dd13c6db246782b236e64a915262a22b4f4fe143fb67147f44f637e1f1",
+    "output/encoder-vectors/task_00/layer_05/ffn.hex": "f791409ed46bffc30a62428208a2aeee0fd81b9b2505b0cb696ad9d031339247",
+    "output/encoder-vectors/task_00/layer_05/ffn_input.hex": "60f6b7dd7bc6a21b6c7b564080d9ceb74c9c62831321dd9b8265ea42fa18845b",
+    "output/encoder-vectors/task_00/layer_05/k.hex": "bb54a383f580804f791c6d65e53bdeb3a06d1de6aa9f29e946f858d3e330c4b6",
+    "output/encoder-vectors/task_00/layer_05/prob.hex": "eba7761e9b1e18fb60d7f2e09c2e656e4fe73a0fd48a8bc1975553eb7706fac7",
+    "output/encoder-vectors/task_00/layer_05/q.hex": "0f4d3a7d7242023e99d70fa860c7705e9ec71ab05501043d4f910f69e5202544",
+    "output/encoder-vectors/task_00/layer_05/residual1.hex": "1abce510a86ed8fc8503ae792a7551361248eb4bdfbe649c2b4827c9217bc185",
+    "output/encoder-vectors/task_00/layer_05/residual2.hex": "da8756461e777fe491ed72613e6c2912024424bfa091de029ef4cb25839841a7",
+    "output/encoder-vectors/task_00/layer_05/score.hex": "e2df50eed7258b63e4a4e6663ad1d49af1955bd21b9cfedd1b5a984e98ac446e",
+    "output/encoder-vectors/task_00/layer_05/v.hex": "dd434395b5dfd812e2cca2f8270e1ee9ec96da0bdff430e5c05c06e1f1655e97",
+    "output/encoder-vectors/task_00/layer_05/z.hex": "6243ac54ad125f4ed4edbb879755aaa580b945f621afefc68a254ee924dc180d",
+    "output/encoder-vectors/task_00/layer_06/attention.hex": "39c1e8a400095a5ff97529dd8245a6f6b628cfac2adc985585ec869e30347f31",
+    "output/encoder-vectors/task_00/layer_06/context.hex": "3059725ea19a77e7d43ead27b41af44b0bc943709c3f777c42aa3a8da3751db6",
+    "output/encoder-vectors/task_00/layer_06/expected.hex": "3ba52f43559b9c133aa927791477d5de647de8535f22b882448fcf49aed5c6cc",
+    "output/encoder-vectors/task_00/layer_06/ffn.hex": "3df8c90dc9432a5e1762b9ee446e0d25abd20ee572c4197da8b1004610ff6908",
+    "output/encoder-vectors/task_00/layer_06/ffn_input.hex": "c0ed5e9ea4d1ff5d4d2a4c7289313d83ae58182465a1df0bc399bedaec87f463",
+    "output/encoder-vectors/task_00/layer_06/k.hex": "fafaaef17c70504ab575534a6ba244b7b45d4118eaf238063336841f460d1fe5",
+    "output/encoder-vectors/task_00/layer_06/prob.hex": "abb4448469b164030b088c1fab95bd9fd7ea974ed135cc4b28ea46d7276a37a8",
+    "output/encoder-vectors/task_00/layer_06/q.hex": "b0625675cdf0cb6bc77aeb93d1046714bc972d171de9e5b028016406fd206671",
+    "output/encoder-vectors/task_00/layer_06/residual1.hex": "9df527d2cb6f9173d8975e18a9cbd89a677a4a1945678ba23e80876df01ff106",
+    "output/encoder-vectors/task_00/layer_06/residual2.hex": "ac466960a95369716f8f9dc5af3014d4a976f754830c8bd3f072a1cac82da800",
+    "output/encoder-vectors/task_00/layer_06/score.hex": "d97ab514a3f592077d93a529dce58c66db7624a8abca46b69ce881f20f298d9d",
+    "output/encoder-vectors/task_00/layer_06/v.hex": "7e37a91b78e6c402ebd005564668ffbd71fedb98c4952d8fdfdee1806309d8ab",
+    "output/encoder-vectors/task_00/layer_06/z.hex": "96c5bd79b0b9f15b20e56157b5b6e5c66a6a1aa68f50ca9db455bab8d886a4ca",
+    "output/encoder-vectors/task_00/layer_07/attention.hex": "3250c2a0f5126e15622ab44ce79df6af4cc2a436d7c2fe5e7e6c7bed74307b48",
+    "output/encoder-vectors/task_00/layer_07/context.hex": "b444f0f256c961c887bed6091c24f0782dbde38936640932913f082bf74147a2",
+    "output/encoder-vectors/task_00/layer_07/expected.hex": "76deab00818e238e734ad75dc151f9ccf6a8304da8f4198ee8f50c82e3d650ae",
+    "output/encoder-vectors/task_00/layer_07/ffn.hex": "573fd65506013da327f14f561acd9e9ce7d864e8bf47be0b949d638e3d5792bf",
+    "output/encoder-vectors/task_00/layer_07/ffn_input.hex": "3e0209ffc87c61f3176476fa15801b9e824722b52e208b1a97b876818f54c0a9",
+    "output/encoder-vectors/task_00/layer_07/k.hex": "2f687addb2a55495404a5fef1b75a94b6c959fd00eceb2217a0677760da5e510",
+    "output/encoder-vectors/task_00/layer_07/prob.hex": "e6bba749c473930d4b8ca22df5ef0c9a5059d94e0ec0aedeb4685e98162080bf",
+    "output/encoder-vectors/task_00/layer_07/q.hex": "6bcc3f7abdbc173e643605cef2be036ccd3ca58ce77f8ac929c4c2bbf11a3514",
+    "output/encoder-vectors/task_00/layer_07/residual1.hex": "6c3f13211b508204d13e65ae8ed4faf52fec5f655b0cc8024107e38bfdd7ce1d",
+    "output/encoder-vectors/task_00/layer_07/residual2.hex": "2ff17ba29f7c0611f3ef4e883755e8766e994a78f8943f1c36eb96c2b2d99ff5",
+    "output/encoder-vectors/task_00/layer_07/score.hex": "5d3ebce0e487d1ebc5ae7723d587da5274d3ed1a53cc9c8151374c040882d90c",
+    "output/encoder-vectors/task_00/layer_07/v.hex": "62d969b148848334980b1efd4eecd20f6b144daae7cbdfe6f5c3aaccdad14c2e",
+    "output/encoder-vectors/task_00/layer_07/z.hex": "8a1d5f71d53b6f71a241603826182e926ae550d739c9efba6af608ef1fe7849e",
+    "output/encoder-vectors/task_00/layer_08/attention.hex": "4b29144e4c5e1231b8ccb5796e50eb5e7db5269764f669121e68839b3f60c6e5",
+    "output/encoder-vectors/task_00/layer_08/context.hex": "28547a4498a2745fe4a56bce8740822fc6db71b6934f46d3d9d6a3745e101923",
+    "output/encoder-vectors/task_00/layer_08/expected.hex": "2b7615f5380c1269417d174fc6b20e0536fa56de81b45c9a7cb5a8458e4613f9",
+    "output/encoder-vectors/task_00/layer_08/ffn.hex": "bf610e7d87a42707a0138f383d24e7401ba4d5b8b4897dbdaf14682e764b5694",
+    "output/encoder-vectors/task_00/layer_08/ffn_input.hex": "27be910c7dc9b65ccadaca7ea392492fe6e39c1fc29e1cc2557e7d5f2016db75",
+    "output/encoder-vectors/task_00/layer_08/k.hex": "c06e3200c8822cf9f82ff763df810e49e3fcdf6e8964f8f7546389565f7d2ddb",
+    "output/encoder-vectors/task_00/layer_08/prob.hex": "b517f80015269ea806a3fe5d1d6432c49decafac9ebbb11acc14f69a7e2c271a",
+    "output/encoder-vectors/task_00/layer_08/q.hex": "73db7adb7e1a03f5b95d0b3839f1235e15fc3de185008d18f2d7bf63e42de85d",
+    "output/encoder-vectors/task_00/layer_08/residual1.hex": "fd9ebfb82b796d05dc4068a6cd5fc91fd87a32a1bb6d2b5a64b5128cee137643",
+    "output/encoder-vectors/task_00/layer_08/residual2.hex": "1ce0b0e0ef611c7ca489c6423d6f477031a0c03bb0e2efd15a82f0d284777515",
+    "output/encoder-vectors/task_00/layer_08/score.hex": "4c826a584c210e8b7d471802cbdd9a0db6a85b97184e7c8d29182aa63de89d78",
+    "output/encoder-vectors/task_00/layer_08/v.hex": "65f13dc8bae3e07a16eaa4473356ea2b9cbd921040ce861f1c155e36754a3e93",
+    "output/encoder-vectors/task_00/layer_08/z.hex": "da37ec0e530e695a355c5a43b914707c247e58c5a4091127bf9db328dfcd7214",
+    "output/encoder-vectors/task_00/layer_09/attention.hex": "91a021eb9081ccedac65d16cc2dfb9f24548955a444adf5be0eb2495202c3d6f",
+    "output/encoder-vectors/task_00/layer_09/context.hex": "6ba3a6b38d53e6eae3590adca21d06b6da8c6b9360bf7c5c3ae49595faab9b93",
+    "output/encoder-vectors/task_00/layer_09/expected.hex": "0def7c146c0924db8f13df12f39a848fbeb5327e85ffb32b8ac92d51c4a8ab21",
+    "output/encoder-vectors/task_00/layer_09/ffn.hex": "1b7dff70db9183754a0e9429e88f4186ce6834184a8b83112eb0176546d4289e",
+    "output/encoder-vectors/task_00/layer_09/ffn_input.hex": "5323b4cbae001b94581087751cd569b23648341ff2704e20bfe15b86a1800136",
+    "output/encoder-vectors/task_00/layer_09/k.hex": "ea399bb57c2dcea5fbac382e121669cf0cda1486256587965acc5c4e30ecaa7a",
+    "output/encoder-vectors/task_00/layer_09/prob.hex": "753b441e72eebacc41a0c6f1290b0d0778fcfc34c38cefc9e957984af9245054",
+    "output/encoder-vectors/task_00/layer_09/q.hex": "04ba90aa287bc0430873f9e17fbce65b7966ced661751c79e559b2fb1695741b",
+    "output/encoder-vectors/task_00/layer_09/residual1.hex": "f06969c4aa6d513273478c25e016319bdba6ac56c793c533d9b01dfa7f3aaa64",
+    "output/encoder-vectors/task_00/layer_09/residual2.hex": "7d8c863a33e6614b81315a49f592a5464fa952940bdc781f269934c53dbf3042",
+    "output/encoder-vectors/task_00/layer_09/score.hex": "9f0d7160c868fabb0826cf017bf92fedafa02e4444841d4b4e74f1966c203c64",
+    "output/encoder-vectors/task_00/layer_09/v.hex": "5d6baab198f50c4ee4f8f3af0bb0da0bbb8c169dc43ca1e2f912fb4599c3a726",
+    "output/encoder-vectors/task_00/layer_09/z.hex": "76dca30e139a8e0c47453dc68aeffc730d7c77e9c686afadc45c8e0ecaef5411",
+    "output/encoder-vectors/task_00/layer_10/attention.hex": "0be782d357ff6c524862835bf5dba4407d813c2a6e6dab92ad09a64b4ad75f43",
+    "output/encoder-vectors/task_00/layer_10/context.hex": "215effc433837ddefa60ae4f675cfa2c09de14951892ab37772716c02a866ffa",
+    "output/encoder-vectors/task_00/layer_10/expected.hex": "188b4928291edccf042b3202b940a85bd8d7a80301fc86e69450ba5217f6f7ca",
+    "output/encoder-vectors/task_00/layer_10/ffn.hex": "a6b76cdc27f1a158c00d6181c29c0a26ddb688d3b274cdf2aa48ea0ee03ad911",
+    "output/encoder-vectors/task_00/layer_10/ffn_input.hex": "4b49761ef3ea628318b6c238ac4b72e96a8d586ddeea6c912f9a0f3568b3bd5f",
+    "output/encoder-vectors/task_00/layer_10/k.hex": "da07cd5ff430722c0716929efcb06c7de08701167d83826bc9f4a164d5191606",
+    "output/encoder-vectors/task_00/layer_10/prob.hex": "a9a435850b49150a0b79befdd2f778c2743a9dcacc16fc3871088c158be60174",
+    "output/encoder-vectors/task_00/layer_10/q.hex": "2faf2e7066f610ac52bcb10ce9b89ebd68d02e3e98c4f2458163f701dd60b9b0",
+    "output/encoder-vectors/task_00/layer_10/residual1.hex": "cb32b07dcbfd00ab243f0debb435ad5dd3a31f86a59b598acbbbdcf0cc4b00e3",
+    "output/encoder-vectors/task_00/layer_10/residual2.hex": "cd66a3d6f55c58ed2728c515437ce56159c853be1553ff49e92035218e78cc81",
+    "output/encoder-vectors/task_00/layer_10/score.hex": "4ec54e8f21e9ef76c0bbbc52ee13c0ee8cde221ab0f944c4490d8641a436e6b0",
+    "output/encoder-vectors/task_00/layer_10/v.hex": "f1351e5076f8b120be7232899f5d944d0600086743c4687fd09e386de6643652",
+    "output/encoder-vectors/task_00/layer_10/z.hex": "6de2b6ca87cf59bb02504b4d0ff0fd35385d6aeb1f8b33e765d1e960611392ff",
+    "output/encoder-vectors/task_00/layer_11/attention.hex": "c9cbe112d073f24f4866a1c97aaba1b63cc6616f7a3abe2438a0ca92909e2dac",
+    "output/encoder-vectors/task_00/layer_11/context.hex": "250a177c79d0f3e76234b8e7300c44efe85b85b330591315674ba6dae8373b33",
+    "output/encoder-vectors/task_00/layer_11/expected.hex": "f31a2451bde2d98fb31880dd8f7a643e81d24f3349e93c4280d6be7742e1c4dd",
+    "output/encoder-vectors/task_00/layer_11/ffn.hex": "cc7e097e15cc62454a2246c3304104e07f4c093a5727803dd36c6cbdca99a69d",
+    "output/encoder-vectors/task_00/layer_11/ffn_input.hex": "7d1cb389ebc09d3c5945c931996fc9a69211096a4d6692ddf18ca8a4b76bf0a4",
+    "output/encoder-vectors/task_00/layer_11/k.hex": "8fd107a828ce30b22f7d3dc14f5d64d1d768d678422d52d2b76aab7725240cfe",
+    "output/encoder-vectors/task_00/layer_11/prob.hex": "aed9875490d36993c349b7a06acb92ca7f6ee7fb08ffe05f3d94cde573a8e39f",
+    "output/encoder-vectors/task_00/layer_11/q.hex": "efdb642ad86d014a7d7d89c59aeaf305009061622c7a24c524d77ee90c41eae3",
+    "output/encoder-vectors/task_00/layer_11/residual1.hex": "e493444830c57c914ab41b1605406c78dc3f1bee1413030416588156c61fafca",
+    "output/encoder-vectors/task_00/layer_11/residual2.hex": "19c755f9f95c17621dfffc0b3e62f899cc8ca2ff07dac5a7b02d823fe536887e",
+    "output/encoder-vectors/task_00/layer_11/score.hex": "ead72fdd18c37c59af98b5e3f5d5965934f2605cc4bf26abde2092fd4e54f914",
+    "output/encoder-vectors/task_00/layer_11/v.hex": "50f68de0f2c846d3bf02787ee8eadd315ad4128d0077a9f7bc02240fa881ccb1",
+    "output/encoder-vectors/task_00/layer_11/z.hex": "d4241647b96af33c5cab78aad1932979628553758f60363b8edc116c6383a37d",
+    "output/encoder-vectors/task_01/expected.hex": "b8002fc9ac2910cfe220e916489f6c93ba1a57af3f102be6e89678542c50871d",
+    "output/encoder-vectors/task_01/input.hex": "1e8976daaca6254769c5b243645999eccd6b97b707a5fdbe135eff2047bacd0d",
+    "output/encoder-vectors/task_01/layer_00/expected.hex": "bfecacca53c08fb6af8b28fadbb72c2e78629fc2679e004696d5275faf98c66b",
+    "output/encoder-vectors/task_01/layer_00/ffn.hex": "8a494bd1cbef5570468ae8afc0d1751acfdc6024d36f3920bc3a45890d2ada3d",
+    "output/encoder-vectors/task_01/layer_00/ffn_input.hex": "cf9e50bb634350cf28998729697231c2d8b3eead7ac8421d8d0ccfee41ed78f7",
+    "output/encoder-vectors/task_01/layer_01/expected.hex": "cd6357852c9a7bebc79c90e32e20f93b007cf7aabc92ef7e76bbfb1a5fc141bb",
+    "output/encoder-vectors/task_01/layer_01/ffn.hex": "70cbd8442c456f563c3d5df92d42b89b435158cb0f5e863bc7b7dc43970c4dda",
+    "output/encoder-vectors/task_01/layer_01/ffn_input.hex": "302f2f3d60dc56410fcbcaa5387d656ddaa1fb5082ec9c51c7583a9e317d537b",
+    "output/encoder-vectors/task_01/layer_02/expected.hex": "49237115b8c34802c57f3390a1f8214f75b13f806df3e666cbdf7eb1543e5e0c",
+    "output/encoder-vectors/task_01/layer_02/ffn.hex": "d4dacd8be96613661db22f627c56a9c2a20bfc2f46058a4dd4a2f70f1cf7a49c",
+    "output/encoder-vectors/task_01/layer_02/ffn_input.hex": "1ea4ae41a29bea666e6a3842d3cced10473339b2fe7e013b3127be0dd33c8703",
+    "output/encoder-vectors/task_01/layer_03/expected.hex": "cd924f7f5ce2084e456cecb3e808c7235088d56d0115d2b8be15d956a1c50280",
+    "output/encoder-vectors/task_01/layer_03/ffn.hex": "c446896b413d40696e6a314181c851a61650748c2979f086de481476a71a985d",
+    "output/encoder-vectors/task_01/layer_03/ffn_input.hex": "03a587c4dab9f3a9deb77df45e845589f4bf1a5291b190730351a7f2498505af",
+    "output/encoder-vectors/task_01/layer_04/expected.hex": "4a80bc69418ce9e22a7de42c84a875eac9121f3e4ac4f4860a2b058715a6cd47",
+    "output/encoder-vectors/task_01/layer_04/ffn.hex": "11f308a16d21dd6b2864cf81728ffe2df4d49b2aa5e46c5e6dbabee834a6cd55",
+    "output/encoder-vectors/task_01/layer_04/ffn_input.hex": "6692d9aeec7f6d36ec42fa07d140fab2e77f20b7202aa5b8e048b9e461f9bfec",
+    "output/encoder-vectors/task_01/layer_05/expected.hex": "35683cbd0272392b8e3c61f85254ca760311a4420b19d39b14c566b93a3d2353",
+    "output/encoder-vectors/task_01/layer_05/ffn.hex": "6fca301604659d80c924905a823197932def6f9f91de21a51c89dfdf04840fc3",
+    "output/encoder-vectors/task_01/layer_05/ffn_input.hex": "4d2765ad9c6f51a4eb2d95f0f7739bdcade0d494660e41206519ea6bfaf9c11e",
+    "output/encoder-vectors/task_01/layer_06/expected.hex": "35a52bb2ffdf65add24bdc1e0bd739758296fd8b7b17993ec38c492ff4fcee98",
+    "output/encoder-vectors/task_01/layer_06/ffn.hex": "dade4de4ed9c32e0e0c9ffcd3e0ae14cd27d1c82f415b0a46914a9de23b0f664",
+    "output/encoder-vectors/task_01/layer_06/ffn_input.hex": "77da6ea6141dda2a2bb0ceb0a088fc256ccad694f6df8a50501262e7784079e6",
+    "output/encoder-vectors/task_01/layer_07/expected.hex": "4ff472039891ebc4fa239a3f5fccb3250c07430fd3898ae2d7f771460a86b309",
+    "output/encoder-vectors/task_01/layer_07/ffn.hex": "496cbb4d7f46feca044a4ca44b425c2b0cb79a81b1d5fa6c799bb39cf690b301",
+    "output/encoder-vectors/task_01/layer_07/ffn_input.hex": "854dcfcc53917be3d93fd45d66dfd41cc53e32653fbd3971956158de2679444a",
+    "output/encoder-vectors/task_01/layer_08/expected.hex": "768cd8256fb37ea602d982ade2b3bde1423b0289c0ea4b9d1236bb50291f2603",
+    "output/encoder-vectors/task_01/layer_08/ffn.hex": "95611fb342528017f332445ad69e759c623030a65b15a6beaabdc0a8e51fc9bb",
+    "output/encoder-vectors/task_01/layer_08/ffn_input.hex": "8dcfd4beaec326d9f9e9a405136840fa5bb45ad79cd1df8d6e9b4c3b4a2a5783",
+    "output/encoder-vectors/task_01/layer_09/expected.hex": "cb579b0e590d77eb01da11fe2e1aeea08c1000c26f2a0a4d0401c6a8dd2f9a9e",
+    "output/encoder-vectors/task_01/layer_09/ffn.hex": "e9b456930cd8e98d785c6a2fa6743a457c51407e2ec0d98993dd9b0757518033",
+    "output/encoder-vectors/task_01/layer_09/ffn_input.hex": "3b168424ab83277ca87b4503ff6034d559c838b0f38ce26e1b7f9c9fcb9f932e",
+    "output/encoder-vectors/task_01/layer_10/expected.hex": "321602f6a4689b213b37387635f6145966072cfd83f0f6540ff4e188dc205595",
+    "output/encoder-vectors/task_01/layer_10/ffn.hex": "b941c7ba6a8aef214fc93f0971b531a15a024703d60b63171f8bd4b5846217e4",
+    "output/encoder-vectors/task_01/layer_10/ffn_input.hex": "3bf0edfab657bcf25c16785f4dfdf7828114748f7d441c0b22eefc5aaf40340b",
+    "output/encoder-vectors/task_01/layer_11/expected.hex": "b8002fc9ac2910cfe220e916489f6c93ba1a57af3f102be6e89678542c50871d",
+    "output/encoder-vectors/task_01/layer_11/ffn.hex": "aa322b052d2e2961ae8d8109bc55c5c4aff6ee95521065f05f12f76fae98835a",
+    "output/encoder-vectors/task_01/layer_11/ffn_input.hex": "a539242100cb754b4a3d6fd63a13ad2ac2dc348403bba18ed7f4b2c7f0bae7cd",
+    "output/encoder-vectors/task_02/expected.hex": "e9dbcfeaf5c4d8f5a372221d2804a28bdc7c5b40c5b44af96dedb5ae918141f3",
+    "output/encoder-vectors/task_02/input.hex": "ae7e5e209c045f95cb1ddd6eeb3ac23c2f4392401913525fdd0f4c430cb176b6",
+    "output/encoder-vectors/task_02/layer_00/expected.hex": "ea8f8939424152ae0bae29c01f64f9fed8f2d8697e3a6de28a7ee4d30aa3469e",
+    "output/encoder-vectors/task_02/layer_00/ffn.hex": "8596ed97be82b88e9d34314f4b95f1040bd7b8421275fdcf97f59a79cc43bf42",
+    "output/encoder-vectors/task_02/layer_00/ffn_input.hex": "9ce24be5814341f38e1d88e88ade4a5bad05687410b7c380e362736591d24cd9",
+    "output/encoder-vectors/task_02/layer_01/expected.hex": "089f03181692b0c55056ff24212c54013885fbf429366ba3ce9b5b44d90d195b",
+    "output/encoder-vectors/task_02/layer_01/ffn.hex": "06fd71d56b1d6c81693930223ba943c4047796fdfb7f800ab6c5032b600d552b",
+    "output/encoder-vectors/task_02/layer_01/ffn_input.hex": "ccc062e9ba2fde82472c92193a32d8842004f437a51a1fbba56e2f475950511e",
+    "output/encoder-vectors/task_02/layer_02/expected.hex": "c966a2e2eeb8f44a67070bd06a3d6a7afdf0736b923738a8b360d6c3c4a51835",
+    "output/encoder-vectors/task_02/layer_02/ffn.hex": "7108cdf2b9caa4a1a6fffac4b622899a87d0d51b49c88b9ad182ab97d4b0152b",
+    "output/encoder-vectors/task_02/layer_02/ffn_input.hex": "194f73df93a02de010efb0dff538805cd9ac2be1941eea671d25de6eaf10602c",
+    "output/encoder-vectors/task_02/layer_03/expected.hex": "f6d595fb686a1bbef90cf3d923f130b17d3a1e4b9ad9977d120fac16ad750d95",
+    "output/encoder-vectors/task_02/layer_03/ffn.hex": "a01489e3540263d04bd2b45b0cbf6c06843522b68cb101a17d94957058d4d116",
+    "output/encoder-vectors/task_02/layer_03/ffn_input.hex": "251c8a6c652b7bb69af5b34cc819733d8b0272efb2784bd24361b9bb0fbecd0c",
+    "output/encoder-vectors/task_02/layer_04/expected.hex": "7d986fe912960a88e6fa404fb4a66d074d9e8079b14220dac14c26c744c2b0d9",
+    "output/encoder-vectors/task_02/layer_04/ffn.hex": "4eb67c240982cdb74a8f161051ca7cc497f7d59bfac19e94da07de0afdb1aa68",
+    "output/encoder-vectors/task_02/layer_04/ffn_input.hex": "e3d7182d623f27d61dc670787dbb0e64cbb1217b516f91bcb40534eef90a6a21",
+    "output/encoder-vectors/task_02/layer_05/expected.hex": "c2b47891accba3f52f4efd8a017ccaa5be1eeac7e3368b6963f570c9640570f2",
+    "output/encoder-vectors/task_02/layer_05/ffn.hex": "29bbcfee26e12faeee5119b7bc3991cd8ca642ef3a3fa3224f146608dfbab86c",
+    "output/encoder-vectors/task_02/layer_05/ffn_input.hex": "0f24dcea87114b2c69399e98f269af0099b7cce2e300f7b4eb0d9a501b327b56",
+    "output/encoder-vectors/task_02/layer_06/expected.hex": "6985f1ce85a7a8ce6fa27219322f122cab216ab451891eab79cb7943298b093e",
+    "output/encoder-vectors/task_02/layer_06/ffn.hex": "28659d8843079da785d60f14b02623a8f7d4d9edef4678f3d7e4bb57b65519ea",
+    "output/encoder-vectors/task_02/layer_06/ffn_input.hex": "5ae314927c6d5fcdb08d9f8665fee39bb9126bc3ea22fcb4dab575fadb9a7f9e",
+    "output/encoder-vectors/task_02/layer_07/expected.hex": "db26515ef16fa00a0914e45d8b1f9751b00853c6e8602e75f011e39b4f1326f4",
+    "output/encoder-vectors/task_02/layer_07/ffn.hex": "8402915ff5290e3f42da5af095780f7dfc57c01e9e0cec85f25ddd1885754473",
+    "output/encoder-vectors/task_02/layer_07/ffn_input.hex": "27cc4e9c6d6d80f234b33a8ca5f3711035dbc9edc458b528b959c12e33e0dff2",
+    "output/encoder-vectors/task_02/layer_08/expected.hex": "e8b553f39166adb705b8b240a7be3222d7a4b53b8c6d863caa2a58ae992a74cb",
+    "output/encoder-vectors/task_02/layer_08/ffn.hex": "dae499bcdda87b49bb422e871b84a4e6eed6b88b97a593f78fcd38463f491c68",
+    "output/encoder-vectors/task_02/layer_08/ffn_input.hex": "7b6e552202f289b814a69279e05f58340419abd59c813075b72207e8081ba4fc",
+    "output/encoder-vectors/task_02/layer_09/expected.hex": "4192220861da1910ea8f9a3583041c442a925591f9d05b4649ba6d1560158d6d",
+    "output/encoder-vectors/task_02/layer_09/ffn.hex": "d8f51ab04fc27827807d1c7e828aa9bbfab220849ca24eb428013d54fc2a1575",
+    "output/encoder-vectors/task_02/layer_09/ffn_input.hex": "8aeed6dc9f6d9a764d3f67f8df2b0462c950cdd2e522f94ce712ee1969e1507e",
+    "output/encoder-vectors/task_02/layer_10/expected.hex": "ea8a9666cd7168179e7198c37a7753f2358b5a11bb02b789e20d0f5e03f2c639",
+    "output/encoder-vectors/task_02/layer_10/ffn.hex": "c03b1baef4ac2e150e06a23c0d7056ced14dcc7048f8f2be5f0c3d4189bbd731",
+    "output/encoder-vectors/task_02/layer_10/ffn_input.hex": "507f1ee611d8c09d6a8928ba4736ac474616e1f1f1ef908686f8118997a82d54",
+    "output/encoder-vectors/task_02/layer_11/expected.hex": "e9dbcfeaf5c4d8f5a372221d2804a28bdc7c5b40c5b44af96dedb5ae918141f3",
+    "output/encoder-vectors/task_02/layer_11/ffn.hex": "649d63b1493a86ef2fd62d6d469abff8eec01a54fd6bd21f58d677d4909d6d95",
+    "output/encoder-vectors/task_02/layer_11/ffn_input.hex": "89a369a4fb7b5c124b9f6bdb23a43f16f7872c2a48d989499b1e90803fb274eb",
+    "output/encoder-vectors/task_03/expected.hex": "8eed16963b1ad3170bb078b4f3b767b4395ea3180149a67346d88287009ad328",
+    "output/encoder-vectors/task_03/input.hex": "64049b43b52a02ef19a3ca69566c07be01ccb52ee3472c0fc737c23872b2a194",
+    "output/encoder-vectors/task_03/layer_00/expected.hex": "42289390208e312dc1ecaa4b1f6da5035cf91a7d2e335a5314939af687c72fcc",
+    "output/encoder-vectors/task_03/layer_00/ffn.hex": "117d498365e2e790ea5fbd708d694647948341744ebbd80720d12e6cf9668f62",
+    "output/encoder-vectors/task_03/layer_00/ffn_input.hex": "a5c52d3c4c692fa5c99cad985f0d79feb66538eda4120a65553cab8e8c2efcb0",
+    "output/encoder-vectors/task_03/layer_01/expected.hex": "3fb1d2f5d44dc1ec24a33dbd829f13de0dc8a8088d74c567bd6885777531da8b",
+    "output/encoder-vectors/task_03/layer_01/ffn.hex": "83254b62a610dac12a3e1cb294b6fa30899355a0d0442cc84288c3b21fb97c74",
+    "output/encoder-vectors/task_03/layer_01/ffn_input.hex": "4250085894214fadb9eda5ac72127407a38c53aaf1df17cfc6d35702b8ae0258",
+    "output/encoder-vectors/task_03/layer_02/expected.hex": "9a6bb4fbf10f9521ae927e8b85a0c82c41c2d4e7060b8122e0d042bae50c2c18",
+    "output/encoder-vectors/task_03/layer_02/ffn.hex": "804efe9d3ee687b169c95e2d689cfcd32f7cd9702a4cbb972d6f8982b407f3ba",
+    "output/encoder-vectors/task_03/layer_02/ffn_input.hex": "7978d7a1f946440647ef87c3d9c618d8b14d55de698eb6abbb8651bd976b3144",
+    "output/encoder-vectors/task_03/layer_03/expected.hex": "dcd7d5a0d79c52c0e497d304066c7f86dedb1a037e55301c2d1fe0a260ef903f",
+    "output/encoder-vectors/task_03/layer_03/ffn.hex": "1d18ec295d163a4b3cb148706bfd11866ad898ca2339f2b7c25e05befaf2246d",
+    "output/encoder-vectors/task_03/layer_03/ffn_input.hex": "495c0d30ded83cc1a4a35bc306f3e9c23d8c919c6eae495ddf268448e3dd8f33",
+    "output/encoder-vectors/task_03/layer_04/expected.hex": "af1bdffd4773850e53fd0dc73c18b095419ed531effa5920ca8a7f953eb5c6ff",
+    "output/encoder-vectors/task_03/layer_04/ffn.hex": "d127056c8a8b8bc1e29354e8c6bfe573a2de555dae8ed331e77d8328b01c9fe2",
+    "output/encoder-vectors/task_03/layer_04/ffn_input.hex": "0d17941dced8ea3a93234eeb0bd6449cfbb21970acd92b60ff1f5747f6ee2c48",
+    "output/encoder-vectors/task_03/layer_05/expected.hex": "7584f172c7dbac6704ef73b55b507e6ca51c27380defc76644a32383f1631818",
+    "output/encoder-vectors/task_03/layer_05/ffn.hex": "3141663123eee2a3727346c15e0cc5bc1d9438a28576c9717a2b66802859d2a9",
+    "output/encoder-vectors/task_03/layer_05/ffn_input.hex": "526caf348bdb6a56d5cc07d665c361766f0d5955f6870ec4d7e6aa3e3e445e50",
+    "output/encoder-vectors/task_03/layer_06/expected.hex": "1d95c93e4d62d032f1e44417f3f410e2dbc5773c4a5ccf58aea8cf8c6d21cc46",
+    "output/encoder-vectors/task_03/layer_06/ffn.hex": "846f2b8ba978b01e76cbaa9d2b12af523c3f51f7e5abb111ac5df0f3102b1473",
+    "output/encoder-vectors/task_03/layer_06/ffn_input.hex": "48e590bb8c7d5c36ec9c62bca7e01b970254f71f520df7d4c0258ebea1157732",
+    "output/encoder-vectors/task_03/layer_07/expected.hex": "8beba08ec12c08a42118f7d0a4ebc9f30f1009495a5552e71cea9b64bb9edbe4",
+    "output/encoder-vectors/task_03/layer_07/ffn.hex": "3f5a5efab557418610f164dad3c9edf5657cf43da24ee16a56c11c9df9f267b6",
+    "output/encoder-vectors/task_03/layer_07/ffn_input.hex": "00716952ffe3538bafa64fe678b65d6407f1b82a36e542d6c6b47d5c362fc416",
+    "output/encoder-vectors/task_03/layer_08/expected.hex": "6369e95fc65aa65b319b75e7c570b2eb09b4cfb7e91f6a03c6495d67ed4cf6c7",
+    "output/encoder-vectors/task_03/layer_08/ffn.hex": "cd14cf14d3c27175cadda4b0b2a6bd23bb51ec43bfe81f63d0dbcf4f90a35d6b",
+    "output/encoder-vectors/task_03/layer_08/ffn_input.hex": "3ed9fef805651f2382581b2afad0434e661ce445a49bc07f7250c0fa4a93f84e",
+    "output/encoder-vectors/task_03/layer_09/expected.hex": "164aa85d95da7f695c1463aace46018db753f70f64c28549cc7ea5faed3a81b8",
+    "output/encoder-vectors/task_03/layer_09/ffn.hex": "c5ffa226c0614e9d76cf8b87f88cf53cb0462e40cdd1e348edd78960a131c699",
+    "output/encoder-vectors/task_03/layer_09/ffn_input.hex": "4cfa0e4a31e4e40ebfba2be0558a987a3dce5e08f6c7d75ee97365f61a997a96",
+    "output/encoder-vectors/task_03/layer_10/expected.hex": "4cb0f36afe6ebbf1095f0494ee222ab479911b6cf360f1ad4143c7b4f78660d8",
+    "output/encoder-vectors/task_03/layer_10/ffn.hex": "fb291d05188065fe3003d084199a338feb104b6d04ed80fb541969c29d1a1983",
+    "output/encoder-vectors/task_03/layer_10/ffn_input.hex": "e523a4667293cfc3ab2eeb6de5a7f8acb7754187346059f4850c889dc6e86d65",
+    "output/encoder-vectors/task_03/layer_11/expected.hex": "8eed16963b1ad3170bb078b4f3b767b4395ea3180149a67346d88287009ad328",
+    "output/encoder-vectors/task_03/layer_11/ffn.hex": "a135018219ca3c7b24ce103e6469eb8ccdf3cfb65d0dd68358deeec2d67c98d1",
+    "output/encoder-vectors/task_03/layer_11/ffn_input.hex": "58bdc892ca161264bba53be3d44232db46866b3e865aaa3a3b9493b02144df68",
+    "output/encoder-vectors/task_04/expected.hex": "737c86e01233bd6d3cea105bfaee45831d3c515cf18a824ca4a1ad54d1991416",
+    "output/encoder-vectors/task_04/input.hex": "39d07c7d59d514b78c5607a091c7a9976750935bcca558465e8b8600fb34b6ca",
+    "output/encoder-vectors/task_04/layer_00/expected.hex": "51adc382dc0a5db72dba69101b7889a471ae47f393eed8a5f43b7e84e61a0171",
+    "output/encoder-vectors/task_04/layer_00/ffn.hex": "2ffc0f3fa29d10f1100ea52e7f3ba06d33eefa1b11dd24362ae34f540a8251db",
+    "output/encoder-vectors/task_04/layer_00/ffn_input.hex": "5146b7db3e5c058e8cce6b110ae81c303df8f689087819e1eb0f151c84a592af",
+    "output/encoder-vectors/task_04/layer_01/expected.hex": "f18867578e9bd3103dda393d1d06fea78cd94b12bb353e47c34b1bd348996dd9",
+    "output/encoder-vectors/task_04/layer_01/ffn.hex": "69dfda59fa061b415600164f6db55d7e0b91f8511fcf186df9bb9c2f7ee5e836",
+    "output/encoder-vectors/task_04/layer_01/ffn_input.hex": "2e998dbc8fbadc7c319ab14bc0d8d1df50335aaced4737633ec80d1e40f989f3",
+    "output/encoder-vectors/task_04/layer_02/expected.hex": "d7acfe3f55488ce74ad98672600cb278d7b0948bd4633c9839f0d7f511442579",
+    "output/encoder-vectors/task_04/layer_02/ffn.hex": "cb7489a5d13371d9888ae9f0c5ebae58582f7e2d749022d51ffab3127465af88",
+    "output/encoder-vectors/task_04/layer_02/ffn_input.hex": "cb29eb29ce9f5393e21b59c400803038ed0d4c9fd515bd0a41405ce536df1fac",
+    "output/encoder-vectors/task_04/layer_03/expected.hex": "7b801122fbc6a2e4e54b7a69ab30572842e826f834f54586ca1e6b5106eba119",
+    "output/encoder-vectors/task_04/layer_03/ffn.hex": "a16772e054dfc0a7403ee4a1b93983291644bd6b007650d385f26ab93e094baa",
+    "output/encoder-vectors/task_04/layer_03/ffn_input.hex": "ce25d2c7a07b15ff457cf9208b3fc9959f9d4a16ed52a807dcdba24b0ff8712c",
+    "output/encoder-vectors/task_04/layer_04/expected.hex": "671e284ebfec926258a1906dca6e67ba79729091ff63a5d8b1f8cf634d216b51",
+    "output/encoder-vectors/task_04/layer_04/ffn.hex": "d1eb767eba6b67b8ae8ccece80a3c7359b64be7f21753708783ba7b6964136b5",
+    "output/encoder-vectors/task_04/layer_04/ffn_input.hex": "6004ccce32d1cd2660d1bc98fe43624debaa2e6593e3ea07bff73331c1e879c5",
+    "output/encoder-vectors/task_04/layer_05/expected.hex": "b6b0c3d56b64e1b01ac256442a25932d2b5b5a4287a959922d73a80b9e61334e",
+    "output/encoder-vectors/task_04/layer_05/ffn.hex": "a13a2bd9ed96cd630e81feab47546a3976e6c543a0f232f68dc26abed3d6397c",
+    "output/encoder-vectors/task_04/layer_05/ffn_input.hex": "9722635e8e5d800a526fda10dcb40bd0fcdee7fb7f9b10452f32ef78e1b957be",
+    "output/encoder-vectors/task_04/layer_06/expected.hex": "3c7dec736f898cb64b7a7e56d51b01c7e93d93e2012699813bdcdc2c91873189",
+    "output/encoder-vectors/task_04/layer_06/ffn.hex": "a34aa9587071fccd6302dadecf016d4230a5a02fe97d6d26a2624aadc6432322",
+    "output/encoder-vectors/task_04/layer_06/ffn_input.hex": "f3ce7bcd6c93c7ac8ba109fd1fd097c610b545a24310ea48bf528ff71e6a5645",
+    "output/encoder-vectors/task_04/layer_07/expected.hex": "0ecf932e48e2317463b940f71239fb9afa71a14ae9df0ebe1ed65ed2fab10ace",
+    "output/encoder-vectors/task_04/layer_07/ffn.hex": "7f50c834064ac936ec102ec3d352e533c35d14e1aadfad7c71ed8f8993461f91",
+    "output/encoder-vectors/task_04/layer_07/ffn_input.hex": "588c934cc333b8c35095d66226024fa8fb23da1a62cf911c207f697cd046425a",
+    "output/encoder-vectors/task_04/layer_08/expected.hex": "331414a9b125a155470633a3b69ebc98df87feaf4ca83ea0e40c7fcf35597c64",
+    "output/encoder-vectors/task_04/layer_08/ffn.hex": "544dd56942f10d1087930dad9c007fb7118ce1bdbe392bb26172a93c345b2558",
+    "output/encoder-vectors/task_04/layer_08/ffn_input.hex": "0db0c5b4e383ed1cee5dc028140ba7a0c94aca318493b102beef386507ed221a",
+    "output/encoder-vectors/task_04/layer_09/expected.hex": "06f7ccaa2e1ccbbea84302a2bbde31cc9bfb8a4a153ed3f6b1f264d763c43244",
+    "output/encoder-vectors/task_04/layer_09/ffn.hex": "447bded28fb782a227bce81d53b5e6f633d66ec582ce3bb3bc4c533d50765946",
+    "output/encoder-vectors/task_04/layer_09/ffn_input.hex": "14255a5114b8e47dcc4cb14afb581457ba615798e8e8966834b23c50d84cb624",
+    "output/encoder-vectors/task_04/layer_10/expected.hex": "4b723f3cbe69643c36b66231a2754216c7ab223399336f01e7f68aa55f0012a5",
+    "output/encoder-vectors/task_04/layer_10/ffn.hex": "def310a185ce664103bdea7637b2566a255faeb239545f1ef3aa36c69d97e347",
+    "output/encoder-vectors/task_04/layer_10/ffn_input.hex": "ae1690f76a4d604d35e66d673bf0b7454c42fd7080d7a900bed7b8352e5ee5b5",
+    "output/encoder-vectors/task_04/layer_11/expected.hex": "737c86e01233bd6d3cea105bfaee45831d3c515cf18a824ca4a1ad54d1991416",
+    "output/encoder-vectors/task_04/layer_11/ffn.hex": "b1c9cd48c0d5b9cfafd30663a5b01d5d4db445a63af02287575ad1f9664b3db8",
+    "output/encoder-vectors/task_04/layer_11/ffn_input.hex": "3c8ce59e113d1fbcb19b67c64218b9d08923fde4889e2f1115362ea4c21db4b4",
+    "output/encoder-vectors/task_05/expected.hex": "2ab04c7d35ebe02ca8bd29834d425bd0bbba8ac12da4fb32cedf6c7e2936416c",
+    "output/encoder-vectors/task_05/input.hex": "3111d234ebe08a501c74ac94168a91a99139e9a7567a0a907de99e0a4f24dc55",
+    "output/encoder-vectors/task_05/layer_00/expected.hex": "f8372c7821508a298e9ce34676075b9345be9b408f43484af86b794f85e73b2c",
+    "output/encoder-vectors/task_05/layer_00/ffn.hex": "76f17dfe2d55557274a1262d075186653f9ccb0913ebba26b8a1c22334e2d58c",
+    "output/encoder-vectors/task_05/layer_00/ffn_input.hex": "77003aaeb4ddaf6d0fc32cd39fa7aee21c773801976a0857b464ed51e3a9fbfe",
+    "output/encoder-vectors/task_05/layer_01/expected.hex": "45ee7fef1c297d6ab7195a6cf14a9ffd49071ea739ead4b26982ad459b16e9b0",
+    "output/encoder-vectors/task_05/layer_01/ffn.hex": "eba23c43c1838c582a30c9396d0447bb014b6c760a5f917e0d3cacac0406ccf5",
+    "output/encoder-vectors/task_05/layer_01/ffn_input.hex": "ce2880ec012df13fcb7320d1ba56590f7c04e75bf772140287f509cc2ca64e8f",
+    "output/encoder-vectors/task_05/layer_02/expected.hex": "8ae3f04184846fda82ac0535a156fa629717ba4578e5c334371e660bffc2ae28",
+    "output/encoder-vectors/task_05/layer_02/ffn.hex": "88b42fe4df7816f89010ca54bfb40f0f4db1e588f354297d2c862f3942f6f838",
+    "output/encoder-vectors/task_05/layer_02/ffn_input.hex": "4bcab5ea7a694f6957d7f6a132e0d8c4e42a13356d192236a658070d059762e6",
+    "output/encoder-vectors/task_05/layer_03/expected.hex": "941163601cc216866de8ecc96d163de7ea14954562b97f49c2711fdb581a934f",
+    "output/encoder-vectors/task_05/layer_03/ffn.hex": "4f47044c817deda99357d17117f8d7176fa2d850bcdddbeb99b094c58eb10e98",
+    "output/encoder-vectors/task_05/layer_03/ffn_input.hex": "aefbb334d65b1887c9ce72c236af7ed70dfeb7db4302bd7927e71992a44a41e3",
+    "output/encoder-vectors/task_05/layer_04/expected.hex": "d3d97c6248f7d49182bd0ec1bd40571eabe17eb164c376c82cad68a86f7d094d",
+    "output/encoder-vectors/task_05/layer_04/ffn.hex": "189eda1e9317aed7b5068b04f75f43394a44ac35697e75ccb903987fb74cb003",
+    "output/encoder-vectors/task_05/layer_04/ffn_input.hex": "8227802239f3558a83e4f4081c2492435778d6125c12a7c7dde7a31145026fa7",
+    "output/encoder-vectors/task_05/layer_05/expected.hex": "00b252f890bb555aa8846840877ec9a9ba2b28e38a1229d474572012a5d556fa",
+    "output/encoder-vectors/task_05/layer_05/ffn.hex": "79a750635cfc6533a1b010c62f6eca2f53aa159208a92473900e3fddbe17513b",
+    "output/encoder-vectors/task_05/layer_05/ffn_input.hex": "966f9c164ca88715d357c3e4196b3b0a8925d8e3617ad9309e12bd4bc8c5437d",
+    "output/encoder-vectors/task_05/layer_06/expected.hex": "4767bdaa94f4a72752bcbd95143cf124ea764f8c84cf456fc2ae530004bea6fd",
+    "output/encoder-vectors/task_05/layer_06/ffn.hex": "e9e410e0eaa68be8102a3b015765f439daf297ac5321e9123fc5ac93a765e051",
+    "output/encoder-vectors/task_05/layer_06/ffn_input.hex": "00f2b41c51a92ca6de3ad02dcc5b6aa3b4a389a7b2d20dd2770245b9fe85ef13",
+    "output/encoder-vectors/task_05/layer_07/expected.hex": "97d4928763e7f65836f6ff6caaf091179b0b821259834fb49100308fe71e65e7",
+    "output/encoder-vectors/task_05/layer_07/ffn.hex": "42bf6c925254e7a2b6daf03a4c25814129b2e56fbc038cdf7cf4d30a2a9e4cea",
+    "output/encoder-vectors/task_05/layer_07/ffn_input.hex": "215dd9334327aaf9bbd020c5a7122540199adce4b26e71d8ae5d20cc1abee6b6",
+    "output/encoder-vectors/task_05/layer_08/expected.hex": "30ff1847cb5e55567a248605b1cd3cddd0cf5fdc0c7b85f87944751102873503",
+    "output/encoder-vectors/task_05/layer_08/ffn.hex": "b8f8b610e3ba5f2947a63847a9d6f863c63b52757d868cfda479ac5e240f2ded",
+    "output/encoder-vectors/task_05/layer_08/ffn_input.hex": "df189eb802afe4879f4229e18f9c9dc1bb941784a5b0d1ce4557f3a8d53eca57",
+    "output/encoder-vectors/task_05/layer_09/expected.hex": "1b4d71b84a44fa37318680660af85cc8878d7048ee1e1d403fce1e5283e2cb30",
+    "output/encoder-vectors/task_05/layer_09/ffn.hex": "205587b9af12b610e35804894e39cc4f413304f539a2f313e9f5e7a4848e9395",
+    "output/encoder-vectors/task_05/layer_09/ffn_input.hex": "a1b7c70d87b7e5cc029ef0c75dc2516ba7f37af60cbe66fd9277a833753a4e87",
+    "output/encoder-vectors/task_05/layer_10/expected.hex": "ab6806c5f81b390fce0abff06a217b1316d9da1d673a7c5f3dcd96113838b5cd",
+    "output/encoder-vectors/task_05/layer_10/ffn.hex": "66348b6ac85ec5ad018ceb7e536eedad5ab0b72fdfeeb6a9040a671fc2299860",
+    "output/encoder-vectors/task_05/layer_10/ffn_input.hex": "37d91de8602fb632f19bd5578f51c01bc7c7ba42ff566fb05ed7fbc7d5c5d995",
+    "output/encoder-vectors/task_05/layer_11/expected.hex": "2ab04c7d35ebe02ca8bd29834d425bd0bbba8ac12da4fb32cedf6c7e2936416c",
+    "output/encoder-vectors/task_05/layer_11/ffn.hex": "928e1f2a2fb6130a548d2c539f586c6a75327c512548ced2e8cded44e82bfd20",
+    "output/encoder-vectors/task_05/layer_11/ffn_input.hex": "c930588aa90fa5ffb0985a3771898c9fae479a51d7cacfe41a73bbdfe4f67598",
+    "output/encoder-vectors/task_06/expected.hex": "e7fecfa5babf30743f7f271aa7bea177121ccc157e065978ac1b636011b161fc",
+    "output/encoder-vectors/task_06/input.hex": "9167dbb6ba913f329f9b4592ef9aa064b56626fb15a5e6373daaae39d2819b89",
+    "output/encoder-vectors/task_06/layer_00/expected.hex": "da563e07d4fe6d4983e97bb96d17140cf2438da01d3dc3800a626dbccb3c0b42",
+    "output/encoder-vectors/task_06/layer_00/ffn.hex": "fb32edf25d8e67c6a2f187868c3ac9a7a2d8c2315607b0f13433e8a8a4cca070",
+    "output/encoder-vectors/task_06/layer_00/ffn_input.hex": "aebf2e2fa383329c86f201cf2f23b2149316668257635d8eeca28d2a8fbebe40",
+    "output/encoder-vectors/task_06/layer_01/expected.hex": "fefa082cbdcb1513711ce5383e29e28bc1258e4546c377fa56c36702cb43c2d7",
+    "output/encoder-vectors/task_06/layer_01/ffn.hex": "903dd783ba2c93c58def7af7bda9e0cce647b0446183ea458d227582f455a7cb",
+    "output/encoder-vectors/task_06/layer_01/ffn_input.hex": "54cb13d7dbfe3b7df81b6159d05b15beee6817bff17652904a07e0f7f259b6b1",
+    "output/encoder-vectors/task_06/layer_02/expected.hex": "9f2dd45bbf9c1e15ba9f66a706fb9f24d2785737a6ec4313005ea9d261074a4b",
+    "output/encoder-vectors/task_06/layer_02/ffn.hex": "55c8f2a5109c49d29243eca2e09eb2aa8f6ed9971900341f4f7d37e66e99939f",
+    "output/encoder-vectors/task_06/layer_02/ffn_input.hex": "49ab7fdc5e4cabf38baf1685db2cce8387398e285ff7adcfe9955f7f186e848e",
+    "output/encoder-vectors/task_06/layer_03/expected.hex": "68a0d13f38611c6958f9b6681b24ee133eda33918a808cd088cfbea4fb0e7e9b",
+    "output/encoder-vectors/task_06/layer_03/ffn.hex": "3407ad82023e821d99c9d290cdfd814d8158eb0640b6207e64455668d07c98c7",
+    "output/encoder-vectors/task_06/layer_03/ffn_input.hex": "56e1cf078f881c1e5d29cfc126ba17820812ffc38fdced4046156ce3e0b59ac6",
+    "output/encoder-vectors/task_06/layer_04/expected.hex": "a0b71c8b58c550e0bb6e7c96b02c78709393676a5c6781f2eaa2428c237f450d",
+    "output/encoder-vectors/task_06/layer_04/ffn.hex": "4f4beae2813f551e2fc34169ba425d7c5ed5c397cc20af69e8db8210c6c443b9",
+    "output/encoder-vectors/task_06/layer_04/ffn_input.hex": "69025f1e30d2f1d996736ae77a8e74e355d0aa3c5add2c3455bd97cf758c5549",
+    "output/encoder-vectors/task_06/layer_05/expected.hex": "42c3ed5e855a1e7dc180579167f51897220a29e5907b92b760174bb0da2c0a77",
+    "output/encoder-vectors/task_06/layer_05/ffn.hex": "7c4d1d9291bc4043c731c2303d56a90f1d1d677d76485ed8ff11a41bb82b9b0b",
+    "output/encoder-vectors/task_06/layer_05/ffn_input.hex": "10825e2c978c87bbdfe939863c019184f93a285c117ba53ba68bcc2b3e3dacbb",
+    "output/encoder-vectors/task_06/layer_06/expected.hex": "3cfc54eb6a75c05649f3e468fddf6688e85f51ffd9fba5e9099e8c88017b3bc0",
+    "output/encoder-vectors/task_06/layer_06/ffn.hex": "f12f10ddbeb0b5f28d2cc6809eb209a4aafbeadb52091e248d064d9d96856ffb",
+    "output/encoder-vectors/task_06/layer_06/ffn_input.hex": "41992754a1b6e90eaf890d8b6e99308ef795bbb18d28f5e36db1cddb39298ab5",
+    "output/encoder-vectors/task_06/layer_07/expected.hex": "fd00216d478f2cb10f82817c47f19b20a3bb15abbfea1e606669fe5328292127",
+    "output/encoder-vectors/task_06/layer_07/ffn.hex": "025c10e63c552f3687fd56299ddfc68b4e77e12e8312ddf1ff84faacbf32a0a3",
+    "output/encoder-vectors/task_06/layer_07/ffn_input.hex": "b8fb978801ae6847f8d20afe03c52f6fbf2e031027c652cac821e4dd5b850fbf",
+    "output/encoder-vectors/task_06/layer_08/expected.hex": "deb4a6933e54058a7c2910db26f435780b8e2874bceb43fac24895c0d7256c6d",
+    "output/encoder-vectors/task_06/layer_08/ffn.hex": "254ee201b5fef8a76fca49d37b34b26aabc1aabb0a320c8cc1c379c9033ed70d",
+    "output/encoder-vectors/task_06/layer_08/ffn_input.hex": "1864c562f06d5ca192525d64b5880df8fbc85955ac90ed0f0ea4b1cf314520b8",
+    "output/encoder-vectors/task_06/layer_09/expected.hex": "a4312858654d4b742e129d1d463784ce74e2da8949e887e2e3e36df0da2946fe",
+    "output/encoder-vectors/task_06/layer_09/ffn.hex": "8f10db7061e5202167d75b79206f0f0c8ff45782712a50663dc3269065be28de",
+    "output/encoder-vectors/task_06/layer_09/ffn_input.hex": "ec8aa1ac3c40cd52ba7245634da628769edc7732c045266254a7ee32c8e8d64d",
+    "output/encoder-vectors/task_06/layer_10/expected.hex": "e711397bcaff8c9a02da5fe1f44f05109f9da962617bfe1363b3fed6df0d0b74",
+    "output/encoder-vectors/task_06/layer_10/ffn.hex": "6c3dd9e38756be622359e0586c1ab79ae6ca97c116e7e24c2f47450397547caf",
+    "output/encoder-vectors/task_06/layer_10/ffn_input.hex": "411eebb43d13608853a44a833f0c85512fa3225e8460bd9d915b5cb969c609e4",
+    "output/encoder-vectors/task_06/layer_11/expected.hex": "e7fecfa5babf30743f7f271aa7bea177121ccc157e065978ac1b636011b161fc",
+    "output/encoder-vectors/task_06/layer_11/ffn.hex": "a63285c3efade6bc3cc751c4e7992e69b365d371e893a735b7bd2d877fc44c05",
+    "output/encoder-vectors/task_06/layer_11/ffn_input.hex": "387a31f5e2006aba4187be9cb9f8e877c4152e2bdaa499358a2bdf065a8c6fa2",
+    "output/encoder-vectors/task_07/expected.hex": "683ecdfa49fad326440ed2f3594f31d24f2b1b8a0794c7e248031dc90c523a7f",
+    "output/encoder-vectors/task_07/input.hex": "5d74a2ddf24295fffe6c0541e3437ad10177c3d82b40a260bc8427c4ce53f4dc",
+    "output/encoder-vectors/task_07/layer_00/expected.hex": "17ac72106731e64189f73292fcca6f9860daff2cdb681a7fe6cc00c331446174",
+    "output/encoder-vectors/task_07/layer_00/ffn.hex": "d4cadd84e7a53faefb64b6aecd40a50b3f274ebd93eb3e5421bb4c03502bac58",
+    "output/encoder-vectors/task_07/layer_00/ffn_input.hex": "71c2e2812a43237d9a3d323fa4e1e5d7349f7a6270ec9b4d361b1fd1d7283955",
+    "output/encoder-vectors/task_07/layer_01/expected.hex": "5af4146571abfa8f10f9799164f2e3e46e76fb112cbd2a8b7c6433a23f113845",
+    "output/encoder-vectors/task_07/layer_01/ffn.hex": "f267a40c301d601eceb74b3c1ba65f7a73dfa41ad797319c89647be1f17bd56c",
+    "output/encoder-vectors/task_07/layer_01/ffn_input.hex": "0d3e60fa3bca7247294b5e53c853ad1878b414d79053d26be284516c168d9291",
+    "output/encoder-vectors/task_07/layer_02/expected.hex": "852d46a7b55b3827d34a602c4e1d1ad121a19ff98966c32234ecd040bb908c10",
+    "output/encoder-vectors/task_07/layer_02/ffn.hex": "a6a7990565266db41844c4e10ee06956c7a4c533019e4a8c9bd34eb9415d83f0",
+    "output/encoder-vectors/task_07/layer_02/ffn_input.hex": "cbd4216dbc7d1eacbc2166216763d2bd6b2fa612e3a5a0f08db9caa6c561259d",
+    "output/encoder-vectors/task_07/layer_03/expected.hex": "f60b52afc1937005e315896e432049cfa49bacc7a09f2954e8c561a18abfa17c",
+    "output/encoder-vectors/task_07/layer_03/ffn.hex": "b3f0914309e0d6154debf5b13c4481134bf9fea8d1eeb78f8e80025fc7e60dec",
+    "output/encoder-vectors/task_07/layer_03/ffn_input.hex": "9368e8a5e4cf3828aa9a49e3b05a16200195340b9a839f65e14579b7548c3e8b",
+    "output/encoder-vectors/task_07/layer_04/expected.hex": "df503ed252bd4b83f34ef675d429d830aa583b6b6e683d7662b3fca5c245db81",
+    "output/encoder-vectors/task_07/layer_04/ffn.hex": "e79a543f52be50da890c9449eccbbdbab2c6abf1bbce709d541791a3c8479760",
+    "output/encoder-vectors/task_07/layer_04/ffn_input.hex": "0b8d366dbcf29388822a204e35efc93c41a6342762440527506a77c17534d7a7",
+    "output/encoder-vectors/task_07/layer_05/expected.hex": "f75744767c60c703d6ceef69886b9cb01f845d83035d972106a83b5fb8808abd",
+    "output/encoder-vectors/task_07/layer_05/ffn.hex": "ef753ad8aea06f8cc6b28f916f0330198b6a42bebcd619cd1dcdd1e7816c085b",
+    "output/encoder-vectors/task_07/layer_05/ffn_input.hex": "85f1b21af3152e8e96867e9f8aceebcd8442f05a7e8dc616387dc6ed17c19f79",
+    "output/encoder-vectors/task_07/layer_06/expected.hex": "48e6f543f97d8b84941b7266c661870f401da5a2759f488981d50e4f89c47f8d",
+    "output/encoder-vectors/task_07/layer_06/ffn.hex": "5a0cd9aa7bb9253339daf7b4bb42b350d2da4fd49c314e4f6bb6c70ae2d63d32",
+    "output/encoder-vectors/task_07/layer_06/ffn_input.hex": "464f1959bd794a2f474fe12df5d2b8556cf1b1bb3d0af8de5c8b6392c263b2ca",
+    "output/encoder-vectors/task_07/layer_07/expected.hex": "b0d2c2fb112d89d613c620d0cbb327f1b0b6d95f00fdaac34c09054b31ca2586",
+    "output/encoder-vectors/task_07/layer_07/ffn.hex": "a58fe06b9771e114fe38f9c370a6c84e543850a9bfaf555fd5ee2d5a873fe0dc",
+    "output/encoder-vectors/task_07/layer_07/ffn_input.hex": "437fdc51790e8744d640e5004717a14ce4cfb0f06fae318e28fb3ed973b84ddb",
+    "output/encoder-vectors/task_07/layer_08/expected.hex": "63b79c27147cf2fb0323adf7efcdfe94380fd44fbf0c64455fc167d8fe8c0b22",
+    "output/encoder-vectors/task_07/layer_08/ffn.hex": "924be2ef65a97f2b78877bd23aa179bcacbdd06e671ddea14d487a2351988842",
+    "output/encoder-vectors/task_07/layer_08/ffn_input.hex": "aec6fc8884bdf51d2afb87158c236c9c50b580bca13a6ee4311f341a56b00723",
+    "output/encoder-vectors/task_07/layer_09/expected.hex": "c1fe17fcef5ed085b89133b15b06d56757988a102b12dd65bd63c13980a9ce22",
+    "output/encoder-vectors/task_07/layer_09/ffn.hex": "5641db924833a8369cfe9da122f6eb7923f12d510591c74959447db2c0efe4f1",
+    "output/encoder-vectors/task_07/layer_09/ffn_input.hex": "071bb622c03b374c711ead74ce2c0d08cf767f0924efb0fd76a267b6b2caf1e8",
+    "output/encoder-vectors/task_07/layer_10/expected.hex": "36e6ad040cd0266ee8699fa73a61be93d89c18e1c938117ffcee673c5591f8c4",
+    "output/encoder-vectors/task_07/layer_10/ffn.hex": "70b74bab0de533db71e349d52b816c9887663986d6dff08c15a3174345929640",
+    "output/encoder-vectors/task_07/layer_10/ffn_input.hex": "4c2bd33122b3a00ecaaefd442f6e9d246103215352bc5c62978035215c641f01",
+    "output/encoder-vectors/task_07/layer_11/expected.hex": "683ecdfa49fad326440ed2f3594f31d24f2b1b8a0794c7e248031dc90c523a7f",
+    "output/encoder-vectors/task_07/layer_11/ffn.hex": "7a1b17bdbec79804cbaed11e8c0562f40bf25123dc95c2c01224b655d249f146",
+    "output/encoder-vectors/task_07/layer_11/ffn_input.hex": "796db43fb4e3391d05b73ee2fac2c1811bfd5ae238399cc9ae9f6bb7414bfb85",
+    "output/encoder-vectors/task_08/expected.hex": "cc7a5acaf3d329eed33d2977b4ca75dff760037e7e34d27daef8292d782094a0",
+    "output/encoder-vectors/task_08/input.hex": "e1a472e0e721cb954dd714ebec83a3079b583a28fc5bed007c4286842e583afd",
+    "output/encoder-vectors/task_08/layer_00/expected.hex": "3821549fab869759d68cd8c9fa588e62348f682759acf37f7be2c269cd5ab15d",
+    "output/encoder-vectors/task_08/layer_00/ffn.hex": "952f0b5d620a5af35513db64c9ce4c0214ed4e5329cfb7d4532f92955301e096",
+    "output/encoder-vectors/task_08/layer_00/ffn_input.hex": "c41881d0b0e738c693959f8bada617544d0ba0fa9cc6037790e310113f107dd8",
+    "output/encoder-vectors/task_08/layer_01/expected.hex": "879f07b0993d8b3a57feb414fb3414a8c369e6c5d8272715118ae94eaa9b1002",
+    "output/encoder-vectors/task_08/layer_01/ffn.hex": "904982d3caf43e15ebe549638dd5fd32185bc3d95b3bc208c0c766d9d5a87e1c",
+    "output/encoder-vectors/task_08/layer_01/ffn_input.hex": "6ba358140f2eebade065e1d4be96d9128b93361bad28d2b0ff4da4a86eb50f31",
+    "output/encoder-vectors/task_08/layer_02/expected.hex": "941070c865fa800e45fb1a7d5d0e9a8a1a02dddb8f1d65c571c2685cf0e30678",
+    "output/encoder-vectors/task_08/layer_02/ffn.hex": "2c3f5aaefb1d157fb3a2f86c84cabbdb3c39f22b6ae4783330dd2996f6b74e1d",
+    "output/encoder-vectors/task_08/layer_02/ffn_input.hex": "7a9d866233b152e08ead3fc739d4c04399d66b6d48513757fd6fcaa553db0b0f",
+    "output/encoder-vectors/task_08/layer_03/expected.hex": "e85c8fd70e4392fc910a50fa3db5ee4d0f83a57607020ce74e1747d82b935d93",
+    "output/encoder-vectors/task_08/layer_03/ffn.hex": "03a316ab67e44b8d89d4999e7d9137eef006b3e0038bacbfb67cbc31c6efd9d7",
+    "output/encoder-vectors/task_08/layer_03/ffn_input.hex": "4d16f8c3539e171dd13c9eaef5924e2b88166c3a7309323320c1c7bb78ed475b",
+    "output/encoder-vectors/task_08/layer_04/expected.hex": "cb5a4542686e66eef190223ea77742e90726ac0918f34af056be4a3be9475311",
+    "output/encoder-vectors/task_08/layer_04/ffn.hex": "85950008a6b4c40d102d4d8d645efc1a0d45aba8508312fdb17cb53fc4fc82b3",
+    "output/encoder-vectors/task_08/layer_04/ffn_input.hex": "5066178e9d8e2224bc72a1efd9ca8f2a96169c45449fb74e165d5aab09b44e7c",
+    "output/encoder-vectors/task_08/layer_05/expected.hex": "0ab1420f1525e95c8cca1f6e6f6d76c175e78f216d1fb1c9a6042038376d6856",
+    "output/encoder-vectors/task_08/layer_05/ffn.hex": "170f671c7e0f080368abd145f0eee0e6ce6429d983b05cda676f53c28904c1f8",
+    "output/encoder-vectors/task_08/layer_05/ffn_input.hex": "9813ac95a8623219a2c102100e679dbb1eecfceda6c76d3823134f11d69c8e7d",
+    "output/encoder-vectors/task_08/layer_06/expected.hex": "a2c7e941c15a59ef514ead3bc4e5738bcc6d4f771b7b50882b88fbcbcbba16a9",
+    "output/encoder-vectors/task_08/layer_06/ffn.hex": "620fe967581e54d055f791305ae2f91c6b810c98628eb8d7f9f820a42b8e6d2e",
+    "output/encoder-vectors/task_08/layer_06/ffn_input.hex": "fd8fd525c24c1023fcc3b2e7bf5990c823387dfc36a3634c4717ac534eaacb34",
+    "output/encoder-vectors/task_08/layer_07/expected.hex": "3a4cca3f7f7019d64ce5c7f2776511a269e082b7b05d658dcd5fc0c383fa0bbe",
+    "output/encoder-vectors/task_08/layer_07/ffn.hex": "e980be11478c0c80b0f3aa06872aa34daad97bd2f74041f8b6682eb6b31a6616",
+    "output/encoder-vectors/task_08/layer_07/ffn_input.hex": "095782c48cfe8e76ad95a8eda95f18c9d445b250bbac255cc6a163776395f627",
+    "output/encoder-vectors/task_08/layer_08/expected.hex": "f7ad59b8f50c6079aa90d4c7f1a88f273471adb49cc06034ed10615aa9e1335a",
+    "output/encoder-vectors/task_08/layer_08/ffn.hex": "e25de89a087cc40e47fcaf4234a1fba46cfa606a2c1d4f839739a568d9122e71",
+    "output/encoder-vectors/task_08/layer_08/ffn_input.hex": "2ecea2dbb99490b4d5650327e9c6b28b7a2c54842b7c42886c2b9a832d9894ab",
+    "output/encoder-vectors/task_08/layer_09/expected.hex": "18eafc2d6517065e2651058a98b58e7d63ff525147ba701918580ff0d71ccd7e",
+    "output/encoder-vectors/task_08/layer_09/ffn.hex": "41ab6b44c9a936fd54d1aeaeedc0dd0f140401af0a226b1f76e4b8f01c212b7c",
+    "output/encoder-vectors/task_08/layer_09/ffn_input.hex": "ecbbe7a994dc07c0f34592a20177d2737b789986302808a2acc94e62df7b0ff0",
+    "output/encoder-vectors/task_08/layer_10/expected.hex": "d419896950a1b3e5635bed4486471482bd59d53a3ba96332c4a789c50cc0489c",
+    "output/encoder-vectors/task_08/layer_10/ffn.hex": "83d8c0dd03fb4a56b2af38aafe9d5a9e51a0bd9bcc3d789319287296809622c0",
+    "output/encoder-vectors/task_08/layer_10/ffn_input.hex": "375b13a5b4a9a9a929ed7437438dcf9a07021b1bb1d898576dcc43b698556cfd",
+    "output/encoder-vectors/task_08/layer_11/expected.hex": "cc7a5acaf3d329eed33d2977b4ca75dff760037e7e34d27daef8292d782094a0",
+    "output/encoder-vectors/task_08/layer_11/ffn.hex": "7ce9a360dcb347d26a6c177a3532644aaf84e5c14dc39ea1cc5c26fee7a4c018",
+    "output/encoder-vectors/task_08/layer_11/ffn_input.hex": "31971da008b9f265dcc028b919afe8d3fecea594fe398489c92c63baf9eece0c",
+    "output/encoder-vectors/task_09/expected.hex": "f85ddd4c1de25b9a9d03ff7f058cec56744ac6d4acc45c02f50ee42efeb44d85",
+    "output/encoder-vectors/task_09/input.hex": "1045ae1022e8a838d913ab50159facf2d1fa8141cf6c12addd0339ec050e0a5f",
+    "output/encoder-vectors/task_09/layer_00/expected.hex": "afb9cddba0aadf215d55becd46c63df5f94a819e32372159a8cf0abd81dfbe6a",
+    "output/encoder-vectors/task_09/layer_00/ffn.hex": "3d14a8d28da276337e59373c69b0d89909337fecf77bd42985639d2c72a4f16e",
+    "output/encoder-vectors/task_09/layer_00/ffn_input.hex": "72001230d510fe80152d1ed958154950f78038ad4dfd473ec338e8c4e6382a10",
+    "output/encoder-vectors/task_09/layer_01/expected.hex": "b332916b10da3e38fcd923047bd7c1fcc005df8cfb9cf0d074f6b38f5946ba3c",
+    "output/encoder-vectors/task_09/layer_01/ffn.hex": "e43002add8acec756501651cbf891b95f63ca83a45a995d000c90bc1577212fd",
+    "output/encoder-vectors/task_09/layer_01/ffn_input.hex": "3f6a1be8bd166ba62f1be98bb656bd3cb8d1ce91c663fc6bb33c3055b2ad1f40",
+    "output/encoder-vectors/task_09/layer_02/expected.hex": "d1ff41fe08fca2e8a36ae8809c0be54624ca3d5bec674134f01be31c8a240efe",
+    "output/encoder-vectors/task_09/layer_02/ffn.hex": "1cc1c12b9b0a44a1b79a3290620f51f5d7d82bc6c8747d97b232a5e62cea0703",
+    "output/encoder-vectors/task_09/layer_02/ffn_input.hex": "a5f9802252411f99bf36b803cf8eb3eaba9c69b56faea69d0b27482375803a0c",
+    "output/encoder-vectors/task_09/layer_03/expected.hex": "f3c633ff6729b27d89221b4cc4ff41e79179dddc48d30ac15b7126831c5a1d1f",
+    "output/encoder-vectors/task_09/layer_03/ffn.hex": "ae3e07d29f2101f1462714091b0f15f07fff6efb98054c4bbd5bb2749a480ed4",
+    "output/encoder-vectors/task_09/layer_03/ffn_input.hex": "53abcccdc50543eeee9623aabd125fdb2b7498b4d7131f8ed7c053e8d43f605b",
+    "output/encoder-vectors/task_09/layer_04/expected.hex": "31400f811207bbe6e2cdb28ef3cf6275178aaabbca0f01535aa9fe9ac2b1055d",
+    "output/encoder-vectors/task_09/layer_04/ffn.hex": "7a86e064cb45d472029ce81afdfb98aa5394dda179bcc23ea209236bb3ba641a",
+    "output/encoder-vectors/task_09/layer_04/ffn_input.hex": "c17f26f2bfea21135e0e846d04958237df34b3a09614b4ca7c301c8bd1315a75",
+    "output/encoder-vectors/task_09/layer_05/expected.hex": "a70ad27bf1abebac7f652ab58c9acb80a31beaf43d2504a6f940d445c4567936",
+    "output/encoder-vectors/task_09/layer_05/ffn.hex": "dd119a121ad830bd8cbf9bb17b99da59725e756827d0daeaee473a390768dc65",
+    "output/encoder-vectors/task_09/layer_05/ffn_input.hex": "efcd59c4258d7ec5b0df43df1ed36a02681ba4146768a9ac1419666f78fcab19",
+    "output/encoder-vectors/task_09/layer_06/expected.hex": "b961c09bb7322901cec782b4ed03a03d5ad4026defe65efe9622eee8b3a6fb3d",
+    "output/encoder-vectors/task_09/layer_06/ffn.hex": "39e949d165f29aed8151e4791ee678b29da22b7838c614d73413e5e643333a4c",
+    "output/encoder-vectors/task_09/layer_06/ffn_input.hex": "9d66d7e699df3c0792d5175e45b141ba8e07158d6148b4860aac66cbeb25c71c",
+    "output/encoder-vectors/task_09/layer_07/expected.hex": "72fd5f8b7bc1ef3dbc510f94ad4440458e39f707a47928763a48a63a6232dffd",
+    "output/encoder-vectors/task_09/layer_07/ffn.hex": "c5504fd25bf4653ed2c85cdda59ad86bf70e23ee329f75ab7adfd20e35789614",
+    "output/encoder-vectors/task_09/layer_07/ffn_input.hex": "206df13dbf18a2138d6f8facf3bf2a305791b07bdaea8f314d5f04ee4eb79e48",
+    "output/encoder-vectors/task_09/layer_08/expected.hex": "973035f36f1de6244ff859e68a1f2b49d843641a79e68b60a46ceae4fc3e91f2",
+    "output/encoder-vectors/task_09/layer_08/ffn.hex": "3d3c4b833830ce068df5eee163fc5595fd8b4da165724932f9a17c5b5261169a",
+    "output/encoder-vectors/task_09/layer_08/ffn_input.hex": "5a30264219edd3b8fc9291d28d08564302fafd545ff810ddd42ead7ce126bc0a",
+    "output/encoder-vectors/task_09/layer_09/expected.hex": "6da5bdbd30cad46dd1d650374144d59c65ddcd0b52ad9c9341aeeea0297823f0",
+    "output/encoder-vectors/task_09/layer_09/ffn.hex": "1717e65f16283ae46d63f7a35b0b8de2aacae62fa0f24a34564baf298283b10e",
+    "output/encoder-vectors/task_09/layer_09/ffn_input.hex": "07a2a836664d82e038126156a551d24d65999aa1b8eef4abfafa6bc10b48d3ae",
+    "output/encoder-vectors/task_09/layer_10/expected.hex": "e025e169bee4640dbebe4fae533d130eb73bacf2cef366c47d61d869b94c02df",
+    "output/encoder-vectors/task_09/layer_10/ffn.hex": "f056fc065545cea1a80f4c225d8f8173be960548ec013ee7132b5d1857719282",
+    "output/encoder-vectors/task_09/layer_10/ffn_input.hex": "6589884bb0f0d0f435059cfb63da1409153640694414a01533b4f513a6ffa0d9",
+    "output/encoder-vectors/task_09/layer_11/expected.hex": "f85ddd4c1de25b9a9d03ff7f058cec56744ac6d4acc45c02f50ee42efeb44d85",
+    "output/encoder-vectors/task_09/layer_11/ffn.hex": "278c61008bf76be0bd3c2db9623006d16319f470d92d8fe53768054201b4f1ed",
+    "output/encoder-vectors/task_09/layer_11/ffn_input.hex": "2812b67156fb4831585efce781277d1531a3541b9d4f4e352be29b570bfcd452",
+    "output/encoder-vectors/task_10/expected.hex": "2fb6f41ea065b902703b023e2ad41cceeac847619f3db50c4cf9f33c5da1a862",
+    "output/encoder-vectors/task_10/input.hex": "4c97caf3e4d4e49d49e28ccc3c9339d46e42809e6452ff59a815cc41c2021baa",
+    "output/encoder-vectors/task_10/layer_00/expected.hex": "15fa5f7c83e494babf8b4ccbf554d8f301e89cf597987ddcd7fa44ee9ea9055d",
+    "output/encoder-vectors/task_10/layer_00/ffn.hex": "781378ab7d1d0066e3d4be34e4050d9e639270c615448aafbb370b40659a686e",
+    "output/encoder-vectors/task_10/layer_00/ffn_input.hex": "6afc29c098645f936ce640e8262850721a6688b85f1c814a4608475705fd47ac",
+    "output/encoder-vectors/task_10/layer_01/expected.hex": "5dcc8768270de69fe10223bc126395b4494f65932fd7d04ea7e62a3ad589b823",
+    "output/encoder-vectors/task_10/layer_01/ffn.hex": "df920c22b8841a6b4417cd4c5192c41928bfe7f3b522987b11cd4b89d4e01f36",
+    "output/encoder-vectors/task_10/layer_01/ffn_input.hex": "68c619621853b418214a4b91f3818926bb35e50d2bf8a4a1b548ab2e103a0913",
+    "output/encoder-vectors/task_10/layer_02/expected.hex": "cf8d2c296dfef1728b149eaf67363728a04d4831efa05c769513cc1a22a301b1",
+    "output/encoder-vectors/task_10/layer_02/ffn.hex": "de0fde848400a4b5074bbe70bc4c1fa79d8583953b9dfe3f6fb629cea81023cf",
+    "output/encoder-vectors/task_10/layer_02/ffn_input.hex": "4e951f9701e644f01ff90e59404587535de73127701a21bdad67c4d5b1f90ba4",
+    "output/encoder-vectors/task_10/layer_03/expected.hex": "f5fa6a92bfe70adf4d9ec2aadc99a8934eb38f3d2496326253a9628524b22cc7",
+    "output/encoder-vectors/task_10/layer_03/ffn.hex": "9dee0df703d2659f1a0e137042b2ddfd3d0d6b941df78d3518ec347c6bbdb334",
+    "output/encoder-vectors/task_10/layer_03/ffn_input.hex": "0ece96602ec2c15993ef4d4e5e42fbe08b95abe2927b3fc654102e25c67e8387",
+    "output/encoder-vectors/task_10/layer_04/expected.hex": "bdae626908d05deb50126f7b54bdc8daa4cc1b45b7c975128c94ae5690ac81a7",
+    "output/encoder-vectors/task_10/layer_04/ffn.hex": "f51069c39efd37e2dbde549e844f4ff918ec3fbab848d3569a627d56d0db8f56",
+    "output/encoder-vectors/task_10/layer_04/ffn_input.hex": "2bbe8092f15a760c2bbb69b0610560e9d17f24ba74a6ae7aa1d53f7e04e7cd06",
+    "output/encoder-vectors/task_10/layer_05/expected.hex": "8843e8f35c0a94175382b8dd2d3629e30a19e3b62256446e8644183c3554a898",
+    "output/encoder-vectors/task_10/layer_05/ffn.hex": "1a394ff7fbdec7a7246d38464b43f96056bdbc2d893e077eb2441836b25864d9",
+    "output/encoder-vectors/task_10/layer_05/ffn_input.hex": "1d6236cdda3f044df2b94c7c5ae3076fb8c372b14893960f6a040ceabfe4e5b7",
+    "output/encoder-vectors/task_10/layer_06/expected.hex": "4e942c17e8fbc4fb7dd63cb669e597061d2a52980db2b394147bc9bae2a2b8ba",
+    "output/encoder-vectors/task_10/layer_06/ffn.hex": "044ba07bb9e9fd57fbb09b09cf911c54a228c619d24b4144aa5d74f8466638c1",
+    "output/encoder-vectors/task_10/layer_06/ffn_input.hex": "7b53b5264b3f958a2aeb3a68a014fd7c9cd58207aeaed9ea790a079849116993",
+    "output/encoder-vectors/task_10/layer_07/expected.hex": "3edf680732b8746f75109ba999245e46546fefb88dec88cf068222653729d868",
+    "output/encoder-vectors/task_10/layer_07/ffn.hex": "6ca504ab848b7f3be8eaa34dd55b0b6f989d1c09f639622815b0ad778392e269",
+    "output/encoder-vectors/task_10/layer_07/ffn_input.hex": "bef5584d22f933fc69f63a59e9f334e4d74d67a939bcdaf64e43b9606f2bf246",
+    "output/encoder-vectors/task_10/layer_08/expected.hex": "9f1ae427e783f8243f499de73d8356a9913d35f41797354f389696409fae1b31",
+    "output/encoder-vectors/task_10/layer_08/ffn.hex": "3b59388289d7d434b7a00699a3dc26b090d77e84ff0e6f230b67fc1e01f99ec3",
+    "output/encoder-vectors/task_10/layer_08/ffn_input.hex": "7ddace99460e876f25d840eece86e2ef6613f85eaf44fc677b9e2b94cd169474",
+    "output/encoder-vectors/task_10/layer_09/expected.hex": "b9360b3a163c0b3dc56cc7ed023aa865e54a22bf054d45f2c02be648501b66b0",
+    "output/encoder-vectors/task_10/layer_09/ffn.hex": "67cadd31e77e02466643fcec9f428ed1bcf66e0582e5b924f01e9f7dfcbfd062",
+    "output/encoder-vectors/task_10/layer_09/ffn_input.hex": "29825b429f8e503b9c326b9d8b6d44c994089c723c1ce75412d72aa4e1fd71cf",
+    "output/encoder-vectors/task_10/layer_10/expected.hex": "d49bcb40871417019c1e3d2f19b8f3d3b319848b52ee164dcde4ca373494a1a3",
+    "output/encoder-vectors/task_10/layer_10/ffn.hex": "f5970780403758f2ca295dde9d70615a5434c7764b4a4653d8f5ce785ffab385",
+    "output/encoder-vectors/task_10/layer_10/ffn_input.hex": "db9b5b9c8ddab1bf41be27c15d10427c490ed9453aaeab0be6513992d323a09f",
+    "output/encoder-vectors/task_10/layer_11/expected.hex": "2fb6f41ea065b902703b023e2ad41cceeac847619f3db50c4cf9f33c5da1a862",
+    "output/encoder-vectors/task_10/layer_11/ffn.hex": "c30049c23f050b5c3e6763fa9536c703f473d1fe974cceb0732e1e7a88851206",
+    "output/encoder-vectors/task_10/layer_11/ffn_input.hex": "ae047093a0392143b82fcee59c7c0bb92a31991c687c36fddc11d07a7b1cfc61",
+    "output/encoder-vectors/task_11/expected.hex": "e05dd88b7d6648d3937320f240b4fd1a55b39dc54734da0aa311639287adb9f1",
+    "output/encoder-vectors/task_11/input.hex": "bfe2dc0ebe87705c92a42036da765eeb36a32fd4c17dac1bca4037aa7c06ddb7",
+    "output/encoder-vectors/task_11/layer_00/expected.hex": "3653cdf69f2e3b7c42a04e148eb256dd261f3a2d313979203989becaa3dfb075",
+    "output/encoder-vectors/task_11/layer_00/ffn.hex": "6873025fe38691fa6f0e59fa7e718480f491f5f21ce881c28fd051f271bd3d99",
+    "output/encoder-vectors/task_11/layer_00/ffn_input.hex": "96117dc8b25fff1c3eaa85a87f11920189437a5e698295c48361634b073929b8",
+    "output/encoder-vectors/task_11/layer_01/expected.hex": "73af11a03cf9c8a97fce8aae70929e4c236c501a974c7bc70413e5e1f86603a4",
+    "output/encoder-vectors/task_11/layer_01/ffn.hex": "12b63b0283a4fef3363ccf548aa24e88475a2f669ecf9d463366ad1dfd9bc32c",
+    "output/encoder-vectors/task_11/layer_01/ffn_input.hex": "3f7ab8fe4b1036e81b3268adbb6f4b523f2077f200854fec4c58b5021025d76a",
+    "output/encoder-vectors/task_11/layer_02/expected.hex": "ecba84d877cf4090b1afdce9c760342d200b2627b8992246606230f880c69e51",
+    "output/encoder-vectors/task_11/layer_02/ffn.hex": "a0f18c108ec982e2406437e3f9a761b5e277aea087131552b88ce97c01fe6df1",
+    "output/encoder-vectors/task_11/layer_02/ffn_input.hex": "79401985cbc03b7448f736eb1a214bbb6e5efce0069bfcf4b420e7125da5d445",
+    "output/encoder-vectors/task_11/layer_03/expected.hex": "a7eb56fe3bf56c1d648c8df9d2bb2c64e22bd804288e2f5230a3f856a91095cc",
+    "output/encoder-vectors/task_11/layer_03/ffn.hex": "06b0de52ede71cccfa00e68608c36b70cce5c3c89356a5a440dc451825e5ea03",
+    "output/encoder-vectors/task_11/layer_03/ffn_input.hex": "08594dac5ea6781899dda551f370dd32002da63539dd51c6ddfab22ca7eb6798",
+    "output/encoder-vectors/task_11/layer_04/expected.hex": "894a1abad51c6a7fac3de6ffdb515fce97fdfb91f3815e8d539758931523b719",
+    "output/encoder-vectors/task_11/layer_04/ffn.hex": "6a1bd20ea8109ef501414dea3794e76d868f51c37e023f897445b434ab996b26",
+    "output/encoder-vectors/task_11/layer_04/ffn_input.hex": "9294ad1daf1fff31680f1839badf904510d245a28d765c0f30fb4bf66f394539",
+    "output/encoder-vectors/task_11/layer_05/expected.hex": "acc72f1ea2483c8669686693d83a0fa15740fb20cc3a98db2608b08c6b522e50",
+    "output/encoder-vectors/task_11/layer_05/ffn.hex": "1a45f82884a54926a40f97814e2cdef50e431c0d7348b1696530d3608998cbf7",
+    "output/encoder-vectors/task_11/layer_05/ffn_input.hex": "8e4fcf9e601304ce7efd55bcaf55504baa7e6491671b39f6d93bc55232c22939",
+    "output/encoder-vectors/task_11/layer_06/expected.hex": "f066529c3d240a1dba6109fb04ba300e01581f1150d1ccef0df4abccee568038",
+    "output/encoder-vectors/task_11/layer_06/ffn.hex": "a7f44e87c784077999280b267a6e6c56405d414df9954f00085f7ed4be6d31e4",
+    "output/encoder-vectors/task_11/layer_06/ffn_input.hex": "ce0b0ecebe156c9ece5db9ff2d12c83c79d4d826c5de60588b85beafee161fb1",
+    "output/encoder-vectors/task_11/layer_07/expected.hex": "af777c2a3402367a139f8429e9a9e6247471234f4d3a64af5655b28c5813d5ff",
+    "output/encoder-vectors/task_11/layer_07/ffn.hex": "f44589050b69e563c2e7ddd23a5952d217b44147c5e16e72365075e5a1e7ae3e",
+    "output/encoder-vectors/task_11/layer_07/ffn_input.hex": "6ff50fb7d8d7636c6693181d82508ea3faf2ef9c650ffc4df0055b3cc38c9000",
+    "output/encoder-vectors/task_11/layer_08/expected.hex": "eb024b66056d9f88f283ee9570bca0dd982a859e9d65007a2af2eb8074d8d4de",
+    "output/encoder-vectors/task_11/layer_08/ffn.hex": "7205cc5c8db751199fc49ddc233e5b37cba8445bab4bc736b943df0bafecaaf6",
+    "output/encoder-vectors/task_11/layer_08/ffn_input.hex": "e0f0e8c12f158b05564a8278c2d175aee39752526fd26d610c57e3e2bf875d1f",
+    "output/encoder-vectors/task_11/layer_09/expected.hex": "48c3263da2cfde610baa755b0e26aab158d1317269591fb61aa1e2531937b469",
+    "output/encoder-vectors/task_11/layer_09/ffn.hex": "c249d5e1624ea1e3534a13c994ffd66749dc125b5b444011be951d7a35bdf96c",
+    "output/encoder-vectors/task_11/layer_09/ffn_input.hex": "9ab38fbd3cd7429b7a4357e6fc8a5d50d249e0397a17c47dc1e974db1e4303dd",
+    "output/encoder-vectors/task_11/layer_10/expected.hex": "7e1257f3f3a90d8fbb4eb55e5db72b8d020d437026573139eae8564705b4b400",
+    "output/encoder-vectors/task_11/layer_10/ffn.hex": "88fc21523d14b0f6606490df4fd8c254f41d9557da9f2f5d62340daac3cfb297",
+    "output/encoder-vectors/task_11/layer_10/ffn_input.hex": "2f459478773738967f38565af6b0dc0c35e1d2ed8837489b84725db4121c6e88",
+    "output/encoder-vectors/task_11/layer_11/expected.hex": "e05dd88b7d6648d3937320f240b4fd1a55b39dc54734da0aa311639287adb9f1",
+    "output/encoder-vectors/task_11/layer_11/ffn.hex": "fe918f1927fa645c599607ee5d234ad823f565d885b7cb1b19694f85f3904156",
+    "output/encoder-vectors/task_11/layer_11/ffn_input.hex": "94edaef6d9540d7bea9d86b149487cbd052162e9ff5d5127a6bdd4e5b0ab481a"
+  },
+  "firmware_sha256": "705ed92683ae96ad61b6f0cc44a806b096e98d7fbf557212883287c9d1ab3c18",
+  "traffic_method": "Encoder counters observed in SoC; fixed FFN read/write counts verified in real DMA transport tests and multiplied by 12 layers",
+  "timing_method": "Matched new hardware, firmware, input and parameters; transport flags alone differ. Historical v2 used older firmware and measured 14808628 cycles.",
+  "overlap": "FIFO tail runs concurrently with FFN: do not add FFN command cycles to encoder tail cycles",
+  "fifo_payload_bits": 160,
+  "ffn_mac_lanes": 16,
+  "encoder_multiply_lanes": 4,
+  "gelu_units": 1,
+  "pending": "Encoder-to-FFN packed int16 input remains via shared SRAM; synthesis/netlist/PPA to be rerun on this revision",
+  "passed": true
+}

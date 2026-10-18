@@ -31,12 +31,19 @@ module kwt_extended_system_bus(
     kwt_bus_fabric fabric(.*);
     kwt_dma_arbiter dma_arbiter(.*);
     kwt_shared_sram shared(.clk(clk),.cs(ram_cs),.we(ram_we),.addr(ram_addr),.mask(ram_mask),.din(ram_wdata),.dout(ram_rdata));
-    kwt_dma accelerator(.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid && !a_addr[19]),.cmd_ready(fa_ready),
+    wire result_valid,result_ready,tail_valid,tail_ready,ffn_abort,enc_abort;
+    wire [39:0] result_data,tail_data;
+    kwt_result_fifo result_fifo(.clk(clk),.rst_n(rst_n),.clear(ffn_abort || enc_abort),
+        .in_valid(result_valid),.in_ready(result_ready),.in_data(result_data),
+        .out_valid(tail_valid),.out_ready(tail_ready),.out_data(tail_data));
+    kwt_dma #(.STREAM_ENABLE(1)) accelerator(.result_valid(result_valid),.result_ready(result_ready),.result_data(result_data),
+        .link_abort_in(enc_abort),.link_abort_out(ffn_abort),.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid && !a_addr[19]),.cmd_ready(fa_ready),
         .cmd_addr(a_addr),.cmd_read(a_read),.cmd_wdata(a_wdata),.cmd_wmask(a_mask),
         .rsp_valid(fa_rsp_valid),.rsp_ready(a_rsp_ready && !register_owner),.rsp_rdata(fa_rdata),.rsp_err(fa_err),
         .m_valid(f_valid),.m_ready(f_ready),.m_addr(f_addr),.m_wdata(f_wdata),.m_read(f_read),.m_mask(f_mask),
         .m_rsp_valid(f_rsp_valid),.m_rsp_ready(f_rsp_ready),.m_rdata(f_rdata),.m_err(f_err));
-    kwt_encoder encoder(.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid && a_addr[19]),.cmd_ready(ea_ready),
+    kwt_encoder #(.STREAM_ENABLE(1)) encoder(.result_valid(tail_valid),.result_ready(tail_ready),.result_data(tail_data),
+        .link_abort_in(ffn_abort),.link_abort_out(enc_abort),.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid && a_addr[19]),.cmd_ready(ea_ready),
         .cmd_addr({1'b0,a_addr[18:0]}),.cmd_read(a_read),.cmd_wdata(a_wdata),.cmd_wmask(a_mask),
         .rsp_valid(ea_rsp_valid),.rsp_ready(a_rsp_ready && register_owner),.rsp_rdata(ea_rdata),.rsp_err(ea_err),
         .m_valid(e_valid),.m_ready(e_ready),.m_addr(e_addr),.m_wdata(e_wdata),.m_read(e_read),.m_mask(e_mask),

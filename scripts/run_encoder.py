@@ -12,7 +12,7 @@ from build_soc import SOC,source_files
 
 ENC_RTL=['rtl/kwt_vecmem32.sv','rtl/kwt_udiv64.sv','rtl/kwt_isqrt64.sv',
          'rtl/kwt_exp_negative.sv','rtl/kwt_encoder.sv']
-ENC_BUS=['integration/kwt_dma_arbiter.sv','integration/kwt_extended_system_bus.sv']
+ENC_BUS=['rtl/kwt_result_fifo.sv','integration/kwt_dma_arbiter.sv','integration/kwt_extended_system_bus.sv']
 DEST=ROOT/'output/encoder-design'
 
 
@@ -26,7 +26,7 @@ def sim(top,files,extra=None,label=None,run_args=None,shards=None):
         def run_shard(item):
             first,count=item
             name=label+'_shard'+str(first)
-            text=linux(name+'-run','output/design/build_'+label+'/V'+top+' +first='+str(first)+' +tasks='+str(count)+' +baseline=0',14400)
+            text=linux(name+'-run','output/design/build_'+label+'/V'+top+' +first='+str(first)+' +tasks='+str(count)+' +baseline=0 '+ ' '.join(shlex.quote(s) for s in (run_args or []) if s.startswith('+transport=')),14400)
             rows=re.findall(r'ENC_SOC_TASK_PASS task=(\d+) cycles=(\d+) baseline=0 outputs=6336',text)
             if [int(t) for t,c in rows]!=list(range(first,first+count)) or 'ENC_SOC_PASS tasks='+str(count) not in text:
                 raise RuntimeError('Incomplete shard '+name)
@@ -53,7 +53,7 @@ def firmware():
     (dest/'encoder_size.vh').write_text('`define ENC_FW_WORDS %d\n'%(len(data)//4))
 
 
-def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1):
+def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1,transport=2):
     includes=['+incdir+output/encoder-design/firmware']
     if netlist:
         files=[str((SOC/'rtl/e203/general'/n).relative_to(ROOT)).replace('\\','/') for n in ['sirv_gnrl_ram.v','sirv_sim_ram.v']]
@@ -66,7 +66,7 @@ def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activ
     if metrics:includes+=['+define+ENCODER_MEMORY_METRICS','+incdir+tests']
     if activity:includes+=['--trace-fst']
     text=sim('tb_encoder_soc',files+['tests/tb_encoder_soc.sv'],includes,label=label,
-             run_args=['+tasks='+str(tasks),'+baseline='+str(baseline),'+first='+str(first)]+(['+activity'] if activity else []),
+             run_args=['+transport='+str(transport),'+tasks='+str(tasks),'+baseline='+str(baseline),'+first='+str(first)]+(['+activity'] if activity else []),
              shards=[(first+i*tasks//jobs,(i+1)*tasks//jobs-i*tasks//jobs) for i in range(jobs)] if jobs>1 else None)
     if 'ENC_SOC_PASS tasks='+str(tasks) not in text and 'ENC_SOC_SHARDS_PASS tasks='+str(tasks) not in text:raise RuntimeError('Encoder SoC incomplete')
 
@@ -114,14 +114,34 @@ def compatibility(netlist=False):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('task',choices=['component','math','fourstate','faults','compat','compat-netlist','soc','profile','synth','netlist','lint'])
+    p.add_argument('task',choices=['transfer','transfer-profile','component','math','fourstate','faults','compat','compat-netlist','soc','profile','synth','netlist','lint'])
     p.add_argument('--tasks',type=int,default=12);p.add_argument('--first',type=int,default=0)
     p.add_argument('--jobs',type=int,default=1,help='Independent RTL task shards; each task retains identical simulated timing')
+    p.add_argument('--transport',type=int,choices=[0,1,2],default=2,help='0 legacy int64, 1 packed int40, 2 FIFO int40')
     p.add_argument('--baseline',type=int,choices=[0,1],default=0)
     a=p.parse_args();DEST.mkdir(exist_ok=True)
     if a.jobs<1 or a.jobs>a.tasks or (a.jobs>1 and (a.task!='soc' or a.baseline)):
         p.error('--jobs must be 1..tasks, and sharding is supported for optimized RTL soc only')
-    if a.task=='component':
+    if a.task=='transfer-profile':
+        firmware();soc(tasks=1,label='tb_encoder_soc_transport_profile',transport=2)
+        for mode,label in [(0,'legacy64'),(1,'packed40')]:
+            text=linux('tb_encoder_soc_'+label+'-run','output/design/build_tb_encoder_soc_transport_profile/Vtb_encoder_soc +tasks=1 +baseline=0 +transport='+str(mode),14400)
+            if 'ENC_SOC_PASS tasks=1' not in text:raise RuntimeError('Transport profile incomplete')
+    elif a.task=='transfer':
+        for top,files,marker in [('tb_result_fifo',['rtl/kwt_result_fifo.sv'],'RESULT_FIFO_PASS'),
+                                 ('tb_ffn_transport',RTL+['rtl/kwt_dma.sv'],'FFN_TRANSPORT_PASS')]:
+            files=files+['tests/'+top+'.sv']
+            if marker not in sim(top,files):raise RuntimeError('Transfer test failed')
+            if top=='tb_ffn_transport':linux('tb_ffn_transport_ideal-run','output/design/build_tb_ffn_transport/Vtb_ffn_transport +ideal=1',1800)
+            compiler=Path(CONFIG['iverilog_bin'])/'iverilog.exe';runtime=Path(CONFIG['iverilog_bin'])/'vvp.exe'
+            run('icarus-'+top+'-build',[compiler,'-g2012','-s',top,'-o',DEST/(top+'.vvp')]+files)
+            if marker not in run('icarus-'+top,[runtime,DEST/(top+'.vvp')],1800):raise RuntimeError('Transfer four-state failed')
+        sim('tb_encoder',['rtl/kwt_sram16.sv']+ENC_RTL+['tests/tb_encoder.sv'],['+define+ENCODER_TRACE'],label='tb_encoder_transfers',run_args=['+transport=1'])
+        if 'ENCODER_PASS layers=12' not in linux('tb_encoder_stream40-run','output/design/build_tb_encoder_transfers/Vtb_encoder +transport=2',14400):raise RuntimeError('Stream trace failed')
+        run('icarus-tb_encoder_transfers-build',[compiler,'-g2012','-DENCODER_TRACE','-s','tb_encoder','-o',DEST/'encoder_transfers.vvp','rtl/kwt_sram16.sv']+ENC_RTL+['tests/tb_encoder.sv'])
+        for mode,label in [(1,'packed40'),(2,'stream40')]:
+            if 'ENCODER_PASS layers=1' not in run('icarus-tb_encoder_'+label,[runtime,DEST/'encoder_transfers.vvp','+layers=1','+transport='+str(mode)],1800):raise RuntimeError('Four-state encoder transfer failed')
+    elif a.task=='component':
         text=sim('tb_encoder',['rtl/kwt_sram16.sv']+ENC_RTL+['tests/tb_encoder.sv'],['+define+ENCODER_TRACE'])
         if 'ENCODER_PASS layers=12' not in text:raise RuntimeError('Component incomplete')
         for mode in [0,1]:
@@ -159,7 +179,7 @@ def main():
         linux('encoder-lint',CONFIG['wsl_verilator']+' --lint-only -Wall --top-module kwt_extended_system_bus '+
               ' '.join(SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv']))
     else:
-        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs)
+        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs,transport=a.transport)
 
 
 if __name__=='__main__':main()

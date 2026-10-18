@@ -17,7 +17,7 @@ module kwt_system_bus(
     kwt_bus_fabric fabric(.*);
     kwt_shared_sram shared(.clk(clk),.cs(ram_cs),.we(ram_we),.addr(ram_addr),
         .mask(ram_mask),.din(ram_wdata),.dout(ram_rdata));
-    kwt_dma accelerator(.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid),.cmd_ready(a_ready),
+    kwt_dma accelerator(.result_valid(),.result_ready(1'b0),.result_data(),.link_abort_in(1'b0),.link_abort_out(),.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid),.cmd_ready(a_ready),
         .cmd_addr(a_addr),.cmd_read(a_read),.cmd_wdata(a_wdata),.cmd_wmask(a_mask),
         .rsp_valid(a_rsp_valid),.rsp_ready(a_rsp_ready),.rsp_rdata(a_rdata),.rsp_err(a_err),
         .m_valid(d_valid),.m_ready(d_ready),.m_addr(d_addr),.m_wdata(d_wdata),.m_read(d_read),.m_mask(d_mask),

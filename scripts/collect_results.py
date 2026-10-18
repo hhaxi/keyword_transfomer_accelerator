@@ -44,7 +44,7 @@ def profiles(filename):
     for t,row in sorted(rows.items()):
         if sorted(row)!=list(range(15)):raise RuntimeError('Incomplete counters for task '+str(t))
         values=dict(zip(PROFILE_NAMES,[row[i] for i in range(15)]))
-        if row[0]!=sum(row[i] for i in [1,2,3]) or row[4]!=202752 or row[9]!=11616 or row[10]!=50688:
+        if row[0]!=sum(row[i] for i in [1,2,3]) or row[4]!=101376 or row[9]!=11616 or row[10]!=50688:
             raise RuntimeError('Counter conservation/operation count failed')
         if not (row[1]<row[11]<=row[12]<row[13]==row[0]):raise RuntimeError('Invalid completion timing')
         values['host_load_and_ready_notification']=loaded[t]-starts[t]

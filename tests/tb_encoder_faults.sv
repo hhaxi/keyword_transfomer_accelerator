@@ -15,7 +15,7 @@ module tb_encoder_faults;
     reg last_write_accepted=0,offer_stalled=0;reg [31:0] stable_addr,stable_data;reg stable_read;
     reg [31:0] mem[0:131071],params[0:16703],initial_x[0:6335],packed_x[0:3167],cfg[0:1],rd;
     integer cycles=0,accepted=0,written=0,j,snapshot_;reg [31:0] held_addr,held_data;
-    kwt_encoder dut(.*);
+    kwt_encoder dut(.result_valid(1'b0),.result_ready(),.result_data(40'd0),.link_abort_in(1'b0),.link_abort_out(),.*);
     always @(posedge clk) begin
         cycles<=cycles+1;if(cycles>12000000) $fatal(1,"Fault test timeout state=%d",dut.state);
         if(!rst_n) begin queued<=0;head<=0;tail<=0;offer_stalled<=0;last_write_accepted<=0;end
@@ -85,7 +85,7 @@ module tb_encoder_faults;
         bus(0,'h20,'ha0010001,0);check_invalid();configure();
         bus(0,'h24,'ha0070000,0);check_invalid();configure();
         bus(0,'h28,'ha0050000,0);check_invalid();configure();
-        bus(0,'h34,cfg[1]|4,0);check_invalid();configure();
+        bus(0,'h34,cfg[1]|16,0);check_invalid();configure();
         bus(0,'h34,cfg[1]|1,0);check_invalid();configure();
         bus(0,'h38,1,0);check_invalid();configure();
         cmd_wmask=3;bus(0,'h20,'ha0010000,1);cmd_wmask=15;
