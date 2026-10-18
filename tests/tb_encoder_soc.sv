@@ -47,6 +47,9 @@ module tb_encoder_soc;
     longint cycles=0,start_cycle,task_cycles,total_cycles=0;
     string folder;
     kwt_encoder_soc dut(.*);
+`ifdef ENCODER_QKV_METRICS
+    `include "encoder_qkv_monitor.svh"
+`endif
 `ifdef ENCODER_FIFO_METRICS
     `include "encoder_fifo_monitor.svh"
 `endif

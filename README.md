@@ -6,6 +6,8 @@
 
 [设计与接口](docs/full-encoder.md) · [输入直传与最新性能](docs/input-stream.md) · [验证记录](docs/input-stream-validation.json) · [赛题指南](芯片设计赛题指南.pdf) · [第三方来源](NOTICE.md)
 
+**最新周期研究（基于 `f7a3a47`）：**QKV 每层 308,886 拍，其中有效 MAC 304,128 拍，利用率 **98.46%**；现有预读已与计算/写回重叠。局部调度的理想整机收益上限不足 **0.40%**，本轮保留 v5 RTL，新增仿真细分统计和逐投影整数核对，提交瓶颈结论及候选方案。详见 [QKV 周期研究](docs/qkv-study.md) 和 [测量记录](docs/qkv-study-validation.json)。
+
 ## 1. 实现范围
 
 | 工作模式 | 计算内容 | 当前状态 |
