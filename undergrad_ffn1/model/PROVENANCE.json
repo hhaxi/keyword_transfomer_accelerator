@@ -1,0 +1,9 @@
+{
+  "source": "ARM-software/keyword-transformer",
+  "commit": "237e4097afd4f6851e0b82f0a8d65c2dfe8eae30",
+  "model": "models_data_v2_12_labels/kwt1/best_weights",
+  "checkpoint_index_sha256": "5a60a0fa78a1855572084a42669768e2998d37e7d93c833962960fdb0db70fbc",
+  "checkpoint_data_sha256": "ae993f6ed995938c1ab584b0857b35ca18f31f88001c7e17c7d7c3868bd33ad3",
+  "exported_float_parameters_sha256": "30cd42cc99459f39f093e435fac053ca500fbef7f504f388b979cd9b2bfd63f7",
+  "description": "Only original FP32 W1/b1, all12layers; no training/weight modification"
+}

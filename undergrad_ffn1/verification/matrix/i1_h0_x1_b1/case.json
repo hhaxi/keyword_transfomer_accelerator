@@ -1,0 +1,10 @@
+{
+  "name": "i1_h0_x1_b1",
+  "options": {
+    "itcm": true,
+    "host_continuous": false,
+    "small_x": true,
+    "small_bias": true
+  },
+  "hardware_key": "x1_b1"
+}

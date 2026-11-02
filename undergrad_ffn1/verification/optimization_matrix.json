@@ -1,0 +1,105 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case": "i0_h0_x0_b0",
+      "hardware_evidence": "experiments/cases/i0_h0_x0_b0",
+      "reset": "b1c77cd336c564f5af4afb7e81fc74fcee1ab381de7b369ddfa6ae9312db6479",
+      "continuous": "0c463f3522fd867cbe13e7a656f3231a0413579bbd9c9f22aa194f1dad23f746"
+    },
+    {
+      "case": "i0_h0_x0_b1",
+      "hardware_evidence": "experiments/cases/i0_h0_x0_b1",
+      "reset": "ad571c0027900c273a5c9f4e208a4b1689718962007b00edbc0fc70ec38531d5",
+      "continuous": "3eb1818e8d168895d4601662befd5a6824f9e140875d90df1c64627f0cc060a2"
+    },
+    {
+      "case": "i0_h0_x1_b0",
+      "hardware_evidence": "experiments/cases/i0_h0_x1_b0",
+      "reset": "b8d9341b74c5e22461f18756f4f2a1075222aff158f015dcf25a7a3a2be79e8b",
+      "continuous": "83f06e0551d26e00dd527233a2b614433aceb014d7154304f7ca02b2a8e1ba5a"
+    },
+    {
+      "case": "i0_h0_x1_b1",
+      "hardware_evidence": "experiments/cases/i0_h0_x1_b1",
+      "reset": "3ab4ceaea036d5baaba883c86edb6f92f1164688f7ead265ee65bb60c5976e62",
+      "continuous": "8b92917da1d6bb0fec65880081adc9f2203c979bea52a7cfd1b0db5d874edf0f"
+    },
+    {
+      "case": "i0_h1_x0_b0",
+      "hardware_evidence": "experiments/cases/i0_h0_x0_b0",
+      "reset": "6f62bc01706acc92f1db8286a059cf4df086daf61e87b492a6ae06c09371fd5b",
+      "continuous": "7ac38d6ff9ea646fd2d6932ff0d829b32383f68782acc2804d67c4543e455e80"
+    },
+    {
+      "case": "i0_h1_x0_b1",
+      "hardware_evidence": "experiments/cases/i0_h0_x0_b1",
+      "reset": "883d498edd92bbe6cc73af5e94a0817618e4927f335bab0bddb32efbdab90c9e",
+      "continuous": "e96c5d316bd47b52da93cc42d0906554bec0056b10a277f3fed061343f07f905"
+    },
+    {
+      "case": "i0_h1_x1_b0",
+      "hardware_evidence": "experiments/cases/i0_h0_x1_b0",
+      "reset": "e5ec3e0fd9f04a4652003e021007b76737ad8233d524f46192c490860e2ccb16",
+      "continuous": "b2d3bf11681e48745cc0554229d8c56605c36c90464e34e53aaddd04d886e586"
+    },
+    {
+      "case": "i0_h1_x1_b1",
+      "hardware_evidence": "experiments/cases/i0_h0_x1_b1",
+      "reset": "dceb2f1e0ca48a2d369b021c60482344acdc0e99c440bca09079985437a624f2",
+      "continuous": "f87bd94ee12673c51a1d3e11d180cc9bcc575f5b98c720fb173618dc134ce9ab"
+    },
+    {
+      "case": "i1_h0_x0_b0",
+      "hardware_evidence": "experiments/cases/i0_h0_x0_b0",
+      "reset": "39f7da21ab01f6755a1012bed941dc2a9c2932af9340a26a978fb0515d030839",
+      "continuous": "2bbf1ffb58fac2ac233b49bc5abf37a1a87b936e5c8d1d1a22207288ebbf06f8"
+    },
+    {
+      "case": "i1_h0_x0_b1",
+      "hardware_evidence": "experiments/cases/i0_h0_x0_b1",
+      "reset": "bffd68469c13e7cfce46906d60de5b1cad532e1eaf744dea75d3a78b01a64bd8",
+      "continuous": "63c248b8ca9175f66d318fd94556d4bd470fc589ac855ab0ec88a691e3984033"
+    },
+    {
+      "case": "i1_h0_x1_b0",
+      "hardware_evidence": "experiments/cases/i0_h0_x1_b0",
+      "reset": "1fcd9c121db9c1cfd0d501e1902d0390a92a20af9a3f12d5cde6f69ab5eec3cf",
+      "continuous": "2235ffb97f0a9b7ae00f4468619a5859eed433cd68c94644629478ea3668d912"
+    },
+    {
+      "case": "i1_h0_x1_b1",
+      "hardware_evidence": "experiments/cases/i0_h0_x1_b1",
+      "reset": "ddb65867833da10fafa99264d77f840a269e70db4a161ed3c6ab14d4d90f1692",
+      "continuous": "e1c12b0c8c9025e51915135769e3ebcba8b3eb0b989f652cb0c5ba9070967cf5"
+    },
+    {
+      "case": "i1_h1_x0_b0",
+      "hardware_evidence": "experiments/cases/i0_h0_x0_b0",
+      "reset": "662898a94025b262343250bd00071648562777c469c74664b56b610f4885da0e",
+      "continuous": "de23c0f271947da2fe2504d5e43a64f4b3c119e1921485b5560f7848c4acfdd6"
+    },
+    {
+      "case": "i1_h1_x0_b1",
+      "hardware_evidence": "experiments/cases/i0_h0_x0_b1",
+      "reset": "134da663053656f6be3626b8162df2d2306a4a43df0cbe1850c0c3564c284e37",
+      "continuous": "18bf4b9ecf84423ea28a0b8d6e7a21083fbab06d165638f4dd619c08b47007a6"
+    },
+    {
+      "case": "i1_h1_x1_b0",
+      "hardware_evidence": "experiments/cases/i0_h0_x1_b0",
+      "reset": "f41287e26508f55b6e6641075fb21aa11fafa13b3973c582036b2423125edfeb",
+      "continuous": "9eb2a5660e98fcc6eadb49eb435513883df840a11cdfee52037669dab6659f00"
+    },
+    {
+      "case": "i1_h1_x1_b1",
+      "hardware_evidence": "experiments/cases/i0_h0_x1_b1",
+      "reset": "b60e1bc7189a017870e4d841d31165cb2c268690ad43fe257703cbff0700ccc6",
+      "continuous": "edab1e8f8039ed68bb5ef016651f6f86034d41d35bedd07f6db1d54af2737375"
+    }
+  ],
+  "four_state_hardware_groups": 4,
+  "real_cpu": true,
+  "pdk_mapping_tested": false,
+  "timing_closed": false
+}

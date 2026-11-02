@@ -1,0 +1,2 @@
+TWO_CREDIT_PASS queue-full=108252 simultaneous=18024 abort/error recovery exact outputs
+tests/tb_dma_two_credit.sv:82: $finish called at 1347018618 (1ps)

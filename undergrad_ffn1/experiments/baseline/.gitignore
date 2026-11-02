@@ -1,0 +1,7 @@
+output/
+tmp/
+run/
+__pycache__/
+*.pyc
+environment/local_tools.json
+config/local_config.tcl

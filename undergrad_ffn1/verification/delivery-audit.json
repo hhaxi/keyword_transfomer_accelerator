@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "parent_files_unchanged": 129,
+  "frozen_baseline_files_unchanged": 204,
+  "source_packages_checked": 17,
+  "pure_tcl_preflights": 34,
+  "simulation_modes": 16,
+  "simulation_tasks": 384,
+  "unique_hardware_groups": 4,
+  "pdk_mapping_tested": false
+}

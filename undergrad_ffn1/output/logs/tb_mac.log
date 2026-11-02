@@ -1,0 +1,2 @@
+MAC_PASS 100 dot products, extremes, signed random, stalls, reset
+tests/tb_mac.sv:37: $finish called at 86724660 (1ps)

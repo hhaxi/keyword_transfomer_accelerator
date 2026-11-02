@@ -1,0 +1,18 @@
+output/
+tmp/
+run/
+__pycache__/
+*.pyc
+environment/local_tools.json
+config/local_config.tcl
+
+# Generated variant workspaces are rebuilt with tools/sweep.py prepare.
+/experiments/cases/
+/experiments/checkpoints/
+/upload_manifest.json
+/SHA256SUMS
+/recovery_patch_manifest.json
+/experiments/results/recovery_logs/
+/experiments/results/recovery_status.json
+/experiments/results/dc_status.json
+/experiments/results/dc_*.log

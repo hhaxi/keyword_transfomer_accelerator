@@ -23,3 +23,22 @@ assets/datasets/
 assets/sources/
 assets/references/
 assets/papers/
+
+# Local EDA/PDK artifacts and machine-specific configuration.
+*.tar
+*.tar.gz
+*.zip
+*.7z
+*.db
+*.lib
+*.lef
+*.gds
+*.ddc
+*.sdf
+*.svf
+*.vvp
+*.exe
+*.o
+*.a
+*.gch
+environment/cpu-verification-tools.json

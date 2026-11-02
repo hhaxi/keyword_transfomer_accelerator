@@ -1,0 +1,60 @@
+{
+  "samples": 600,
+  "official": false,
+  "kind": "existing unchanged-format FFN1 software validation, not rerun in this isolation step",
+  "result": {
+    "id": 0,
+    "spec": {
+      "a_bits": 16,
+      "w_bits": 16,
+      "g_bits": 16,
+      "w2_bits": 16,
+      "channel": false
+    },
+    "ffn1_layer_nrmse": [
+      0.00010619660119541422,
+      0.00010519894960257156,
+      0.00011480370984293749,
+      0.0001225543504158081,
+      0.00013066801090700725,
+      0.00012280009860206456,
+      0.00012691039182755813,
+      0.0001263233813272622,
+      0.00012978429630641734,
+      0.00012519415166591978,
+      0.0001259897062716109,
+      0.0001170502454213789
+    ],
+    "ffn_layer_nrmse": [
+      0.0013619753533723265,
+      0.000981558489345799,
+      0.0011160648412686515,
+      0.0010433138690302663,
+      0.0011626132890612045,
+      0.0011029548110057597,
+      0.0007590879736838941,
+      0.0012296714411610709,
+      0.0013971545652198118,
+      0.0012117446088948732,
+      0.0011611571484695079,
+      0.0008904112844702362
+    ],
+    "ffn1_max_nrmse": 0.00013066801090700725,
+    "ffn_max_nrmse": 0.0013971545652198118,
+    "saturations": [
+      0,
+      0,
+      0
+    ],
+    "undergraduate_gate_observed": true,
+    "undergraduate_precision_score_observed": 9.956443996364332,
+    "multiplier_bit_proxy": 1.0,
+    "logical_weight_bytes": 1572864.0,
+    "previous_classification": {
+      "samples": 4445,
+      "correct": 4351,
+      "float_correct": 4351
+    }
+  },
+  "original_evidence_sha256": "e2223b7cd6d42b1a506cd71b19b7be2ff4a0dd4e388e7452efdb65ca708093ed"
+}

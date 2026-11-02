@@ -1,0 +1,1499 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2026  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.70+225 (git sha1 860f20202-dirty, Release, GNU /usr/bin/x86_64-w64-mingw32-g++ 15.2.1)
+
+-- Executing script file `D:\E\keyword_transformer_accelerator\keyword_transfomer_accelerator-main\keyword_transfomer_accelerator-main\undergrad_ffn1\output\structure\accelerator.ys' --
+
+1. Executing Verilog-2005 frontend: tests/sram_blackboxes.sv
+Parsing SystemVerilog input from `tests/sram_blackboxes.sv' to AST representation.
+Generating RTLIL representation for module `\RAMSP128X16'.
+Generating RTLIL representation for module `\RAMSP1024X16'.
+Generating RTLIL representation for module `\RAMSP4096X16'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: rtl/kwt_mac40.sv
+Parsing SystemVerilog input from `rtl/kwt_mac40.sv' to AST representation.
+Storing AST representation for module `$abstract\kwt_mac40'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: tech/kwt_sram16.sv
+Parsing SystemVerilog input from `tech/kwt_sram16.sv' to AST representation.
+Storing AST representation for module `$abstract\kwt_sram16'.
+Successfully finished Verilog frontend.
+
+4. Executing Verilog-2005 frontend: rtl/kwt_ffn1_core.sv
+Parsing SystemVerilog input from `rtl/kwt_ffn1_core.sv' to AST representation.
+Storing AST representation for module `$abstract\kwt_ffn1_core'.
+Successfully finished Verilog frontend.
+
+5. Executing Verilog-2005 frontend: rtl/kwt_ffn1_dma.sv
+Parsing SystemVerilog input from `rtl/kwt_ffn1_dma.sv' to AST representation.
+Storing AST representation for module `$abstract\kwt_ffn1_dma'.
+Successfully finished Verilog frontend.
+
+6. Executing Verilog-2005 frontend: rtl/kwt_bus_fabric.sv
+Parsing SystemVerilog input from `rtl/kwt_bus_fabric.sv' to AST representation.
+Storing AST representation for module `$abstract\kwt_bus_fabric'.
+Successfully finished Verilog frontend.
+
+7. Executing Verilog-2005 frontend: rtl/kwt_ffn1_top.sv
+Parsing SystemVerilog input from `rtl/kwt_ffn1_top.sv' to AST representation.
+Storing AST representation for module `$abstract\kwt_ffn1_top'.
+Successfully finished Verilog frontend.
+
+8. Executing HIERARCHY pass (managing design hierarchy).
+
+9. Executing AST frontend in derive mode using pre-parsed AST for module `\kwt_ffn1_top'.
+Generating RTLIL representation for module `\kwt_ffn1_top'.
+
+9.1. Analyzing design hierarchy..
+Top module:  \kwt_ffn1_top
+
+9.2. Executing AST frontend in derive mode using pre-parsed AST for module `\kwt_ffn1_dma'.
+Generating RTLIL representation for module `\kwt_ffn1_dma'.
+Warning: Replacing memory \response_target with list of registers. See rtl/kwt_ffn1_dma.sv:107
+Warning: Replacing memory \response_read with list of registers. See rtl/kwt_ffn1_dma.sv:106
+Warning: Replacing memory \reserved_row with list of registers. See rtl/kwt_ffn1_dma.sv:81
+Parameter \DMA_BURST = 1
+Parameter \HOST_BURST = 0
+
+9.3. Executing AST frontend in derive mode using pre-parsed AST for module `\kwt_bus_fabric'.
+Parameter \DMA_BURST = 1
+Parameter \HOST_BURST = 0
+Generating RTLIL representation for module `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric'.
+
+9.4. Analyzing design hierarchy..
+Top module:  \kwt_ffn1_top
+Used module:     \kwt_ffn1_dma
+Used module:     $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric
+
+9.5. Executing AST frontend in derive mode using pre-parsed AST for module `\kwt_ffn1_core'.
+Generating RTLIL representation for module `\kwt_ffn1_core'.
+Warning: Replacing memory \fifo with list of registers. See rtl/kwt_ffn1_core.sv:150
+
+9.6. Analyzing design hierarchy..
+Top module:  \kwt_ffn1_top
+Used module:     \kwt_ffn1_dma
+Used module:         \kwt_ffn1_core
+Used module:     $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric
+Parameter \AW = 7
+
+9.7. Executing AST frontend in derive mode using pre-parsed AST for module `\kwt_sram16'.
+Parameter \AW = 7
+Generating RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+
+9.8. Executing AST frontend in derive mode using pre-parsed AST for module `\kwt_mac40'.
+Generating RTLIL representation for module `\kwt_mac40'.
+Parameter \AW = 10
+
+9.9. Executing AST frontend in derive mode using pre-parsed AST for module `\kwt_sram16'.
+Parameter \AW = 10
+Generating RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Reprocessing module kwt_ffn1_core because instantiated module $paramod\kwt_sram16\AW=s32'00000000000000000000000000000111 has become available.
+Generating RTLIL representation for module `\kwt_ffn1_core'.
+Warning: Replacing memory \fifo with list of registers. See rtl/kwt_ffn1_core.sv:150
+
+9.10. Analyzing design hierarchy..
+Top module:  \kwt_ffn1_top
+Used module:     \kwt_ffn1_dma
+Used module:         \kwt_ffn1_core
+Used module:             \kwt_mac40
+Used module:     $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 10
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000001010'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+Parameter \AW = 7
+Found cached RTLIL representation for module `$paramod\kwt_sram16\AW=s32'00000000000000000000000000000111'.
+
+9.11. Analyzing design hierarchy..
+Top module:  \kwt_ffn1_top
+Used module:     \kwt_ffn1_dma
+Used module:         \kwt_ffn1_core
+Used module:             $paramod\kwt_sram16\AW=s32'00000000000000000000000000000111
+Used module:             \kwt_mac40
+Used module:             $paramod\kwt_sram16\AW=s32'00000000000000000000000000001010
+Used module:     $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric
+
+9.12. Analyzing design hierarchy..
+Top module:  \kwt_ffn1_top
+Used module:     \kwt_ffn1_dma
+Used module:         \kwt_ffn1_core
+Used module:             $paramod\kwt_sram16\AW=s32'00000000000000000000000000000111
+Used module:             \kwt_mac40
+Used module:             $paramod\kwt_sram16\AW=s32'00000000000000000000000000001010
+Used module:     $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric
+Removing unused module `$abstract\kwt_ffn1_top'.
+Removing unused module `$abstract\kwt_bus_fabric'.
+Removing unused module `$abstract\kwt_ffn1_dma'.
+Removing unused module `$abstract\kwt_ffn1_core'.
+Removing unused module `$abstract\kwt_sram16'.
+Removing unused module `$abstract\kwt_mac40'.
+Removed 6 unused modules.
+
+10. Executing PROC pass (convert processes to netlists).
+
+10.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 1 empty switch in `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+Cleaned up 1 empty switch.
+
+10.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:100$proc$1571 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:100$proc$1571 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:100$proc$1566 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:100$proc$1566 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1556 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1556 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1553 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1553 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1545 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1545 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1542 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1542 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1534 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1534 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1531 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1531 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1523 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1523 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1520 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1520 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1512 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1512 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1509 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1509 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1501 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1501 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1498 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1498 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1490 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1490 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1487 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1487 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1479 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1479 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:84$proc$1476 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:84$proc$1476 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:70$proc$1468 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:70$proc$1468 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:70$proc$1462 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:70$proc$1462 in module kwt_ffn1_core.
+Removed 1 dead cases from process $rtl/kwt_ffn1_core.sv:108$proc$1455 in module kwt_ffn1_core.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:108$proc$1455 in module kwt_ffn1_core.
+Marked 17 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:121$proc$1209 in module kwt_ffn1_core.
+Marked 2 switch rules as full_case in process $rtl/kwt_ffn1_core.sv:116$proc$1194 in module kwt_ffn1_core.
+Marked 2 switch rules as full_case in process $rtl/kwt_mac40.sv:9$proc$911 in module kwt_mac40.
+Marked 4 switch rules as full_case in process $rtl/kwt_bus_fabric.sv:81$proc$405 in module $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.
+Marked 9 switch rules as full_case in process $rtl/kwt_bus_fabric.sv:37$proc$332 in module $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.
+Removed 1 dead cases from process $rtl/kwt_ffn1_dma.sv:67$proc$329 in module kwt_ffn1_dma.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_dma.sv:67$proc$329 in module kwt_ffn1_dma.
+Removed 1 dead cases from process $rtl/kwt_ffn1_dma.sv:59$proc$326 in module kwt_ffn1_dma.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_dma.sv:59$proc$326 in module kwt_ffn1_dma.
+Removed 1 dead cases from process $rtl/kwt_ffn1_dma.sv:24$proc$323 in module kwt_ffn1_dma.
+Marked 1 switch rules as full_case in process $rtl/kwt_ffn1_dma.sv:24$proc$323 in module kwt_ffn1_dma.
+Marked 23 switch rules as full_case in process $rtl/kwt_ffn1_dma.sv:76$proc$160 in module kwt_ffn1_dma.
+Removed a total of 24 dead cases.
+
+10.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 1 redundant assignment.
+Promoted 109 assignments to connections.
+
+10.4. Executing PROC_INIT pass (extract init attributes).
+
+10.5. Executing PROC_ARST pass (detect async resets in processes).
+Found async reset \rst_n in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+Found async reset \rst_n in `\kwt_mac40.$rtl/kwt_mac40.sv:9$proc$911'.
+Found async reset \rst_n in `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+Found async reset \rst_n in `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+
+10.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~126 debug messages>
+
+10.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:100$proc$1571'.
+     1/1: $1$mem2reg_rd$\small_bias.bq$rtl/kwt_ffn1_core.sv:100$1088_DATA[15:0]$1573
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:100$proc$1566'.
+     1/1: $1$mem2reg_rd$\small_bias.bq$rtl/kwt_ffn1_core.sv:100$1087_DATA[15:0]$1568
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1565'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1564'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1563'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1562'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1561'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1560'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1556'.
+     1/1: $1$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1086_DATA[15:0]$1558
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1553'.
+     1/1: $1$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1085_DATA[15:0]$1555
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1552'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1551'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1550'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1549'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1545'.
+     1/1: $1$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1084_DATA[15:0]$1547
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1542'.
+     1/1: $1$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1083_DATA[15:0]$1544
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1541'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1540'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1539'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1538'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1534'.
+     1/1: $1$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1082_DATA[15:0]$1536
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1531'.
+     1/1: $1$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1081_DATA[15:0]$1533
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1530'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1529'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1528'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1527'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1523'.
+     1/1: $1$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1080_DATA[15:0]$1525
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1520'.
+     1/1: $1$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1079_DATA[15:0]$1522
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1519'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1518'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1517'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1516'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1512'.
+     1/1: $1$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1078_DATA[15:0]$1514
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1509'.
+     1/1: $1$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1077_DATA[15:0]$1511
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1508'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1507'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1506'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1505'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1501'.
+     1/1: $1$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1076_DATA[15:0]$1503
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1498'.
+     1/1: $1$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1075_DATA[15:0]$1500
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1497'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1496'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1495'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1494'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1490'.
+     1/1: $1$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1074_DATA[15:0]$1492
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1487'.
+     1/1: $1$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1073_DATA[15:0]$1489
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1486'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1485'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1484'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1483'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1479'.
+     1/1: $1$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1072_DATA[15:0]$1481
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1476'.
+     1/1: $1$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1071_DATA[15:0]$1478
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1475'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1474'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:70$proc$1468'.
+     1/1: $1$mem2reg_rd$\small_x.xq$rtl/kwt_ffn1_core.sv:70$1090_DATA[15:0]$1473
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:70$proc$1462'.
+     1/1: $1$mem2reg_rd$\small_x.xq$rtl/kwt_ffn1_core.sv:70$1089_DATA[15:0]$1467
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1461'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1460'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1459'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1458'.
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:108$proc$1455'.
+     1/1: $1$mem2reg_rd$\fifo$rtl/kwt_ffn1_core.sv:108$1062_DATA[39:0]$1457
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:92$proc$1432'.
+     1/1: $0\small_bias.read_bank[0:0]
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:60$proc$1351'.
+     1/1: $0\small_x.read_bank[0:0]
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+     1/81: $6$lookahead\x_valid$1208[1:0]$1350
+     2/81: $5$lookahead\x_valid$1208[1:0]$1340
+     3/81: $3$bitselwrite$pos$rtl/kwt_ffn1_core.sv:168$1061[0:0]$1339
+     4/81: $4$lookahead\x_valid$1208[1:0]$1335
+     5/81: $2$bitselwrite$pos$rtl/kwt_ffn1_core.sv:168$1061[0:0]$1334
+     6/81: $3$lookahead\x_valid$1208[1:0]$1323
+     7/81: $3$bitselwrite$pos$rtl/kwt_ffn1_core.sv:160$1060[0:0]$1322
+     8/81: $2$lookahead\x_valid$1208[1:0]$1295
+     9/81: $2$bitselwrite$pos$rtl/kwt_ffn1_core.sv:160$1060[0:0]$1278
+    10/81: $2\lane[31:0]
+    11/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1070_ADDR[3:0]$1293
+    12/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1070_DATA[39:0]$1294
+    13/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1069_ADDR[3:0]$1291
+    14/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1069_DATA[39:0]$1292
+    15/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1068_ADDR[3:0]$1289
+    16/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1068_DATA[39:0]$1290
+    17/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1067_ADDR[3:0]$1287
+    18/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1067_DATA[39:0]$1288
+    19/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1066_ADDR[3:0]$1285
+    20/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1066_DATA[39:0]$1286
+    21/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1065_ADDR[3:0]$1283
+    22/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1065_DATA[39:0]$1284
+    23/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1064_ADDR[3:0]$1281
+    24/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1064_DATA[39:0]$1282
+    25/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1063_ADDR[3:0]$1279
+    26/81: $2$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1063_DATA[39:0]$1280
+    27/81: $1$lookahead\x_valid$1208[1:0]$1248
+    28/81: $1$bitselwrite$pos$rtl/kwt_ffn1_core.sv:168$1061[0:0]$1231
+    29/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1070_DATA[39:0]$1247
+    30/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1070_ADDR[3:0]$1246
+    31/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1069_DATA[39:0]$1245
+    32/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1069_ADDR[3:0]$1244
+    33/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1068_DATA[39:0]$1243
+    34/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1068_ADDR[3:0]$1242
+    35/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1067_DATA[39:0]$1241
+    36/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1067_ADDR[3:0]$1240
+    37/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1066_DATA[39:0]$1239
+    38/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1066_ADDR[3:0]$1238
+    39/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1065_DATA[39:0]$1237
+    40/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1065_ADDR[3:0]$1236
+    41/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1064_DATA[39:0]$1235
+    42/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1064_ADDR[3:0]$1234
+    43/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1063_DATA[39:0]$1233
+    44/81: $1$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1063_ADDR[3:0]$1232
+    45/81: $1$bitselwrite$pos$rtl/kwt_ffn1_core.sv:160$1060[0:0]$1230
+    46/81: $1\lane[31:0]
+    47/81: $0\fifo[15][39:0]
+    48/81: $0\fifo[14][39:0]
+    49/81: $0\fifo[13][39:0]
+    50/81: $0\fifo[12][39:0]
+    51/81: $0\fifo[11][39:0]
+    52/81: $0\fifo[10][39:0]
+    53/81: $0\fifo[9][39:0]
+    54/81: $0\fifo[8][39:0]
+    55/81: $0\fifo[7][39:0]
+    56/81: $0\fifo[6][39:0]
+    57/81: $0\fifo[5][39:0]
+    58/81: $0\fifo[4][39:0]
+    59/81: $0\fifo[3][39:0]
+    60/81: $0\fifo[2][39:0]
+    61/81: $0\fifo[1][39:0]
+    62/81: $0\fifo[0][39:0]
+    63/81: $0\cycles[31:0]
+    64/81: $0\xb[0:0]
+    65/81: $0\fault[0:0]
+    66/81: $0\outputs_read[14:0]
+    67/81: $0\count[4:0]
+    68/81: $0\tail[3:0]
+    69/81: $0\head[3:0]
+    70/81: $0\nb[8:0]
+    71/81: $0\nw[14:0]
+    72/81: $0\nx[12:0]
+    73/81: $0\bias_return_lane[2:0]
+    74/81: $0\bias_lane[2:0]
+    75/81: $0\k[7:0]
+    76/81: $0\col[7:0]
+    77/81: $0\row[6:0]
+    78/81: $0\state[3:0]
+    79/81: $0\fifo_wait[31:0]
+    80/81: $0\mac_cycles[31:0]
+    81/81: $0\done[0:0]
+Creating decoders for process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:116$proc$1194'.
+     1/6: $1$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1207
+     2/6: $1$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_DATA[31:0]$1206
+     3/6: $1$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_ADDR[2:0]$1205
+     4/6: $1$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1204
+     5/6: $1$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_DATA[31:0]$1203
+     6/6: $1$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_ADDR[2:0]$1202
+Creating decoders for process `\kwt_mac40.$rtl/kwt_mac40.sv:9$proc$911'.
+     1/1: $0\acc[39:0]
+Creating decoders for process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+     1/10: $0\host_turn[0:0]
+     2/10: $0\dma_turn[0:0]
+     3/10: $0\locked[0:0]
+     4/10: $0\locked_owner[1:0]
+     5/10: $0\next_owner[1:0]
+     6/10: $0\owner[1:0]
+     7/10: $0\response_read[0:0]
+     8/10: $0\ram_route[0:0]
+     9/10: $0\acc_route[0:0]
+    10/10: $0\pending[0:0]
+Creating decoders for process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:37$proc$332'.
+     1/10: $1\host_boost[0:0]
+     2/10: $9\grant[1:0]
+     3/10: $8\grant[1:0]
+     4/10: $7\grant[1:0]
+     5/10: $6\grant[1:0]
+     6/10: $5\grant[1:0]
+     7/10: $4\grant[1:0]
+     8/10: $3\grant[1:0]
+     9/10: $2\grant[1:0]
+    10/10: $1\grant[1:0]
+Creating decoders for process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:67$proc$329'.
+     1/1: $1$mem2reg_rd$\response_target$rtl/kwt_ffn1_dma.sv:67$6_DATA[19:0]$331
+Creating decoders for process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:59$proc$326'.
+     1/1: $1$mem2reg_rd$\reserved_row$rtl/kwt_ffn1_dma.sv:59$5_DATA[6:0]$328
+Creating decoders for process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:24$proc$323'.
+     1/1: $1$mem2reg_rd$\response_read$rtl/kwt_ffn1_dma.sv:24$4_DATA[0:0]$325
+Creating decoders for process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+     1/92: $8$lookahead\row_loaded$159[1:0]$306
+     2/92: $9$lookahead\row_reserved$158[1:0]$305
+     3/92: $7$lookahead\row_loaded$159[1:0]$283
+     4/92: $4$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:150$3[0:0]$282
+     5/92: $6$lookahead\row_loaded$159[1:0]$275
+     6/92: $3$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:150$3[0:0]$274
+     7/92: $5$lookahead\row_loaded$159[1:0]$273
+     8/92: $2$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:150$3[0:0]$272
+     9/92: $8$lookahead\row_reserved$158[1:0]$240
+    10/92: $5$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_DATA[6:0]$239
+    11/92: $5$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_ADDR[0:0]$238
+    12/92: $5$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:123$2[0:0]$237
+    13/92: $7$lookahead\row_reserved$158[1:0]$231
+    14/92: $4$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_DATA[6:0]$230
+    15/92: $4$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_ADDR[0:0]$229
+    16/92: $4$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:123$2[0:0]$228
+    17/92: $6$lookahead\row_reserved$158[1:0]$226
+    18/92: $3$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_DATA[6:0]$225
+    19/92: $3$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_ADDR[0:0]$224
+    20/92: $3$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:123$2[0:0]$223
+    21/92: $5$lookahead\row_reserved$158[1:0]$222
+    22/92: $2$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_DATA[6:0]$221
+    23/92: $2$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_ADDR[0:0]$220
+    24/92: $2$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:123$2[0:0]$219
+    25/92: $2$mem2reg_wr$\response_target$rtl/kwt_ffn1_dma.sv:107$8_ADDR[0:0]$214
+    26/92: $2$mem2reg_wr$\response_target$rtl/kwt_ffn1_dma.sv:107$8_DATA[19:0]$215
+    27/92: $2$mem2reg_wr$\response_read$rtl/kwt_ffn1_dma.sv:106$7_ADDR[0:0]$212
+    28/92: $2$mem2reg_wr$\response_read$rtl/kwt_ffn1_dma.sv:106$7_DATA[0:0]$213
+    29/92: $4$lookahead\row_loaded$159[1:1]$190
+    30/92: $4$lookahead\row_reserved$158[1:1]$189
+    31/92: $3$lookahead\row_loaded$159[0:0]$187
+    32/92: $3$lookahead\row_reserved$158[0:0]$186
+    33/92: $2$lookahead\row_loaded$159[1:0]$184 [1]
+    34/92: $2$lookahead\row_reserved$158[1:0]$183 [1]
+    35/92: $2$lookahead\row_loaded$159[1:0]$184 [0]
+    36/92: $2$lookahead\row_reserved$158[1:0]$183 [0]
+    37/92: $1$lookahead\row_loaded$159[1:0]$181
+    38/92: $1$lookahead\row_reserved$158[1:0]$180
+    39/92: $1$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:150$3[0:0]$173
+    40/92: $1$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_DATA[6:0]$179
+    41/92: $1$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_ADDR[0:0]$178
+    42/92: $1$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:123$2[0:0]$172
+    43/92: $1$mem2reg_wr$\response_target$rtl/kwt_ffn1_dma.sv:107$8_DATA[19:0]$177
+    44/92: $1$mem2reg_wr$\response_target$rtl/kwt_ffn1_dma.sv:107$8_ADDR[0:0]$176
+    45/92: $1$mem2reg_wr$\response_read$rtl/kwt_ffn1_dma.sv:106$7_DATA[0:0]$175
+    46/92: $1$mem2reg_wr$\response_read$rtl/kwt_ffn1_dma.sv:106$7_ADDR[0:0]$174
+    47/92: $0\outstanding_count[1:0]
+    48/92: $0\response_target[1][19:0]
+    49/92: $0\response_target[0][19:0]
+    50/92: $0\response_read[1][0:0]
+    51/92: $0\response_read[0][0:0]
+    52/92: $0\reserved_row[1][6:0]
+    53/92: $0\reserved_row[0][6:0]
+    54/92: $0\first_seen[0:0]
+    55/92: $0\producer_wait[31:0]
+    56/92: $0\last_write[31:0]
+    57/92: $0\last_output[31:0]
+    58/92: $0\first_output[31:0]
+    59/92: $0\write_commands[31:0]
+    60/92: $0\read_commands[31:0]
+    61/92: $0\response_wait[31:0]
+    62/92: $0\request_wait[31:0]
+    63/92: $0\other_cycles[31:0]
+    64/92: $0\run_cycles[31:0]
+    65/92: $0\load_cycles[31:0]
+    66/92: $0\total_cycles[31:0]
+    67/92: $0\output_high[0:0]
+    68/92: $0\output_have[0:0]
+    69/92: $0\output_hold[63:0]
+    70/92: $0\write_received[15:0]
+    71/92: $0\write_scheduled[15:0]
+    72/92: $0\read_received[15:0]
+    73/92: $0\read_scheduled[15:0]
+    74/92: $0\request_target[19:0]
+    75/92: $0\response_tail[0:0]
+    76/92: $0\response_head[0:0]
+    77/92: $0\req_valid[0:0]
+    78/92: $0\config_error[0:0]
+    79/92: $0\aborted[0:0]
+    80/92: $0\error[0:0]
+    81/92: $0\done[0:0]
+    82/92: $0\ybase[31:0]
+    83/92: $0\bbase[31:0]
+    84/92: $0\wbase[31:0]
+    85/92: $0\xbase[31:0]
+    86/92: $0\phase[2:0]
+    87/92: $0\m_read[0:0]
+    88/92: $0\m_wdata[31:0]
+    89/92: $0\m_addr[31:0]
+    90/92: $0\rsp_err[0:0]
+    91/92: $0\rsp_rdata[31:0]
+    92/92: $0\rsp_valid[0:0]
+
+10.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\small_bias.bq$rtl/kwt_ffn1_core.sv:100$1088_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:100$proc$1571'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\small_bias.bq$rtl/kwt_ffn1_core.sv:100$1087_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:100$proc$1566'.
+No latch inferred for signal `\kwt_ffn1_core.\small_bias.bq[3]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1565'.
+No latch inferred for signal `\kwt_ffn1_core.\small_bias.bq[2]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1564'.
+No latch inferred for signal `\kwt_ffn1_core.\small_bias.bq[1]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1563'.
+No latch inferred for signal `\kwt_ffn1_core.\small_bias.bq[0]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1562'.
+No latch inferred for signal `\kwt_ffn1_core.\odd_acc[7]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1561'.
+No latch inferred for signal `\kwt_ffn1_core.\acc[7]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1560'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1086_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1556'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1085_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1553'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[15]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1552'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[14]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1551'.
+No latch inferred for signal `\kwt_ffn1_core.\odd_acc[6]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1550'.
+No latch inferred for signal `\kwt_ffn1_core.\acc[6]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1549'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1084_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1545'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1083_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1542'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[13]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1541'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[12]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1540'.
+No latch inferred for signal `\kwt_ffn1_core.\odd_acc[5]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1539'.
+No latch inferred for signal `\kwt_ffn1_core.\acc[5]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1538'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1082_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1534'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1081_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1531'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[11]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1530'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[10]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1529'.
+No latch inferred for signal `\kwt_ffn1_core.\odd_acc[4]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1528'.
+No latch inferred for signal `\kwt_ffn1_core.\acc[4]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1527'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1080_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1523'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1079_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1520'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[9]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1519'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[8]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1518'.
+No latch inferred for signal `\kwt_ffn1_core.\odd_acc[3]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1517'.
+No latch inferred for signal `\kwt_ffn1_core.\acc[3]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1516'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1078_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1512'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1077_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1509'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[7]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1508'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[6]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1507'.
+No latch inferred for signal `\kwt_ffn1_core.\odd_acc[2]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1506'.
+No latch inferred for signal `\kwt_ffn1_core.\acc[2]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1505'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1076_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1501'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1075_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1498'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[5]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1497'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[4]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1496'.
+No latch inferred for signal `\kwt_ffn1_core.\odd_acc[1]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1495'.
+No latch inferred for signal `\kwt_ffn1_core.\acc[1]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1494'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1074_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1490'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1073_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1487'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[3]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1486'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[2]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1485'.
+No latch inferred for signal `\kwt_ffn1_core.\odd_acc[0]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1484'.
+No latch inferred for signal `\kwt_ffn1_core.\acc[0]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1483'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\wd$rtl/kwt_ffn1_core.sv:84$1072_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1479'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\xd$rtl/kwt_ffn1_core.sv:84$1071_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1476'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[1]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1475'.
+No latch inferred for signal `\kwt_ffn1_core.\wd[0]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1474'.
+No latch inferred for signal `\kwt_ffn1_core.\xd[1]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:70$proc$1468'.
+No latch inferred for signal `\kwt_ffn1_core.\xd[0]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:70$proc$1462'.
+No latch inferred for signal `\kwt_ffn1_core.\small_x.xq[3]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1461'.
+No latch inferred for signal `\kwt_ffn1_core.\small_x.xq[2]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1460'.
+No latch inferred for signal `\kwt_ffn1_core.\small_x.xq[1]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1459'.
+No latch inferred for signal `\kwt_ffn1_core.\small_x.xq[0]' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1458'.
+No latch inferred for signal `\kwt_ffn1_core.$mem2reg_rd$\fifo$rtl/kwt_ffn1_core.sv:108$1062_DATA' from process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:108$proc$1455'.
+No latch inferred for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\grant' from process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:37$proc$332'.
+No latch inferred for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\host_boost' from process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:37$proc$332'.
+No latch inferred for signal `\kwt_ffn1_dma.$mem2reg_rd$\response_target$rtl/kwt_ffn1_dma.sv:67$6_DATA' from process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:67$proc$329'.
+No latch inferred for signal `\kwt_ffn1_dma.$mem2reg_rd$\reserved_row$rtl/kwt_ffn1_dma.sv:59$5_DATA' from process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:59$proc$326'.
+No latch inferred for signal `\kwt_ffn1_dma.$mem2reg_rd$\response_read$rtl/kwt_ffn1_dma.sv:24$4_DATA' from process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:24$proc$323'.
+
+10.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\kwt_ffn1_core.\small_bias.read_bank' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:92$proc$1432'.
+  created $dff cell `$procdff$4096' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\small_x.read_bank' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:60$proc$1351'.
+  created $dff cell `$procdff$4097' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\done' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4102' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\mac_cycles' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4107' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\fifo_wait' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4112' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\state' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4117' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\x_valid' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4122' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\row' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4127' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\col' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4132' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\k' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4137' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\bias_lane' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4142' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\bias_return_lane' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4147' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\nx' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4152' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\nw' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4157' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\nb' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4162' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\head' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4167' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\tail' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4172' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\count' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4177' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\outputs_read' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4182' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\fault' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4187' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\xb' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4192' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\cycles' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4197' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.\lane' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4204' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[0]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4211' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[1]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4218' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[2]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4225' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[3]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4232' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[4]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4239' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[5]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4246' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[6]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4253' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[7]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4260' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[8]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4267' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[9]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4274' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[10]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4281' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[11]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4288' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[12]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4295' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[13]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4302' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[14]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4309' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.\fifo[15]' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $dff cell `$procdff$4316' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.$bitselwrite$pos$rtl/kwt_ffn1_core.sv:160$1060' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4321' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$bitselwrite$pos$rtl/kwt_ffn1_core.sv:168$1061' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4326' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1063_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4331' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1063_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4336' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1064_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4341' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1064_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4346' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1065_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4351' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1065_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4356' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1066_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4361' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1066_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4366' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1067_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4371' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1067_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4376' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1068_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4381' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1068_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4386' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1069_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4391' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1069_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4396' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1070_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4401' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$mem2reg_wr$\fifo$rtl/kwt_ffn1_core.sv:150$1070_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4406' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$lookahead\x_valid$1208' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+  created $adff cell `$procdff$4411' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_core.$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:116$proc$1194'.
+  created $dff cell `$procdff$4412' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:116$proc$1194'.
+  created $dff cell `$procdff$4413' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:116$proc$1194'.
+  created $dff cell `$procdff$4414' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_ADDR' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:116$proc$1194'.
+  created $dff cell `$procdff$4415' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_DATA' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:116$proc$1194'.
+  created $dff cell `$procdff$4416' with positive edge clock.
+Creating register for signal `\kwt_ffn1_core.$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN' using process `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:116$proc$1194'.
+  created $dff cell `$procdff$4417' with positive edge clock.
+Creating register for signal `\kwt_mac40.\acc' using process `\kwt_mac40.$rtl/kwt_mac40.sv:9$proc$911'.
+  created $adff cell `$procdff$4422' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\pending' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4427' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\acc_route' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4432' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\ram_route' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4437' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\response_read' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4442' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\owner' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4447' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\next_owner' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4452' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\locked_owner' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4457' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\locked' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4462' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\dma_turn' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4467' with positive edge clock and positive level reset.
+Creating register for signal `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.\host_turn' using process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+  created $adff cell `$procdff$4472' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\rsp_valid' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4477' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\rsp_rdata' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4482' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\rsp_err' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4487' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\m_addr' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4492' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\m_wdata' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4497' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\m_read' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4502' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\phase' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4507' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\xbase' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4512' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\wbase' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4517' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\bbase' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4522' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\ybase' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4527' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\done' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4532' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\error' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4537' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\aborted' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4542' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\config_error' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4547' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\req_valid' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4552' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\outstanding_count' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4557' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\response_head' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4562' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\response_tail' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4567' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\request_target' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4572' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\row_reserved' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4577' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\row_loaded' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4582' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\read_scheduled' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4587' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\read_received' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4592' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\write_scheduled' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4597' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\write_received' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4602' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\output_hold' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4607' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\output_have' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4612' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\output_high' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4617' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\total_cycles' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4622' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\load_cycles' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4627' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\run_cycles' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4632' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\other_cycles' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4637' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\request_wait' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4642' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\response_wait' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4647' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\read_commands' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4652' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\write_commands' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4657' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\first_output' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4662' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\last_output' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4667' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\last_write' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4672' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\producer_wait' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4677' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\first_seen' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4682' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:123$2' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4687' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.$bitselwrite$pos$rtl/kwt_ffn1_dma.sv:150$3' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4692' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\reserved_row[0]' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4697' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\reserved_row[1]' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4702' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.\response_read[0]' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $dff cell `$procdff$4709' with positive edge clock.
+Creating register for signal `\kwt_ffn1_dma.\response_read[1]' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $dff cell `$procdff$4716' with positive edge clock.
+Creating register for signal `\kwt_ffn1_dma.\response_target[0]' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $dff cell `$procdff$4723' with positive edge clock.
+Creating register for signal `\kwt_ffn1_dma.\response_target[1]' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $dff cell `$procdff$4730' with positive edge clock.
+Creating register for signal `\kwt_ffn1_dma.$mem2reg_wr$\response_read$rtl/kwt_ffn1_dma.sv:106$7_ADDR' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4735' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.$mem2reg_wr$\response_read$rtl/kwt_ffn1_dma.sv:106$7_DATA' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4740' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.$mem2reg_wr$\response_target$rtl/kwt_ffn1_dma.sv:107$8_ADDR' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4745' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.$mem2reg_wr$\response_target$rtl/kwt_ffn1_dma.sv:107$8_DATA' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4750' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_ADDR' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4755' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.$mem2reg_wr$\reserved_row$rtl/kwt_ffn1_dma.sv:124$9_DATA' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4760' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.$lookahead\row_reserved$158' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4765' with positive edge clock and positive level reset.
+Creating register for signal `\kwt_ffn1_dma.$lookahead\row_loaded$159' using process `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+  created $adff cell `$procdff$4770' with positive edge clock and positive level reset.
+
+10.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+10.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:100$proc$1571'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:100$proc$1571'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:100$proc$1566'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:100$proc$1566'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1565'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1564'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1563'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:97$proc$1562'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1561'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1560'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1556'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1556'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1553'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1553'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1552'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1551'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1550'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1549'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1545'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1545'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1542'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1542'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1541'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1540'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1539'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1538'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1534'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1534'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1531'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1531'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1530'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1529'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1528'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1527'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1523'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1523'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1520'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1520'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1519'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1518'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1517'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1516'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1512'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1512'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1509'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1509'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1508'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1507'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1506'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1505'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1501'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1501'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1498'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1498'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1497'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1496'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1495'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1494'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1490'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1490'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1487'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1487'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1486'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1485'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:86$proc$1484'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1483'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1479'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1479'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1476'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:84$proc$1476'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1475'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:81$proc$1474'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:70$proc$1468'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:70$proc$1468'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:70$proc$1462'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:70$proc$1462'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1461'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1460'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1459'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:67$proc$1458'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:108$proc$1455'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:108$proc$1455'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:92$proc$1432'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:92$proc$1432'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:60$proc$1351'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:60$proc$1351'.
+Found and cleaned up 36 empty switches in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:121$proc$1209'.
+Found and cleaned up 2 empty switches in `\kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:116$proc$1194'.
+Removing empty process `kwt_ffn1_core.$rtl/kwt_ffn1_core.sv:116$proc$1194'.
+Found and cleaned up 2 empty switches in `\kwt_mac40.$rtl/kwt_mac40.sv:9$proc$911'.
+Removing empty process `kwt_mac40.$rtl/kwt_mac40.sv:9$proc$911'.
+Found and cleaned up 7 empty switches in `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+Removing empty process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:81$proc$405'.
+Found and cleaned up 9 empty switches in `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:37$proc$332'.
+Removing empty process `$paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.$rtl/kwt_bus_fabric.sv:37$proc$332'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:67$proc$329'.
+Removing empty process `kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:67$proc$329'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:59$proc$326'.
+Removing empty process `kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:59$proc$326'.
+Found and cleaned up 1 empty switch in `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:24$proc$323'.
+Removing empty process `kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:24$proc$323'.
+Found and cleaned up 44 empty switches in `\kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+Removing empty process `kwt_ffn1_dma.$rtl/kwt_ffn1_dma.sv:76$proc$160'.
+Cleaned up 126 empty switches.
+
+10.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module kwt_ffn1_top.
+Optimizing module kwt_ffn1_core.
+<suppressed ~163 debug messages>
+Optimizing module kwt_mac40.
+<suppressed ~2 debug messages>
+Optimizing module $paramod\kwt_sram16\AW=s32'00000000000000000000000000000111.
+Optimizing module $paramod\kwt_sram16\AW=s32'00000000000000000000000000001010.
+Optimizing module $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.
+<suppressed ~50 debug messages>
+Optimizing module kwt_ffn1_dma.
+<suppressed ~158 debug messages>
+
+11. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \kwt_ffn1_top..
+Finding unused cells or wires in module \kwt_ffn1_core..
+Finding unused cells or wires in module \kwt_mac40..
+Finding unused cells or wires in module $paramod\kwt_sram16\AW=s32'00000000000000000000000000000111..
+Finding unused cells or wires in module $paramod\kwt_sram16\AW=s32'00000000000000000000000000001010..
+Finding unused cells or wires in module $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric..
+Finding unused cells or wires in module \kwt_ffn1_dma..
+Removed 251 unused cells and 1393 unused wires.
+<suppressed ~261 debug messages>
+
+12. Executing FLATTEN pass (flatten design).
+Deleting now unused module kwt_ffn1_core.
+Deleting now unused module kwt_mac40.
+Deleting now unused module $paramod\kwt_sram16\AW=s32'00000000000000000000000000000111.
+Deleting now unused module $paramod\kwt_sram16\AW=s32'00000000000000000000000000001010.
+Deleting now unused module $paramod$24e53a84383fde9d7dc3451e2f6b2118a1f4dace\kwt_bus_fabric.
+Deleting now unused module kwt_ffn1_dma.
+<suppressed ~43 debug messages>
+
+13. Executing OPT pass (performing simple optimizations).
+
+13.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module kwt_ffn1_top.
+<suppressed ~12 debug messages>
+
+13.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\kwt_ffn1_top'.
+Computing hashes of 1742 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+Computing hashes of 1568 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+Computing hashes of 1543 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+Computing hashes of 1527 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+Computing hashes of 1516 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+Computing hashes of 1514 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+<suppressed ~684 debug messages>
+Removed a total of 228 cells.
+
+13.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \kwt_ffn1_top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+      Replacing known input bits on port B of cell $flatten\accelerator.$procmux$3648: \accelerator.x_scheduled [11:5] -> { \accelerator.x_scheduled [11:6] 1'1 }
+      Replacing known input bits on port A of cell $flatten\accelerator.$procmux$3660: \accelerator.x_scheduled [11:5] -> { \accelerator.x_scheduled [11:6] 1'0 }
+      Replacing known input bits on port B of cell $flatten\accelerator.$procmux$3670: \accelerator.first_seen -> 1'1
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $flatten\accelerator.$procmux$3478.
+    dead port 2/2 on $mux $flatten\accelerator.$procmux$3480.
+    dead port 2/2 on $mux $flatten\accelerator.$procmux$3495.
+    dead port 1/2 on $mux $flatten\accelerator.$procmux$3514.
+    dead port 2/2 on $mux $flatten\accelerator.$procmux$3516.
+    dead port 2/2 on $mux $flatten\accelerator.$procmux$3549.
+    dead port 2/2 on $mux $flatten\accelerator.$procmux$3570.
+    dead port 2/2 on $mux $flatten\accelerator.\core.$procmux$1802.
+    dead port 2/2 on $mux $flatten\accelerator.\core.$procmux$1784.
+    dead port 2/2 on $mux $flatten\fabric.$procmux$3433.
+    dead port 2/2 on $mux $flatten\fabric.$procmux$3411.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3414.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3436.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3453.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3446.
+    dead port 2/2 on $mux $flatten\fabric.$procmux$3443.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3431.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3423.
+    dead port 2/2 on $mux $flatten\fabric.$procmux$3420.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3385.
+    dead port 1/3 on $pmux $flatten\fabric.$procmux$3388.
+    dead port 2/3 on $pmux $flatten\fabric.$procmux$3388.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3392.
+    dead port 1/3 on $pmux $flatten\fabric.$procmux$3398.
+    dead port 2/3 on $pmux $flatten\fabric.$procmux$3398.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3402.
+    dead port 1/2 on $mux $flatten\fabric.$procmux$3409.
+Removed 27 multiplexer ports.
+<suppressed ~926 debug messages>
+
+13.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \kwt_ffn1_top.
+    New ctrl vector for $pmux cell $flatten\accelerator.$procmux$3860: $auto$opt_reduce.cc:137:opt_pmux$4817
+    New ctrl vector for $pmux cell $flatten\accelerator.$procmux$4037: $auto$opt_reduce.cc:137:opt_pmux$4819
+    Consolidated identical input bits for $mux cell $flatten\accelerator.\core.$procmux$3321:
+      Old ports: A=0, B=32'11111111111111111111111111111111, Y=$flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197
+      New ports: A=1'0, B=1'1, Y=$flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0]
+      New connections: $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [31:1] = { $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:117$1091_EN[31:0]$1197 [0] }
+    Consolidated identical input bits for $mux cell $flatten\accelerator.\core.$procmux$3312:
+      Old ports: A=0, B=32'11111111111111111111111111111111, Y=$flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200
+      New ports: A=1'0, B=1'1, Y=$flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0]
+      New connections: $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [31:1] = { $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] $flatten\accelerator.\core.$0$memwr$\next_bias$rtl/kwt_ffn1_core.sv:118$1092_EN[31:0]$1200 [0] }
+  Optimizing cells in module \kwt_ffn1_top.
+Performed a total of 5 changes.
+
+13.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\kwt_ffn1_top'.
+Computing hashes of 1490 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+Computing hashes of 1480 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+<suppressed ~30 debug messages>
+Removed a total of 10 cells.
+
+13.6. Executing OPT_DFF pass (perform DFF optimizations).
+Adding EN signal on $flatten\fabric.$procdff$4442 ($adff) from module kwt_ffn1_top (D = \fabric.read_, Q = \fabric.response_read).
+Adding EN signal on $flatten\accelerator.$procdff$4652 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\read_commands[31:0], Q = \accelerator.read_commands).
+Adding EN signal on $flatten\fabric.$procdff$4452 ($adff) from module kwt_ffn1_top (D = $flatten\fabric.$procmux$3356_Y, Q = \fabric.next_owner).
+Adding EN signal on $flatten\fabric.$procdff$4437 ($adff) from module kwt_ffn1_top (D = \fabric.sel_ram, Q = \fabric.ram_route).
+Adding EN signal on $flatten\fabric.$procdff$4457 ($adff) from module kwt_ffn1_top (D = \fabric.grant, Q = \fabric.locked_owner).
+Adding EN signal on $flatten\fabric.$procdff$4462 ($adff) from module kwt_ffn1_top (D = $flatten\fabric.$0\locked[0:0], Q = \fabric.locked).
+Adding EN signal on $flatten\fabric.$procdff$4447 ($adff) from module kwt_ffn1_top (D = \fabric.grant, Q = \fabric.owner).
+Adding EN signal on $flatten\accelerator.$procdff$4492 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\m_addr[31:0], Q = \accelerator.m_addr).
+Adding EN signal on $flatten\accelerator.$procdff$4477 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\rsp_valid[0:0], Q = \accelerator.rsp_valid).
+Adding EN signal on $flatten\fabric.$procdff$4427 ($adff) from module kwt_ffn1_top (D = $flatten\fabric.$0\pending[0:0], Q = \fabric.pending).
+Adding EN signal on $flatten\fabric.$procdff$4432 ($adff) from module kwt_ffn1_top (D = \fabric.sel_acc, Q = \fabric.acc_route).
+Adding EN signal on $flatten\accelerator.$procdff$4632 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\run_cycles[31:0], Q = \accelerator.run_cycles).
+Adding EN signal on $flatten\accelerator.$procdff$4723 ($dff) from module kwt_ffn1_top (D = \accelerator.request_target, Q = \accelerator.response_target[0]).
+Adding EN signal on $flatten\accelerator.$procdff$4672 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\last_write[31:0], Q = \accelerator.last_write).
+Adding EN signal on $flatten\accelerator.$procdff$4637 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\other_cycles[31:0], Q = \accelerator.other_cycles).
+Adding EN signal on $flatten\accelerator.$procdff$4512 ($adff) from module kwt_ffn1_top (D = \accelerator.cmd_wdata, Q = \accelerator.xbase).
+Adding EN signal on $flatten\accelerator.$procdff$4716 ($dff) from module kwt_ffn1_top (D = \accelerator.m_read, Q = \accelerator.response_read[1]).
+Adding EN signal on $flatten\accelerator.$procdff$4642 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\request_wait[31:0], Q = \accelerator.request_wait).
+Adding EN signal on $flatten\accelerator.$procdff$4682 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\first_seen[0:0], Q = \accelerator.first_seen).
+Adding EN signal on $flatten\accelerator.$procdff$4647 ($adff) from module kwt_ffn1_top (D = 0, Q = \accelerator.response_wait).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4192 ($adff) from module kwt_ffn1_top (D = \accelerator.core.xa [0], Q = \accelerator.core.xb).
+Adding EN signal on $flatten\accelerator.$procdff$4657 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\write_commands[31:0], Q = \accelerator.write_commands).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4142 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\bias_lane[2:0], Q = \accelerator.core.bias_lane).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4260 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2322_Y, Q = \accelerator.core.fifo[7]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4316 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$1882_Y, Q = \accelerator.core.fifo[15]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4253 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2413_Y, Q = \accelerator.core.fifo[6]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4309 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$1909_Y, Q = \accelerator.core.fifo[14]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4246 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2512_Y, Q = \accelerator.core.fifo[5]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4211 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$3127_Y, Q = \accelerator.core.fifo[0]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4302 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$1944_Y, Q = \accelerator.core.fifo[13]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4162 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\nb[8:0], Q = \accelerator.core.nb).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4172 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\tail[3:0], Q = \accelerator.core.tail).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4295 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$1987_Y, Q = \accelerator.core.fifo[12]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4182 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\outputs_read[14:0], Q = \accelerator.core.outputs_read).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4288 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2038_Y, Q = \accelerator.core.fifo[11]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4167 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\head[3:0], Q = \accelerator.core.head).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4281 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2097_Y, Q = \accelerator.core.fifo[10]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4096 ($dff) from module kwt_ffn1_top (D = \accelerator.core.ba [7], Q = \accelerator.core.small_bias.read_bank).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4097 ($dff) from module kwt_ffn1_top (D = \accelerator.core.operand_row [0], Q = \accelerator.core.small_x.read_bank).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4218 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2988_Y, Q = \accelerator.core.fifo[1]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4157 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\nw[14:0], Q = \accelerator.core.nw).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4102 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\done[0:0], Q = \accelerator.core.done).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4274 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2164_Y, Q = \accelerator.core.fifo[9]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4239 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2619_Y, Q = \accelerator.core.fifo[4]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4107 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\mac_cycles[31:0], Q = \accelerator.core.mac_cycles).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4147 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\bias_return_lane[2:0], Q = \accelerator.core.bias_return_lane).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4112 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\fifo_wait[31:0], Q = \accelerator.core.fifo_wait).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4225 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2857_Y, Q = \accelerator.core.fifo[2]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4232 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2734_Y, Q = \accelerator.core.fifo[3]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4197 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\cycles[31:0], Q = \accelerator.core.cycles).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4267 ($dff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$procmux$2239_Y, Q = \accelerator.core.fifo[8]).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4187 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\fault[0:0], Q = \accelerator.core.fault).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4127 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\row[6:0], Q = \accelerator.core.row).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4152 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\nx[12:0], Q = \accelerator.core.nx).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4132 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\col[7:0], Q = \accelerator.core.col).
+Adding EN signal on $flatten\accelerator.\core.$procdff$4177 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.$0\count[4:0], Q = \accelerator.core.count).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[0].mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[0].mac.$0\acc[39:0], Q = \accelerator.core.wbanks[0].mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[0].odd_mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[0].odd_mac.$0\acc[39:0], Q = \accelerator.core.wbanks[0].odd_mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[1].mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[1].mac.$0\acc[39:0], Q = \accelerator.core.wbanks[1].mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[1].odd_mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[1].odd_mac.$0\acc[39:0], Q = \accelerator.core.wbanks[1].odd_mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[2].mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[2].mac.$0\acc[39:0], Q = \accelerator.core.wbanks[2].mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[2].odd_mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[2].odd_mac.$0\acc[39:0], Q = \accelerator.core.wbanks[2].odd_mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[3].mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[3].mac.$0\acc[39:0], Q = \accelerator.core.wbanks[3].mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[3].odd_mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[3].odd_mac.$0\acc[39:0], Q = \accelerator.core.wbanks[3].odd_mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[4].mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[4].mac.$0\acc[39:0], Q = \accelerator.core.wbanks[4].mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[4].odd_mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[4].odd_mac.$0\acc[39:0], Q = \accelerator.core.wbanks[4].odd_mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[5].mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[5].mac.$0\acc[39:0], Q = \accelerator.core.wbanks[5].mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[5].odd_mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[5].odd_mac.$0\acc[39:0], Q = \accelerator.core.wbanks[5].odd_mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[6].mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[6].mac.$0\acc[39:0], Q = \accelerator.core.wbanks[6].mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[6].odd_mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[6].odd_mac.$0\acc[39:0], Q = \accelerator.core.wbanks[6].odd_mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[7].mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[7].mac.$0\acc[39:0], Q = \accelerator.core.wbanks[7].mac.acc).
+Adding EN signal on $flatten\accelerator.\core.\wbanks[7].odd_mac.$procdff$4422 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.\core.\wbanks[7].odd_mac.$0\acc[39:0], Q = \accelerator.core.wbanks[7].odd_mac.acc).
+Adding EN signal on $flatten\accelerator.$procdff$4497 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\m_wdata[31:0], Q = \accelerator.m_wdata).
+Adding EN signal on $flatten\accelerator.$procdff$4482 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$procmux$4088_Y, Q = \accelerator.rsp_rdata).
+Adding EN signal on $flatten\accelerator.$procdff$4677 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\producer_wait[31:0], Q = \accelerator.producer_wait).
+Adding EN signal on $flatten\accelerator.$procdff$4572 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$procmux$3828_Y, Q = \accelerator.request_target).
+Adding EN signal on $flatten\accelerator.$procdff$4567 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$rtl/kwt_ffn1_dma.sv:106$logic_not$216_Y, Q = \accelerator.response_tail).
+Adding EN signal on $flatten\accelerator.$procdff$4532 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\done[0:0], Q = \accelerator.done).
+Adding EN signal on $flatten\accelerator.$procdff$4709 ($dff) from module kwt_ffn1_top (D = \accelerator.m_read, Q = \accelerator.response_read[0]).
+Adding EN signal on $flatten\accelerator.$procdff$4662 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\first_output[31:0], Q = \accelerator.first_output).
+Adding EN signal on $flatten\accelerator.$procdff$4587 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\read_scheduled[15:0], Q = \accelerator.read_scheduled).
+Adding EN signal on $flatten\accelerator.$procdff$4542 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\aborted[0:0], Q = \accelerator.aborted).
+Adding EN signal on $flatten\accelerator.$procdff$4667 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\last_output[31:0], Q = \accelerator.last_output).
+Adding EN signal on $flatten\accelerator.$procdff$4592 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\read_received[15:0], Q = \accelerator.read_received).
+Adding EN signal on $flatten\accelerator.$procdff$4527 ($adff) from module kwt_ffn1_top (D = \accelerator.cmd_wdata, Q = \accelerator.ybase).
+Adding EN signal on $flatten\accelerator.$procdff$4487 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$procmux$4060_Y, Q = \accelerator.rsp_err).
+Adding EN signal on $flatten\accelerator.$procdff$4597 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\write_scheduled[15:0], Q = \accelerator.write_scheduled).
+Adding EN signal on $flatten\accelerator.$procdff$4702 ($adff) from module kwt_ffn1_top (D = { \accelerator.x_scheduled [11:6] 1'1 }, Q = \accelerator.reserved_row[1]).
+Adding EN signal on $flatten\accelerator.$procdff$4602 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\write_received[15:0], Q = \accelerator.write_received).
+Adding EN signal on $flatten\accelerator.$procdff$4502 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\m_read[0:0], Q = \accelerator.m_read).
+Adding EN signal on $flatten\accelerator.$procdff$4607 ($adff) from module kwt_ffn1_top (D = \accelerator.core_data, Q = \accelerator.output_hold).
+Adding EN signal on $flatten\accelerator.$procdff$4522 ($adff) from module kwt_ffn1_top (D = \accelerator.cmd_wdata, Q = \accelerator.bbase).
+Adding EN signal on $flatten\accelerator.$procdff$4562 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$rtl/kwt_ffn1_dma.sv:104$logic_not$211_Y, Q = \accelerator.response_head).
+Adding EN signal on $flatten\accelerator.$procdff$4612 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\output_have[0:0], Q = \accelerator.output_have).
+Adding EN signal on $flatten\accelerator.$procdff$4730 ($dff) from module kwt_ffn1_top (D = \accelerator.request_target, Q = \accelerator.response_target[1]).
+Adding EN signal on $flatten\accelerator.$procdff$4697 ($adff) from module kwt_ffn1_top (D = { \accelerator.x_scheduled [11:6] 1'0 }, Q = \accelerator.reserved_row[0]).
+Adding EN signal on $flatten\accelerator.$procdff$4617 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\output_high[0:0], Q = \accelerator.output_high).
+Adding EN signal on $flatten\accelerator.$procdff$4552 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\req_valid[0:0], Q = \accelerator.req_valid).
+Adding EN signal on $flatten\accelerator.$procdff$4622 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\total_cycles[31:0], Q = \accelerator.total_cycles).
+Adding EN signal on $flatten\accelerator.$procdff$4517 ($adff) from module kwt_ffn1_top (D = \accelerator.cmd_wdata, Q = \accelerator.wbase).
+Adding EN signal on $flatten\accelerator.$procdff$4627 ($adff) from module kwt_ffn1_top (D = $flatten\accelerator.$0\load_cycles[31:0], Q = \accelerator.load_cycles).
+Setting constant 0-bit at position 0 on $auto$ff.cc:337:slice$5189 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 0 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 1 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 2 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 3 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 4 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 5 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 6 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 7 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 8 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 9 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 10 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 11 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 12 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 13 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 14 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 15 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 16 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 17 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 18 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 19 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 20 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 21 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 22 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 23 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 24 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 25 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 26 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 27 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 28 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 29 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 30 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+Setting constant 0-bit at position 31 on $auto$ff.cc:337:slice$4895 ($adffe) from module kwt_ffn1_top.
+
+13.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \kwt_ffn1_top..
+Removed 84 unused cells and 359 unused wires.
+<suppressed ~89 debug messages>
+
+13.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module kwt_ffn1_top.
+<suppressed ~110 debug messages>
+
+13.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+13.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \kwt_ffn1_top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 1/5 on $pmux $flatten\accelerator.\core.$procmux$1751.
+    dead port 3/5 on $pmux $flatten\accelerator.\core.$procmux$1751.
+    dead port 1/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 2/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 3/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 4/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 5/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 6/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 7/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 8/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 9/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 10/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 11/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 12/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 13/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 14/17 on $pmux $flatten\accelerator.\core.$procmux$1726.
+    dead port 1/5 on $pmux $flatten\accelerator.\core.$procmux$1581.
+    dead port 3/5 on $pmux $flatten\accelerator.\core.$procmux$1581.
+Removed 18 multiplexer ports.
+<suppressed ~725 debug messages>
+
+13.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \kwt_ffn1_top.
+    New ctrl vector for $pmux cell $flatten\accelerator.$procmux$4066: { $flatten\accelerator.$procmux$3861_CMP $flatten\accelerator.$procmux$3862_CMP $flatten\accelerator.$procmux$3863_CMP $flatten\accelerator.$procmux$3864_CMP $flatten\accelerator.$procmux$3865_CMP $flatten\accelerator.$procmux$3866_CMP $flatten\accelerator.$procmux$3868_CMP $flatten\accelerator.$procmux$3869_CMP $flatten\accelerator.$procmux$3870_CMP $flatten\accelerator.$procmux$3871_CMP $flatten\accelerator.$procmux$3872_CMP $flatten\accelerator.$procmux$3873_CMP $flatten\accelerator.$procmux$3874_CMP $flatten\accelerator.$procmux$3875_CMP $flatten\accelerator.$procmux$3877_CMP $flatten\accelerator.$procmux$3878_CMP $flatten\accelerator.$procmux$3879_CMP $flatten\accelerator.$procmux$3880_CMP $flatten\accelerator.$procmux$3881_CMP $flatten\accelerator.$procmux$3882_CMP }
+  Optimizing cells in module \kwt_ffn1_top.
+Performed a total of 1 changes.
+
+13.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\kwt_ffn1_top'.
+Computing hashes of 1519 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+Computing hashes of 1476 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+Computing hashes of 1475 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+<suppressed ~132 debug messages>
+Removed a total of 44 cells.
+
+13.13. Executing OPT_DFF pass (perform DFF optimizations).
+
+13.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \kwt_ffn1_top..
+Removed 0 unused cells and 65 unused wires.
+<suppressed ~1 debug messages>
+
+13.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module kwt_ffn1_top.
+
+13.16. Rerunning OPT passes. (Maybe there is more to do..)
+
+13.17. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \kwt_ffn1_top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~725 debug messages>
+
+13.18. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \kwt_ffn1_top.
+Performed a total of 0 changes.
+
+13.19. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\kwt_ffn1_top'.
+Computing hashes of 1475 cells of `\kwt_ffn1_top'.
+Finding duplicate cells in `\kwt_ffn1_top'.
+Removed a total of 0 cells.
+
+13.20. Executing OPT_DFF pass (perform DFF optimizations).
+
+13.21. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \kwt_ffn1_top..
+
+13.22. Executing OPT_EXPR pass (perform const folding).
+Optimizing module kwt_ffn1_top.
+
+13.23. Finished fast OPT passes. (There is nothing left to do.)
+
+14. Executing CHECK pass (checking for obvious problems).
+Checking module kwt_ffn1_top...
+Found and reported 0 problems.
+{
+   "creator": "Yosys 0.70+225 (git sha1 860f20202-dirty, Release, GNU /usr/bin/x86_64-w64-mingw32-g++ 15.2.1)",
+   "invocation": "stat -json ",
+   "modules": {
+      "\\kwt_ffn1_top": {
+         "num_wires":         1843,
+         "num_wire_bits":     20584,
+         "num_pub_wires":     687,
+         "num_pub_wire_bits": 7969,
+         "num_ports":         28,
+         "num_port_bits":     301,
+         "num_memories":      1,
+         "num_memory_bits":   256,
+         "num_processes":     0,
+         "num_cells":         1475,
+         "num_submodules":       0,
+         "num_cells_by_type": {
+            "$add": 82,
+            "$adff": 9,
+            "$adffe": 78,
+            "$and": 4,
+            "$dffe": 22,
+            "$eq": 315,
+            "$ge": 10,
+            "$le": 14,
+            "$logic_and": 138,
+            "$logic_not": 64,
+            "$logic_or": 47,
+            "$lt": 11,
+            "$memrd": 8,
+            "$memwr_v2": 2,
+            "$mul": 16,
+            "$mux": 410,
+            "$ne": 6,
+            "$neg": 3,
+            "$not": 31,
+            "$or": 4,
+            "$pmux": 20,
+            "$reduce_and": 40,
+            "$reduce_bool": 60,
+            "$reduce_or": 1,
+            "$scopeinfo": 43,
+            "$shift": 4,
+            "$shiftx": 5,
+            "$sub": 4,
+            "RAMSP1024X16": 16,
+            "RAMSP128X16": 8
+         }
+      }
+   },
+      "design": {
+         "num_wires":         1843,
+         "num_wire_bits":     20584,
+         "num_pub_wires":     687,
+         "num_pub_wire_bits": 7969,
+         "num_ports":         28,
+         "num_port_bits":     301,
+         "num_memories":      1,
+         "num_memory_bits":   256,
+         "num_processes":     0,
+         "num_cells":         1475,
+         "num_submodules":       0,
+         "num_cells_by_type": {
+            "$add": 82,
+            "$adff": 9,
+            "$adffe": 78,
+            "$and": 4,
+            "$dffe": 22,
+            "$eq": 315,
+            "$ge": 10,
+            "$le": 14,
+            "$logic_and": 138,
+            "$logic_not": 64,
+            "$logic_or": 47,
+            "$lt": 11,
+            "$memrd": 8,
+            "$memwr_v2": 2,
+            "$mul": 16,
+            "$mux": 410,
+            "$ne": 6,
+            "$neg": 3,
+            "$not": 31,
+            "$or": 4,
+            "$pmux": 20,
+            "$reduce_and": 40,
+            "$reduce_bool": 60,
+            "$reduce_or": 1,
+            "$scopeinfo": 43,
+            "$shift": 4,
+            "$shiftx": 5,
+            "$sub": 4,
+            "RAMSP1024X16": 16,
+            "RAMSP128X16": 8
+         }
+      }
+}
+
+Warnings: 4 unique messages, 5 total
+End of script. Logfile hash: cc470c38c1
+Yosys 0.70+225 (git sha1 860f20202-dirty, Release, GNU /usr/bin/x86_64-w64-mingw32-g++ 15.2.1)
+Time spent: 4% 9x read_verilog (0 sec), 4% 5x opt_expr (0 sec), ...

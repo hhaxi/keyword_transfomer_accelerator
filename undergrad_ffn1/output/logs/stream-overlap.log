@@ -1,0 +1,2 @@
+STREAM_PASS 99 rows, parity ping-pong, late row, FIFO stalls, exact outputs
+tests/tb_stream.sv:53: $finish called at 812358756 (1ps)

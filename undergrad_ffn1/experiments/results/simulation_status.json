@@ -1,0 +1,66 @@
+[
+  {
+    "case": "i0_h0_x1_b0",
+    "passed": true
+  },
+  {
+    "case": "i0_h1_x1_b0",
+    "passed": true
+  },
+  {
+    "case": "i0_h0_x1_b1",
+    "passed": true
+  },
+  {
+    "case": "i0_h1_x1_b1",
+    "passed": true
+  },
+  {
+    "case": "i0_h0_x0_b0",
+    "passed": true
+  },
+  {
+    "case": "i0_h1_x0_b0",
+    "passed": true
+  },
+  {
+    "case": "i0_h0_x0_b1",
+    "passed": true
+  },
+  {
+    "case": "i0_h1_x0_b1",
+    "passed": true
+  },
+  {
+    "case": "i1_h0_x0_b1",
+    "passed": true
+  },
+  {
+    "case": "i1_h1_x0_b1",
+    "passed": true
+  },
+  {
+    "case": "i1_h0_x0_b0",
+    "passed": true
+  },
+  {
+    "case": "i1_h1_x0_b0",
+    "passed": true
+  },
+  {
+    "case": "i1_h0_x1_b0",
+    "passed": true
+  },
+  {
+    "case": "i1_h1_x1_b0",
+    "passed": true
+  },
+  {
+    "case": "i1_h0_x1_b1",
+    "passed": true
+  },
+  {
+    "case": "i1_h1_x1_b1",
+    "passed": true
+  }
+]
