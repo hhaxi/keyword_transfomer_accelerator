@@ -52,6 +52,13 @@ python3 tools/sweep.py prepare
 bash run_compare.sh --dc --scope soc
 # 或具备仿真工具后重做16组合验证和打包：
 bash run_compare.sh --sim --jobs 2
+python3 tools/verify.py --tasks 12
+python3 tools/verify.py --tasks 12 --continuous --skip-build
+python3 tools/check_components.py
+python3 tools/check_structure.py
+for case_name in i0_h0_x0_b0 i0_h0_x0_b1 i0_h0_x1_b0 i0_h0_x1_b1; do
+  (cd "experiments/cases/$case_name" && python3 tools/check_components.py && python3 tools/check_structure.py) || exit 1
+done
 python3 tools/package.py
 ```
 
