@@ -21,11 +21,15 @@
 
 ```bash
 cd undergrad_ffn1/finalists
+bash run_vcs_power.sh --check
 bash run_vcs_power.sh
 ```
 
 需要 Python3.6+、VCS、g++、vcd2saif 和 DC。固件镜像已随各组源码固定，无需服务器 RISC-V GCC。
 默认使用 `$HOME/Desktop/lib` 中现有 SS 标准单元/SP SRAM db；正式流程不转换 lib。
+`--check` 只检查工具是否可找到、源码/向量/固件和DC入口是否齐全，不启动仿真或综合；
+商业许可证和工艺库加载仍在真实工具执行时检查。正式运行也会先进行这项预检。
+工具路径可用 `--vcs`、`--cxx`、`--vcd2saif`、`--dc-shell` 指定。
 
 流程为 **VCS 编译 → 每组12任务功能/计数检查 → VCD任务窗口裁剪 → SAIF转换 → 新SoC综合 → 功耗/面积/时序对比**。
 只有通过检查的活动才会进入分析。VCS/DC 的真实执行结果由服务器产生，本机未宣称商业工具通过。

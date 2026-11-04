@@ -32,6 +32,35 @@ def tool_path(value, label):
     return str(Path(resolved).resolve())
 
 
+def check_dc_inputs(case):
+    required = ('config/library_config.tcl', 'filelists/soc.f', 'script/common.tcl',
+                'script/set_env.tcl', 'script/read_file.tcl', 'script/set_constraint.tcl',
+                'script/compile.tcl', 'script/write_file.tcl', 'script/area_scope.tcl')
+    for relative in required:
+        if not (case / relative).is_file():
+            raise ValueError('missing DC input: %s/%s' % (case.name, relative))
+    if not (ROOT / 'script/power_run.tcl').is_file():
+        raise ValueError('missing top-level script/power_run.tcl')
+
+
+def check_environment(cases, args, needs_dc):
+    # Check the complete requested chain before spending time on any capture.
+    tools = [('VCS', args.vcs), ('C++', args.cxx)]
+    if needs_dc:
+        tools += [('DC', args.dc_shell), ('VCD converter', args.vcd2saif)]
+    for label, value in tools:
+        print('PREFLIGHT %s=%s' % (label, tool_path(value, label)), flush=True)
+    private = os.environ.get('KWT_GLOBAL_LOCAL_CONFIG')
+    if private and not Path(private).is_file():
+        raise ValueError('KWT_GLOBAL_LOCAL_CONFIG is not a readable file: %s' % private)
+    for case in cases:
+        verify_seed(case)
+        if needs_dc:
+            check_dc_inputs(case)
+        print('PREFLIGHT qualified_sources=%s' % case.name, flush=True)
+    print('VCS_PREFLIGHT_PASS: tools and source files; licenses/PDK loading checked during real tool execution', flush=True)
+
+
 def make_overlay(original):
     if '`timescale 1ns/1fs' not in original or 'reg clk=0;always begin #3.333333 clk=1; #3.333334 clk=0; end' not in original:
         raise ValueError('seed TB lacks exact fs clock')
@@ -285,9 +314,12 @@ def main(argv=None):
     parser.add_argument('--sim', action='store_true', help='VCS simulation/export only')
     parser.add_argument('--dc', action='store_true', help='DC only; requires verified current VCS capture')
     parser.add_argument('--resume', action='store_true', help='reuse only fully verified current VCS captures')
+    parser.add_argument('--check', action='store_true', help='check tools and input files only; no simulation/synthesis')
     parser.add_argument('--case', action='append', default=[])
     parser.add_argument('--vcs', default=os.environ.get('VCS', 'vcs'))
     parser.add_argument('--cxx', default=os.environ.get('CXX', 'g++'))
+    parser.add_argument('--dc-shell', default='dc_shell')
+    parser.add_argument('--vcd2saif', default='vcd2saif')
     args = parser.parse_args(argv)
     study = args.study.resolve()
     manifest = load(study / 'activity_manifest.json')
@@ -304,18 +336,26 @@ def main(argv=None):
         if case.name != item['name']:
             raise ValueError('VCS case name/path mismatch')
         selected.append(case)
+    if not selected:
+        raise ValueError('no selected VCS cases')
+    check_environment(selected, args, run_all or args.dc)
+    if args.check:
+        return 0
+    for case in selected:
         if run_all or args.sim:
             simulate_case(case, args)
         elif args.dc:
             vcs, cxx = tool_path(args.vcs, 'VCS'), tool_path(args.cxx, 'C++')
             prepare_case(case, check_only=True)
             validate_resume(case, input_binding(case, vcs, cxx))
-    if not selected:
-        raise ValueError('no selected VCS cases')
     if run_all or args.dc:
         command = ['--study', str(study), '--dc', '--collect']
         for case in selected:
             command += ['--case', case.name]
+        if args.dc_shell != 'dc_shell':
+            command += ['--dc-shell', args.dc_shell]
+        if args.vcd2saif != 'vcd2saif':
+            command += ['--vcd2saif', args.vcd2saif]
         return power_server.main(command)
     return 0
 

@@ -214,7 +214,7 @@ class VCSFlow(unittest.TestCase):
     def test_cli_defaults_to_vcs_then_selected_dc_and_sim_can_run_alone(self):
         study=Path(self.temp.name)/'study'
         server.save(study/'activity_manifest.json',dict(cases=[dict(name='one',path='cases/one'),dict(name='two',path='cases/two')]))
-        with mock.patch.object(vcs,'simulate_case') as simulate, mock.patch.object(vcs.power_server,'main',return_value=0) as dc:
+        with mock.patch.object(vcs,'check_environment'), mock.patch.object(vcs,'simulate_case') as simulate, mock.patch.object(vcs.power_server,'main',return_value=0) as dc:
             self.assertEqual(vcs.main(['--study',str(study),'--case','two']),0)
             self.assertEqual(simulate.call_args[0][0],study/'cases/two')
             self.assertEqual(dc.call_args[0][0],['--study',str(study),'--dc','--collect','--case','two'])

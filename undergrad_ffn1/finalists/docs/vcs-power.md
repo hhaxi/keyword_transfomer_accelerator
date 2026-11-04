@@ -13,11 +13,14 @@ RTL、INT16/INT32/INT40 数值规则及原先测试结果保持不变。
 ```bash
 bash restore.sh
 cd activity_power_ffn1
+bash run_vcs_power.sh --check
 bash run_vcs_power.sh
 ```
 
 入口使用 Bash，可从服务器默认的 csh/tcsh 调用。还原需要 Python3.6+；完整流程还需要
 `vcs`、`g++`、`vcd2saif`、`dc_shell` 在 PATH 中。
+正式运行开始前会检查完整请求链的工具和输入；`--check` 只执行这项预检，不消耗仿真/综合时间。
+该预检不会申请商业许可证，也不加载db；许可证和库模型由后续真实VCS/DC调用检验。
 标准单元和原生 SP SRAM 的 SS db 默认仍在 `$HOME/Desktop/lib`。
 不包含 lib→db 转换。私有库路径可使用已有 `KWT_GLOBAL_LOCAL_CONFIG` Tcl 覆盖机制。
 
@@ -72,4 +75,5 @@ bash run_vcs_power.sh --resume
 默认在首个失败处停止，修复后可按 `--case` 单独重试。
 
 工具不在 PATH 时，可使用 `--vcs /路径/vcs --cxx /路径/g++` 或 `VCS`/`CXX` 环境变量。
-`vcd2saif` 和 `dc_shell` 通过所加载的 Synopsys 环境提供。
+转换和综合工具也可使用 `--vcd2saif /路径/vcd2saif --dc-shell /路径/dc_shell` 指定，
+这些参数会传递到实际的活动转换和DC入口。
