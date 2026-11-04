@@ -357,6 +357,7 @@ def _export_native(input_vcd, windows, output_dir, executable):
                     handle.write('%d %s\n' % (width, identifier))
                 for window in checked:
                     handle.write('%d %d\n' % (window['start'], window['end']))
+            print('VCD_SCAN: extracting %s measured window(s)' % len(checked), flush=True)
             result = subprocess.run([str(Path(executable).resolve()), str(Path(input_vcd).resolve()),
                                      str(prepared_header.resolve()), str(manifest.resolve()),
                                      str(temporary.resolve())], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -364,6 +365,7 @@ def _export_native(input_vcd, windows, output_dir, executable):
                 raise ValueError('native VCD export failed: ' + result.stderr.decode('utf-8', 'replace'))
             rows = []
             for index, window in enumerate(checked):
+                print('VCD_COMPRESS: task=%s (%s/%s)' % (window['task'], index+1, len(checked)), flush=True)
                 plain = temporary / ('task_%02d.vcd' % index)
                 target = output_dir / ('task_%02d.vcd.gz' % index)
                 with target.open('xb') as raw:
@@ -375,6 +377,7 @@ def _export_native(input_vcd, windows, output_dir, executable):
                                  bytes=target.stat().st_size, duration_fs=(window['end'] - window['start']) * scale,
                                  source_timescale_fs=scale))
                 plain.unlink()
+                print('VCD_READY: task=%s bytes=%s' % (window['task'], rows[-1]['bytes']), flush=True)
             succeeded = True
             return rows
     except (EOFError, OSError, UnicodeError, ValueError) as error:

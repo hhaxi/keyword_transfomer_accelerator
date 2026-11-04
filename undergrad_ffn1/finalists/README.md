@@ -12,6 +12,8 @@
 | 32 MAC 无损打包 | dual32_f0_p0_o1_w1_b1_d1_h0 | 40位无损打包与暂停轮询，保留吞吐较高的候选 |
 
 周期、验证证据和结论范围见 [测试报告](reports/RESULTS.md)。
+新增 [单任务快速筛选](docs/quick-screen.md)：`bash run_quick_screen.sh`，四组统一使用task00，
+结果写入独立 `vcs_quick_study`；原12任务流程保留。
 源码位于 `vcs_power_study/cases/`，各组配置位于自己的 `case.json` 和 `config/`。
 只提交复现所需源码、向量、固件镜像、日志及报告；大体积波形、工艺库、综合网表和私有配置不在仓库中。
 

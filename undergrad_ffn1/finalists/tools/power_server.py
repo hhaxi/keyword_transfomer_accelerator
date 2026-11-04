@@ -109,8 +109,11 @@ def validate_capture(case):
     receipt = load(receipt_path)
     if receipt.get('passed') is not True or receipt.get('functional_passed') is not True or receipt.get('stage') != 'complete':
         raise ValueError('capture is not functionally passed with complete verified export')
-    if receipt.get('real_cpu') is not True or receipt.get('task_count') != 12 or receipt.get('clock_period_fs') != 6666667:
-        raise ValueError('capture requires real CPU, twelve tasks, and 6666667 fs clock')
+    task_count = receipt.get('task_count')
+    if receipt.get('real_cpu') is not True or type(task_count) is not int or task_count not in (1, 12) or receipt.get('clock_period_fs') != 6666667:
+        raise ValueError('capture requires real CPU, explicit 1/12 tasks, and 6666667 fs clock')
+    if task_count == 1 and receipt.get('quick_screen') is not True:
+        raise ValueError('one-task capture must explicitly declare quick_screen')
     for field in ('source_signature', 'config_signature', 'source_sha256', 'config_sha256'):
         if not receipt.get(field):
             raise ValueError('capture receipt missing %s' % field)
@@ -130,8 +133,8 @@ def validate_capture(case):
     if not receipt.get('firmware_sha256') or sha(firmware) != receipt['firmware_sha256']:
         raise ValueError('capture firmware mismatch: output/firmware/kwt.hex')
     tasks = receipt['tasks']
-    if sorted(t['task'] for t in tasks) != list(range(12)):
-        raise ValueError('capture must contain exactly tasks 0..11')
+    if sorted(t['task'] for t in tasks) != list(range(task_count)):
+        raise ValueError('capture must contain exactly the declared task IDs')
     for task in tasks:
         duration = task['duration_fs']
         if not isinstance(task['source_timescale_fs'], int) or task['source_timescale_fs'] <= 0:
@@ -203,10 +206,11 @@ def parse_power(text):
     return result
 
 
-def aggregate(tasks):
+def aggregate(tasks, expected_count=12):
     result = {'task_count': len(tasks), 'coverage_review': 'required',
-              'method': 'postcompile_RTL_SAIF_NOT_OFFICIAL', 'mean_task_energy_j': None}
-    complete = sorted(t.get('task', -1) for t in tasks) == list(range(12)) and all(
+              'method': 'postcompile_RTL_SAIF_NOT_OFFICIAL', 'mean_task_energy_j': None,
+              'quick_screen': expected_count == 1, 'sample': 'task_00_only' if expected_count == 1 else '12_layer_tasks'}
+    complete = expected_count in (1, 12) and sorted(t.get('task', -1) for t in tasks) == list(range(expected_count)) and all(
         t.get('tool_status') == 'complete' and isinstance(t.get('duration_fs'), int) and
         t['duration_fs'] > 0 and all(t.get(k) is not None and math.isfinite(t[k]) and t[k] >= 0
                                   for k in POWER_FIELDS) for t in tasks)
@@ -222,7 +226,7 @@ def aggregate(tasks):
         if complete:
             energy = energies[field]
             result['weighted_' + field] = energy / (sum(t['duration_fs'] for t in tasks) * 1e-15)
-            result['mean_task_' + field.replace('power_w', 'energy_j')] = energy / 12
+            result['mean_task_' + field.replace('power_w', 'energy_j')] = energy / expected_count
     if complete:
         result['mean_task_energy_j'] = result['mean_task_total_energy_j']
     return result
@@ -250,7 +254,7 @@ def collect(attempt, receipt):
         entry.update(parse_power(power_text))
         # Preserve all coverage output verbatim; annotation return success is not coverage acceptance.
         tasks.append(entry)
-    result = aggregate(tasks)
+    result = aggregate(tasks, expected_count=receipt.get('task_count', 12))
     result['tasks'] = tasks
     total_fs = sum(t['duration_fs'] for t in tasks)
     clock_fs = receipt.get('clock_period_fs')
@@ -277,7 +281,7 @@ def write_comparison(folder, results):
     columns = ['Case', 'Added area (library units)', 'SoC area (library units)',
                'Strict cycles/task', 'Throughput (task/s)', 'Dynamic (mW)',
                'Leakage (mW)', 'Total (mW)', 'Energy (uJ/task)',
-               'Setup WNS (ns)', 'Hold WNS SS only (ns)', 'Coverage']
+               'Setup WNS (ns)', 'Hold WNS SS only (ns)', 'Coverage', 'Sample']
     rows = []
     def scaled(value, factor=1):
         return value * factor if value is not None and math.isfinite(value) else None
@@ -291,7 +295,7 @@ def write_comparison(folder, results):
                      scaled(result.get('weighted_total_power_w'), 1000),
                      scaled(result.get('mean_task_energy_j'), 1e6),
                      scaled(timing.get('setup_wns_ns')), scaled(timing.get('hold_wns_ss_only_ns')),
-                     'required'])
+                     'required', result.get('sample', '12_layer_tasks')])
     def cell(value, unknown=''):
         return unknown if value is None else ('%.8g' % value if isinstance(value, (int, float)) else str(value))
     stream = io.StringIO(newline='')
@@ -299,7 +303,7 @@ def write_comparison(folder, results):
     writer.writerow(columns)
     writer.writerows([[cell(value) for value in row] for row in rows])
     save_text(folder / 'comparison.csv', stream.getvalue())
-    lines = ['Postcompile RTL SAIF estimates; coverage review required; no official score.', '',
+    lines = ['Postcompile RTL SAIF estimates; coverage review required; no official score. task_00_only rows are single-task screening estimates.', '',
              '| ' + ' | '.join(columns) + ' |', '| ' + ' | '.join(['---'] * len(columns)) + ' |']
     lines += ['| ' + ' | '.join(cell(value, 'unknown').replace('|', '\\|') for value in row) + ' |' for row in rows]
     lines += ['', 'Cycles and throughput use strict measured intervals, ending at the final DMA write response. '
@@ -372,7 +376,7 @@ def analyze_case(case, study, args):
         with open(str(task_tcl), 'w', encoding='utf-8') as handle:
             handle.write('set power_tasks [list %s]\n' % ' '.join('[list %s %s]' % (i, tcl_string(p)) for i, p in enumerate(saifs)))
         env = os.environ.copy()
-        env.update(KWT_POWER_CASE_ROOT=str(case), KWT_POWER_RUN_DIR=str(attempt), KWT_POWER_TASKS=str(task_tcl), KWT_POWER_PYTHON=sys.executable, KWT_SYNTHESIS_SCOPE='soc')
+        env.update(KWT_POWER_CASE_ROOT=str(case), KWT_POWER_RUN_DIR=str(attempt), KWT_POWER_TASKS=str(task_tcl), KWT_POWER_PYTHON=sys.executable, KWT_SYNTHESIS_SCOPE='soc', KWT_POWER_TASK_COUNT=str(receipt['task_count']))
         save(attempt / 'binding.json', {'inputs_signature': signature(inputs), 'saifs': [sha(p) for p in saifs], 'dc_shell': dc, 'dc_shell_sha256': sha(dc)})
         print('%s: fresh DC synthesis/activity run; log=%s' % (case.name, attempt / 'launch.log'), flush=True)
         run_logged([dc, '-f', str(ROOT / 'script/power_run.tcl')], attempt / 'launch.log', env, case, stream=True)
@@ -391,7 +395,7 @@ def analyze_case(case, study, args):
         binding = load(attempt / 'binding.json')
         if binding['inputs_signature'] != signature(inputs):
             raise ValueError('stale DC binding')
-        paths = [folder / 'saif' / ('task_%02d.saif' % i) for i in range(12)]
+        paths = [folder / 'saif' / ('task_%02d.saif' % item['task']) for item in sorted(receipt['tasks'], key=lambda t: t['task'])]
         if [sha(p) for p in paths] != binding['saifs']:
             raise ValueError('SAIF changed after DC')
         verify_libraries(attempt)
@@ -401,7 +405,7 @@ def analyze_case(case, study, args):
         summary = collect(attempt, receipt)
         print('%s: data=%s coverage=required timing=%s (%s)' % (case.name, summary['data_status'], summary['timing']['setup_meets_target'], attempt), flush=True)
         return summary
-    print('%s: converted 12 verified task SAIFs' % case.name, flush=True)
+    print('%s: converted %s verified task SAIF(s)' % (case.name, receipt['task_count']), flush=True)
 
 
 def main(argv=None):

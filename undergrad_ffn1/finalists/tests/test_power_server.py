@@ -215,7 +215,7 @@ class Fixtures(unittest.TestCase):
 
 
 class TclFlow(unittest.TestCase):
-    def mock(self, read_ok=1, available=True):
+    def mock(self, read_ok=1, available=True, task_count=12, listed_count=None):
         try:
             import tkinter
             interp = tkinter.Tcl()
@@ -233,6 +233,8 @@ class TclFlow(unittest.TestCase):
             interp.setvar('fixture_library', str(library))
             interp.setvar('fixture_saif', str(saif))
             interp.setvar('read_ok', read_ok)
+            interp.setvar('env(KWT_POWER_TASK_COUNT)', task_count)
+            interp.setvar('fixture_tasks', task_count if listed_count is None else listed_count)
             interp.eval('''
                 set events {}
                 rename source real_source
@@ -266,7 +268,7 @@ class TclFlow(unittest.TestCase):
                         write_file.tcl {lappend ::events vectorless}
                         tasks.tcl {
                             set ::power_tasks {}
-                            for {set i 0} {$i<12} {incr i} {lappend ::power_tasks [list $i $::fixture_saif]}
+                            for {set i 0} {$i<$::fixture_tasks} {incr i} {lappend ::power_tasks [list $i $::fixture_saif]}
                         }
                         default {error "unexpected source $path"}
                     }
@@ -299,6 +301,19 @@ class TclFlow(unittest.TestCase):
 
     def test_read_failure_never_reports_power(self):
         status, events, marker = self.mock(read_ok=0)
+        self.assertEqual(status, 'MOCK_EXIT:1')
+        self.assertFalse(marker)
+        self.assertNotIn('power', events)
+
+    def test_explicit_quick_count_reads_one_saif(self):
+        status, events, marker = self.mock(task_count=1)
+        self.assertEqual(status, 'MOCK_EXIT:0')
+        self.assertTrue(marker)
+        self.assertEqual(events.count('read'), 1)
+        self.assertEqual(events.count('power'), 1)
+
+    def test_incomplete_full_set_is_not_silently_quick(self):
+        status, events, marker = self.mock(task_count=12, listed_count=1)
         self.assertEqual(status, 'MOCK_EXIT:1')
         self.assertFalse(marker)
         self.assertNotIn('power', events)

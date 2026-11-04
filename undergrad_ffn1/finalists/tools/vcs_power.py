@@ -131,14 +131,14 @@ def source_hashes(case):
     return files
 
 
-def input_binding(case, vcs, cxx):
+def input_binding(case, vcs, cxx, task_count=12):
     seed = verify_seed(case)
     sources = source_hashes(case)
     config = {name: digest for name, digest in sources.items() if name.startswith('config/') or name == 'case.json'}
     tools = {name: sha(ROOT / 'tools' / name) for name in
              ('vcs_power.py', 'capture_power.py', 'optional_options.py', 'power_server.py',
               'ppa_metrics.py', 'power_vcd.py', 'power_vcd_fast.cpp')}
-    return dict(source_sha256=sources, config_sha256=config, vector_sha256=seed['vector_sha256'],
+    return dict(task_count=task_count, source_sha256=sources, config_sha256=config, vector_sha256=seed['vector_sha256'],
                 firmware_sha256=seed['firmware_sha256'], tools_sha256=tools,
                 vcs={'path': vcs, 'sha256': sha(vcs)}, cxx={'path': cxx, 'sha256': sha(cxx)})
 
@@ -150,17 +150,19 @@ def compile_command(case, build, simv, vcs):
             '-top', 'tb_soc', '-o', str(Path(simv).resolve()), '-Mdir=' + str(Path(build).resolve())]
 
 
-def simulation_command(simv, raw):
-    return [str(simv), '+tasks=12', '+profile', '+fast_checks', '+host_continuous', '+vcd',
+def simulation_command(simv, raw, task_count=12):
+    if task_count not in (1, 12):
+        raise ValueError('task count must be 1 or 12')
+    return [str(simv), '+tasks=' + str(task_count), '+profile', '+fast_checks', '+host_continuous', '+vcd',
             '+vcd_path=' + str(Path(raw).resolve())]
 
 
-def validate_simulation(text, options):
+def validate_simulation(text, options, task_count=12):
     whole = re.findall(r'^SOC_PASS tasks=(\d+)\s', text, re.M)
     outputs = re.findall(r'^SOC_TASK_PASS task=(\d+) cycles=(\d+) outputs=(\d+)\s*$', text, re.M)
-    if whole != ['12'] or len(outputs) != 12 or sorted(int(t) for t, unused, unused2 in outputs) != list(range(12)) or any(n != '25344' for t, c, n in outputs):
-        raise ValueError('VCS did not verify exactly twelve complete output tasks')
-    windows = parse_windows(text, 12)
+    if task_count not in (1, 12) or whole != [str(task_count)] or len(outputs) != task_count or sorted(int(t) for t, unused, unused2 in outputs) != list(range(task_count)) or any(n != '25344' for t, c, n in outputs):
+        raise ValueError('VCS did not verify exactly %s complete output tasks' % task_count)
+    windows = parse_windows(text, task_count)
     profiles = {}
     for task, index, value in re.findall(r'^SOC_PROFILE task=(\d+) index=(\d+) value=(\d+)\s*$', text, re.M):
         group = profiles.setdefault(int(task), {})
@@ -169,7 +171,7 @@ def validate_simulation(text, options):
         group[int(index)] = int(value)
     rows, columns, kparallel = ENGINES[options['engine']]
     mac = ((99+rows-1)//rows)*(256//columns)*(64//kparallel)
-    if set(profiles) != set(range(12)):
+    if set(profiles) != set(range(task_count)):
         raise ValueError('missing VCS task profiles')
     for task, counters in profiles.items():
         if set(counters) != set(range(15)) or counters[4] != mac or counters[9] != 11616 or counters[10] != (31680 if options['packed40'] else 50688):
@@ -194,6 +196,8 @@ def validate_resume(case, binding):
     path, receipt = power_server.validate_capture(case)
     if receipt.get('simulator') != 'VCS' or receipt.get('vcs_input_binding') != binding:
         raise ValueError('capture is not a current, bound VCS result; run a fresh simulation')
+    if receipt['task_count'] != binding.get('task_count', 12):
+        raise ValueError('VCS task count does not match requested screening mode')
     for relative, digest in receipt.get('provenance_sha256', {}).items():
         if sha(confined(case, relative)) != digest:
             raise ValueError('VCS executable/log/exporter provenance changed: %s' % relative)
@@ -204,7 +208,7 @@ def validate_resume(case, binding):
         if receipt[field] not in provenance:
             raise ValueError('unbound VCS provenance: %s' % field)
     # Revalidate original successful output/profile evidence, not just a passed flag.
-    windows, profiles = validate_simulation((case / receipt['simulation_log']).read_text(errors='replace'), read_options(case))
+    windows, profiles = validate_simulation((case / receipt['simulation_log']).read_text(errors='replace'), read_options(case), receipt['task_count'])
     if len(receipt['tasks']) != len(windows):
         raise ValueError('VCS receipt task timing differs from simulation log')
     for logged, saved in zip(windows, sorted(receipt['tasks'], key=lambda item: item['task'])):
@@ -218,12 +222,13 @@ def validate_resume(case, binding):
 
 def simulate_case(case, args):
     case = Path(case).resolve()
+    task_count = getattr(args, 'tasks', 12)
     vcs = tool_path(args.vcs, 'VCS')
     cxx = tool_path(args.cxx, 'C++')
     current = case / 'output/activity/capture.json'
     if args.resume and current.is_file() and load(current).get('stage') == 'complete':
         prepare_case(case, check_only=True)
-        receipt = validate_resume(case, input_binding(case, vcs, cxx))
+        receipt = validate_resume(case, input_binding(case, vcs, cxx, task_count))
         print('%s: reusing verified VCS capture' % case.name, flush=True)
         return receipt
     stamp = datetime.datetime.utcnow().strftime('attempt_%Y%m%dT%H%M%S_%f')
@@ -236,10 +241,10 @@ def simulate_case(case, args):
     save(current, dict(passed=False, functional_passed=False, stage='running', simulator='VCS', attempt=stamp, tasks=[]))
     print('%s: fresh VCS attempt %s' % (case.name, stamp), flush=True)
     prepare_case(case)
-    binding = input_binding(case, vcs, cxx)
+    binding = input_binding(case, vcs, cxx, task_count)
     save(activity / 'inputs.json', binding)
     def unchanged(stage):
-        if input_binding(case, vcs, cxx) != binding:
+        if input_binding(case, vcs, cxx, task_count) != binding:
             raise ValueError('VCS inputs changed during %s' % stage)
     simv = build / 'simv'
     compile_log = activity / 'compile.log'
@@ -252,21 +257,21 @@ def simulate_case(case, args):
     runtime_hashes = runtime_artifacts(case, simv)
     raw = activity / 'soc.vcd'
     sim_log = activity / 'simulation.log'
-    runtime = simulation_command(simv, raw)
+    runtime = simulation_command(simv, raw, task_count)
     text = execute(runtime, sim_log, case)
-    windows, profiles = validate_simulation(text, read_options(case))
+    windows, profiles = validate_simulation(text, read_options(case), task_count)
     unchanged('simulation')
     if runtime_artifacts(case, simv) != runtime_hashes:
         raise ValueError('VCS simv/runtime libraries changed during simulation')
     if not raw.is_file() or not raw.stat().st_size:
         raise ValueError('VCS simulation produced no VCD')
     raw_hash, raw_bytes = sha(raw), raw.stat().st_size
-    print('%s: exporting twelve strict VCD windows' % case.name, flush=True)
+    print('%s: exporting %s strict VCD window(s)' % (case.name, task_count), flush=True)
     native = power_vcd.build_native_exporter(cxx, ROOT / 'tmp/vcs_power_exporter')
     native_hash = sha(native)
     exported = power_vcd.export_windows(raw, windows, activity, native_executable=native)
-    if len(exported) != 12:
-        raise ValueError('VCD exporter did not return twelve tasks')
+    if len(exported) != task_count:
+        raise ValueError('VCD exporter task count differs from requested count')
     for window, row in zip(windows, exported):
         if row['task'] != window['task'] or row['duration_fs'] != window['duration_fs']:
             raise ValueError('VCD exporter timing/task mismatch')
@@ -283,7 +288,7 @@ def simulate_case(case, args):
                  native_exporter=native_copy.relative_to(case).as_posix())
     receipt = dict(schema_version=1, passed=True, functional_passed=True, stage='complete',
                    simulator='VCS', real_cpu=True, rtl_activity=True, gate_level=False,
-                   task_count=12, clock_period_fs=CLOCK_FS, dut_instance='tb_soc/dut', tasks=windows,
+                   task_count=task_count, quick_screen=task_count == 1, clock_period_fs=CLOCK_FS, dut_instance='tb_soc/dut', tasks=windows,
                    source_sha256=binding['source_sha256'], source_signature=signature(binding['source_sha256']),
                    config_sha256=binding['config_sha256'], config_signature=signature(binding['config_sha256']),
                    vector_sha256=binding['vector_sha256'], firmware_sha256=binding['firmware_sha256'],
@@ -303,7 +308,7 @@ def simulate_case(case, args):
         save(current, dict(passed=False, functional_passed=False, stage='validation_failed', simulator='VCS', attempt=stamp, tasks=[]))
         raise
     raw.unlink()
-    print('%s: VCS functional/profile/export checks passed for 12 tasks' % case.name, flush=True)
+    print('%s: VCS functional/profile/export checks passed for %s task(s)' % (case.name, task_count), flush=True)
     return receipt
 
 
@@ -316,6 +321,7 @@ def main(argv=None):
     parser.add_argument('--resume', action='store_true', help='reuse only fully verified current VCS captures')
     parser.add_argument('--check', action='store_true', help='check tools and input files only; no simulation/synthesis')
     parser.add_argument('--case', action='append', default=[])
+    parser.add_argument('--tasks', type=int, choices=(1, 12), default=12, help='1=task00 quick estimate, 12=full comparison')
     parser.add_argument('--vcs', default=os.environ.get('VCS', 'vcs'))
     parser.add_argument('--cxx', default=os.environ.get('CXX', 'g++'))
     parser.add_argument('--dc-shell', default='dc_shell')
@@ -347,7 +353,7 @@ def main(argv=None):
         elif args.dc:
             vcs, cxx = tool_path(args.vcs, 'VCS'), tool_path(args.cxx, 'C++')
             prepare_case(case, check_only=True)
-            validate_resume(case, input_binding(case, vcs, cxx))
+            validate_resume(case, input_binding(case, vcs, cxx, args.tasks))
     if run_all or args.dc:
         command = ['--study', str(study), '--dc', '--collect']
         for case in selected:

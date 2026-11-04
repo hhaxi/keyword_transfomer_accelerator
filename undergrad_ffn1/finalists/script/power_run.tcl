@@ -46,11 +46,14 @@ if {[catch {
     # Save the mapping report for diagnosis. This is not an annotation pass.
     redirect -file [file join $rpt_path saif_mapping.rpt] { saif_map -report }
     source $env(KWT_POWER_TASKS)
-    if {[llength $power_tasks]!=12} { fail "expected twelve task SAIF files" }
+    set expected_power_tasks 12
+    if {[info exists env(KWT_POWER_TASK_COUNT)]} { set expected_power_tasks $env(KWT_POWER_TASK_COUNT) }
+    if {$expected_power_tasks ni {1 12}} { fail "power task count must be 1 or 12" }
+    if {[llength $power_tasks]!=$expected_power_tasks} { fail "expected $expected_power_tasks task SAIF files" }
     set seen {}
     foreach task $power_tasks {
         lassign $task task_id saif
-        if {![string is integer -strict $task_id] || $task_id<0 || $task_id>11 || $task_id in $seen} {
+        if {![string is integer -strict $task_id] || $task_id<0 || $task_id>=$expected_power_tasks || $task_id in $seen} {
             fail "invalid/duplicate task id $task_id"
         }
         lappend seen $task_id
@@ -77,7 +80,7 @@ if {[catch {
         if {[power_hash $path] ne $digest} { fail "library changed during analysis: $path" }
     }
     set marker [open [file join $run_dir dc_complete.ok] w]
-    puts $marker "12 postcompile RTL activity tasks; coverage and PPA acceptance not implied"
+    puts $marker "$expected_power_tasks postcompile RTL activity tasks; coverage and PPA acceptance not implied"
     close $marker
 } message]} {
     puts stderr "KWT_POWER_FAILED: $message"
