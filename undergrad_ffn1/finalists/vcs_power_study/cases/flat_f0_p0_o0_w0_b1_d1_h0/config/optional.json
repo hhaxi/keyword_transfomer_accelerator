@@ -1,0 +1,10 @@
+{
+  "engine": "flat",
+  "fuse": false,
+  "product_pipe": false,
+  "packed40": false,
+  "wait_mode": 0,
+  "poll_pause": 64,
+  "dma_burst": 1,
+  "host_burst": 0
+}

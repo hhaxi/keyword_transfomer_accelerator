@@ -1,0 +1,14 @@
+{
+  "name": "dual32_f1_p0_o0_w2_b1_d1_h0",
+  "optional": {
+    "engine": "dual32",
+    "fuse": true,
+    "product_pipe": false,
+    "packed40": false,
+    "wait_mode": 2,
+    "poll_pause": 64,
+    "dma_burst": 1,
+    "host_burst": 0
+  },
+  "small_bias": true
+}

@@ -1,0 +1,14 @@
+{
+  "name": "flat_f0_p0_o0_w1_b1_d1_h0",
+  "optional": {
+    "engine": "flat",
+    "fuse": false,
+    "product_pipe": false,
+    "packed40": false,
+    "wait_mode": 1,
+    "poll_pause": 64,
+    "dma_burst": 1,
+    "host_burst": 0
+  },
+  "small_bias": true
+}

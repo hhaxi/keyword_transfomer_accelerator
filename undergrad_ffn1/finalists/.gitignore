@@ -1,0 +1,14 @@
+tmp/
+run/
+output/
+__pycache__/
+*.pyc
+/vcs_power_study/server/
+**/config/local_config.tcl
+**/environment/local_tools.json
+*.vcd
+*.vcd.gz
+*.saif
+*.ddc
+*.db
+*.lib

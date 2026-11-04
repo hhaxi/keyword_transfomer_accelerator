@@ -1,0 +1,10 @@
+{
+  "engine": "dual32",
+  "fuse": false,
+  "product_pipe": false,
+  "packed40": true,
+  "wait_mode": 1,
+  "poll_pause": 64,
+  "dma_burst": 1,
+  "host_burst": 0
+}

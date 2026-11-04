@@ -1,0 +1,13 @@
+set optional_engine dual32
+set optional_use_tile 1
+set optional_tile_rows 2
+set optional_tile_cols 8
+set optional_tile_kpar 2
+set optional_fuse 1
+set optional_product_pipe 0
+set optional_packed40 0
+set optional_irq 1
+set optional_dma_burst 1
+set optional_host_burst 0
+set optional_output_words 50688
+set optional_expected_mac_cycles 51200

@@ -1,0 +1,10 @@
+rtl/kwt_mac40.sv
+tech/kwt_sram16.sv
+rtl/kwt_tile_core.sv
+rtl/kwt_tile_mac.sv
+rtl/kwt_event_irq.sv
+rtl/kwt_output_formatter.sv
+rtl/kwt_ffn1_core.sv
+rtl/kwt_ffn1_dma.sv
+rtl/kwt_bus_fabric.sv
+rtl/kwt_ffn1_top.sv
