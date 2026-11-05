@@ -1,0 +1,326 @@
+SOC_FAST_CHECK task=0 read=0 accepted=31680 retired=31680 overlaps=31679
+SOC_BOOT task=0 cycles=4983
+MEASURE_BEGIN task=0 time_ps=247820000000 cycle=37173
+POWER_BEGIN task=0 time_fs=247826679058 cycle=37174
+SOC_HOST task=0 accepted=11616 retired=11616 overlaps=11556
+SOC_TASK_START task=0 pc=80000052 cycle=48855
+POWER_END task=0 time_fs=724996702916 cycle=108749
+SOC_BUS task=0 shared_fetches=0 mail_reads=59 status_reads=293 itcm_pcs=71937
+SOC_ACTIVITY task=0 wfi_cycles=0 cpu_clock_edges=71937
+MEASURE_END task=0 time_ps=727400000000 cycle=109110
+SOC_FAST_CHECK task=0 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=0 index=0 value=59807
+SOC_PROFILE task=0 index=1 value=8571
+SOC_PROFILE task=0 index=2 value=51234
+SOC_PROFILE task=0 index=3 value=2
+SOC_PROFILE task=0 index=4 value=51200
+SOC_PROFILE task=0 index=5 value=0
+SOC_PROFILE task=0 index=6 value=51226
+SOC_PROFILE task=0 index=7 value=294
+SOC_PROFILE task=0 index=8 value=0
+SOC_PROFILE task=0 index=9 value=11616
+SOC_PROFILE task=0 index=10 value=31680
+SOC_PROFILE task=0 index=11 value=8624
+SOC_PROFILE task=0 index=12 value=59799
+SOC_PROFILE task=0 index=13 value=59807
+SOC_PROFILE task=0 index=14 value=10973
+SOC_TASK_PASS task=0 cycles=71937 outputs=25344
+SOC_FAST_CHECK task=1 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=1 cycles=500
+MEASURE_BEGIN task=1 time_ps=1156986000000 cycle=173548
+POWER_BEGIN task=1 time_fs=1156993391183 cycle=173549
+SOC_HOST task=1 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=1 pc=80000052 cycle=185231
+POWER_END task=1 time_fs=1635196748426 cycle=245279
+SOC_BUS task=1 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=1 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=1 time_ps=1636573000000 cycle=245486
+SOC_FAST_CHECK task=1 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=1 index=0 value=59808
+SOC_PROFILE task=1 index=1 value=8572
+SOC_PROFILE task=1 index=2 value=51234
+SOC_PROFILE task=1 index=3 value=2
+SOC_PROFILE task=1 index=4 value=51200
+SOC_PROFILE task=1 index=5 value=0
+SOC_PROFILE task=1 index=6 value=51226
+SOC_PROFILE task=1 index=7 value=299
+SOC_PROFILE task=1 index=8 value=0
+SOC_PROFILE task=1 index=9 value=11616
+SOC_PROFILE task=1 index=10 value=31680
+SOC_PROFILE task=1 index=11 value=8625
+SOC_PROFILE task=1 index=12 value=59800
+SOC_PROFILE task=1 index=13 value=59808
+SOC_PROFILE task=1 index=14 value=10958
+SOC_TASK_PASS task=1 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=2 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=2 cycles=500
+MEASURE_BEGIN task=2 time_ps=2065826000000 cycle=309874
+POWER_BEGIN task=2 time_fs=2065833436625 cycle=309875
+SOC_HOST task=2 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=2 pc=80000052 cycle=321557
+POWER_END task=2 time_fs=2544036793868 cycle=381605
+SOC_BUS task=2 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=2 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=2 time_ps=2545413000000 cycle=381812
+SOC_FAST_CHECK task=2 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=2 index=0 value=59808
+SOC_PROFILE task=2 index=1 value=8572
+SOC_PROFILE task=2 index=2 value=51234
+SOC_PROFILE task=2 index=3 value=2
+SOC_PROFILE task=2 index=4 value=51200
+SOC_PROFILE task=2 index=5 value=0
+SOC_PROFILE task=2 index=6 value=51226
+SOC_PROFILE task=2 index=7 value=299
+SOC_PROFILE task=2 index=8 value=0
+SOC_PROFILE task=2 index=9 value=11616
+SOC_PROFILE task=2 index=10 value=31680
+SOC_PROFILE task=2 index=11 value=8625
+SOC_PROFILE task=2 index=12 value=59800
+SOC_PROFILE task=2 index=13 value=59808
+SOC_PROFILE task=2 index=14 value=10958
+SOC_TASK_PASS task=2 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=3 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=3 cycles=500
+MEASURE_BEGIN task=3 time_ps=2974666000000 cycle=446200
+POWER_BEGIN task=3 time_fs=2974673482067 cycle=446201
+SOC_HOST task=3 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=3 pc=80000052 cycle=457883
+POWER_END task=3 time_fs=3452876839310 cycle=517931
+SOC_BUS task=3 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=3 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=3 time_ps=3454253000000 cycle=518138
+SOC_FAST_CHECK task=3 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=3 index=0 value=59808
+SOC_PROFILE task=3 index=1 value=8572
+SOC_PROFILE task=3 index=2 value=51234
+SOC_PROFILE task=3 index=3 value=2
+SOC_PROFILE task=3 index=4 value=51200
+SOC_PROFILE task=3 index=5 value=0
+SOC_PROFILE task=3 index=6 value=51226
+SOC_PROFILE task=3 index=7 value=299
+SOC_PROFILE task=3 index=8 value=0
+SOC_PROFILE task=3 index=9 value=11616
+SOC_PROFILE task=3 index=10 value=31680
+SOC_PROFILE task=3 index=11 value=8625
+SOC_PROFILE task=3 index=12 value=59800
+SOC_PROFILE task=3 index=13 value=59808
+SOC_PROFILE task=3 index=14 value=10958
+SOC_TASK_PASS task=3 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=4 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=4 cycles=500
+MEASURE_BEGIN task=4 time_ps=3883506000000 cycle=582526
+POWER_BEGIN task=4 time_fs=3883513527509 cycle=582527
+SOC_HOST task=4 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=4 pc=80000052 cycle=594209
+POWER_END task=4 time_fs=4361716884752 cycle=654257
+SOC_BUS task=4 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=4 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=4 time_ps=4363093000000 cycle=654464
+SOC_FAST_CHECK task=4 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=4 index=0 value=59808
+SOC_PROFILE task=4 index=1 value=8572
+SOC_PROFILE task=4 index=2 value=51234
+SOC_PROFILE task=4 index=3 value=2
+SOC_PROFILE task=4 index=4 value=51200
+SOC_PROFILE task=4 index=5 value=0
+SOC_PROFILE task=4 index=6 value=51226
+SOC_PROFILE task=4 index=7 value=299
+SOC_PROFILE task=4 index=8 value=0
+SOC_PROFILE task=4 index=9 value=11616
+SOC_PROFILE task=4 index=10 value=31680
+SOC_PROFILE task=4 index=11 value=8625
+SOC_PROFILE task=4 index=12 value=59800
+SOC_PROFILE task=4 index=13 value=59808
+SOC_PROFILE task=4 index=14 value=10958
+SOC_TASK_PASS task=4 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=5 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=5 cycles=500
+MEASURE_BEGIN task=5 time_ps=4792346000000 cycle=718852
+POWER_BEGIN task=5 time_fs=4792353572951 cycle=718853
+SOC_HOST task=5 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=5 pc=80000052 cycle=730535
+POWER_END task=5 time_fs=5270556930194 cycle=790583
+SOC_BUS task=5 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=5 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=5 time_ps=5271933000000 cycle=790790
+SOC_FAST_CHECK task=5 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=5 index=0 value=59808
+SOC_PROFILE task=5 index=1 value=8572
+SOC_PROFILE task=5 index=2 value=51234
+SOC_PROFILE task=5 index=3 value=2
+SOC_PROFILE task=5 index=4 value=51200
+SOC_PROFILE task=5 index=5 value=0
+SOC_PROFILE task=5 index=6 value=51226
+SOC_PROFILE task=5 index=7 value=299
+SOC_PROFILE task=5 index=8 value=0
+SOC_PROFILE task=5 index=9 value=11616
+SOC_PROFILE task=5 index=10 value=31680
+SOC_PROFILE task=5 index=11 value=8625
+SOC_PROFILE task=5 index=12 value=59800
+SOC_PROFILE task=5 index=13 value=59808
+SOC_PROFILE task=5 index=14 value=10958
+SOC_TASK_PASS task=5 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=6 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=6 cycles=500
+MEASURE_BEGIN task=6 time_ps=5701186000000 cycle=855178
+POWER_BEGIN task=6 time_fs=5701193618393 cycle=855179
+SOC_HOST task=6 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=6 pc=80000052 cycle=866861
+POWER_END task=6 time_fs=6179396975636 cycle=926909
+SOC_BUS task=6 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=6 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=6 time_ps=6180773000000 cycle=927116
+SOC_FAST_CHECK task=6 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=6 index=0 value=59808
+SOC_PROFILE task=6 index=1 value=8572
+SOC_PROFILE task=6 index=2 value=51234
+SOC_PROFILE task=6 index=3 value=2
+SOC_PROFILE task=6 index=4 value=51200
+SOC_PROFILE task=6 index=5 value=0
+SOC_PROFILE task=6 index=6 value=51226
+SOC_PROFILE task=6 index=7 value=299
+SOC_PROFILE task=6 index=8 value=0
+SOC_PROFILE task=6 index=9 value=11616
+SOC_PROFILE task=6 index=10 value=31680
+SOC_PROFILE task=6 index=11 value=8625
+SOC_PROFILE task=6 index=12 value=59800
+SOC_PROFILE task=6 index=13 value=59808
+SOC_PROFILE task=6 index=14 value=10958
+SOC_TASK_PASS task=6 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=7 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=7 cycles=500
+MEASURE_BEGIN task=7 time_ps=6610026000000 cycle=991504
+POWER_BEGIN task=7 time_fs=6610033663835 cycle=991505
+SOC_HOST task=7 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=7 pc=80000052 cycle=1003187
+POWER_END task=7 time_fs=7088237021078 cycle=1063235
+SOC_BUS task=7 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=7 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=7 time_ps=7089613000000 cycle=1063442
+SOC_FAST_CHECK task=7 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=7 index=0 value=59808
+SOC_PROFILE task=7 index=1 value=8572
+SOC_PROFILE task=7 index=2 value=51234
+SOC_PROFILE task=7 index=3 value=2
+SOC_PROFILE task=7 index=4 value=51200
+SOC_PROFILE task=7 index=5 value=0
+SOC_PROFILE task=7 index=6 value=51226
+SOC_PROFILE task=7 index=7 value=299
+SOC_PROFILE task=7 index=8 value=0
+SOC_PROFILE task=7 index=9 value=11616
+SOC_PROFILE task=7 index=10 value=31680
+SOC_PROFILE task=7 index=11 value=8625
+SOC_PROFILE task=7 index=12 value=59800
+SOC_PROFILE task=7 index=13 value=59808
+SOC_PROFILE task=7 index=14 value=10958
+SOC_TASK_PASS task=7 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=8 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=8 cycles=500
+MEASURE_BEGIN task=8 time_ps=7518867000000 cycle=1127830
+POWER_BEGIN task=8 time_fs=7518873709277 cycle=1127831
+SOC_HOST task=8 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=8 pc=80000052 cycle=1139513
+POWER_END task=8 time_fs=7997077066520 cycle=1199561
+SOC_BUS task=8 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=8 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=8 time_ps=7998453000000 cycle=1199768
+SOC_FAST_CHECK task=8 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=8 index=0 value=59808
+SOC_PROFILE task=8 index=1 value=8572
+SOC_PROFILE task=8 index=2 value=51234
+SOC_PROFILE task=8 index=3 value=2
+SOC_PROFILE task=8 index=4 value=51200
+SOC_PROFILE task=8 index=5 value=0
+SOC_PROFILE task=8 index=6 value=51226
+SOC_PROFILE task=8 index=7 value=299
+SOC_PROFILE task=8 index=8 value=0
+SOC_PROFILE task=8 index=9 value=11616
+SOC_PROFILE task=8 index=10 value=31680
+SOC_PROFILE task=8 index=11 value=8625
+SOC_PROFILE task=8 index=12 value=59800
+SOC_PROFILE task=8 index=13 value=59808
+SOC_PROFILE task=8 index=14 value=10958
+SOC_TASK_PASS task=8 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=9 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=9 cycles=500
+MEASURE_BEGIN task=9 time_ps=8427707000000 cycle=1264156
+POWER_BEGIN task=9 time_fs=8427713754719 cycle=1264157
+SOC_HOST task=9 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=9 pc=80000052 cycle=1275839
+POWER_END task=9 time_fs=8905917111962 cycle=1335887
+SOC_BUS task=9 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=9 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=9 time_ps=8907293000000 cycle=1336094
+SOC_FAST_CHECK task=9 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=9 index=0 value=59808
+SOC_PROFILE task=9 index=1 value=8572
+SOC_PROFILE task=9 index=2 value=51234
+SOC_PROFILE task=9 index=3 value=2
+SOC_PROFILE task=9 index=4 value=51200
+SOC_PROFILE task=9 index=5 value=0
+SOC_PROFILE task=9 index=6 value=51226
+SOC_PROFILE task=9 index=7 value=299
+SOC_PROFILE task=9 index=8 value=0
+SOC_PROFILE task=9 index=9 value=11616
+SOC_PROFILE task=9 index=10 value=31680
+SOC_PROFILE task=9 index=11 value=8625
+SOC_PROFILE task=9 index=12 value=59800
+SOC_PROFILE task=9 index=13 value=59808
+SOC_PROFILE task=9 index=14 value=10958
+SOC_TASK_PASS task=9 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=10 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=10 cycles=500
+MEASURE_BEGIN task=10 time_ps=9336547000000 cycle=1400482
+POWER_BEGIN task=10 time_fs=9336553800161 cycle=1400483
+SOC_HOST task=10 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=10 pc=80000052 cycle=1412165
+POWER_END task=10 time_fs=9814757157404 cycle=1472213
+SOC_BUS task=10 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=10 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=10 time_ps=9816133000000 cycle=1472420
+SOC_FAST_CHECK task=10 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=10 index=0 value=59808
+SOC_PROFILE task=10 index=1 value=8572
+SOC_PROFILE task=10 index=2 value=51234
+SOC_PROFILE task=10 index=3 value=2
+SOC_PROFILE task=10 index=4 value=51200
+SOC_PROFILE task=10 index=5 value=0
+SOC_PROFILE task=10 index=6 value=51226
+SOC_PROFILE task=10 index=7 value=299
+SOC_PROFILE task=10 index=8 value=0
+SOC_PROFILE task=10 index=9 value=11616
+SOC_PROFILE task=10 index=10 value=31680
+SOC_PROFILE task=10 index=11 value=8625
+SOC_PROFILE task=10 index=12 value=59800
+SOC_PROFILE task=10 index=13 value=59808
+SOC_PROFILE task=10 index=14 value=10958
+SOC_TASK_PASS task=10 cycles=71938 outputs=25344
+SOC_FAST_CHECK task=11 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=11 cycles=500
+MEASURE_BEGIN task=11 time_ps=10245387000000 cycle=1536808
+POWER_BEGIN task=11 time_fs=10245393845603 cycle=1536809
+SOC_HOST task=11 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=11 pc=80000052 cycle=1548491
+POWER_END task=11 time_fs=10723597202846 cycle=1608539
+SOC_BUS task=11 shared_fetches=0 mail_reads=60 status_reads=293 itcm_pcs=71938
+SOC_ACTIVITY task=11 wfi_cycles=0 cpu_clock_edges=71938
+MEASURE_END task=11 time_ps=10724973000000 cycle=1608746
+SOC_FAST_CHECK task=11 read=1 accepted=31680 retired=31680 overlaps=31523
+SOC_PROFILE task=11 index=0 value=59808
+SOC_PROFILE task=11 index=1 value=8572
+SOC_PROFILE task=11 index=2 value=51234
+SOC_PROFILE task=11 index=3 value=2
+SOC_PROFILE task=11 index=4 value=51200
+SOC_PROFILE task=11 index=5 value=0
+SOC_PROFILE task=11 index=6 value=51226
+SOC_PROFILE task=11 index=7 value=299
+SOC_PROFILE task=11 index=8 value=0
+SOC_PROFILE task=11 index=9 value=11616
+SOC_PROFILE task=11 index=10 value=31680
+SOC_PROFILE task=11 index=11 value=8625
+SOC_PROFILE task=11 index=12 value=59800
+SOC_PROFILE task=11 index=13 value=59808
+SOC_PROFILE task=11 index=14 value=10958
+SOC_TASK_PASS task=11 cycles=71938 outputs=25344
+SOC_PASS tasks=12 total_cycles=863255 nominal_tasks_per_second=2085.131276
+- tests/tb_soc_power.sv:278: Verilog $finish

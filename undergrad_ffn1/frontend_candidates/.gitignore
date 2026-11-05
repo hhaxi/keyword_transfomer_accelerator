@@ -1,0 +1,7 @@
+/study/
+/vcs_quick_study/
+/tmp/
+/output/
+__pycache__/
+*.pyc
+**/config/local_config.tcl

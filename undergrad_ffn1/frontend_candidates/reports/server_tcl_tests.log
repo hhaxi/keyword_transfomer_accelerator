@@ -1,0 +1,10 @@
+test_explicit_quick_count_reads_one_saif (test_power_server.TclFlow.test_explicit_quick_count_reads_one_saif) ... ok
+test_incomplete_full_set_is_not_silently_quick (test_power_server.TclFlow.test_incomplete_full_set_is_not_silently_quick) ... ok
+test_read_failure_never_reports_power (test_power_server.TclFlow.test_read_failure_never_reports_power) ... ok
+test_success_order_and_all_twelve_tasks (test_power_server.TclFlow.test_success_order_and_all_twelve_tasks) ... ok
+test_unsupported_tool_fails_before_compile (test_power_server.TclFlow.test_unsupported_tool_fails_before_compile) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.730s
+
+OK
