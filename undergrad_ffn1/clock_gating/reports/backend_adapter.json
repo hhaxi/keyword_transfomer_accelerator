@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "name": "reference_needs_no_icg",
+      "passed": true
+    },
+    {
+      "name": "missing_library_fails",
+      "passed": true
+    },
+    {
+      "name": "minimum_area_compatible_selection",
+      "passed": true
+    },
+    {
+      "name": "explicit_cell_override",
+      "passed": true
+    },
+    {
+      "name": "invalid_override_fails",
+      "passed": true
+    },
+    {
+      "name": "unknown_extra_pin_rejected",
+      "passed": true
+    },
+    {
+      "name": "wrapper_count_fails",
+      "passed": true
+    },
+    {
+      "name": "four_mapped_wrappers",
+      "passed": true
+    },
+    {
+      "name": "wrong_mapped_cell_fails",
+      "passed": true
+    },
+    {
+      "name": "generated_mapping_hdl_simulation",
+      "passed": true
+    }
+  ],
+  "inputs": {
+    "tools/test_backend_adapter.py": "c0fd38f608256092d8721ac5ee6212388725e20525373e8835823842f50c1442",
+    "backend/clock_gating.tcl": "adb8362871d59e550a6b55eeb5ceec9b475c43b43adb96a22697f34f09a07ed0",
+    "tests/icg_adapter_mock.tcl": "74ccad41e69b778ffcb1d96615174ffaca97b40a3d05a0010066daa110800b33",
+    "tests/mock_icg.sv": "c473f5d6148fc1c694aa732ae1ba14ca3962129d7d0a1e4481b7260e65a54bd7",
+    "rtl/kwt_clock_gate.sv": "aba974015e24cca8eea6d7510bc06e9fa13444d88f242eb82d624b974d02a15b",
+    "tests/tb_clock_gate.sv": "f0ad9d89427a9c187e0de0df8fb6de14675ee87facdec5f05002822974daa771"
+  },
+  "log": "reports/backend_adapter.log",
+  "log_sha256": "c72de8fe791260dfd511637f16131aa26b8fdb74fa6f652de6a996dfc500ad13",
+  "dc_executed": false,
+  "note": "Tcl and generated HDL tested against mock library API/cell, not foundry .db. Real mapping and PPA remain server work."
+}

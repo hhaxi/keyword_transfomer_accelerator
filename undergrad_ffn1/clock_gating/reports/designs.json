@@ -1,0 +1,32 @@
+[
+  {
+    "name": "fmt1_ref",
+    "result": false,
+    "mac": false,
+    "formatter": false
+  },
+  {
+    "name": "fmt1_cg_result",
+    "result": true,
+    "mac": false,
+    "formatter": false
+  },
+  {
+    "name": "fmt1_cg_mac",
+    "result": false,
+    "mac": true,
+    "formatter": false
+  },
+  {
+    "name": "fmt1_cg_formatter",
+    "result": false,
+    "mac": false,
+    "formatter": true
+  },
+  {
+    "name": "fmt1_cg_combined",
+    "result": true,
+    "mac": true,
+    "formatter": true
+  }
+]

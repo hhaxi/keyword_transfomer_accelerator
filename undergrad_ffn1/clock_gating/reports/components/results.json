@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "name": "clock_gate",
+      "passed": true,
+      "source_sha256": {
+        "rtl/kwt_clock_gate.sv": "aba974015e24cca8eea6d7510bc06e9fa13444d88f242eb82d624b974d02a15b",
+        "tests/tb_clock_gate.sv": "f0ad9d89427a9c187e0de0df8fb6de14675ee87facdec5f05002822974daa771"
+      },
+      "log": "reports/components/clock_gate.log",
+      "log_sha256": "c72de8fe791260dfd511637f16131aa26b8fdb74fa6f652de6a996dfc500ad13"
+    },
+    {
+      "name": "mac",
+      "passed": true,
+      "source_sha256": {
+        "rtl/kwt_clock_gate.sv": "aba974015e24cca8eea6d7510bc06e9fa13444d88f242eb82d624b974d02a15b",
+        "study/cases/fmt1_ref/rtl/kwt_tile_mac.sv": "3a281d0272f93839498df2d31e6a345ab73e2cc7256eef461b0df0c81c5453d8",
+        "tests/tb_mac_gated.sv": "35125137439d3b2eb6d90e29180b9180f960eced99f125530ee3508fa38ead54"
+      },
+      "log": "reports/components/mac.log",
+      "log_sha256": "efb44bf7bafd5ea35c6ad8ee5bfc862ea1164bc4554e16e9f251cebb384590c2"
+    },
+    {
+      "name": "queue1",
+      "passed": true,
+      "source_sha256": {
+        "rtl/kwt_clock_gate.sv": "aba974015e24cca8eea6d7510bc06e9fa13444d88f242eb82d624b974d02a15b",
+        "study/cases/fmt1_cg_result/rtl/kwt_output_sequence.sv": "efa24910a9fa5d02ff490353ca1aba7b163753648e47cd11a0f25aff9c587e70",
+        "study/cases/fmt1_cg_result/rtl/kwt_group_queue.sv": "3122d6d74ecdc4500980b743be0f2f086586311555ef77d4a3b34a8f4eced30e",
+        "tests/tb_group_queue.sv": "2d83e241a6f953bcbb6ca3cf9bb650f0cf8450ea212f788c55069c836b077d64"
+      },
+      "log": "reports/components/queue1.log",
+      "log_sha256": "29e4e8f30e337fddf8a62fd8c43ce5b57eb488e2ee26e20c987b925818b42b38"
+    },
+    {
+      "name": "queue2",
+      "passed": true,
+      "source_sha256": {
+        "rtl/kwt_clock_gate.sv": "aba974015e24cca8eea6d7510bc06e9fa13444d88f242eb82d624b974d02a15b",
+        "study/cases/fmt1_cg_result/rtl/kwt_output_sequence.sv": "efa24910a9fa5d02ff490353ca1aba7b163753648e47cd11a0f25aff9c587e70",
+        "study/cases/fmt1_cg_result/rtl/kwt_group_queue.sv": "3122d6d74ecdc4500980b743be0f2f086586311555ef77d4a3b34a8f4eced30e",
+        "tests/tb_group_queue.sv": "2d83e241a6f953bcbb6ca3cf9bb650f0cf8450ea212f788c55069c836b077d64"
+      },
+      "log": "reports/components/queue2.log",
+      "log_sha256": "57f05502d67eba5d9120e153c881e4581c57dc7e84a390657641180a7f8327d6"
+    },
+    {
+      "name": "formatter0",
+      "passed": true,
+      "source_sha256": {
+        "rtl/kwt_clock_gate.sv": "aba974015e24cca8eea6d7510bc06e9fa13444d88f242eb82d624b974d02a15b",
+        "study/cases/fmt1_cg_formatter/rtl/kwt_output_formatter.sv": "147df90375f6a0ef621eec9ba5f803170174625d127af50c038da8d6c77cc155",
+        "tests/tb_formatter.sv": "4a871ed22136b12615e35c4e8669bcaaded6cb63607212e047414f42d4af9a22"
+      },
+      "log": "reports/components/formatter0.log",
+      "log_sha256": "b42366dbbf64464562efff23cdebffab1b8571b754b70a9dfaea32018b15983a"
+    },
+    {
+      "name": "formatter1",
+      "passed": true,
+      "source_sha256": {
+        "rtl/kwt_clock_gate.sv": "aba974015e24cca8eea6d7510bc06e9fa13444d88f242eb82d624b974d02a15b",
+        "study/cases/fmt1_cg_formatter/rtl/kwt_output_formatter.sv": "147df90375f6a0ef621eec9ba5f803170174625d127af50c038da8d6c77cc155",
+        "tests/tb_formatter.sv": "4a871ed22136b12615e35c4e8669bcaaded6cb63607212e047414f42d4af9a22"
+      },
+      "log": "reports/components/formatter1.log",
+      "log_sha256": "f273fed5d97ff26ec15161f7a74b4005266b03954d819ecd117c16c8013f045f"
+    }
+  ],
+  "driver_sha256": "239a6999afe2c38b41c1da9b89fb273ba3fe34121d27c87f58b6358d37c07c0e"
+}

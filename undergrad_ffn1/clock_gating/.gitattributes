@@ -1,0 +1,3 @@
+* -text
+reports/**/*.log -whitespace
+reports/design_diffs/*.patch -whitespace

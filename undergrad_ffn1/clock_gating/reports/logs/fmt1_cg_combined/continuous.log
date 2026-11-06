@@ -1,0 +1,482 @@
+SOC_FAST_CHECK task=0 read=0 accepted=31680 retired=31680 overlaps=31679
+SOC_BOOT task=0 cycles=4983
+MEASURE_BEGIN task=0 time_ps=247820000000 cycle=37173
+POWER_BEGIN task=0 time_fs=247826679058 cycle=37174
+SOC_HOST task=0 accepted=11616 retired=11616 overlaps=11556
+SOC_TASK_START task=0 pc=80000052 cycle=48855
+POWER_END task=0 time_fs=617270030863 cycle=92590
+CG_WINDOW task=0 root_edges=55417 gates=12
+CG_ACTIVITY task=0 gate=result_r0 edges=800 expected=800 root_edges=55417 bits=320
+CG_ACTIVITY task=0 gate=result_r1 edges=800 expected=800 root_edges=55417 bits=320
+CG_ACTIVITY task=0 gate=result_r2 edges=800 expected=800 root_edges=55417 bits=320
+CG_ACTIVITY task=0 gate=result_r3 edges=800 expected=800 root_edges=55417 bits=320
+CG_ACTIVITY task=0 gate=mac_r0 edges=25603 expected=25603 root_edges=55417 bits=320
+CG_ACTIVITY task=0 gate=mac_r1 edges=25603 expected=25603 root_edges=55417 bits=320
+CG_ACTIVITY task=0 gate=mac_r2 edges=25603 expected=25603 root_edges=55417 bits=320
+CG_ACTIVITY task=0 gate=mac_r3 edges=25603 expected=25603 root_edges=55417 bits=320
+CG_ACTIVITY task=0 gate=partial0 edges=6338 expected=6338 root_edges=55417 bits=55
+CG_ACTIVITY task=0 gate=partial1 edges=6338 expected=6338 root_edges=55417 bits=40
+CG_ACTIVITY task=0 gate=partial2 edges=6338 expected=6338 root_edges=55417 bits=40
+CG_ACTIVITY task=0 gate=completed edges=6338 expected=6338 root_edges=55417 bits=176
+SOC_BUS task=0 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55972
+SOC_ACTIVITY task=0 wfi_cycles=0 cpu_clock_edges=55972
+MEASURE_END task=0 time_ps=620966000000 cycle=93145
+SOC_FAST_CHECK task=0 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=0 index=0 value=43648
+SOC_PROFILE task=0 index=1 value=8635
+SOC_PROFILE task=0 index=2 value=35011
+SOC_PROFILE task=0 index=3 value=2
+SOC_PROFILE task=0 index=4 value=25600
+SOC_PROFILE task=0 index=5 value=9357
+SOC_PROFILE task=0 index=6 value=35004
+SOC_PROFILE task=0 index=7 value=296
+SOC_PROFILE task=0 index=8 value=0
+SOC_PROFILE task=0 index=9 value=11616
+SOC_PROFILE task=0 index=10 value=31680
+SOC_PROFILE task=0 index=11 value=8688
+SOC_PROFILE task=0 index=12 value=43641
+SOC_PROFILE task=0 index=13 value=43648
+SOC_PROFILE task=0 index=14 value=50
+SOC_TASK_PASS task=0 cycles=55972 outputs=25344
+SOC_FAST_CHECK task=1 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=1 cycles=500
+MEASURE_BEGIN task=1 time_ps=1051200000000 cycle=157680
+POWER_BEGIN task=1 time_fs=1051206719227 cycle=157681
+SOC_HOST task=1 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=1 pc=80000052 cycle=169363
+POWER_END task=1 time_fs=1421683404417 cycle=213252
+CG_WINDOW task=1 root_edges=55572 gates=12
+CG_ACTIVITY task=1 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=1 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=1 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=1 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=1 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=1 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=1 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=1 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=1 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=1 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=1 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=1 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=1 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=1 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=1 time_ps=1424353000000 cycle=213653
+SOC_FAST_CHECK task=1 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=1 index=0 value=43649
+SOC_PROFILE task=1 index=1 value=8636
+SOC_PROFILE task=1 index=2 value=35011
+SOC_PROFILE task=1 index=3 value=2
+SOC_PROFILE task=1 index=4 value=25600
+SOC_PROFILE task=1 index=5 value=9357
+SOC_PROFILE task=1 index=6 value=35004
+SOC_PROFILE task=1 index=7 value=297
+SOC_PROFILE task=1 index=8 value=0
+SOC_PROFILE task=1 index=9 value=11616
+SOC_PROFILE task=1 index=10 value=31680
+SOC_PROFILE task=1 index=11 value=8689
+SOC_PROFILE task=1 index=12 value=43642
+SOC_PROFILE task=1 index=13 value=43649
+SOC_PROFILE task=1 index=14 value=50
+SOC_TASK_PASS task=1 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=2 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=2 cycles=500
+MEASURE_BEGIN task=2 time_ps=1854253000000 cycle=278138
+POWER_BEGIN task=2 time_fs=1854260092713 cycle=278139
+SOC_HOST task=2 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=2 pc=80000052 cycle=289821
+POWER_END task=2 time_fs=2224736777903 cycle=333710
+CG_WINDOW task=2 root_edges=55572 gates=12
+CG_ACTIVITY task=2 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=2 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=2 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=2 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=2 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=2 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=2 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=2 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=2 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=2 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=2 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=2 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=2 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=2 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=2 time_ps=2227406000000 cycle=334111
+SOC_FAST_CHECK task=2 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=2 index=0 value=43649
+SOC_PROFILE task=2 index=1 value=8636
+SOC_PROFILE task=2 index=2 value=35011
+SOC_PROFILE task=2 index=3 value=2
+SOC_PROFILE task=2 index=4 value=25600
+SOC_PROFILE task=2 index=5 value=9357
+SOC_PROFILE task=2 index=6 value=35004
+SOC_PROFILE task=2 index=7 value=297
+SOC_PROFILE task=2 index=8 value=0
+SOC_PROFILE task=2 index=9 value=11616
+SOC_PROFILE task=2 index=10 value=31680
+SOC_PROFILE task=2 index=11 value=8689
+SOC_PROFILE task=2 index=12 value=43642
+SOC_PROFILE task=2 index=13 value=43649
+SOC_PROFILE task=2 index=14 value=50
+SOC_TASK_PASS task=2 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=3 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=3 cycles=500
+MEASURE_BEGIN task=3 time_ps=2657306000000 cycle=398596
+POWER_BEGIN task=3 time_fs=2657313466199 cycle=398597
+SOC_HOST task=3 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=3 pc=80000052 cycle=410279
+POWER_END task=3 time_fs=3027790151389 cycle=454168
+CG_WINDOW task=3 root_edges=55572 gates=12
+CG_ACTIVITY task=3 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=3 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=3 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=3 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=3 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=3 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=3 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=3 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=3 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=3 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=3 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=3 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=3 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=3 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=3 time_ps=3030460000000 cycle=454569
+SOC_FAST_CHECK task=3 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=3 index=0 value=43649
+SOC_PROFILE task=3 index=1 value=8636
+SOC_PROFILE task=3 index=2 value=35011
+SOC_PROFILE task=3 index=3 value=2
+SOC_PROFILE task=3 index=4 value=25600
+SOC_PROFILE task=3 index=5 value=9357
+SOC_PROFILE task=3 index=6 value=35004
+SOC_PROFILE task=3 index=7 value=297
+SOC_PROFILE task=3 index=8 value=0
+SOC_PROFILE task=3 index=9 value=11616
+SOC_PROFILE task=3 index=10 value=31680
+SOC_PROFILE task=3 index=11 value=8689
+SOC_PROFILE task=3 index=12 value=43642
+SOC_PROFILE task=3 index=13 value=43649
+SOC_PROFILE task=3 index=14 value=50
+SOC_TASK_PASS task=3 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=4 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=4 cycles=500
+MEASURE_BEGIN task=4 time_ps=3460360000000 cycle=519054
+POWER_BEGIN task=4 time_fs=3460366839685 cycle=519055
+SOC_HOST task=4 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=4 pc=80000052 cycle=530737
+POWER_END task=4 time_fs=3830843524875 cycle=574626
+CG_WINDOW task=4 root_edges=55572 gates=12
+CG_ACTIVITY task=4 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=4 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=4 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=4 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=4 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=4 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=4 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=4 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=4 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=4 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=4 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=4 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=4 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=4 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=4 time_ps=3833513000000 cycle=575027
+SOC_FAST_CHECK task=4 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=4 index=0 value=43649
+SOC_PROFILE task=4 index=1 value=8636
+SOC_PROFILE task=4 index=2 value=35011
+SOC_PROFILE task=4 index=3 value=2
+SOC_PROFILE task=4 index=4 value=25600
+SOC_PROFILE task=4 index=5 value=9357
+SOC_PROFILE task=4 index=6 value=35004
+SOC_PROFILE task=4 index=7 value=297
+SOC_PROFILE task=4 index=8 value=0
+SOC_PROFILE task=4 index=9 value=11616
+SOC_PROFILE task=4 index=10 value=31680
+SOC_PROFILE task=4 index=11 value=8689
+SOC_PROFILE task=4 index=12 value=43642
+SOC_PROFILE task=4 index=13 value=43649
+SOC_PROFILE task=4 index=14 value=50
+SOC_TASK_PASS task=4 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=5 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=5 cycles=500
+MEASURE_BEGIN task=5 time_ps=4263413000000 cycle=639512
+POWER_BEGIN task=5 time_fs=4263420213171 cycle=639513
+SOC_HOST task=5 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=5 pc=80000052 cycle=651195
+POWER_END task=5 time_fs=4633896898361 cycle=695084
+CG_WINDOW task=5 root_edges=55572 gates=12
+CG_ACTIVITY task=5 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=5 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=5 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=5 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=5 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=5 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=5 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=5 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=5 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=5 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=5 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=5 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=5 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=5 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=5 time_ps=4636566000000 cycle=695485
+SOC_FAST_CHECK task=5 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=5 index=0 value=43649
+SOC_PROFILE task=5 index=1 value=8636
+SOC_PROFILE task=5 index=2 value=35011
+SOC_PROFILE task=5 index=3 value=2
+SOC_PROFILE task=5 index=4 value=25600
+SOC_PROFILE task=5 index=5 value=9357
+SOC_PROFILE task=5 index=6 value=35004
+SOC_PROFILE task=5 index=7 value=297
+SOC_PROFILE task=5 index=8 value=0
+SOC_PROFILE task=5 index=9 value=11616
+SOC_PROFILE task=5 index=10 value=31680
+SOC_PROFILE task=5 index=11 value=8689
+SOC_PROFILE task=5 index=12 value=43642
+SOC_PROFILE task=5 index=13 value=43649
+SOC_PROFILE task=5 index=14 value=50
+SOC_TASK_PASS task=5 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=6 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=6 cycles=500
+MEASURE_BEGIN task=6 time_ps=5066466000000 cycle=759970
+POWER_BEGIN task=6 time_fs=5066473586657 cycle=759971
+SOC_HOST task=6 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=6 pc=80000052 cycle=771653
+POWER_END task=6 time_fs=5436950271847 cycle=815542
+CG_WINDOW task=6 root_edges=55572 gates=12
+CG_ACTIVITY task=6 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=6 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=6 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=6 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=6 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=6 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=6 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=6 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=6 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=6 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=6 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=6 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=6 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=6 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=6 time_ps=5439620000000 cycle=815943
+SOC_FAST_CHECK task=6 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=6 index=0 value=43649
+SOC_PROFILE task=6 index=1 value=8636
+SOC_PROFILE task=6 index=2 value=35011
+SOC_PROFILE task=6 index=3 value=2
+SOC_PROFILE task=6 index=4 value=25600
+SOC_PROFILE task=6 index=5 value=9357
+SOC_PROFILE task=6 index=6 value=35004
+SOC_PROFILE task=6 index=7 value=297
+SOC_PROFILE task=6 index=8 value=0
+SOC_PROFILE task=6 index=9 value=11616
+SOC_PROFILE task=6 index=10 value=31680
+SOC_PROFILE task=6 index=11 value=8689
+SOC_PROFILE task=6 index=12 value=43642
+SOC_PROFILE task=6 index=13 value=43649
+SOC_PROFILE task=6 index=14 value=50
+SOC_TASK_PASS task=6 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=7 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=7 cycles=500
+MEASURE_BEGIN task=7 time_ps=5869520000000 cycle=880428
+POWER_BEGIN task=7 time_fs=5869526960143 cycle=880429
+SOC_HOST task=7 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=7 pc=80000052 cycle=892111
+POWER_END task=7 time_fs=6240003645333 cycle=936000
+CG_WINDOW task=7 root_edges=55572 gates=12
+CG_ACTIVITY task=7 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=7 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=7 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=7 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=7 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=7 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=7 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=7 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=7 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=7 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=7 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=7 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=7 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=7 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=7 time_ps=6242673000000 cycle=936401
+SOC_FAST_CHECK task=7 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=7 index=0 value=43649
+SOC_PROFILE task=7 index=1 value=8636
+SOC_PROFILE task=7 index=2 value=35011
+SOC_PROFILE task=7 index=3 value=2
+SOC_PROFILE task=7 index=4 value=25600
+SOC_PROFILE task=7 index=5 value=9357
+SOC_PROFILE task=7 index=6 value=35004
+SOC_PROFILE task=7 index=7 value=297
+SOC_PROFILE task=7 index=8 value=0
+SOC_PROFILE task=7 index=9 value=11616
+SOC_PROFILE task=7 index=10 value=31680
+SOC_PROFILE task=7 index=11 value=8689
+SOC_PROFILE task=7 index=12 value=43642
+SOC_PROFILE task=7 index=13 value=43649
+SOC_PROFILE task=7 index=14 value=50
+SOC_TASK_PASS task=7 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=8 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=8 cycles=500
+MEASURE_BEGIN task=8 time_ps=6672573000000 cycle=1000886
+POWER_BEGIN task=8 time_fs=6672580333629 cycle=1000887
+SOC_HOST task=8 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=8 pc=80000052 cycle=1012569
+POWER_END task=8 time_fs=7043057018819 cycle=1056458
+CG_WINDOW task=8 root_edges=55572 gates=12
+CG_ACTIVITY task=8 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=8 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=8 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=8 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=8 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=8 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=8 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=8 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=8 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=8 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=8 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=8 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=8 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=8 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=8 time_ps=7045727000000 cycle=1056859
+SOC_FAST_CHECK task=8 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=8 index=0 value=43649
+SOC_PROFILE task=8 index=1 value=8636
+SOC_PROFILE task=8 index=2 value=35011
+SOC_PROFILE task=8 index=3 value=2
+SOC_PROFILE task=8 index=4 value=25600
+SOC_PROFILE task=8 index=5 value=9357
+SOC_PROFILE task=8 index=6 value=35004
+SOC_PROFILE task=8 index=7 value=297
+SOC_PROFILE task=8 index=8 value=0
+SOC_PROFILE task=8 index=9 value=11616
+SOC_PROFILE task=8 index=10 value=31680
+SOC_PROFILE task=8 index=11 value=8689
+SOC_PROFILE task=8 index=12 value=43642
+SOC_PROFILE task=8 index=13 value=43649
+SOC_PROFILE task=8 index=14 value=50
+SOC_TASK_PASS task=8 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=9 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=9 cycles=500
+MEASURE_BEGIN task=9 time_ps=7475627000000 cycle=1121344
+POWER_BEGIN task=9 time_fs=7475633707115 cycle=1121345
+SOC_HOST task=9 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=9 pc=80000052 cycle=1133027
+POWER_END task=9 time_fs=7846110392305 cycle=1176916
+CG_WINDOW task=9 root_edges=55572 gates=12
+CG_ACTIVITY task=9 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=9 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=9 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=9 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=9 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=9 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=9 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=9 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=9 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=9 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=9 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=9 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=9 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=9 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=9 time_ps=7848780000000 cycle=1177317
+SOC_FAST_CHECK task=9 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=9 index=0 value=43649
+SOC_PROFILE task=9 index=1 value=8636
+SOC_PROFILE task=9 index=2 value=35011
+SOC_PROFILE task=9 index=3 value=2
+SOC_PROFILE task=9 index=4 value=25600
+SOC_PROFILE task=9 index=5 value=9357
+SOC_PROFILE task=9 index=6 value=35004
+SOC_PROFILE task=9 index=7 value=297
+SOC_PROFILE task=9 index=8 value=0
+SOC_PROFILE task=9 index=9 value=11616
+SOC_PROFILE task=9 index=10 value=31680
+SOC_PROFILE task=9 index=11 value=8689
+SOC_PROFILE task=9 index=12 value=43642
+SOC_PROFILE task=9 index=13 value=43649
+SOC_PROFILE task=9 index=14 value=50
+SOC_TASK_PASS task=9 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=10 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=10 cycles=500
+MEASURE_BEGIN task=10 time_ps=8278680000000 cycle=1241802
+POWER_BEGIN task=10 time_fs=8278687080601 cycle=1241803
+SOC_HOST task=10 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=10 pc=80000052 cycle=1253485
+POWER_END task=10 time_fs=8649163765791 cycle=1297374
+CG_WINDOW task=10 root_edges=55572 gates=12
+CG_ACTIVITY task=10 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=10 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=10 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=10 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=10 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=10 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=10 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=10 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=10 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=10 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=10 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=10 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=10 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=10 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=10 time_ps=8651833000000 cycle=1297775
+SOC_FAST_CHECK task=10 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=10 index=0 value=43649
+SOC_PROFILE task=10 index=1 value=8636
+SOC_PROFILE task=10 index=2 value=35011
+SOC_PROFILE task=10 index=3 value=2
+SOC_PROFILE task=10 index=4 value=25600
+SOC_PROFILE task=10 index=5 value=9357
+SOC_PROFILE task=10 index=6 value=35004
+SOC_PROFILE task=10 index=7 value=297
+SOC_PROFILE task=10 index=8 value=0
+SOC_PROFILE task=10 index=9 value=11616
+SOC_PROFILE task=10 index=10 value=31680
+SOC_PROFILE task=10 index=11 value=8689
+SOC_PROFILE task=10 index=12 value=43642
+SOC_PROFILE task=10 index=13 value=43649
+SOC_PROFILE task=10 index=14 value=50
+SOC_TASK_PASS task=10 cycles=55973 outputs=25344
+SOC_FAST_CHECK task=11 read=0 accepted=31680 retired=31680 overlaps=31522
+SOC_BOOT task=11 cycles=500
+MEASURE_BEGIN task=11 time_ps=9081733000000 cycle=1362260
+POWER_BEGIN task=11 time_fs=9081740454087 cycle=1362261
+SOC_HOST task=11 accepted=11616 retired=11616 overlaps=11555
+SOC_TASK_START task=11 pc=80000052 cycle=1373943
+POWER_END task=11 time_fs=9452217139277 cycle=1417832
+CG_WINDOW task=11 root_edges=55572 gates=12
+CG_ACTIVITY task=11 gate=result_r0 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=11 gate=result_r1 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=11 gate=result_r2 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=11 gate=result_r3 edges=800 expected=800 root_edges=55572 bits=320
+CG_ACTIVITY task=11 gate=mac_r0 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=11 gate=mac_r1 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=11 gate=mac_r2 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=11 gate=mac_r3 edges=25603 expected=25603 root_edges=55572 bits=320
+CG_ACTIVITY task=11 gate=partial0 edges=6338 expected=6338 root_edges=55572 bits=55
+CG_ACTIVITY task=11 gate=partial1 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=11 gate=partial2 edges=6338 expected=6338 root_edges=55572 bits=40
+CG_ACTIVITY task=11 gate=completed edges=6338 expected=6338 root_edges=55572 bits=176
+SOC_BUS task=11 shared_fetches=0 mail_reads=61 status_reads=214 itcm_pcs=55973
+SOC_ACTIVITY task=11 wfi_cycles=0 cpu_clock_edges=55973
+MEASURE_END task=11 time_ps=9454887000000 cycle=1418233
+SOC_FAST_CHECK task=11 read=1 accepted=31680 retired=31680 overlaps=31522
+SOC_PROFILE task=11 index=0 value=43649
+SOC_PROFILE task=11 index=1 value=8636
+SOC_PROFILE task=11 index=2 value=35011
+SOC_PROFILE task=11 index=3 value=2
+SOC_PROFILE task=11 index=4 value=25600
+SOC_PROFILE task=11 index=5 value=9357
+SOC_PROFILE task=11 index=6 value=35004
+SOC_PROFILE task=11 index=7 value=297
+SOC_PROFILE task=11 index=8 value=0
+SOC_PROFILE task=11 index=9 value=11616
+SOC_PROFILE task=11 index=10 value=31680
+SOC_PROFILE task=11 index=11 value=8689
+SOC_PROFILE task=11 index=12 value=43642
+SOC_PROFILE task=11 index=13 value=43649
+SOC_PROFILE task=11 index=14 value=50
+SOC_TASK_PASS task=11 cycles=55973 outputs=25344
+SOC_PASS tasks=12 total_cycles=671675 nominal_tasks_per_second=2679.867495
+- tests/tb_soc_power.sv:280: Verilog $finish

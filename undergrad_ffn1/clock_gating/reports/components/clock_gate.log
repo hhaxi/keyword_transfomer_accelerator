@@ -1,0 +1,2 @@
+CLOCK_GATE_PASS root=513 passed=285 disabled=228
+D:\Project\Transformer\undergrad_ffn1\clock_gating\tests\tb_clock_gate.sv:41: $finish called at 5130000 (1ps)

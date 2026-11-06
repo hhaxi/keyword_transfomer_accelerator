@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "frontend_only": true,
+  "cases": 5,
+  "whole_soc_tasks": 120,
+  "exact_outputs_checked": 3041280,
+  "all_per_task_durations_identical": true,
+  "all_profiles_identical": true,
+  "frozen_reference_reproduced": true,
+  "backend_acceptance": "pending real ICG mapping, timing, postmapping functionality and power/activity review"
+}

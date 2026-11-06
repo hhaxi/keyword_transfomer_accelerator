@@ -1,0 +1,41 @@
+--- fmt1_ref/rtl/kwt_clock_gate.sv
++++ fmt1_cg_mac/rtl/kwt_clock_gate.sv
+@@ -0,0 +1,11 @@
++// Positive-edge clock gate. Enable is held constant throughout the high phase.
++// Simulation/frontend synthesis uses the latch model. DC must use a real ICG.
++module kwt_clock_gate(input wire clk,en,test_en,output wire gclk);
++`ifdef KWT_USE_LIBRARY_ICG
++ `include "kwt_icg_instance.vh"
++`else
++ reg enable_latched;
++ always_latch if(!clk) enable_latched=en | test_en;
++ assign gclk=clk & enable_latched;
++`endif
++endmodule
+--- fmt1_ref/rtl/kwt_tile_core.sv
++++ fmt1_cg_mac/rtl/kwt_tile_core.sv
+@@ -59,6 +59,15 @@
+  wire [7:0] ba=bwrite ? dma_load_addr[9:2] : prefetch_req ? bias_prefetch_col+prefetch_lane : col+bias_lane;
+  wire [15:0] bl,bh;wire [15:0] xq[0:1][0:ROWS-1][0:1];wire [15:0] wq[0:COLS-1][0:1];
+  wire signed [39:0] acc[0:ROWS-1][0:COLS-1];
++ wire [ROWS-1:0] mac_clk;
++ genvar cg_row;
++ generate for(cg_row=0;cg_row<ROWS;cg_row=cg_row+1)begin:mac_clock_groups
++   kwt_clock_gate u_gate(.clk(clk),.en(product_valid || dma_clear || start),
++     .test_en(1'b0),.gclk(mac_clk[cg_row]));
++ end
++ if(PRODUCT_PIPE!=0)begin:cg_requires_direct_mac
++   KWT_CLOCK_GATING_REQUIRES_DIRECT_MAC invalid_configuration();
++ end endgenerate
+  genvar t,r,c,p,d;
+  generate
+  // Each tile/row/parity uses a native 128-word SRAM; no full X flop array.
+@@ -89,7 +98,7 @@
+  for(r=0;r<ROWS;r=r+1)begin:pes
+  wire [15:0] xx0=(KPAR==1 && operand_parity) ? xq[read_tile][r][1] : xq[read_tile][r][0];
+  wire [15:0] ww0=(KPAR==1 && operand_parity) ? wq[c][1] : wq[c][0];
+- kwt_tile_mac #(.KPAR(KPAR),.PRODUCT_PIPE(PRODUCT_PIPE)) pe(.clk(clk),.rst_n(rst_n),.clear(dma_clear || start),
++ kwt_tile_mac #(.KPAR(KPAR),.PRODUCT_PIPE(PRODUCT_PIPE)) pe(.clk(mac_clk[r]),.rst_n(rst_n),.clear(dma_clear || start),
+  .valid(product_valid),.first(first || fused_seed),.bias(bias[c]),
+  .x0(xx0),.w0(ww0),
+  .x1(xq[read_tile][r][1]),.w1(wq[c][1]),.acc(acc[r][c]));end end
