@@ -1,0 +1,8 @@
+QUEUE_STREAM_PASS depth=2 pattern=0 outputs=25344 cycles=25345 simultaneous=799
+QUEUE_STREAM_PASS depth=2 pattern=1 outputs=25344 cycles=49536 simultaneous=798
+QUEUE_STREAM_PASS depth=2 pattern=1 outputs=113 cycles=292 simultaneous=3
+QUEUE_STREAM_PASS depth=2 pattern=1 outputs=25344 cycles=49536 simultaneous=798
+QUEUE_STREAM_PASS depth=2 pattern=1 outputs=91 cycles=259 simultaneous=2
+QUEUE_STREAM_PASS depth=2 pattern=0 outputs=25344 cycles=25345 simultaneous=799
+GROUP_QUEUE_PASS depth=2
+D:\Project\Transformer\undergrad_ffn1\q64_area_power\tests\tb_group_queue.sv:74: $finish called at 1503310000 (1ps)

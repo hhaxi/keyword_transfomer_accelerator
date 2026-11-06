@@ -1,0 +1,4 @@
+* -text
+# Preserve exact generated evidence, including quoted upstream whitespace.
+reports/**/*.log -whitespace
+reports/design_diffs/*.patch -whitespace

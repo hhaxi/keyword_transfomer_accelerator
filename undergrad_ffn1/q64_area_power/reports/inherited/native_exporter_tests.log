@@ -1,0 +1,22 @@
+test_alias_width_conflict_and_no_timescale_rejected (test_power_vcd.NativePowerVcdTests.test_alias_width_conflict_and_no_timescale_rejected) ... ok
+test_crop_aliases_unknown_and_exact_end (test_power_vcd.NativePowerVcdTests.test_crop_aliases_unknown_and_exact_end) ... ok
+test_dumpon_missing_value_becomes_unknown_not_stale (test_power_vcd.NativePowerVcdTests.test_dumpon_missing_value_becomes_unknown_not_stale) ... ok
+test_dumpon_snapshot_seeds_next_window_without_gap_artifacts (test_power_vcd.NativePowerVcdTests.test_dumpon_snapshot_seeds_next_window_without_gap_artifacts) ... ok
+test_failure_removes_outputs_even_when_bad_data_follows_all_windows (test_power_vcd.NativePowerVcdTests.test_failure_removes_outputs_even_when_bad_data_follows_all_windows) ... ok
+test_gzip_input_and_twelve_windows (test_power_vcd.NativePowerVcdTests.test_gzip_input_and_twelve_windows) ... ok
+test_gzip_truncation_is_detected_after_completed_windows (test_power_vcd.NativePowerVcdTests.test_gzip_truncation_is_detected_after_completed_windows) ... ok
+test_includes_true_events_at_start_excludes_end (test_power_vcd.NativePowerVcdTests.test_includes_true_events_at_start_excludes_end) ... ok
+test_lf_at_exact_read_boundary_does_not_join_adjacent_values (test_power_vcd.NativePowerVcdTests.test_lf_at_exact_read_boundary_does_not_join_adjacent_values) ... ok
+test_metadata_reads_full_gzip_duration_and_rejects_regression (test_power_vcd.NativePowerVcdTests.test_metadata_reads_full_gzip_duration_and_rejects_regression) ... ok
+test_native_exact_decompressed_equivalence (test_power_vcd.NativePowerVcdTests.test_native_exact_decompressed_equivalence) ... ok
+test_rejects_dump_disabled_inside_window (test_power_vcd.NativePowerVcdTests.test_rejects_dump_disabled_inside_window) ... ok
+test_rejects_invalid_windows (test_power_vcd.NativePowerVcdTests.test_rejects_invalid_windows) ... ok
+test_rejects_malformed_and_truncated_source_even_after_window (test_power_vcd.NativePowerVcdTests.test_rejects_malformed_and_truncated_source_even_after_window) ... ok
+test_rejects_nonwhitespace_control_bytes (test_power_vcd.NativePowerVcdTests.test_rejects_nonwhitespace_control_bytes) ... ok
+test_rejects_window_before_first_source_marker (test_power_vcd.NativePowerVcdTests.test_rejects_window_before_first_source_marker) ... ok
+test_whitespace_body_and_comments_are_equivalent (test_power_vcd.NativePowerVcdTests.test_whitespace_body_and_comments_are_equivalent) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 11.660s
+
+OK

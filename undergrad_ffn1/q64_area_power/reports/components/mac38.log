@@ -1,0 +1,2 @@
+MAC38_PASS groups=1000 pairs=32000 checked=44097
+D:\Project\Transformer\undergrad_ffn1\q64_area_power\tests\tb_mac38.sv:50: $finish called at 440976000 (1ps)

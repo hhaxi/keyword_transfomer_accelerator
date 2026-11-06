@@ -1,0 +1,84 @@
+--- q64_ref/rtl/kwt_output_sequence.sv
++++ q64_seq/rtl/kwt_output_sequence.sv
+@@ -0,0 +1,26 @@
++// Fixed q64 schedule: 4 rows x 8 columns, then the next 8-column group.
++// The final tile contains rows 96..98 only. Advance ONLY on accepted values.
++module kwt_output_sequence(
++ input wire clk,rst_n,clear,advance,
++ output wire [14:0] index,
++ output wire [4:0] lane,
++ output wire last_lane
++);
++ reg [6:0] row_base;
++ reg [4:0] column_group,lane_reg;
++ wire [6:0] result_row=row_base+{5'b0,lane_reg[4:3]};
++ assign index={result_row,column_group,lane_reg[2:0]};
++ assign lane=lane_reg;
++ assign last_lane=(row_base==96) ? lane_reg==23 : lane_reg==31;
++ always @(posedge clk or negedge rst_n) begin
++   if(!rst_n) begin row_base<=0;column_group<=0;lane_reg<=0;end
++   else if(clear) begin row_base<=0;column_group<=0;lane_reg<=0;end
++   else if(advance) begin
++     if(last_lane) begin
++       lane_reg<=0;
++       column_group<=column_group+1'b1;
++       if(column_group==31) row_base<=row_base+7'd4;
++     end else lane_reg<=lane_reg+1'b1;
++   end
++ end
++endmodule
+--- q64_ref/rtl/kwt_tile_core.sv
++++ q64_seq/rtl/kwt_tile_core.sv
+@@ -6,6 +6,9 @@
+  output wire dma_out_valid,output wire [63:0] dma_out_data,
+  output wire [14:0] dma_out_index,input wire dma_out_ready,
+  output wire dma_done,dma_fault,output wire [31:0] perf_cycles,perf_mac_cycles,perf_fifo_wait);
++ generate if(ROWS!=4 || COLS!=8 || KPAR!=2)begin:q64_only
++ KWT_Q64_REQUIRED invalid_geometry();
++ end endgenerate
+  // Supported schedules preserve fixed, static physical PE counts.
+  generate if(!((ROWS==1 && COLS==8 && KPAR==2) ||
+                (ROWS==2 && COLS==8 && KPAR==2) ||
+@@ -18,7 +21,7 @@
+  reg [3:0] state;reg [6:0] row;reg [7:0] col;reg [6:0] k;
+  reg [1:0] x_valid;reg [11:0] nx;reg [13:0] nw;reg [8:0] nb;
+  reg [2:0] bias_lane,return_lane;reg [31:0] bias[0:COLS-1];reg first,operand_parity,read_tile,prefetched;
+- reg [39:0] fifo[0:63];reg [14:0] indices[0:63];reg [5:0] head,tail;
++ reg [39:0] fifo[0:63];reg [5:0] head,tail;
+  reg [6:0] count;reg [14:0] popped;reg done,fault;reg [31:0] cycles,mac_cycles,fifo_wait;
+  wire busy=state!=IDLE;wire [6:0] load_row=dma_load_addr[14:8];wire load_tile=(load_row>>RL)&1;
+  wire xspace=dma_load_addr>=20'h10000 && dma_load_addr<20'h16300;
+@@ -103,7 +106,9 @@
+  kwt_sram16 #(.AW(10)) lo(.clk(clk),.cs(bwrite || state==BREQ || prefetch_req),.we(bwrite),.addr({2'b0,ba}),.din(dma_load_data[15:0]),.dout(bl));
+  kwt_sram16 #(.AW(10)) hi(.clk(clk),.cs(bwrite || state==BREQ || prefetch_req),.we(bwrite),.addr({2'b0,ba}),.din(dma_load_data[31:16]),.dout(bh));end
+  endgenerate
+- assign dma_x_free=~x_valid;assign dma_out_valid=count!=0;assign dma_out_index=indices[head];
++ assign dma_x_free=~x_valid;assign dma_out_valid=count!=0;
++ kwt_output_sequence sequence_gen(.clk(clk),.rst_n(rst_n),.clear(dma_clear || start),
++   .advance(pop),.index(dma_out_index),.lane(),.last_lane());
+  assign dma_out_data={{24{fifo[head][39]}},fifo[head]};assign dma_done=done;assign dma_fault=fault;
+  assign perf_cycles=cycles;assign perf_mac_cycles=mac_cycles;assign perf_fifo_wait=fifo_wait;
+  integer ri,ci;
+@@ -137,7 +142,7 @@
+  2'b10:count<=count+batch;2'b01:count<=count-1;2'b11:count<=count+batch-1;default:begin end endcase
+  if(push)begin
+  for(ri=0;ri<ROWS;ri=ri+1)for(ci=0;ci<COLS;ci=ci+1)if(row+ri<99)begin
+- fifo[6'(tail+(ri<<CL)+ci)]<=acc[ri][ci];indices[6'(tail+(ri<<CL)+ci)]<=((row+ri)<<8)+col+ci;end
++ fifo[6'(tail+(ri<<CL)+ci)]<=acc[ri][ci];end
+  tail<=tail+batch;if(group_last)x_valid[tile_bank]<=0;
+  if(final_group)state<=DRAIN;
+  else begin
+--- q64_ref/filelists/accelerator.f
++++ q64_seq/filelists/accelerator.f
+@@ -8,3 +8,4 @@
+ rtl/kwt_ffn1_dma.sv
+ rtl/kwt_bus_fabric.sv
+ rtl/kwt_ffn1_top.sv
++rtl/kwt_output_sequence.sv
+--- q64_ref/filelists/soc.f
++++ q64_seq/filelists/soc.f
+@@ -61,3 +61,4 @@
+ vendor/e203/rtl/e203/general/sirv_gnrl_xchecker.v
+ vendor/e203/rtl/e203/general/sirv_sram_icb_ctrl.v
+ vendor/e203/rtl/e203/subsys/e203_subsys_nice_core.v
++rtl/kwt_output_sequence.sv

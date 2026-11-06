@@ -1,0 +1,44 @@
+--- q64_bank1/rtl/kwt_tile_mac.sv
++++ q64_bank1_mac38/rtl/kwt_tile_mac.sv
+@@ -1,24 +1,22 @@
++// Exact for bias + 64 signed INT16 products: magnitude < 2^37.
++// Keep the public INT40 result; no rounding, truncation of values or saturation.
+ module kwt_tile_mac #(parameter KPAR=2, PRODUCT_PIPE=0)(
+  input wire clk,rst_n,clear,valid,first,
+  input wire signed [15:0] x0,w0,x1,w1,input wire signed [31:0] bias,
+- output reg signed [39:0] acc);
+- wire signed [31:0] p0=x0*w0;
+- wire signed [39:0] sum;
+- generate if(KPAR==2)begin:g_two
+- wire signed [31:0] p1=x1*w1;
+- assign sum={{8{p0[31]}},p0}+{{8{p1[31]}},p1};
+- end else begin:g_one
+- assign sum={{8{p0[31]}},p0};end endgenerate
+- generate if(PRODUCT_PIPE)begin:g_pipe
+- reg v,f;reg signed [39:0] product;reg signed [31:0] seed;
++ output wire signed [39:0] acc
++);
++ generate if(KPAR!=2 || PRODUCT_PIPE!=0)begin:unsupported
++   KWT_NARROW_REQUIRES_Q64_DIRECT invalid_configuration();
++ end endgenerate
++ wire signed [31:0] p0=x0*w0,p1=x1*w1;
++ wire signed [32:0] pair_sum={p0[31],p0}+{p1[31],p1};
++ wire signed [37:0] sum_extended={{5{pair_sum[32]}},pair_sum};
++ wire signed [37:0] bias_extended={{6{bias[31]}},bias};
++ reg signed [37:0] accumulator;
++ assign acc={{2{accumulator[37]}},accumulator};
+  always @(posedge clk or negedge rst_n)begin
+- if(!rst_n)begin v<=0;f<=0;product<=0;seed<=0;acc<=0;end
+- else if(clear)begin v<=0;acc<=0;end
+- else begin v<=valid;if(valid)begin product<=sum;f<=first;seed<=bias;end
+- if(v)acc<=(f ? {{8{seed[31]}},seed} : acc)+product;end end
+- end else begin:g_direct
+- always @(posedge clk or negedge rst_n)begin
+- if(!rst_n)acc<=0;else if(clear)acc<=0;
+- else if(valid)acc<=(first ? {{8{bias[31]}},bias} : acc)+sum;end
+- end endgenerate
++   if(!rst_n)accumulator<=0;
++   else if(clear)accumulator<=0;
++   else if(valid)accumulator<=(first ? bias_extended : accumulator)+sum_extended;
++ end
+ endmodule

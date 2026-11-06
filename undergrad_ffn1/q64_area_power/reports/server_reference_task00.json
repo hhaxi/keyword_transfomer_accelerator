@@ -1,0 +1,15 @@
+{
+  "source": "User supplied server summary, 2026-11-06; raw reports not supplied",
+  "case": "q64_fused_pause",
+  "added_area_library_units": 362794,
+  "soc_area_library_units": 2601145.2,
+  "strict_cycles": 55364.5,
+  "dynamic_mw": 170.533,
+  "leakage_mw": 4.23,
+  "total_mw": 174.763,
+  "energy_uj": 64.504444,
+  "setup_wns_ns": 0,
+  "hold_wns_ss_only_ns": -0.19,
+  "coverage_review": "required",
+  "sample": "task_00_only"
+}

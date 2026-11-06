@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "archive": "ffn1_frontend_candidates_2026-11-05.tar.gz",
+  "archive_sha256": "106db8ff129f25aa1ab64da32fda3557141f95e3a791a4db222fc906bb36d637",
+  "driver_sha256": {
+    "study/tools/capture_power.py": "4084dca32fef980b60887311834e19f6c4bfd1b6fda15518ef57e76d740531c6",
+    "study/tools/optional_options.py": "272a28d28117dd7c925226b7b9703d715edca29d6a2aba342ee757645005c409",
+    "study/tools/power_server.py": "452e2b5ffb049bb245f776b8b0fdc27868a653b3729bb25cb2ed11e0052a7bb2",
+    "study/tools/power_vcd.py": "151d4c0b578c062866dd07cb30330cde6bc667a930fd06f51a9c3beba778fc85",
+    "study/tools/power_vcd_fast.cpp": "674219c26d613ba7a5c99ef3a8f01460bb14dd4270dade18a66c70cfa968e787",
+    "study/tools/ppa_metrics.py": "116ea5c4482d75ae4cb5c7b9e6a293687e95d53396b49584f198b1280f3ff99a",
+    "study/tools/quick_screen.py": "90a0a38626342fd80ff52201979708b07741f748342200eb1a13f68b98dd1e4c",
+    "study/tools/vcs_power.py": "2993c7ad9c81e6d7f32303e125874ceb07a8d941cca2069a880650ba59f1ae29",
+    "study/script/power_run.tcl": "769de15436d94ce82a43e48921b848929c9f121170e3f0692598278ff9f79cd5"
+  },
+  "inherited_evidence_sha256": {
+    "reports/inherited/server_tool_tests.json": "0de48101de2b60d3b4202cae03a86570621baa97078bcc11bf44add7330e8e48",
+    "reports/inherited/server_tool_tests.log": "8ea26eba2ab3932d50e3962b4e295e9aa3e9bf3b08395ff221ef815f7971c790",
+    "reports/inherited/server_tcl_tests.json": "e7f6755dd5fe917d13525239742065f900f852c273a8ddb5497efd7eab632e10",
+    "reports/inherited/server_tcl_tests.log": "cae8c306a1b4f12a0ae45e335304122fd12c1b83964e39177575c9c8c085e466",
+    "reports/inherited/native_exporter_tests.json": "9a1164d4a649b98ca9160e5c4ecff6cb2484b004f2925591be02039b583ffddd",
+    "reports/inherited/native_exporter_tests.log": "c951d907330c8c23869582211fd829304e75d866a90587fb5ef2fde947761b8e"
+  },
+  "note": "Prior test results inherited, not rerun. All common drivers byte-identical; no VCS/DC execution on this host."
+}
