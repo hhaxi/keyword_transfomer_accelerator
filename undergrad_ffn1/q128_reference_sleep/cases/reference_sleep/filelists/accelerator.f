@@ -1,0 +1,14 @@
+rtl/kwt_mac40.sv
+tech/kwt_sram_clock_gate.sv
+tech/kwt_sram16.sv
+rtl/kwt_tile_core.sv
+rtl/kwt_tile_mac.sv
+rtl/kwt_event_irq.sv
+rtl/kwt_int16_result_queue.sv
+rtl/kwt_ffn1_core.sv
+rtl/kwt_weight_unpack.sv
+rtl/kwt_ffn1_dma.sv
+rtl/kwt_bus_fabric.sv
+rtl/kwt_ffn1_top.sv
+rtl/kwt_output_sequence.sv
+rtl/kwt_group_queue.sv

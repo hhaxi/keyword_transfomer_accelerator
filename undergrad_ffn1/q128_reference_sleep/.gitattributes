@@ -1,0 +1,3 @@
+# Preserve the exact bytes checked against the server delivery manifest.
+* -text
+*.sh text eol=lf

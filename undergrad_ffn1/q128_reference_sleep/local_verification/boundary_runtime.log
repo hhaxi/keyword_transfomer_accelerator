@@ -1,0 +1,3 @@
+IRQ_FINAL_RESPONSE_PASS hold_clocks=32 error_events=1
+DMA_XDELTA_TAIL_PASS widths=1,10,16 abort_restart=1 error_restart=1 outputs=38016 x_delta=1 tail_first=1
+tests/tb_dma_compressed.sv:84: $finish called at 1681485000 (1ps)

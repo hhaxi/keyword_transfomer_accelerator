@@ -1,0 +1,2 @@
+PASS event IRQ sticky/W1C/masks/faults/stalls/watchdog/reset
+tests/tb_event_irq.sv:48: $finish called at 1960000 (1ps)

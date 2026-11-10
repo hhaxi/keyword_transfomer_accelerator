@@ -1,0 +1,7 @@
+{
+  "verilator": "/path/to/verilator_bin",
+  "make": "/usr/bin/make",
+  "gcc": "/path/to/riscv64-unknown-elf-gcc",
+  "iverilog": "/usr/bin/iverilog",
+  "yosys": "/path/to/yosys"
+}

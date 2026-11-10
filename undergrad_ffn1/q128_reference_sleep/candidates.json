@@ -1,0 +1,8 @@
+{
+  "candidates": [
+    {
+      "name": "reference_sleep",
+      "case_dir": "cases/reference_sleep"
+    }
+  ]
+}

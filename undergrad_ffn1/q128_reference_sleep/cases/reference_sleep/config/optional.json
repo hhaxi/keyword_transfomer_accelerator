@@ -1,0 +1,11 @@
+{
+  "engine": "oct8_128",
+  "fuse": true,
+  "product_pipe": false,
+  "output_format": "int16_rne_shift15",
+  "wait_mode": 2,
+  "irq": true,
+  "poll_pause": 64,
+  "dma_burst": 1,
+  "host_burst": 0
+}

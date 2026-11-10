@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "real_cpu": true,
+  "directed_rounds": 8,
+  "between_read_and_wfi": 4,
+  "after_wfi": 4,
+  "idle_clocks": 70000,
+  "dma_watchdog_wake": true,
+  "event_runtime_sha256": "44bde7152b43f3a4e5e50396cde537c96e7c3f48010c66ca0092fdaeac7d8d66",
+  "boundary_runtime_sha256": "8368c5bf9591ff3e15eda121499215fd76cfe0eba91ea9651415774413832643",
+  "cpu_runtime_sha256": "e35b6058dc9b2119c02d9e71e925a39cdaf9997aff72a12ae930304a2faec121"
+}

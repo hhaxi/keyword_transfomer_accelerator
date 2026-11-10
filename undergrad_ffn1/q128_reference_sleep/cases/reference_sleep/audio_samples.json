@@ -1,0 +1,62 @@
+[
+  {
+    "layer": 0,
+    "audio": "off/fa52ddf6_nohash_0.wav",
+    "max_abs_acc40": 649982969
+  },
+  {
+    "layer": 1,
+    "audio": "yes/30276d03_nohash_1.wav",
+    "max_abs_acc40": 688259464
+  },
+  {
+    "layer": 2,
+    "audio": "up/fa52ddf6_nohash_4.wav",
+    "max_abs_acc40": 773998647
+  },
+  {
+    "layer": 3,
+    "audio": "no/73f20b00_nohash_4.wav",
+    "max_abs_acc40": 597472313
+  },
+  {
+    "layer": 4,
+    "audio": "silence",
+    "max_abs_acc40": 570036626
+  },
+  {
+    "layer": 5,
+    "audio": "stop/07de53d3_nohash_0.wav",
+    "max_abs_acc40": 590232390
+  },
+  {
+    "layer": 6,
+    "audio": "down/9190045a_nohash_0.wav",
+    "max_abs_acc40": 533195264
+  },
+  {
+    "layer": 7,
+    "audio": "right/a9ca1818_nohash_2.wav",
+    "max_abs_acc40": 573138185
+  },
+  {
+    "layer": 8,
+    "audio": "no/f822b9bf_nohash_2.wav",
+    "max_abs_acc40": 550612021
+  },
+  {
+    "layer": 9,
+    "audio": "off/171edea9_nohash_2.wav",
+    "max_abs_acc40": 564900639
+  },
+  {
+    "layer": 10,
+    "audio": "up/171edea9_nohash_0.wav",
+    "max_abs_acc40": 544130749
+  },
+  {
+    "layer": 11,
+    "audio": "yes/8a90cf67_nohash_1.wav",
+    "max_abs_acc40": 720280600
+  }
+]

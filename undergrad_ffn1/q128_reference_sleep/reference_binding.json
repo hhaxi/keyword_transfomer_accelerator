@@ -1,0 +1,35 @@
+{
+  "frozen_tensors": 72,
+  "vector_files_identical": 120,
+  "expected_y_files_identical": 12,
+  "shared_sources_identical": 5,
+  "changed_sources": {
+    "rtl/kwt_optional.vh": {
+      "reference": "5f1c2bd95511a6a282ccc94c81999c923f817386163e0692e5aa7804015ba552",
+      "candidate": "3fe0f34ff04327c1cde66e4e5448fbb23e607427fe81d79e665cdeb741069f88"
+    },
+    "rtl/kwt_tile_core.sv": {
+      "reference": "94ae9054c7cbfea5dbb94d7e4d3afd3227f03489fb7846aeae5426cfdd40063e",
+      "candidate": "8ab93d65f6d88e342d4657be4727b6e41d2b6c102fb63dee9ac9cb5c5f77e1cb"
+    }
+  },
+  "wait_mode": 2,
+  "firmware_sha256": "8346727540db6f42da4dead84c104ce672e725824fcd10485725931f554c42a3",
+  "functional_sha256": "dccd7b9d2735284dd703ca2ba9a4f0c78613dd6b6e4a81b95535750a79a32234",
+  "timing": {
+    "reset_each_task": {
+      "mean_cycles": 32006.833333258335,
+      "worst_cycles": 34929.499999925,
+      "task00_cycles": 32959.499999925,
+      "reference_mean_cycles": 31819.999999925,
+      "reference_task00_cycles": 32737.499999925
+    },
+    "continuous": {
+      "mean_cycles": 32006.833333258335,
+      "worst_cycles": 34929.499999925,
+      "task00_cycles": 32959.499999925,
+      "reference_mean_cycles": 31794.249999925,
+      "reference_task00_cycles": 32737.499999925
+    }
+  }
+}

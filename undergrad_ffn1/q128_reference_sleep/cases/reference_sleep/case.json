@@ -1,0 +1,39 @@
+{
+  "name": "reference_sleep",
+  "baseline": {
+    "case": "fmt1_ref",
+    "commit": "7392623ff3b7b4a599861c513e8a7a31109430c8"
+  },
+  "tile": {
+    "rows": 8,
+    "columns": 8,
+    "k_parallel": 2
+  },
+  "output_format": {
+    "id": 2,
+    "bits": 16,
+    "shift": 15,
+    "rounding": "nearest_even",
+    "words": 12672
+  },
+  "small_bias": true,
+  "weight_transport": "signed_dual_column_width_v1",
+  "optimizations": [
+    "shared_row_operand_isolation",
+    "local_sram_clock_gating",
+    "exact_w16_compression",
+    "dc_automatic_clock_gating",
+    "dual_column_quad_loading",
+    "exact_x_delta8",
+    "parallel_x_loading",
+    "tail_first",
+    "irq_wfi"
+  ],
+  "hardware_id": "0x4b575438",
+  "x_transport": "row_delta8_quad_v1",
+  "x_delta": true,
+  "tail_first": true,
+  "irq": true,
+  "wait_mode": 2,
+  "poll_pause": 64
+}
