@@ -47,7 +47,7 @@ def main():
         z.writestr('submission-manifest.json',json.dumps(manifest,indent=2)+'\n')
         z.writestr('SUBMISSION-STATUS.txt',
             'LOCAL IMPLEMENTATION, NOT OFFICIAL ACCEPTANCE\nSee docs/acceptance.md for pending official PPA/platform conditions.\n'
-            'When captured, large activity sidecars remain in output/design/soc.fst and soc.vcd.gz; hashes are in docs/design-validation.json.\n'
+            'When captured, large activity sidecars remain in output/design/soc.fst and soc.vcd.gz; hashes are in docs/evidence/design-validation.json.\n'
             'Instantiated upstream E203 RTL is included; full model/audio resources can be fetched using the included resource script.\n')
     with zipfile.ZipFile(target) as z:
         if z.testzip() is not None:raise RuntimeError('ZIP verification failed')

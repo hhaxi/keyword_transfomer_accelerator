@@ -100,7 +100,7 @@ ENC1 的细分计数位于偏移 `0x60—0x90`，配置 `0x34` 的 bit2/bit3 分
   <img src="docs/figures/keyword-transformer-architecture.png" alt="KWT-1 模型、12 层编码器与 AI 加速器 SoC 整体架构" width="760">
 </p>
 
-上图为模型、单层编码器与 AI 加速器 SoC 的整体映射；可编辑版本为 `docs/figures/keyword-transformer-architecture.svg`，由 `scripts/draw_kwt_architecture.py` 生成。
+上图为模型、单层编码器与 AI 加速器 SoC 的整体映射；可编辑版本为 `docs/figures/keyword-transformer-architecture.svg`，由 `scripts/draw_kwt_architecture.py` 生成，PNG 为同一 SVG 的栅格导出。
 
 ## 4. 验证结果与适用边界
 
@@ -289,6 +289,6 @@ setup.ps1 / env.ps1          首次安装 / 当前终端环境
 .\scripts\clean-project.ps1 -WhatIf
 ```
 
-确认后去掉 `-WhatIf` 执行。脚本只删除可再生内容：`output/design/build_*/` 编译缓存、`output/baseline-v1/` 旧活动波形归档、各候选目录的 `study/` 与 `tmp/` 工作区，以及 `__pycache__`、下载缓存和临时目录。SHA-256 清单引用的 `output/` 证据、`assets/`、`.tools/`、`.venv-model/` 与 `deliverables/` 均保留。清理后需重新生成对应输出才能再次汇总或打包。
+确认后去掉 `-WhatIf` 执行。脚本只删除可再生内容：`output/design/build_*/` 编译缓存、`output/baseline-v1/` 旧活动波形归档、各候选目录的 `study/` 与 `tmp/` 工作区，以及 `__pycache__`、下载缓存（`assets/downloads`、`.tools/downloads`、`.tools/wheels`、`assets/metadata`）和临时目录。SHA-256 清单引用的 `output/` 证据、已解压数据集与参考源码、`.tools` 工具链、`.venv-model` 与 `deliverables/` 均保留。清理后需重新生成对应输出才能再次汇总或打包。
 
 官方 SoC 参考为 [riscv-mcu/e203_hbirdv2](https://github.com/riscv-mcu/e203_hbirdv2)，模型来自 [ARM-software/keyword-transformer](https://github.com/ARM-software/keyword-transformer)，数据集为 Speech Commands V2。固定提交、下载地址和校验值均记录在资源清单中；上游许可文件随下载内容保留。自研与第三方边界见 [NOTICE.md](NOTICE.md)。

@@ -38,7 +38,8 @@
 `ffn-validation.json`、`numeric-validation.json`、`cycle-analysis.json`、
 `performance-comparison.json`、`ffn-performance-comparison.json`、`validation.json`；
 以及冻结基线引用 `encoder-baseline-v8.json`、`fifo-study-baseline.json`、
-`frontend-transfer-baseline.json` 和扩展样本清单 `encoder-validation-expanded.samples.json`。
+`frontend-transfer-baseline.json` 和扩展样本清单 `encoder-validation-expanded.samples.json` +
+`encoder-validation-expanded.samples.jsonl.gz`。
 
 这些 JSON 记录了对应提交、文件 SHA-256、逐任务/逐层计数和日志指纹。重新生成需先完成
 `design.ps1` / `encoder.ps1` 对应阶段，再运行相应的 `collect_*.py`。
@@ -56,4 +57,5 @@
 
 - `figures/keyword-transformer-overview.png`：README 使用的 KWT-1 模型结构图。
 - `figures/keyword-transformer-architecture.svg` / `.html` / `.png`：本工程模型、编码器与
-  AI 加速器 SoC 的整体映射图，由 `scripts/draw_kwt_architecture.py` 生成（SVG/HTML 可直接编辑重生成）。
+  AI 加速器 SoC 的整体映射图。SVG/HTML 由 `scripts/draw_kwt_architecture.py` 生成并可编辑重生成；
+  PNG 为同一 SVG 的栅格导出（脚本不生成 PNG，更新图形后需重新导出）。

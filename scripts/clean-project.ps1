@@ -44,16 +44,31 @@ foreach ($CleanupCodeRoot in $CleanupCodeRoots) {
 }
 
 $CleanupTargets = @($CleanupTargets | Sort-Object -Property FullName -Unique)
+# Keep only top-most targets so deleting a parent never leaves nested targets to process.
+$CleanupTopTargets = @()
+foreach ($CleanupCandidate in @($CleanupTargets | Sort-Object -Property { $_.FullName.Length })) {
+    $CleanupCandidatePath = [System.IO.Path]::GetFullPath($CleanupCandidate.FullName)
+    $CleanupIsNested = $false
+    foreach ($CleanupKept in $CleanupTopTargets) {
+        if ($CleanupCandidatePath.StartsWith($CleanupKept + [System.IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+            $CleanupIsNested = $true
+            break
+        }
+    }
+    if (-not $CleanupIsNested) { $CleanupTopTargets += $CleanupCandidatePath }
+}
 $CleanupBytes = 0L
-foreach ($CleanupItem in $CleanupTargets) {
-    $CleanupResolved = (Resolve-Path -LiteralPath $CleanupItem.FullName).ProviderPath
+foreach ($CleanupItem in $CleanupTopTargets) {
+    if (-not (Test-Path -LiteralPath $CleanupItem)) { continue }
+    $CleanupResolved = (Resolve-Path -LiteralPath $CleanupItem).ProviderPath
     if (-not $CleanupResolved.StartsWith($CleanupPrefix, [StringComparison]::OrdinalIgnoreCase)) {
         throw "Refusing to delete outside project: $CleanupResolved"
     }
-    if ($CleanupItem.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+    $CleanupItemInfo = Get-Item -LiteralPath $CleanupResolved -Force
+    if ($CleanupItemInfo.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
         throw "Refusing to recursively delete a reparse point: $CleanupResolved"
     }
-    if ($CleanupItem.PSIsContainer) {
+    if ($CleanupItemInfo.PSIsContainer) {
         $CleanupLinks = @(Get-ChildItem -LiteralPath $CleanupResolved -Recurse -Force | Where-Object { $_.Attributes -band [System.IO.FileAttributes]::ReparsePoint })
         if ($CleanupLinks.Count) { throw "Refusing directory containing reparse points: $CleanupResolved" }
         $CleanupSize = (Get-ChildItem -LiteralPath $CleanupResolved -File -Recurse -Force | Measure-Object Length -Sum).Sum
