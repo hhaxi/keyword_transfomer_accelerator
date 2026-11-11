@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="G16" name="G16 Task00 cycle composition">
+    <mxGraphModel page="1" pageWidth="1600" pageHeight="930" pageScale="1" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="canvas" value="" style="rounded=0;absoluteArcSize=1;arcSize=16;fillColor=#FFFFFF;strokeColor=none;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1600" height="930" />
+        </mxCell>
+        <mxCell id="title" value="Task00 Cycles and Array Activity" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=42;fontStyle=3;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1520" height="52" />
+        </mxCell>
+        <mxCell id="subtitle" value="Q128 reference_sleep · Local layer-0 record · Report Table 6.2" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=24;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="88" width="1520" height="34" />
+        </mxCell>
+        <mxCell id="strict-panel" value="" style="rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F9FAFB;strokeColor=#7C858C;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="145" width="1520" height="280" />
+        </mxCell>
+        <mxCell id="strict-heading" value="Strict task window" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=30;fontStyle=3;align=left;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="70" y="165" width="700" height="43" />
+        </mxCell>
+        <mxCell id="strict-total" value="Total 32,959.5 cycles" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=27;fontStyle=0;align=left;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="70" y="212" width="700" height="38" />
+        </mxCell>
+        <mxCell id="other-callout" value="" style="rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFF3E3;strokeColor=#ED852E;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1220" y="169" width="300" height="75" />
+        </mxCell>
+        <mxCell id="other-callout-name" value="Other states" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=24;fontStyle=3;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1232" y="176" width="276" height="29" />
+        </mxCell>
+        <mxCell id="other-callout-value" value="3 cycles · 0.0091%" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=23;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1232" y="209" width="276" height="28" />
+        </mxCell>
+        <mxCell id="phase-outside" value="" style="rounded=0;absoluteArcSize=1;arcSize=16;fillColor=#F9FAFB;strokeColor=none;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80.0" y="290" width="439.71783552541757" height="102" />
+        </mxCell>
+        <mxCell id="outside-name" value="Outside DMA command" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=26;fontStyle=3;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="88.0" y="303" width="423.71783552541757" height="34" />
+        </mxCell>
+        <mxCell id="outside-value" value="10,064.5 cycles · 30.5%" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=24;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="88.0" y="346" width="423.71783552541757" height="30" />
+        </mxCell>
+        <mxCell id="phase-load" value="" style="rounded=0;absoluteArcSize=1;arcSize=16;fillColor=#F2F7E7;strokeColor=none;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="519.7178355254175" y="290" width="315.09215855823055" height="102" />
+        </mxCell>
+        <mxCell id="load-name" value="LOAD" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=26;fontStyle=3;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="527.7178355254175" y="303" width="299.09215855823055" height="34" />
+        </mxCell>
+        <mxCell id="load-value" value="7,212 cycles · 21.9%" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=24;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="527.7178355254175" y="346" width="299.09215855823055" height="30" />
+        </mxCell>
+        <mxCell id="phase-run" value="" style="rounded=0;absoluteArcSize=1;arcSize=16;fillColor=#EEF7FD;strokeColor=none;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="834.809994083648" y="290" width="685.0589359668684" height="102" />
+        </mxCell>
+        <mxCell id="run-name" value="RUN" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=26;fontStyle=3;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="842.809994083648" y="303" width="669.0589359668684" height="34" />
+        </mxCell>
+        <mxCell id="run-value" value="15,680 cycles · 47.6%" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=24;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="842.809994083648" y="346" width="669.0589359668684" height="30" />
+        </mxCell>
+        <mxCell id="phase-other" value="" style="rounded=0;absoluteArcSize=1;arcSize=16;fillColor=#FFF3E3;strokeColor=none;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1519.8689300505164" y="290" width="0.13106994948345696" height="102" />
+        </mxCell>
+        <mxCell id="strict-top" edge="1" parent="1" style="edgeStyle=none;rounded=0;startArrow=none;endArrow=none;strokeColor=#7C858C;strokeWidth=1.5;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="80" y="290" />
+            <mxPoint as="targetPoint" x="1520" y="290" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="strict-bottom" edge="1" parent="1" style="edgeStyle=none;rounded=0;startArrow=none;endArrow=none;strokeColor=#7C858C;strokeWidth=1.5;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="80" y="392" />
+            <mxPoint as="targetPoint" x="1520" y="392" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="boundary-0" edge="1" parent="1" style="edgeStyle=none;rounded=0;startArrow=none;endArrow=none;strokeColor=#7C858C;strokeWidth=1.5;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="80.0" y="290" />
+            <mxPoint as="targetPoint" x="80.0" y="392" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="boundary-1" edge="1" parent="1" style="edgeStyle=none;rounded=0;startArrow=none;endArrow=none;strokeColor=#7C858C;strokeWidth=1.5;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="519.7178355254175" y="290" />
+            <mxPoint as="targetPoint" x="519.7178355254175" y="392" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="boundary-2" edge="1" parent="1" style="edgeStyle=none;rounded=0;startArrow=none;endArrow=none;strokeColor=#7C858C;strokeWidth=1.5;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="834.809994083648" y="290" />
+            <mxPoint as="targetPoint" x="834.809994083648" y="392" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="other-leader" edge="1" parent="1" style="edgeStyle=none;rounded=0;startArrow=none;endArrow=none;strokeColor=#ED852E;strokeWidth=1.5;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1460" y="244" />
+            <mxPoint as="targetPoint" x="1519.93" y="289" />
+            <Array as="points">
+              <mxPoint x="1519.93" y="272" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="run-panel" value="" style="rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F9FAFB;strokeColor=#7C858C;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="450" width="1520" height="220" />
+        </mxCell>
+        <mxCell id="run-heading" value="Accumulated activity within RUN" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=30;fontStyle=3;align=left;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="70" y="468" width="1450" height="43" />
+        </mxCell>
+        <mxCell id="active-bar" value="" style="rounded=0;absoluteArcSize=1;arcSize=16;fillColor=#E8F5F4;strokeColor=none;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="527" width="1222.530612244898" height="76" />
+        </mxCell>
+        <mxCell id="remaining-bar" value="" style="rounded=0;absoluteArcSize=1;arcSize=16;fillColor=#F9FAFB;strokeColor=none;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1302.530612244898" y="527" width="217.46938775510193" height="76" />
+        </mxCell>
+        <mxCell id="activity-outline" edge="1" parent="1" style="edgeStyle=none;rounded=0;startArrow=none;endArrow=none;strokeColor=#268C88;strokeWidth=1.5;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="80" y="527" />
+            <mxPoint as="targetPoint" x="80" y="527" />
+            <Array as="points">
+              <mxPoint x="1520" y="527" />
+              <mxPoint x="1520" y="603" />
+              <mxPoint x="80" y="603" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="activity-divider" edge="1" parent="1" style="edgeStyle=none;rounded=0;startArrow=none;endArrow=none;strokeColor=#7C858C;strokeWidth=1.5;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1302.530612244898" y="527" />
+            <mxPoint as="targetPoint" x="1302.530612244898" y="603" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="active-value" value="13,312 effective reduction cycles · 84.90%" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=27;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="92" y="541" width="1198.530612244898" height="48" />
+        </mxCell>
+        <mxCell id="remaining-value" value="2,368 other cycles&#10;15.10%" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=23;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1314.530612244898" y="532" width="193.46938775510193" height="65" />
+        </mxCell>
+        <mxCell id="activity-note" value="Widths show accumulated counts within RUN, not continuous occupancy." style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=23;fontStyle=0;align=left;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="70" y="621" width="1450" height="31" />
+        </mxCell>
+        <mxCell id="queue-card" value="" style="rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFF3E3;strokeColor=#ED852E;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="700" width="480" height="130" />
+        </mxCell>
+        <mxCell id="queue-heading" value="Result queue wait" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=28;fontStyle=3;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="718" width="440" height="37" />
+        </mxCell>
+        <mxCell id="queue-count" value="2,316 cycles" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=30;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="771" width="440" height="36" />
+        </mxCell>
+        <mxCell id="request-card" value="" style="rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3ECFA;strokeColor=#7541A6;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="560" y="700" width="480" height="130" />
+        </mxCell>
+        <mxCell id="request-heading" value="Request blocked" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=28;fontStyle=3;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="580" y="718" width="440" height="37" />
+        </mxCell>
+        <mxCell id="request-count" value="55 cycles" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=30;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="580" y="771" width="440" height="36" />
+        </mxCell>
+        <mxCell id="response-card" value="" style="rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3ECFA;strokeColor=#7541A6;strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1080" y="700" width="480" height="130" />
+        </mxCell>
+        <mxCell id="response-heading" value="Response blocked" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=28;fontStyle=3;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1100" y="718" width="440" height="37" />
+        </mxCell>
+        <mxCell id="response-count" value="7 cycles" style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=30;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1100" y="771" width="440" height="36" />
+        </mxCell>
+        <mxCell id="diagnostics-note" value="Diagnostic counters may overlap and are excluded from phase summation." style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=24;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="848" width="1520" height="35" />
+        </mxCell>
+        <mxCell id="scope-note" value="Strict window: first Host request through final DMA write response." style="text;html=0;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontColor=#151515;fontSize=22;fontStyle=0;align=center;verticalAlign=middle;spacing=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="887" width="1520" height="28" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -42,16 +42,26 @@
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{Z}{>{\centering\arraybackslash}X}
 
-% Consistent technical-report tables.
+% Individually proportioned tables; weighted columns fill the text block.
+\newcolumntype{L}[1]{>{\hsize=#1\hsize\linewidth=\hsize\raggedright\arraybackslash}X}
+\newcolumntype{C}[1]{>{\hsize=#1\hsize\linewidth=\hsize\centering\arraybackslash}X}
+\newcolumntype{R}[1]{>{\hsize=#1\hsize\linewidth=\hsize\raggedleft\arraybackslash}X}
+\newcommand{\thcell}[1]{\multicolumn{1}{c}{\sffamily\mdseries\raisebox{\dimexpr2.5pt-.5\height\relax}{\shortstack[c]{#1}}}}
+\newcommand{\thleft}[1]{\multicolumn{1}{l}{\sffamily\mdseries\raisebox{\dimexpr2.5pt-.5\height\relax}{\shortstack[l]{#1}}}}
+
+% Content-sized columns; paragraph cells are vertically centered.
+\newcolumntype{T}[1]{>{\raggedright\arraybackslash}m{#1mm}}
+\newcolumntype{U}[1]{>{\centering\arraybackslash}m{#1mm}}
+
 \definecolor{TableHeader}{gray}{0.94}
 \captionsetup[table]{font=small,labelfont=bf,labelsep=quad,skip=6pt,justification=centering,singlelinecheck=false}
 \setlength{\heavyrulewidth}{0.7pt}
 \setlength{\lightrulewidth}{0.35pt}
-\setlength{\abovetopsep}{3pt}
+\setlength{\abovetopsep}{2pt}
 \AtBeginEnvironment{table}{%
-  \linespread{1.12}\selectfont
-  \renewcommand{\arraystretch}{1.38}%
-  \setlength{\tabcolsep}{7pt}%
+  \linespread{1.05}\selectfont
+  \renewcommand{\arraystretch}{1.22}%
+  \setlength{\tabcolsep}{5.5pt}%
 }
 
 
@@ -132,7 +142,7 @@
 \noindent\textbf{关键词}\quad 关键词识别，KWT-1，前馈线性加速器，定点计算，E203，SoC 集成
 
 \tableofcontents
-\listoffigures
+{\linespread{1.12}\selectfont\listoffigures}
 \listoftables
 \clearpage
 \pagenumbering{arabic}
@@ -150,7 +160,10 @@ Keyword Transformer（KWT-1）利用自注意力机制建模语音帧之间的�
 
 随后，数据依次流经 12 层结构相同的 PostNorm Transformer 编码器；每层包含单头自注意力子层与前馈网络（FFN）子层，其中 FFN 的特征维度按 $64\to256\to64$ 先升维后降维。完成 12 层编码后，分类头取第 0 行分类 token 的 64 维特征完成 12 类指令判决。图~\ref{fig:1-1} 给出了从输入语音到分类输出的完整处理链路。
 
-\ph[44mm]{1-1}{KWT-1 语音指令识别流程}{绘制从音频输入到分类输出的六阶段框图：1 秒 16 kHz 语音 $\to$ MFCC 提取（$98\times40$）与输入线性嵌入 $\to$ 拼接分类 token 并加位置编码形成 $99\times64$ 编码器输入 $\to$ 12 层 PostNorm 编码器（单头自注意力 + $64\to256\to64$ FFN） $\to$ 提取末层分类 token 向量 $\to$ 线性分类头输出 12 类语音指令结果。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/1-1.pdf}
+\caption{KWT-1 语音指令识别流程}\label{fig:1-1}
+\end{figure}
 
 规则矩阵运算是 KWT-1 的主要硬件加速对象。按固定张量形状估算，单层注意力的矩阵乘加约为 287.65 万次，FFN 两级线性变换合计约为 324.40 万次，后者占二者总量的 53.0\%。该比例不含非线性与归一化，也不等同于实际耗时，但说明 FFN 值得作为基础加速对象。
 
@@ -162,31 +175,36 @@ Transformer 将序列间的关联建模与特征变换组织为重复堆叠的�
 
 本设计的 FFN1 运算为 $Y=XW+b$：输入为 LN1 输出的 $99\times64$ 特征矩阵，权重为 $64\times256$ 参数矩阵，偏置包含 256 项，输出为 $99\times256$ 的激活前特征矩阵。一次任务需完成约 162 万次乘加。十二层编码器中的 FFN1 具有相同的张量形状，因此可复用一套计算核，通过重载各层输入与参数依次执行。图~\ref{fig:1-2} 给出了这一加速范围及其与 SoC 的数据交接关系。
 
-\ph[44mm]{1-2}{FFN1 加速器的输入输出形状、E203 调度与共享 SRAM 访问边界}{绘制 FFN1 任务的数据与控制边界：上方标出总线侧共享 SRAM 中的三类输入（$X$ 输入矩阵 $99\times64$、$W$ 权重矩阵 $64\times256$、$b$ 偏置向量 256 项），中间为 FFN1 加速器（受 E203 MMIO 控制，由 DMA 从共享 SRAM 读取操作数并执行长度 64 的点积加偏置），下方输出 INT16 打包格式的 $99\times256$ 结果矩阵写回共享 SRAM。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=.94\linewidth]{figures/integrated/1-2.pdf}
+\caption{FFN1 加速器的输入输出形状、E203 调度与共享 SRAM 访问边界}\label{fig:1-2}
+\end{figure}
 
 专用加速器的设计重点并非仅增加乘法器数量，而是让计算并行度与数据供给能力相匹配。FFN1 中，同一输入行可供多个输出列复用，同一权重列也可供多个输入行复用；若每次乘加都重新访问系统共享 SRAM，数据搬运便可能抵消并行计算带来的收益。因此，本设计将计算阵列、片内存储与 DMA 作为一条完整数据通路组织：利用行列广播和部分和驻留减少重复访问，利用 SRAM 分块与输入双缓冲维持供数，并通过流式搬运衔接系统总线。后续章节分别说明其硬件实现，并评价吞吐、资源与能耗。
 
-在系统验证与性能评估上，本报告区分基础任务与拓展任务的硬件边界，如图~\ref{fig:plan-boundaries} 所示。基础篇将单次 FFN1 运算作为独立验收单元，计时与功能检查覆盖从 Host 将该层数据写入总线侧系统共享 SRAM、E203 配置并启动 DMA，到加速器完成计算并将打包结果写回共享 SRAM 的完整过程，并通过 12 组独立层向量的连续切换验证参数更新机制。拓展篇则将硬件加速边界延伸至包含单头注意力、完整 FFN、残差与归一化的单层及十二层 PostNorm 编码器，单独统计完整编码器链路的周期、访存与分类精度。
+在系统验证与性能评估上，本报告区分基础任务与拓展任务的硬件边界。基础篇将单次 FFN1 运算作为独立验收单元，计时与功能检查覆盖从 Host 将该层数据写入总线侧系统共享 SRAM、E203 配置并启动 DMA，到加速器完成计算并将打包结果写回共享 SRAM 的完整过程，并通过 12 组独立层向量的连续切换验证参数更新机制。拓展篇则将硬件加速边界延伸至包含单头注意力、完整 FFN、残差与归一化的单层及十二层 PostNorm 编码器，单独统计完整编码器链路的周期、访存与分类精度。
 
-\ph[42mm]{plan-boundaries}{基础任务与拓展任务的硬件验证边界}{绘制两条并行的硬件验证路径对比图：左侧起点均为编码器层输入与冻结参数；上支路为“基础任务（FFN1 独立执行）”，经 DMA 装载、$8\times8\times2$ 阵列计算与 INT16 写回，输出单层 FFN1 的周期、面积与功耗指标；下支路为“拓展任务（完整编码器链路）”，经双引擎协同（单头注意力 + LN1 + 完整 FFN + LN2）与十二层连续调度，输出层间一致性、整机周期与分类准确率。}
 
 \section{设计目的及关键指标}
 
 本设计面向 E203 SoC 上的 FFN1 运算，目标是在保证计算正确性和定点精度的前提下，\textbf{提高完整任务的处理吞吐，并控制新增面积与单任务能耗}。加速器不仅需要更快地完成矩阵乘加，还需要减少操作数搬运、计算等待和处理器轮询开销，使阵列并行能力能够转化为系统层面的收益。
 
-\begin{table}[H]\centering\fontsize{9.5}{12.5}\selectfont
+\begin{table}[H]\centering\fontsize{10}{13}\selectfont
 \caption{基础任务的设计目标与评价依据}
-\begin{tabularx}{\linewidth}{@{}>{\centering\arraybackslash}p{19mm}p{59mm}Y@{}}
+\begin{tabular}{@{\hspace{2pt}}U{19}T{62}T{63}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 设计目标}} & \multicolumn{1}{c}{{\sffamily\mdseries 具体要求}} & \multicolumn{1}{c}{{\sffamily\mdseries 评价依据}} \\
+\thcell{设计目标} & \thleft{具体要求} & \thleft{评价依据} \\
 \midrule
 \textbf{计算正确} & 正确完成矩阵乘加、偏置与写回，支持十二组参数切换；按赛题口径满足 NRMSE $\leq3\%$ & RTL 与整数参考逐位比对；最终写回解码值与浮点参考比较 \\
+\addlinespace[1.5pt]
 \textbf{高吞吐} & 提高从数据装载到结果写回的完整任务吞吐，按 150 MHz 统一折算 & 统计首个 Host 数据请求至末笔 DMA 写响应的周期；单独检查目标频率下的时序 \\
+\addlinespace[1.5pt]
 \textbf{低面积} & 将加速器、接口逻辑及内部 SRAM 宏的新增总面积控制在 2.25 mm\textsuperscript{2} 以内 & 基于工艺映射结果核算新增面积，核对库单位与宏面积 \\
+\addlinespace[1.5pt]
 \textbf{低能耗} & 减少重复访存和处理器等待活动，降低完成一次任务所需的能量 & 在匹配任务窗口下比较功耗与周期，计算单任务能耗 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 四项目标中，正确性与精度是前提，面积和频率是实现约束，吞吐与能耗用于评价方案收益。表中要求是否达到，分别由第五章的功能与精度验证、第六章的性能和综合结果确认。
@@ -246,22 +264,25 @@ Host 将输入、权重与偏置放入共享 SRAM，并在任务结束后回读�
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{FFN1 任务中各模块的职责与交接对象}\label{tab:arch-paths}
-\begin{tabularx}{\linewidth}{>{\centering\arraybackslash}p{19mm}Yp{50mm}}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily 模块}} & \multicolumn{1}{c}{{\sffamily 主要职责}} & \multicolumn{1}{c}{{\sffamily 交接对象}} \\
+\thcell{模块} & \thcell{主要职责} & \thcell{交接对象} \\
 \midrule
 Host & 准备输入与参数，回读计算结果 & 共享 SRAM、E203 邮箱 \\
 E203 & 校验并配置任务，处理完成与异常事件 & DMA 寄存器、事件控制器 \\
 DMA & 装载操作数，写回打包结果 & 共享 SRAM、解包器、结果队列 \\
 计算核 & 缓存操作数，完成乘加与结果输出 & 解包器、DMA 写回通路 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 计算核由内部 SRAM、处理单元和结果队列构成，外围 DMA 连接配置接口、解包器和系统总线。工程中另设不含 E203 的总线级顶层，便于独立检查加速器接口；完整 SoC 顶层再接入 E203、事件控制器和共享 SRAM。
 
-\ph[48mm]{2-1}{E203 SoC 与 FFN1 加速器的共享存储和片内数据通路}{绘制 SoC 顶层架构框图：上方为 Host 装载/回读接口、总线侧 512 KiB 共享 SRAM 与 E203 处理器（含事件控制器）；下方为 FFN1 加速器（含 DMA 控制器、W/X 变宽解包器、41 KiB 内部 SRAM 分块组［X 双缓冲 32 宏、W 常驻 16 宏、b 偏置 4 宏］、$8\times8\times2$ 计算阵列与 INT16 结果队列）。用实线标出 32 位数据流（共享 SRAM $\to$ DMA $\to$ 解包器 $\to$ 内部 SRAM $\to$ 计算阵列 $\to$ 结果队列 $\to$ DMA $\to$ 共享 SRAM），用虚线标出 E203 对 DMA 的 MMIO 控制通路与中断反馈通路。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/2-1.pdf}
+\caption{E203 SoC 与 FFN1 加速器的共享存储和片内数据通路}\label{fig:2-1}
+\end{figure}
 
 \par\Needspace{5\baselineskip}\addvspace{0.25\baselineskip}\noindent{\reportitemfont\bfseries\color{black}\fontsize{12}{16}\selectfont（2）共享 SRAM 交接任务，内部 SRAM 支撑并行计算}\par\nobreak\vspace{1pt}
 
@@ -275,10 +296,10 @@ DMA & 装载操作数，写回打包结果 & 共享 SRAM、解包器、结果队
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{FFN1 任务的执行阶段与推进条件}\label{tab:task-stages}
-\begin{tabularx}{\linewidth}{>{\centering\arraybackslash}p{25mm}>{\centering\arraybackslash}p{25mm}Y}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{\sffamily 执行阶段} & \multicolumn{1}{c}{\sffamily 执行模块} & \multicolumn{1}{c}{\sffamily 推进条件} \\
+\thcell{执行阶段} & \thcell{执行模块} & \thcell{推进条件} \\
 \midrule
 数据准备 & Host & 输入与参数写入共享 SRAM，任务邮箱置位 \\
 任务配置 & E203 & 校验通过且上次任务已排空，完成地址与格式配置 \\
@@ -288,7 +309,7 @@ DMA & 装载操作数，写回打包结果 & 共享 SRAM、解包器、结果队
 写回结束 & DMA & 末笔写响应返回，计算核与格式化通路均已排空 \\
 软件通知 & E203 & 读取终止状态，发布邮箱与返回码 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 \par\Needspace{5\baselineskip}\addvspace{0.25\baselineskip}\noindent{\reportitemfont\bfseries\color{black}\fontsize{12}{16}\selectfont（1）操作数齐备后启动计算}\par\nobreak\vspace{1pt}
@@ -297,15 +318,13 @@ Host 完成数据准备并置位邮箱后，E203 检查设备状态和任务地�
 
 \par\Needspace{5\baselineskip}\addvspace{0.25\baselineskip}\noindent{\reportitemfont\bfseries\color{black}\fontsize{12}{16}\selectfont（2）装载、计算与写回重叠推进}\par\nobreak\vspace{1pt}
 
-运行期间，阵列读取当前输入缓冲，DMA 向另一组空闲缓冲装载后续行块，结果队列将已完成块交给 DMA 写回。\textbf{输入缓冲未释放时不覆盖，结果队列未就绪时不提交}：前者保护正在读取的操作数，后者使阵列在提交状态保留部分和，待下游能够接收后再继续。三条路径按握手条件推进，无需假定总线始终快于计算。图~\ref{fig:2-2} 展示其交互关系。
+运行期间，阵列读取当前输入缓冲，DMA 向另一组空闲缓冲装载后续行块，结果队列将已完成块交给 DMA 写回。\textbf{输入缓冲未释放时不覆盖，结果队列未就绪时不提交}：前者保护正在读取的操作数，后者使阵列在提交状态保留部分和，待下游能够接收后再继续。三条路径按握手条件推进，无需假定总线始终快于计算。各阶段的执行模块与推进条件见表~\ref{tab:task-stages}。
 
-\ph[54mm]{2-2}{第 0 层任务的 Host、E203、DMA 与阵列交互时序}{绘制 Host、E203、DMA 与计算阵列四条垂直生命线的交互时序图：标出（1）$t_0$ 首个 Host 数据写入共享 SRAM 请求（严格计时起点）；（2）Host 置位任务邮箱，E203 校验配置并写 DMA 启动位后进入 WFI；（3）DMA 经历 \texttt{CLEAR} 与 \texttt{LOAD}（7,212 拍），完成 W、b 与首块 X 装载后在 \texttt{LAUNCH} 启动阵列；（4）\texttt{RUN} 阶段（15,680 拍）内阵列执行 13,312 拍有效归约，与后续 X 块装载及结果字写回重叠；（5）$t_{\text{end}}$ 末笔 DMA 写响应返回（严格计时终点，第 0 层共 32,959.5 拍）；（6）DMA 触发完成中断唤醒 E203，固件复制 15 项计数器并更新软件邮箱通知 Host。}
 
 \par\Needspace{5\baselineskip}\addvspace{0.25\baselineskip}\noindent{\reportitemfont\bfseries\color{black}\fontsize{12}{16}\selectfont（3）区分计算核完成、写回完成与软件通知}\par\nobreak\vspace{1pt}
 
-\textbf{计算核完成}表示末个打包结果字已被 DMA 从结果队列取走，内部计算与格式化通路排空；此时总线写事务仍可能尚未结束。DMA 继续等待在途事务归零、末笔写响应返回，并确认计算核完成与结果队列为空，才置位完成状态并触发中断，这一时刻为\textbf{硬件严格完成}。随后 E203 读取状态和计数器、更新邮箱，形成\textbf{软件发布完成}。图~\ref{fig:task-handoff} 区分了三个观察边界，避免将软件收尾时间混入严格任务周期。
+\textbf{计算核完成}表示末个打包结果字已被 DMA 从结果队列取走，内部计算与格式化通路排空；此时总线写事务仍可能尚未结束。DMA 继续等待在途事务归零、末笔写响应返回，并确认计算核完成与结果队列为空，才置位完成状态并触发中断，这一时刻为\textbf{硬件严格完成}。随后 E203 读取状态和计数器、更新邮箱，形成\textbf{软件发布完成}。这三个观察边界应分别统计，避免将软件收尾时间混入严格任务周期；计算核完成与末笔写响应的先后关系见图~\ref{fig:4-2}。
 
-\ph[38mm]{task-handoff}{FFN1 任务完成状态的三个观察边界}{绘制从左至右的三节点时序递进关系图：节点 1“计算核完成（\texttt{core\_done}，末个结果字从结果队列出队）” $\xrightarrow{\text{DMA 写请求发出与总线应答}}$ 节点 2“硬件严格完成（DMA 收到第 12,672 笔末笔写响应，\texttt{done} 置位并触发 IRQ，严格计时窗口在此截止）” $\xrightarrow{\text{E203 唤醒并复制计数器}}$ 节点 3“软件发布完成（E203 更新邮箱完成标志，Host 读取结果与计数快照）”。}
 
 \section{加速器模块划分与接口关系}
 
@@ -313,18 +332,22 @@ DMA、解包器、计算阵列、结果队列和事件控制器分别承担搬�
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{加速器模块的数据交接与接口约定}\label{tab:module-interfaces}
-\begin{tabularx}{\linewidth}{>{\centering\arraybackslash}p{26mm}Y>{\raggedright\arraybackslash}p{43mm}}
+\begin{tabular}{@{\hspace{2pt}}U{21}T{58}T{37}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{\sffamily 模块} & \multicolumn{1}{c}{\sffamily 输入与输出} & \multicolumn{1}{c}{\sffamily 接口约定} \\
+\thcell{模块} & \thleft{输入与输出} & \thleft{接口约定} \\
 \midrule
 DMA 控制器 & 接收命令、总线响应与结果字；\newline 发出总线请求、解包数据与终止状态 & 两级在途信用；\newline 未接收的请求保持不变 \\
+\addlinespace[1.5pt]
 W/X 解包器 & 接收 32 位传输字；\newline 输出 64 位 W 四元组或 68 位 X 残差 & 逐值抽取编码数据；\newline 背压时保持输出 \\
+\addlinespace[1.5pt]
 计算阵列 & 接收 X、W、偏置与块坐标；\newline 输出 64 个 INT40 结果及有效行数 & 适配同步读延迟；\newline 支持块间融合提交 \\
+\addlinespace[1.5pt]
 结果队列 & 接收 INT40 结果块及起始坐标；\newline 输出 32 位写回字及 15 位索引 & 暂存一个输出块；\newline 支持末对同拍交接 \\
+\addlinespace[1.5pt]
 事件控制器 & 接收完成、错误与看门狗事件；\newline 输出挂起状态与中断请求 & 同拍清除与新事件\newline 并发时不丢失通知 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 模块间的数据交接分为\textbf{块级与字级}：输入行块完整写入后，以有效位向阵列开放读取；阵列完成一个输出块后，将 64 个 INT40 结果并行交给结果队列；结果队列再按 32 位字和线性索引向 DMA 发送。这样既保留阵列的并行提交能力，也适配系统总线的字宽。
@@ -403,49 +426,54 @@ a_{i,j} &= s_{i,j}^{(64)},\quad i=0,\ldots,98,\quad j=0,\ldots,255.
 \textbf{权重沿输入行复用。} 固定 $(k,j)$ 后，同一权重值 $W_{k,j}$ 用于 99 个输入行，硬件可向同时计算该列不同行的处理单元广播权重。偏置 $b_j$ 同样由该列的各行共用。
 
 \textbf{部分和沿归约维度驻留。} 固定 $(i,j)$ 后，64 项乘积累加到同一输出位置；部分和在归约期间保留于对应处理单元，完成后再提交写回。
-\ph[54mm]{3-1}{FFN1 的三种数据复用关系}{分（a）（b）（c）三栏绘制数据复用关系：（a）$X$ 行向复用：单个输入元素 $X_{i,k}$ 广播至同行的 $Y_{i,0},Y_{i,1},\ldots,Y_{i,255}$，沿输出列维度 $j$ 复用 256 次；（b）$W$ 列向复用：单个权重元素 $W_{k,j}$ 广播至同列的 $Y_{0,j},Y_{1,j},\ldots,Y_{98,j}$，沿输入行维度 $i$ 复用 99 次；（c）归约维度累加：$k=0,\ldots,63$ 的 64 个乘积 $p_k$ 与偏置 $b_j$ 汇入同一处理单元内部的累加器寄存器 $acc$。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=.94\linewidth]{figures/integrated/3-1.pdf}
+\caption{FFN1 的三种数据复用关系}\label{fig:3-1}
+\end{figure}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{三种复用关系及驻留层级}\label{tab:ch3-1}
-\begin{tabulary}{\linewidth}{@{}CllL@{}}
+\caption{操作数与累加结果的复用关系及驻留位置}\label{tab:ch3-1}
+\begin{tabular}{@{\hspace{2pt}}cccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 对象}} & \multicolumn{1}{c}{{\sffamily\mdseries 复用维度}} & \multicolumn{1}{c}{{\sffamily\mdseries 复用/累加次数}} & \multicolumn{1}{c}{{\sffamily\mdseries 驻留层级}} \\
+\thcell{对象} & \thcell{复用维度} & \thcell{复用/累加次数} & \thcell{驻留层级} \\
 \midrule
 $X$ 行 & 输出列（$j$） & 256 & 行块双缓冲，用毕释放 \\
 $W$ 列 & 输入行（$i$） & 99 & 整层常驻，不随行块重载 \\
 $b$ 项 & 输入行（$i$） & 99 & 列寄存器与小容量存储 \\
 累加结果 & 归约（$k$） & 64 & 处理单元内部寄存器 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
-图~\ref{fig:ffn-index} 进一步标明单个输出与输入行、权重列的对应关系。阵列将多个 $(i,j)$ 位置并行展开，存储则按复用范围组织为权重常驻、输入行块双缓冲和部分和寄存器驻留，具体结构分别在 3.2、3.3 节说明。
+上述公式明确了单个输出与输入行、权重列的对应关系。阵列将多个 $(i,j)$ 位置并行展开，存储则按复用范围组织为权重常驻、输入行块双缓冲和部分和寄存器驻留，具体结构分别在 3.2、3.3 节说明。
 
-\ph[44mm]{ffn-index}{单个输出元素与矩阵行、列的对应关系}{绘制矩阵乘加 $Y_{99\times256}=X_{99\times64}W_{64\times256}+b_{1\times256}$ 的索引映射图：左侧矩阵 $X$ 高亮第 $i$ 行向量 $(X_{i,0},\ldots,X_{i,63})$，中间矩阵 $W$ 高亮第 $j$ 列向量 $(W_{0,j},\ldots,W_{63,j})^{\mathsf{T}}$，两者沿公共归约维度 $k\in[0,63]$ 逐项相乘累加并加上列偏置 $b_j$，右侧输出矩阵 $Y$ 高亮唯一更新的目标元素 $Y_{i,j}$。}
 
 \subsection{定点格式与累加位宽}
 
 输入与权重恢复为 INT16 后参与计算，偏置采用 INT32。\textbf{累加位宽按整数最坏情况确定}，不依赖样本中数值较小的假设：先推导单项乘积，再计算 64 项求和与偏置叠加的上界，结果见表~\ref{tab:ch3-2}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{位宽推导}\label{tab:ch3-2}
-\begin{tabulary}{\linewidth}{@{}cLL@{}}
+\caption{乘加与偏置运算的位宽推导}\label{tab:ch3-2}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 步骤}} & \multicolumn{1}{c}{{\sffamily\mdseries 上界}} & \multicolumn{1}{c}{{\sffamily\mdseries 所需位宽}} \\
+\thcell{运算步骤} & \thcell{绝对值上界} & \thcell{所需位宽（位）} \\
 \midrule
 乘积 & $|X\cdot W|\le2^{30}$ & 32 \\
 累加 & $\left|\sum_{k=0}^{63}p_k\right|\le2^{36}$ & 38 \\
 加偏置 & $\left|\sum_kp_k+b\right|<2^{37}$ & 38 \\
 选型 & 留 2 位余量 & 40 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 单项乘积的精确范围为 $[-2^{30}+2^{15},\,+2^{30}]$，需要 32 位有符号表示。64 项求和的绝对值不超过 $2^{36}$；再叠加 INT32 偏置后，上界小于 $2^{37}$，38 位有符号整数即可覆盖。硬件另留 2 位余量，采用\textbf{INT40 累加器}，在归约过程中不做右移截断或饱和。若直接使用 INT32，部分输入组合会溢出，或必须引入改变整数内积的中间量化。
 
-\ph[44mm]{3-7}{单个输出单元的双路乘加映射与累加寄存器更新}{绘制单个处理单元（PE）的内部算术通路图：左侧同拍输入第 $i$ 行的两个归约操作数 $X_{i,2t},X_{i,2t+1}$ 与第 $j$ 列的两个权重 $W_{2t,j},W_{2t+1,j}$，经两个 $16\times16$ 有符号乘法器生成 $p_0,p_1$；中间先将 $p_0,p_1$ 符号扩展并相加为双路乘积和；右侧选择器在每个块的首个有效归约拍（$t=0$）选择符号扩展后的列偏置 $b_j$，其余拍（$t=1..31$）选择 40 位累加寄存器 $acc$ 的上一拍输出，经 40 位加法器每有效拍更新一次 $acc$，32 拍后输出完整 INT40 累加结果。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/3-7.pdf}
+\caption{单个输出单元的双路乘加映射与累加寄存器更新}\label{fig:3-7}
+\end{figure}
 
 INT40 位宽确定后，处理单元按图~\ref{fig:3-7} 将两个归约位置合并到一次寄存器更新中。设 $p_0=X_{i,2t}W_{2t,j}$、$p_1=X_{i,2t+1}W_{2t+1,j}$，两路乘积分别符号扩展到累加位宽，再与基底值相加：
 \begin{equation}
@@ -476,11 +504,11 @@ q, & \text{其他},
 其中 $\operatorname{sat}_{16}(q\prime)=\min(32{,}767,\max(-32{,}768,q\prime))$。算术右移得到 $q$，低 15 位直接给出余数 $r$，正负输入共用同一进位判据。表~\ref{tab:ch3-3} 给出半步舍入与越界饱和示例。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{写回规则的边界值行为}\label{tab:ch3-3}
-\begin{tabulary}{\linewidth}{@{}rrrrL@{}}
+\caption{写回舍入与饱和的边界值示例}\label{tab:ch3-3}
+\begin{tabular}{@{\hspace{2pt}}ccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries $a$}} & \multicolumn{1}{c}{{\sffamily\mdseries $q$}} & \multicolumn{1}{c}{{\sffamily\mdseries $r$}} & \multicolumn{1}{c}{{\sffamily\mdseries $q'$}} & \multicolumn{1}{c}{{\sffamily\mdseries 输出}} \\
+\thcell{$a$} & \thcell{$q$} & \thcell{$r$} & \thcell{$q'$} & \thcell{输出及处理结果} \\
 \midrule
 16,384 & 0 & $2^{14}$ & 0 & 0（偶商不变） \\
 49,152 & 1 & $2^{14}$ & 2 & 2（奇商加一） \\
@@ -489,13 +517,16 @@ $-49{,}152$ & $-2$ & $2^{14}$ & $-2$ & $-2$（偶商不变） \\
 $+2^{31}$ & 65,536 & 0 & 65,536 & 32,767（饱和） \\
 $-2^{31}$ & $-65{,}536$ & 0 & $-65{,}536$ & $-32{,}768$（饱和） \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 RNE 在余数恰为半步时选择相邻偶数，避免所有半步都朝同一方向舍入；它并不保证任意样本集的平均误差严格为零。\textbf{饱和必须位于舍入之后}：例如 $q=32{,}767$ 且需要进位时，应先得到 32,768，再限幅至 32,767，而不能先截为 16 位造成回绕。
 
 完成转换后，同一行相邻两列组成一个 32 位字 $\{Y_{i,2p+1},Y_{i,2p}\}$，偶数列位于低半字、奇数列位于高半字，并按行主序写入共享 SRAM。图~\ref{fig:rne-path} 汇总该通路。至此，计算公式、内部位宽与最终写回格式形成统一的数值定义，可供 RTL 与整数参考逐位核对。
-\ph[38mm]{rne-path}{INT40 累加值的舍入、饱和与组字顺序}{绘制从左至右的四级写回转换流水图：INT40 累加值 $a$ $\to$ 算术右移 15 位提取整数商 $q=a[39:15]$ 与非负余数 $r=a[14:0]$ $\to$ RNE 半步奇偶进位判决（得 $q'$）并执行 $[-32768, 32767]$ INT16 饱和 $\to$ 同行相邻两列拼成 32 位写回字 $\{Y_{i,2p+1}, Y_{i,2p}\}$。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=.98\linewidth]{figures/integrated/rne-path.pdf}
+\caption{INT40 累加值的舍入、饱和与组字顺序}\label{fig:rne-path}
+\end{figure}
 
 \Needspace{10\baselineskip}
 \section{计算阵列设计}
@@ -524,11 +555,11 @@ N_{\text{op}}=P_k\left(P_i+P_j\right).
 式~\eqref{eq:reuse-efficiency}~表明：$\eta$ 与归约展开度 $P_k$ 无关，且在 $P_i+P_j$ 固定时，当且仅当行列对称（$P_i=P_j$）时取得极大值。表~\ref{tab:ch3-4} 对比了五种候选分块几何在峰值算力、每拍独立操作数、供数效率、累加器开销及 99 行尾块空转比例上的表现。
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{候选分块几何的对比}\label{tab:ch3-4}
-\begin{tabulary}{\linewidth}{@{}Crrrrr@{}}
+\caption{候选分块结构的并行度与供数效率对比}\label{tab:ch3-4}
+\begin{tabular}{@{\hspace{2pt}}cccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries $(P_i,P_j,P_k)$}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{MAC\\ /拍}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{独立操作数\\ /拍}}} & \multicolumn{1}{c}{{\sffamily\mdseries 供数效率 $\eta$}} & \multicolumn{1}{c}{{\sffamily\mdseries 累加器数}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{尾块\\空闲}}} \\
+\thcell{$(P_i,P_j,P_k)$} & \thcell{MAC（次/拍）} & \thcell{独立操作数（个/拍）} & \thcell{供数效率 $\eta$} & \thcell{累加器数} & \thcell{尾块空闲} \\
 \midrule
 $(4,8,2)$ & 64 & 24 & 2.67 & 32 & 1/100（1.0\%） \\
 $\mathbf{(8,8,2)}$ & \textbf{128} & \textbf{32} & \textbf{4.00} & \textbf{64} & \textbf{5/104（4.8\%）} \\
@@ -536,7 +567,7 @@ $(8,16,2)$ & 256 & 48 & 5.33 & 128 & 5/104（4.8\%） \\
 $(16,8,2)$ & 256 & 48 & 5.33 & 128 & 13/112（11.6\%） \\
 $(8,8,4)$ & 256 & 64 & 4.00 & 64 & 5/104（4.8\%） \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 候选配置的区别不只是乘法器数量。$(4,8,2)$ 每拍仅完成 64 次乘加，归约周期比选定配置多一倍；$(8,16,2)$ 与 $(16,8,2)$ 需要两倍累加器，后者还增加尾块填充；$(8,8,4)$ 则把同拍操作数需求提高至 64 个，需要更多存储分块与连线。\textbf{选用 $(8,8,2)$ 是在计算并行度、供数端口和尾块损失之间的取舍}：64 个处理单元以 32 个独立操作数支撑 128 次乘法，内部 SRAM 共 52 个宏。
@@ -549,16 +580,16 @@ T_{\text{array}}=416\times32=13{,}312\ \text{拍}.
 对比全层有效乘加次数对应的无填充下界 $1{,}622{,}016 / 128 = 12{,}672$ 拍，阵列实际发射利用率为 $12{,}672 / 13{,}312 = 95.19\%$。多出的 640 拍（占 4.81\%）来自第 12 号尾块中未使用的 5 个填充行（$5\text{ 行}\times32\text{ 列组}\times32\text{ 拍}/8\text{ 行}=640\text{ 拍}$），该利用率仅衡量尾块填充造成的计算槽位损失，不包含初装、结果提交及背压等待；块间融合提交在输入与下游均就绪时减少切换空拍。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{两种取数结构的片内读次数（单块 $8\times8$）}\label{tab:ch3-5}
-\begin{tabulary}{\linewidth}{@{}Lrrr@{}}
+\caption{独立取数与广播取数的片内读取量对比（单个 $8\times8$ 输出块）}\label{tab:ch3-5}
+\begin{tabular}{@{\hspace{2pt}}cccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 结构}} & \multicolumn{1}{c}{{\sffamily\mdseries 每拍读（16 位字）}} & \multicolumn{1}{c}{{\sffamily\mdseries 每块读（32 拍）}} & \multicolumn{1}{c}{{\sffamily\mdseries 读/MAC}} \\
+\thcell{取数结构} & \thcell{每拍读取（16 位字）} & \thcell{每块读取（32 拍）} & \thcell{读/MAC} \\
 \midrule
 每乘法器独立取数 & 256 & 8,192 & 2.00 \\
 行、列广播 & 32 & 1,024 & 0.25 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 表~\ref{tab:ch3-5} 以\textbf{一次 16 位操作数读取}为单位比较两种取数方式。一个输出块包含 4,096 次 MAC：独立取数需读取 8,192 个操作数，行列广播只需 1,024 个，因此每 MAC 读取次数由\textbf{2.00 降至 0.25}，减少为原来的 $1/8$。这衡量的是内部存储读取，并非共享 SRAM 总线事务。按 150 MHz 目标频率折算，32 个 INT16 操作数/拍对应 9.6 GB/s 聚合读带宽，可支撑 19.2 GMAC/s 的峰值计算；实际任务还包含装载、提交和等待。
@@ -573,11 +604,11 @@ T_{\text{array}}=416\times32=13{,}312\ \text{拍}.
 \end{itemize}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{$(8,8,2)$ 每拍取数与广播}\label{tab:ch3-6}
-\begin{tabulary}{\linewidth}{@{}ClrL@{}}
+\caption{$(8,8,2)$ 阵列的每拍取数与广播关系}\label{tab:ch3-6}
+\begin{tabular}{@{\hspace{2pt}}cccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 取数}} & \multicolumn{1}{c}{{\sffamily\mdseries 数量}} & \multicolumn{1}{c}{{\sffamily\mdseries 广播方向}} & \multicolumn{1}{c}{{\sffamily\mdseries 服务范围}} \\
+\thcell{取数} & \thcell{数量} & \thcell{广播方向} & \thcell{服务范围} \\
 \midrule
 $X$ & 8 行\ensuremath{\times}2 个 $k$ = 16 & 沿列方向 & 该行 8 个处理单元 \\
 $W$ & 8 列\ensuremath{\times}2 个 $k$ = 16 & 沿行方向 & 该列 8 个处理单元 \\
@@ -585,10 +616,13 @@ $b$ & 8 项（每列组一次） & 列寄存器 & 该列 8 个处理单元 \\
 \midrule
 合计 & 32 个独立操作数 & — & 128 路乘法 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
-\ph[56mm]{3-2}{$(8,8,2)$ 的操作数广播与处理单元内部}{绘制 $8\times8$ 处理单元网格与单 PE 放大结构图：左侧为 8 行 $\times$ 8 列 PE 阵列，标出左侧 8 行每行输入一对 $(X_{r,2t}, X_{r,2t+1})$ 并沿水平方向广播至该行 8 个 PE，上方 8 列每列输入一对 $(W_{2t,c}, W_{2t+1,c})$ 及列偏置 $b_c$ 并沿垂直方向广播至该列 8 个 PE；右侧放大展示单个 $\text{PE}(r,c)$ 内部：接收经操作数隔离门控后的 $(x_0,x_1)$ 与 $(w_0,w_1)$，执行两路 $16\times16$ 乘法、符号扩展求和，并与上一拍 INT40 累加值（首拍为 $b_c$）累加。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/3-2.pdf}
+\caption{$(8,8,2)$ 的操作数广播与处理单元内部}\label{fig:3-2}
+\end{figure}
 
 在状态切换、等待输入或下游背压时，乘法器不需要计算新结果。阵列因此在每行 $X$ 广播入口加入\textbf{操作数隔离}：只在有效乘加消费拍（\texttt{MAC}、\texttt{LAST} 或融合提交首拍）放行真实数据，其余时间将 $X$ 广播总线置零；累加寄存器也仅在有效使能下更新。该结构避免无效数据变化传播到乘法器，功能上不改变有效计算结果，实际功耗收益仍需由活动数据评估。
 
@@ -597,27 +631,41 @@ $b$ & 8 项（每列组一次） & 列寄存器 & 该列 8 个处理单元 \\
 输出块的执行分为\textbf{准备操作数、连续归约、提交结果}三个阶段。同步 SRAM 在时钟沿采样地址并更新输出，当前封装没有额外的读数据寄存级。控制器先在 \texttt{PRIME} 发出首对地址，再在后续有效归约沿更新累加寄存器。图~\ref{fig:3-3} 区分地址采样、数据有效和结果更新事件，表~\ref{tab:ch3-7} 列出对应状态；不能把整个取数与消费过程简单称为宏本身的两拍读延迟。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{阵列状态机与转移条件}\label{tab:ch3-7}
-\begin{tabulary}{\linewidth}{@{}ClL@{}}
+\caption{计算阵列的状态、操作与转移条件}\label{tab:ch3-7}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 状态}} & \multicolumn{1}{c}{{\sffamily\mdseries 含义}} & \multicolumn{1}{c}{{\sffamily\mdseries 转移条件}} \\
+\thcell{状态} & \thcell{含义} & \thcell{转移条件} \\
 \midrule
 \texttt{IDLE} & 空闲 & 启动且装载完成 \\
+\addlinespace[1.5pt]
 \texttt{BREQ} & 发出偏置读地址 & 无条件进入 \texttt{BLOAD} \\
+\addlinespace[1.5pt]
 \texttt{BLOAD} & 采样偏置并拼接 INT32 & 8 列到齐后进入 \texttt{PRIME} \\
+\addlinespace[1.5pt]
 \texttt{PRIME} & 发出 $k=0,1$ 的 X/W 地址 & 无条件进入 \texttt{MAC} \\
+\addlinespace[1.5pt]
 \texttt{MAC} & 用已返回数据计算，同时请求下一对 & $k=62$ 时进入 \texttt{LAST} \\
+\addlinespace[1.5pt]
 \texttt{LAST} & 累加最后一对；可预读下一块 & 进入 \texttt{PIPE} 或 \texttt{EMIT} \\
+\addlinespace[1.5pt]
 \texttt{PIPE} & 可选乘积寄存级 & 进入 \texttt{EMIT} \\
+\addlinespace[1.5pt]
 \texttt{EMIT} & 提交 64 个 INT40 给结果队列 & 队列就绪则推进，否则保持 \\
+\addlinespace[1.5pt]
 \texttt{WAIT\_TILE} & 下一行块尚未有效 & 另一组缓冲有效后回 \texttt{PRIME} \\
+\addlinespace[1.5pt]
 \texttt{DRAIN} & 最后一块提交后收尾 & 结果全部出队后回 \texttt{IDLE} \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
-\ph[52mm]{3-3}{输出块从偏置预取到累加完成的时序}{以明确的上升沿为刻度，分别标地址采样、同步 SRAM 输出有效、累加寄存器更新。覆盖 PRIME、有效归约、LAST 与 EMIT 的关系；宏输出直接连接操作数通路，不额外绘制读数据寄存级。后续以实际波形核对边沿定义。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/3-3.pdf}
+\caption{输出块预取、累加与背压提交的定向 RTL 仿真波形}\label{fig:3-3}
+\end{figure}
+
+定向激励取 $X=W=1$、偏置为 5，观察尾块的 3 个有效行。代表单元完成 32 个双路归约拍后累加值为 69；结果端背压期间保持该值，旧列组被接收后再以融合首拍启动下一列组。
 
 块内通过预取维持连续计算，块间则尽量把准备工作隐藏在当前块的归约期间。
 
@@ -640,9 +688,8 @@ $b$ & 8 项（每列组一次） & 列寄存器 & 该列 8 个处理单元 \\
 \]
 块号最低位交替选择 A、B 缓冲。尾块先满足首块就绪条件，后续满块在后台装载；每个行块包含 1,024 个有效归约周期，实际跨度还需计入提交和控制等待。
 
-\ph[50mm]{3-8}{尾块首个列组的有效行屏蔽与 INT16 双值打包}{绘制 $8\times8$ 尾块输出网格（行 96–103，列 0–7）：前三行（行 96、97、98）涂成浅蓝色表示有效行，每行按列对 0（列 0,1）、列对 1（列 2,3）、列对 2（列 4,5）、列对 3（列 6,7）划分为 4 个 32 位打包字，合计 $3\times4=12$ 个有效写回字；后五行（行 99–103）涂成浅灰色表示无效填充行，在结果队列出队时由 \texttt{valid\_rows=3} 直接屏蔽，不产生任何总线写请求。}
 
-在计算阶段，阵列对尾块仍按统一的 $8\times8$ 几何执行 32 拍归约；但在结果移交与写回阶段，硬件通过有效行数信号（满块 \texttt{valid\_rows}=8，尾块 \texttt{valid\_rows}=3）屏蔽无效行，如图~\ref{fig:3-8} 所示。对每个输出块，相邻两列打包为 1 个 32 位字，每行包含 $8/2=4$ 个列对字（\texttt{column\_pair}）。满块的单个列组输出 $8\text{ 行}\times4\text{ 列对}=32$ 个字；而尾块的单个列组仅输出前 3 个有效行（行 96、97、98），即 $3\text{ 行}\times4\text{ 列对}=12$ 个写回字，行 $99\sim103$ 的 20 个无效字在结果队列内直接丢弃，不向系统总线发起写请求。因此，全层 13 个行块、32 个列组向共享 SRAM 提交的总写回字数为：
+在计算阶段，阵列对尾块仍按统一的 $8\times8$ 几何执行 32 拍归约；但在结果移交与写回阶段，硬件通过有效行数信号（满块 \texttt{valid\_rows}=8，尾块 \texttt{valid\_rows}=3）屏蔽无效行。对每个输出块，相邻两列打包为 1 个 32 位字，每行包含 $8/2=4$ 个列对字（\texttt{column\_pair}）。满块的单个列组输出 $8\text{ 行}\times4\text{ 列对}=32$ 个字；而尾块的单个列组仅输出前 3 个有效行（行 96、97、98），即 $3\text{ 行}\times4\text{ 列对}=12$ 个写回字，行 $99\sim103$ 的 20 个无效字在结果队列内直接丢弃，不向系统总线发起写请求。因此，全层 13 个行块、32 个列组向共享 SRAM 提交的总写回字数为：
 \begin{equation}
 \label{eq:output-word-count}
 12\times32\times32+1\times32\times12=12{,}672,
@@ -661,7 +708,12 @@ $b$ & 8 项（每列组一次） & 列寄存器 & 该列 8 个处理单元 \\
 
 组间双缓冲不能消除组内的所有冲突。差分恢复第 2、4、6 行时，需要先读出同组的前驱奇数行；这一读取可能与上一行对的恢复写入命中同一个单端口宏。\texttt{x\_conflict} 检出碰撞后拉低 \texttt{dma\_x\_ready}，优先完成写入并暂停接收 1 拍。这样以局部装载等待解决冲突，无需将整组改为双端口存储。
 
-\ph[44mm]{x-overlap}{X 双缓冲所有权切换示意}{绘制横轴为执行时间/行块推进次序、纵轴为“X 缓冲组 A（bank 0）”与“X 缓冲组 B（bank 1）”的双通道甘特时序图：标出组 A 先装载首块 $\to$ 置位 \texttt{x\_valid[0]} 后由计算核连续读取 32 个列组，同时组 B 在后台由 DMA 解包装载下一行块 $\to$ 组 B 装载完置位 \texttt{x\_valid[1]}，待组 A 的第 31 号末列组在 \texttt{EMIT} 拍提交完毕后立即清零 \texttt{x\_valid[0]} 释放组 A，计算核无缝切换至读取组 B，组 A 转为接收后续行块装载。用垂直虚线标出“装载完置有效”与“末列组提交后释放”两个切换条件。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/x-overlap.pdf}
+\caption{X 双缓冲所有权切换示意}\label{fig:x-overlap}
+\end{figure}
+
+图中采用 \texttt{TAIL\_FIRST=1} 的行块传输次序；条带表示所有权与重叠关系，不按实测周期比例绘制。
 
 缓冲所有权由 \texttt{x\_valid[1:0]} 表示，见图~\ref{fig:x-overlap}。DMA 写满一个行块后置位对应有效标志，计算核才可读取；最后一个列组成功提交后，计算核清除有效位，并通过 \texttt{dma\_x\_free} 释放该组。\textbf{释放依据是末列组提交，而非最后一次 SRAM 读取}，因此即使结果端背压，也不会提前覆盖当前行块。两端按实际进度交接，不依赖固定装载速度。
 
@@ -682,14 +734,17 @@ $b$ & 8 项（每列组一次） & 列寄存器 & 该列 8 个处理单元 \\
 \item \textbf{组内冲突检测处理差分恢复。} 前驱奇数行读取与上一行对写入碰撞时，由 \texttt{x\_conflict} 插入一拍等待；它解决的是空闲组内部的恢复依赖。
 \end{enumerate}
 
-\ph[52mm]{3-4}{片内 SRAM 的组织与读写关系}{绘制片内存储从解包写入到阵列读取的三级结构图：左侧为权重/输入解包器（输出 64 位 W 四元组与 68 位 X 残差四元组）及偏置写接口；中间为四组单端口 SRAM 宏阵列——$X$ 缓冲组 A（8 行 $\times$ 2 奇偶 = 16 个 $128\times16$ 宏）、$X$ 缓冲组 B（8 行 $\times$ 2 奇偶 = 16 个 $128\times16$ 宏）、常驻 $W$ 存储（8 列 $\times$ 2 奇偶 = 16 个 $1024\times16$ 宏）、偏置存储（2 深度段 $\times$ 高低半字 = 4 个 $128\times16$ 宏），总计 52 个宏、41 KiB；右侧为 $8\times8$ 计算阵列（64 个 PE），每拍从活动 $X$ 组的 16 个宏和 $W$ 的 16 个宏并行取数。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/3-4.pdf}
+\caption{片内 SRAM 的组织与读写关系}\label{fig:3-4}
+\end{figure}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{片内 SRAM 组织与资源统计}\label{tab:ch3-8}
-\begin{tabulary}{\linewidth}{@{}Lrrr@{}}
+\caption{基础配置的片内 SRAM 组织与容量}\label{tab:ch3-8}
+\begin{tabular}{@{\hspace{2pt}}lccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 用途}} & \multicolumn{1}{c}{{\sffamily\mdseries 宏规格}} & \multicolumn{1}{c}{{\sffamily\mdseries 实例数}} & \multicolumn{1}{c}{{\sffamily\mdseries 容量}} \\
+\thleft{用途与组织} & \thcell{宏规格} & \thcell{实例数} & \thcell{容量} \\
 \midrule
 $X$ 行块双缓冲（2 组\ensuremath{\times}8 行\ensuremath{\times}2 奇偶） & \texttt{128\ensuremath{\times}16} & 32 & 8 KiB \\
 $W$ 常驻（8 列\ensuremath{\times}2 奇偶） & \texttt{1024\ensuremath{\times}16} & 16 & 32 KiB \\
@@ -697,7 +752,7 @@ $W$ 常驻（8 列\ensuremath{\times}2 奇偶） & \texttt{1024\ensuremath{\time
 \midrule
 合计 & & \textbf{52} & \textbf{41 KiB} \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 结构检查记录了 128 路乘法、52 个内部 SRAM 宏及相关寄存器。宏容量用于核对存储组织；物理面积还包含译码、读写外围与控制电路，应按映射单元及指定宏面积统计，不能由逻辑容量直接折算。第六章的库单位仍需结合原始报告完成 mm² 预算核验。
@@ -711,7 +766,10 @@ $W$ 常驻（8 列\ensuremath{\times}2 奇偶） & \texttt{1024\ensuremath{\time
 
 无损编码只改变\textbf{共享 SRAM 中的传输表示}，解包后仍使用标准 INT16 操作数。定宽权重需要 8,192 个 32 位字；不同列的量化动态范围不同，部分列可用更少位数表示，因此本设计先记录列位宽，再紧密排列载荷。解包器按四元组恢复数据，直接适配上一节的四宏并行写入，见图~\ref{fig:3-5}。
 
-\ph[46mm]{3-5}{W 编码流的列宽描述、变长载荷与四元组恢复}{绘制权重无损解包的数据流图：前 32 个 32 位传输字为列宽头部（每字含 8 个 4 位描述子，共描述 256 列的位宽 $bw_c = d_c + 1$） $\to$ 变长紧凑比特流进入 96 位移位位储存器（bit reservoir） $\to$ 按当前四元组所在的偶奇两列位宽 $(bw_{2p}, bw_{2p+1})$，在单拍内同时抽取 4 个紧凑字段（偶列偶 $k$、偶列奇 $k$、奇列偶 $k$、奇列奇 $k$） $\to$ 各自符号扩展至 INT16 组成 64 位四元组，同拍写入对应的 4 个 $W$ SRAM 分块。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/3-5.pdf}
+\caption{W 编码流的列宽描述、变长载荷与四元组恢复}\label{fig:3-5}
+\end{figure}
 
 权重流由\textbf{列宽头部与紧凑载荷}组成。前 32 个字保存 256 个 4 位描述子，实际位宽为 $bw_c=d_c+1\in[1,16]$；编码器为同一列对选用共同的最小无损位宽。硬件读取头部后即可得到期望总字数 $\texttt{expected\_words}=32+\lceil\sum_{c=0}^{255}64bw_c/32\rceil$，无需另行配置压缩长度。
 
@@ -735,18 +793,21 @@ X_{\text{odd}}=X_{\text{even}}+\delta_1.
 \textbf{每个行块从零参考重新开始}：首行对取 $X_{\text{prev}}=0$，后续行对读取同块内的前驱奇数行作为参考。同对奇数行直接使用刚恢复出的偶行，无需再次读取 SRAM。这一安排切断了跨行块依赖，支持尾块优先装载；组内前驱读取与恢复写入的冲突由第~\ref{sec:x-buffers} 节所述的握手机制处理。
 
 尾块中与行 98 配对的行 99 无效，解包时将其残差置零，不消耗载荷比特，也不写入有效结果。图~\ref{fig:3-6} 给出从紧凑载荷到四宏写入的恢复路径。
-\ph[46mm]{3-6}{X 编码流的行间差分与数据恢复}{绘制输入行块差分恢复的双拍流水框图：输入 16 字头部（含 \texttt{0x5844} 标识与 99 行 5 位位宽）及紧凑残差流 $\to$ 位储存器按行对提取 4 个 17 位有符号相邻行一阶残差 $(\delta_{0,\text{even}},\delta_{0,\text{odd}},\delta_{1,\text{even}},\delta_{1,\text{odd}})$ $\to$ 块首行对 $(0,1)$ 以 0 为参考行，后续行对 $(2,3)/(4,5)/(6,7)$ 在接收拍从内部 SRAM 读取上一奇数行 $X_{\text{prev}}$（若与上一拍写入同宏则由 \texttt{x\_conflict} 暂停 1 拍） $\to$ 恢复拍按两步链式计算 $X_{\text{even}}=X_{\text{prev}}+\delta_0$ 与 $X_{\text{odd}}=X_{\text{even}}+\delta_1$，经 INT16 越界检查后同时写入偶行、奇行对应的 4 个 $X$ SRAM 分块。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/3-6.pdf}
+\caption{X 编码流的行间差分与数据恢复}\label{fig:3-6}
+\end{figure}
 
 所有恢复出的 $X_{\text{even}}$ 与 $X_{\text{odd}}$ 在写入内部 SRAM 前均经过 16 位有符号范围检查（$[-32{,}768,\,32{,}767]$）：若恢复值越出 INT16 范围，硬件置位故障标志并禁止写入 SRAM，将比特流损坏拦截在进入计算阵列之前。
 
 表~\ref{tab:ch3-9} 汇总第 0 层的传输量。编码后总读取由 11,616 字降至 9,558 字，减少\textbf{2,058 个 32 位读事务（17.72\%）}；输出仍按标准 INT16 格式打包，写回量保持 12,672 字。该结果说明传输表示缩减了多少数据，不直接等同于任务周期降幅；总线等待及计算重叠还需在整机评估中检查。其余层的实测读取量见附录 D。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{第 0 层编码前后的传输字数}\label{tab:ch3-9}
-\begin{tabulary}{\linewidth}{@{}Crrr@{}}
+\caption{第 0 层定宽表示与变宽编码的传输字数对比}\label{tab:ch3-9}
+\begin{tabular}{@{\hspace{2pt}}cccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 定宽表示}} & \multicolumn{1}{c}{{\sffamily\mdseries 变宽编码}} & \multicolumn{1}{c}{{\sffamily\mdseries 变化}} \\
+\thcell{项目} & \thcell{定宽表示} & \thcell{变宽编码} & \thcell{变化} \\
 \midrule
 $X$ & 3,168 & 2,478 & $-21.8\%$ \\
 $W$ & 8,192 & 6,824 & $-16.7\%$ \\
@@ -755,7 +816,7 @@ $W$ & 8,192 & 6,824 & $-16.7\%$ \\
 合计（读） & 11,616 & 9,558 & $-17.72\%$ \\
 写回 & 12,672 & 12,672 & 0 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \subsection{位储存器与流控}
@@ -805,27 +866,30 @@ $W$ & 8,192 & 6,824 & $-16.7\%$ \\
 
 \subsection{共享 SRAM 地址布局}
 
-共享 SRAM 按\textbf{邮箱、输入、权重、偏置与结果}分区，布局见表~\ref{tab:ch4-1} 与图~\ref{fig:sram-map}。邮箱保存任务请求、返回码和 15 项计数器快照；其余区域存放数据流与最终结果。连续执行十二组独立层任务时，可复用这些区域，仅更新内容或基地址。
+共享 SRAM 按\textbf{邮箱、输入、权重、偏置与结果}分区，布局见表~\ref{tab:ch4-1}。邮箱保存任务请求、返回码和 15 项计数器快照；其余区域存放数据流与最终结果。连续执行十二组独立层任务时，可复用这些区域，仅更新内容或基地址。
 
 表中输入与权重长度用于启动前的最坏情况包络检查，\textbf{不等于每层实际传输字数}。编码长度随数据变化，硬件按头部解析的长度结束装载，同时以预留包络防止越界和区域重叠。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{基础配置的任务数据在共享 SRAM 中的布局}\label{tab:ch4-1}
-\begin{tabulary}{\linewidth}{@{}CrrL@{}}
+\caption{基础配置的共享 SRAM 任务区布局}\label{tab:ch4-1}
+\begin{tabular}{@{\hspace{2pt}}U{24}U{28}U{24}T{66}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 区域}} & \multicolumn{1}{c}{{\sffamily\mdseries 基址}} & \multicolumn{1}{c}{{\sffamily\mdseries 长度（字节）}} & \multicolumn{1}{c}{{\sffamily\mdseries 说明}} \\
+\thcell{区域} & \thcell{基址} & \thcell{长度（字节）} & \thleft{说明} \\
 \midrule
 任务邮箱 & \texttt{0xA000F000} & 4 KiB & Host 与 E203 的任务请求、返回码与计数发布 \\
+\addlinespace[1.5pt]
 $X$ 传输流 & \texttt{0xA0010000} & 13,424 & 16 字头部加 1,600 个差分四元组 \\
+\addlinespace[1.5pt]
 $W$ 传输流 & \texttt{0xA0018000} & 32,896 & 32 字头部加 4,096 个变宽四元组 \\
+\addlinespace[1.5pt]
 偏置 & \texttt{0xA0028000} & 1,024 & 256 项 INT32 \\
+\addlinespace[1.5pt]
 结果 & \texttt{0xA0030000} & 50,688 & 12,672 个打包 INT16 字，行主序 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
-\ph[38mm]{sram-map}{基础配置共享 SRAM 任务区的逻辑布局}{绘制共享 SRAM 地址空间从低到高的横向分区条带图：依次标出任务邮箱（\texttt{0xA000F000}，4 KiB）、$X$ 编码流区（\texttt{0xA0010000}，上界包络 13,424 B）、$W$ 编码流区（\texttt{0xA0018000}，上界包络 32,896 B）、偏置区（\texttt{0xA0028000}，1,024 B）与结果写回区（\texttt{0xA0030000}–\texttt{0xA003C600}，50,688 B），并标明启动前硬件按包络上界做 4 字节对齐与非重叠校验。}
 
 \subsection{配置与状态寄存器}
 
@@ -834,24 +898,33 @@ $W$ 传输流 & \texttt{0xA0018000} & 32,896 & 32 字头部加 4,096 个变宽�
 基地址与输出格式仅在 \texttt{active=0} 时可写，运行期修改被忽略，防止改变当前任务的寻址。控制寄存器则允许启动或发出中止命令。固件读取状态低 5 位 \texttt{\{config\_error, aborted, error, done, active\}}，区分正常完成、配置错误、运行错误与中止。\textbf{配置锁定保护正在执行的任务，终止状态说明任务为何结束}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{加速器寄存器映射}\label{tab:ch4-2}
-\begin{tabulary}{\linewidth}{@{}ClL@{}}
+\caption{FFN1 加速器的寄存器映射}\label{tab:ch4-2}
+\begin{tabular}{@{\hspace{2pt}}ccl@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 偏移}} & \multicolumn{1}{c}{{\sffamily\mdseries 属性}} & \multicolumn{1}{c}{{\sffamily\mdseries 功能}} \\
+\thcell{偏移} & \thcell{属性} & \thleft{功能} \\
 \midrule
 \texttt{0x00} & 写 & 启动（写 1）或中止并排空（写 2） \\
-\texttt{0x04} & 读 & \texttt{active}、\texttt{done}、\texttt{error}、\texttt{aborted}、\texttt{config\_error} \\
+\addlinespace[1.5pt]
+\texttt{0x04} & 读 & \texttt{active}、\texttt{done}、\texttt{error}、\texttt{aborted}、\texttt{config\_\allowbreak{}error} \\
+\addlinespace[1.5pt]
 \texttt{0x0C} & 读 & 设备标识 \texttt{0x4B575438} \\
+\addlinespace[1.5pt]
 \texttt{0x20}–\texttt{0x2C} & 读写 & $X$、$W$、偏置、结果四个基地址 \\
+\addlinespace[1.5pt]
 \texttt{0x38} & 读写 & 输出格式号，选定配置为 2（INT16、右移 15 位） \\
+\addlinespace[1.5pt]
 \texttt{0x40}–\texttt{0x4C} & 读 & 总周期、装载周期、运行周期、其他状态周期 \\
+\addlinespace[1.5pt]
 \texttt{0x50}–\texttt{0x58} & 读 & 阵列活动周期、结果队列等待、核心周期 \\
+\addlinespace[1.5pt]
 \texttt{0x5C}–\texttt{0x60} & 读 & 请求受阻周期、响应受阻周期 \\
+\addlinespace[1.5pt]
 \texttt{0x64}–\texttt{0x68} & 读 & 已接受读命令数、已接受写命令数 \\
+\addlinespace[1.5pt]
 \texttt{0x6C}–\texttt{0x78} & 读 & 首输出、末输出、末笔写、生产者等待 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 表~\ref{tab:ch4-2} 下半部分的 15 个只读 32 位性能计数器构成了第六章与附录 D 周期分解的硬件数据源，按观测职责分为四组：
@@ -868,21 +941,26 @@ $W$ 传输流 & \texttt{0xA0018000} & 32,896 & 32 字头部加 4,096 个变宽�
 
 DMA 控制器在系统总线侧作为主设备发起 32 位读写事务，在加速器内部连接权重/输入解包器、偏置存储与 INT16 结果队列。表~\ref{tab:ch4-3} 列出了 DMA 系统总线主接口的信号定义。
 
-\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{DMA 系统总线主接口}\label{tab:ch4-3}
-\begin{tabulary}{\linewidth}{@{}LlrL@{}}
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{DMA 总线主接口的信号与握手约定}\label{tab:ch4-3}
+\begin{tabular}{@{\hspace{2pt}}cccl@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 信号}} & \multicolumn{1}{c}{{\sffamily\mdseries 位宽}} & \multicolumn{1}{c}{{\sffamily\mdseries 方向}} & \multicolumn{1}{c}{{\sffamily\mdseries 含义}} \\
+\thcell{信号} & \thcell{位宽（位）} & \thcell{方向} & \thleft{含义} \\
 \midrule
-\texttt{m\_valid} / \texttt{m\_ready} & 各 1 & 出 / 入 & 请求握手，请求在寄存器中保持 \\
-\texttt{m\_addr} / \texttt{m\_wdata} & 32 / 32 & 出 & 访问字节地址与写入数据 \\
-\texttt{m\_read} / \texttt{m\_mask} & 1 / 4 & 出 & 读写方向与字节使能，本设计恒为全字 \\
-\texttt{m\_rsp\_valid} / \texttt{m\_rsp\_ready} & 各 1 & 入 / 出 & 响应握手 \\
-\texttt{m\_rdata} / \texttt{m\_err} & 32 / 1 & 入 & 返回数据与错误标志 \\
-\texttt{irq\_event} & 1 & 出 & 完成、错误或配置错误的上升沿事件 \\
+\mbox{\texttt{m\_valid}} & 1 & out & 请求有效；未握手时保持请求 \\
+\mbox{\texttt{m\_ready}} & 1 & in & 请求就绪 \\
+\mbox{\texttt{m\_addr}} & 32 & out & 访问字节地址 \\
+\mbox{\texttt{m\_wdata}} & 32 & out & 写入数据 \\
+\mbox{\texttt{m\_read}} & 1 & out & 读写方向 \\
+\mbox{\texttt{m\_mask}} & 4 & out & 字节使能，本设计恒为全字 \\
+\mbox{\texttt{m\_rsp\_valid}} & 1 & in & 响应有效 \\
+\mbox{\texttt{m\_rsp\_ready}} & 1 & out & 响应就绪 \\
+\mbox{\texttt{m\_rdata}} & 32 & in & 返回数据 \\
+\mbox{\texttt{m\_err}} & 1 & in & 错误标志 \\
+\mbox{\texttt{irq\_event}} & 1 & out & 完成、错误或配置错误的上升沿事件 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 为在同步 SRAM 总线上实现连续访存，同时防止在下游解包器停顿时发生响应溢出，DMA 采用“单请求保持槽 + 深度为 2 的在途事务 FIFO（\texttt{outstanding\_count} $\in [0,2]$）”的信用流控结构，如图~\ref{fig:4-1} 所示。在请求侧，一旦调度器装入一笔新请求并将 \texttt{m\_valid} 拉高，地址、读写方向与写数据即在请求槽寄存器中锁存保持，直至系统总线以 \texttt{m\_ready=1} 完成握手；在响应侧，每当一笔总线请求握手成功（\texttt{req\_accepted}），其读写方向与内部目标标签即按序推入深度为 2 的在途记录队列，每当一笔总线响应握手成功（\texttt{rsp\_accepted}），队首记录即弹出退休。在途事务计数器按
@@ -891,7 +969,10 @@ DMA 控制器在系统总线侧作为主设备发起 32 位读写事务，在加
 \]
 逐拍更新。仅当请求槽为空（或本拍正被总线接收）、$\texttt{outstanding\_next} < 2$ 且未处于异常排空流程时，调度器才允许装入下一笔总线请求。两级在途信用用于覆盖请求至响应的往返延迟。在总线连续接收、响应及时返回且下游就绪时，读写通路可按每拍 1 字推进；出现背压时则由信用计数限制后续请求。
 
-\ph[48mm]{4-1}{DMA 的请求生成、两级在途记录与响应分发结构。标出权重、输入、偏置三类目标标签与写回路径。}{绘制 DMA 控制器内部请求与响应双通道结构图：上通道为“读写调度器 $\to$ 单请求保持槽（\texttt{m\_\allowbreak{}valid/\allowbreak{}m\_\allowbreak{}addr/\allowbreak{}m\_\allowbreak{}wdata}） $\to$ 系统总线”；请求被接收时同步将 20 位目标标签推入中间的“两级在途事务 FIFO（深度 2，记录读写方向与高 4 位目标标签：4=W 解包、3=b 偏置、1=X 解包、0=Y 写回）”；下通道为“系统总线读数据/写应答返回 $\to$ 结合在途 FIFO 队首标签执行响应分发：读数据分发至 W/X 解包器或偏置 SRAM，写应答递增已退休写计数 \texttt{write\_received}”。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/4-1.pdf}
+\caption{DMA 请求生成、两级在途记录与响应分发结构}\label{fig:4-1}
+\end{figure}
 
 \subsection{请求生成与目标标签}
 
@@ -906,21 +987,27 @@ DMA 分时发起权重读、偏置读、输入读和结果写，响应返回时�
 DMA 控制器的主状态机包含 7 个状态，各状态的功能与推进条件列于表~\ref{tab:ch4-4}。在任务启动后的初装阶段（\texttt{CLEAR} $\to$ \texttt{LOAD}），DMA 按照“先整层权重 $W$、再 256 项偏置 $b$、最后首个输入行块 $X$”的顺序串行发起读请求。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{DMA 状态与推进条件}\label{tab:ch4-4}
-\begin{tabulary}{\linewidth}{@{}ClL@{}}
+\caption{DMA 的状态编码、功能与推进条件}\label{tab:ch4-4}
+\begin{tabular}{@{\hspace{2pt}}U{10}U{22}T{110}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 状态}} & \multicolumn{1}{c}{{\sffamily\mdseries 名称}} & \multicolumn{1}{c}{{\sffamily\mdseries 功能与正常推进条件}} \\
+\thcell{状态} & \thcell{名称} & \thleft{功能与正常推进条件} \\
 \midrule
 0 & \texttt{IDLE} & 等待合法启动；地址校验通过且无活动任务 \\
+\addlinespace[1.5pt]
 1 & \texttt{CLEAR} & 清空块有效位、结果队列与计数器，同时开始权重装载 \\
+\addlinespace[1.5pt]
 2 & \texttt{LOAD} & 完成权重、偏置与首个输入行块；三者齐备后转 \texttt{LAUNCH} \\
+\addlinespace[1.5pt]
 3 & \texttt{LAUNCH} & 向计算核发出启动，下一拍进入运行 \\
+\addlinespace[1.5pt]
 4 & \texttt{RUN} & 装载后续行块、排出结果；末笔写响应后结束 \\
+\addlinespace[1.5pt]
 5 & \texttt{DRAIN} & 中止或错误后排空在途事务，槽与在途记录均空后回 \texttt{IDLE} \\
-6 & \texttt{X\_CLEAR} & 切换解包器到输入模式并清空位储存器 \\
+\addlinespace[1.5pt]
+6 & \texttt{X\_\allowbreak{}CLEAR} & 切换解包器到输入模式并清空位储存器 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 初装采用固定顺序，是因为整层权重、偏置与首块输入必须在启动前齐备，且权重与输入共用解包硬件。\textbf{先完成一次性的整层准备，再让输入行块与计算重叠}，可简化模式切换和启动条件。
@@ -931,7 +1018,10 @@ DMA 控制器的主状态机包含 7 个状态，各状态的功能与推进条�
 
 进入 \texttt{RUN} 状态后，DMA 需要利用单个请求保持槽分时服务后续输入行块的预装载读取与已完成块的结果字写回。调度器采用“空闲缓冲读优先、计算窗口插写”的仲裁机制，其决策流程如图~\ref{fig:dma-rw-flow} 所示。
 
-\ph[44mm]{dma-rw-flow}{DMA 运行阶段的信用检查与读写仲裁流程}{绘制 \texttt{RUN} 状态内单拍调度决策流程图：每拍首先检查“请求保持槽可用且在途事务数 $\texttt{outstanding\_next}<2$ 且未处于 \texttt{stopping}” $\to$ 若不满足则保持等待；若满足则判断“下一输入行块可调度条件（目标 $X$ 缓冲组已释放 $\texttt{dma\_x\_free}=1$、未被跨块预订且解包前端未满 $\texttt{x\_data\_needed}>\texttt{x\_inflight}$）” $\to$ 若成立则优先装入下一输入行块读请求（标签 1）；若不成立（如另一组 $X$ 缓冲已写满正等待阵列算完 32 个列组），则检查结果队列是否非空（$\texttt{formatted\_valid}=1$），非空时发出 32 位结果写回请求（标签 0）并同拍弹出队列当前字。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/dma-rw-flow.pdf}
+\caption{DMA 运行阶段的信用检查与读写仲裁流程}\label{fig:dma-rw-flow}
+\end{figure}
 
 读优先针对的是\textbf{尚未准备好的下一输入行块}，而不是持续占用总线。目标缓冲空闲时优先预装，可减少行块切换时的 \texttt{WAIT\_TILE} 等待；该组写满后，在当前行块遍历 32 个列组期间无需继续读取输入，请求槽便可用于结果写回。
 
@@ -945,7 +1035,12 @@ DMA 根据结果队列提供的真实行列索引计算写回地址：
 \]
 因此，尾块先产生的行 96--98 结果直接写入对应行偏移，无需依照总线写入次序重排。
 
-\ph[52mm]{4-2}{DMA 请求保持、响应退休与完成置位的时序示意}{绘制调度器、DMA 请求端、共享 SRAM 与 DMA 响应端四条垂直生命线的握手时序图：上半部分展示读请求在遭遇总线背压（\texttt{m\_ready=0}）时在请求保持槽内稳定锁存，待握手成功后进入在途队列并由读响应返回分发；下半部分展示末笔（第 12,672 笔）写回事务的完成三步曲：（1）计算核与结果队列排出末字，\texttt{core\_done} 置位；（2）末笔写请求在总线上握手接收（\texttt{write\_commands}=12,672）；（3）共享 SRAM 返回末笔写应答（\texttt{write\_received}=12,672，\texttt{outstanding\_count}=0），DMA 复核内部通路全空后置位 \texttt{done} 并触发完成中断。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/4-2.pdf}
+\caption{DMA 请求保持与末笔写响应完成的定向 RTL 仿真波形}\label{fig:4-2}
+\end{figure}
+
+图中两窗分别展示请求背压保持与末笔写应答退休，使用独立的绝对时间范围。定向激励取 $X=W=0$、偏置为 32,768，检查 12,672 个打包结果字；软件邮箱发布位于硬件完成之后，未包含在该 DMA 定向测试窗口中。对应定向测试平台、原始波形与源文件哈希清单仍需随最终交付包归档。
 
 DMA 的正常完成绑定到\textbf{末笔写响应退休}，见图~\ref{fig:4-2}。控制器同时检查：已退休写响应达到 12,672 笔、计算核完成、格式化通路为空、请求槽为空，以及在途计数归零。全部满足后，才退出 \texttt{RUN}、置位 \texttt{done} 并触发事件。
 
@@ -953,22 +1048,20 @@ DMA 的正常完成绑定到\textbf{末笔写响应退休}，见图~\ref{fig:4-2
 
 \subsection{异常排空与恢复}
 
-当运行期间发生软件主动中止（写控制寄存器为 2）、系统总线响应返回错误（\texttt{m\_rsp\_valid \&\& m\_err}）或解包器检测到比特流越界故障（\texttt{unpack\_fault}）时，若直接硬复位 DMA 状态机，已经发往系统总线的在途事务将在后续周期返回孤儿响应，干扰下一次任务的计数器或总线状态。为此，DMA 设计了 \texttt{DRAIN}（异常排空）状态，按图~\ref{fig:dma-drain} 所示的三步流程回收总线在途事务：
+当运行期间发生软件主动中止（写控制寄存器为 2）、系统总线响应返回错误（\texttt{m\_rsp\_valid \&\& m\_err}）或解包器检测到比特流越界故障（\texttt{unpack\_fault}）时，若直接硬复位 DMA 状态机，已经发往系统总线的在途事务将在后续周期返回孤儿响应，干扰下一次任务的计数器或总线状态。为此，DMA 设计了 \texttt{DRAIN}（异常排空）状态，按以下三步回收总线在途事务：
 \begin{enumerate}
 \item \textbf{冻结新请求生成：} 故障或中止触发当拍，置位 \texttt{stopping} 标志，禁止调度器向请求保持槽装入新的读或写事务；
 \item \textbf{保持已挂起请求并回收在途响应：} 若请求保持槽内已有置高 \texttt{m\_valid} 但尚未被总线接收的请求，继续保持其信号稳定直至 \texttt{m\_ready} 握手完成；同时响应端拉高 \texttt{m\_rsp\_ready=1}，将陆续返回的在途读数据直接丢弃、写应答正常销账；
 \item \textbf{双空确认后清理核心并退出：} 当请求保持槽为空（\texttt{!m\_valid}）且在途事务计数归零（\texttt{outstanding\_count == 0}）时，DMA 向计算核、解包器与结果队列发出同步清零脉冲，置位 \texttt{aborted} 或 \texttt{error} 状态位并返回 \texttt{IDLE}。
 \end{enumerate}
 
-\ph[38mm]{dma-drain}{DMA 异常停止后的在途事务排空}{绘制从左至右的四阶段异常排空状态流图：触发故障或软件写中止（\texttt{stopping=1}） $\to$ 立即停止调度器生成新总线请求 $\to$ 保持请求槽内已挂起请求直至握手，同时旁路解包器背压以回收全部在途响应 $\to$ 确认请求槽与两级在途记录同时为空后，清零计算核与队列状态并返回 \texttt{IDLE}。}
 
 \section{E203 驱动与层参数切换}
 
 \subsection{任务配置与启动}
 
-E203 固件在收到 Host 邮箱请求后，负责完成加速器的空闲确认、基址配置、启动等待与计数快照发布。表~\ref{tab:ch4-2} 已列出相关 MMIO 寄存器定义，固件驱动的控制流程如图~\ref{fig:fw-driver-flow} 所示。
+E203 固件在收到 Host 邮箱请求后，负责完成加速器的空闲确认、基址配置、启动等待与计数快照发布。表~\ref{tab:ch4-2} 已列出相关 MMIO 寄存器定义，以下按配置、等待、计数发布与异常恢复说明固件控制流程。
 
-\ph[46mm]{fw-driver-flow}{E203 固件的任务配置、休眠等待、异常排空与计数发布流程}{绘制 E203 驱动执行一次 FFN1 任务的流程图：核对设备标识 $\to$ 检查状态寄存器是否空闲（若 \texttt{active=1} 则先写中止并等待排空） $\to$ 写入 $X,W,b,Y$ 基址与输出格式 $\to$ 执行 \texttt{fence iorw,iorw} 内存屏障并写启动命令 $\to$ 进入关中断临界区检查状态并执行 \texttt{wfi} 休眠等待 $\to$ 唤醒后判断终止原因：若发生错误或运行超时则转入中止排空分支并返回错误码；若正常完成（\texttt{done=1 \&\& active=0}）则复制 15 项性能计数器至邮箱、执行内存屏障并写入发布标志通知 Host。}
 
 驱动需要遵守三处顺序约束。
 
@@ -1006,9 +1099,14 @@ E203 固件在收到 Host 邮箱请求后，负责完成加速器的空闲确认
 
 仅将轮询改成 \texttt{wfi} 仍可能丢失唤醒时机。若完成中断恰在状态检查之后、WFI 之前被处理，固件随后再进入休眠，就可能等待到看门狗才返回。\textbf{需要保护的是“检查状态到进入等待”这段窗口}，而不只是中断处理函数本身。
 
-\ph[48mm]{4-3}{IRQ/\allowbreak{}WFI 的事件挂起与处理器唤醒时序示意}{绘制 E203 固件、事件控制器（\texttt{kwt\_event\_irq}）与 DMA 三条生命线的临界区唤醒时序图：标出（1）固件关全局中断（清除 \texttt{mstatus.MIE}）进入临界区；（2）固件清除事件控制器陈旧挂起位，并读取 DMA 状态寄存器确认任务未完成；（3）恰在 \texttt{wfi} 执行前，DMA 完成并发出新事件脉冲，事件控制器将其锁存为 \texttt{pending=1} 并拉高 IRQ 线；（4）固件执行 \texttt{wfi}，因外部 IRQ 已挂起，E203 按 RISC-V 规范立即顺序唤醒（不卡死）；（5）固件恢复全局中断使能并读取 DMA 最终状态完成收尾。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/4-3.pdf}
+\caption{IRQ/WFI 事件挂起与 E203 唤醒的定向 RTL 仿真波形}\label{fig:4-3}
+\end{figure}
 
-为消除这一竞态窗口，驱动采用了图~\ref{fig:4-3} 所示的关中断临界区唤醒协议：
+该图使用 Host 事件注入观察真实 E203 与事件锁存器的响应，分别覆盖 WFI 前事件已挂起和进入 WFI 后到达两种情形；它展示唤醒机制，不能视为完整任务中 DMA 完成至软件邮箱发布的端到端波形。
+
+为消除这一竞态窗口，驱动采用关中断临界区唤醒协议；图~\ref{fig:4-3} 给出了事件挂起与唤醒机制的定向观察。协议步骤如下：
 \begin{enumerate}
 \item 固件首先清除 \texttt{mstatus.MIE} 位，暂时关闭处理器全局中断响应；
 \item 在关中断状态下，向事件控制器写清除位以消去陈旧挂起，紧接着读取一次 DMA 状态寄存器；
@@ -1034,22 +1132,23 @@ E203 固件在收到 Host 邮箱请求后，负责完成加速器的空闲确认
 验证分别使用\textbf{浮点参考、位精确整数参考与映射网表回归}。浮点参考评价量化误差；整数参考检查 RTL 是否实现既定算法；网表回归检查综合前后行为是否一致。三者不能互相替代。当前已取得整数逐位比对及结构检查结果，最终浮点 NRMSE 与映射网表回归仍待完成。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{三层比对的对象、输入与判据}\label{tab:ch5-1}
-\begin{tabularx}{\linewidth}{@{}>{\hsize=.65\hsize\linewidth=\hsize}Z>{\hsize=1.05\hsize\linewidth=\hsize}Y>{\hsize=1.05\hsize\linewidth=\hsize}Y>{\hsize=1.25\hsize\linewidth=\hsize}Y@{}}
+\caption{浮点、整数与网表三级比对的参考对象及检查内容}\label{tab:ch5-1}
+\begin{tabular}{@{\hspace{2pt}}U{15}T{35}T{38}T{54}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 层}} & \multicolumn{1}{c}{{\sffamily\mdseries 参考对象}} & \multicolumn{1}{c}{{\sffamily\mdseries 比对内容}} & \multicolumn{1}{c}{{\sffamily\mdseries 失配时的定位方向}} \\
+\thcell{比对层级} & \thleft{参考对象} & \thleft{比对内容} & \thleft{失配定位方向} \\
 \midrule
 浮点层 & 官方模型 + 冻结权重 & 层输入、层输出、分类结果 & 尺度、移位或数值契约 \\
+\addlinespace[1.5pt]
 整型层 & 整数参考模型 & 25,344 个 INT40 与 INT16 & 解包、地址、偏置、部分和、舍入 \\
+\addlinespace[1.5pt]
 网表层 & RTL 黄金向量 & 同一向量的输出与完成事件 & 综合优化、SRAM 模型、时序 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致而 INT16 失配时，进一步检查写回转换、半字次序及地址。
 
-\ph[50mm]{5-1}{三层比对的数据流向与检查点位置}{绘制浮点层、整型层与网表层三行并列的验证比对流图：（1）浮点层：官方浮点层输出与硬件最终 INT16 解码值比较，按层计算 NRMSE；（2）整型层：位精确整数参考模型与 RTL 仿真输出的 25,344 个 INT40 累加值及 INT16 写回值做逐位比对；（3）网表层：同源测试向量与固件驱动工艺映射后门级网表，复核最终输出与完成事件（待补）。}
 
 \section{模块级功能验证}
 
@@ -1057,29 +1156,36 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
 \caption{基础配置的模块级测试平台与检查点}\label{tab:ch5-2}
-\begin{tabulary}{\linewidth}{@{}LlLL@{}}
+\begin{tabular}{@{\hspace{2pt}}U{34}U{19}T{44}T{44}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 测试平台}} & \multicolumn{1}{c}{{\sffamily\mdseries 对象}} & \multicolumn{1}{c}{{\sffamily\mdseries 激励}} & \multicolumn{1}{c}{{\sffamily\mdseries 检查点}} \\
+\thcell{测试平台} & \thcell{对象} & \thleft{激励} & \thleft{检查点} \\
 \midrule
-\texttt{decoder\_tb} & 权重解包 & 全部 256 列宽描述、跨字边界 & 四元组值、符号扩展、期望字数 \\
-\texttt{decoder\_x\_tb} & 输入解包 & 行对差分、末行无配对 & 恢复值、越界故障、尾行零填充 \\
-\texttt{tb\_w\_quad} & W 写入分块 & 相邻两列四值同拍写 & 四个宏的地址与数据 \\
-\texttt{tb\_x\_bank} & X 双缓冲 & 行块切换、前驱读与写冲突 & 块有效位、行对边界停顿 \\
-\texttt{tb\_int16\_queue} & 结果队列 & 满队列、末对同拍交接 & 打包次序、索引、地址保持 \\
-\texttt{tb\_dma\_\allowbreak{}compressed} & DMA 链路 & 压缩流 + 请求/响应 + 写回 & 目标标签、退休顺序、完成 \\
-\texttt{tb\_tile\_\allowbreak{}isolation} & 阵列隔离 & 无效拍与有效拍交替 & 隔离后 X 为零、累加器不动 \\
-\texttt{tb\_sram\_gate} & 本地门控 & 空闲周期与读写周期 & 门控使能与 SRAM 片选关系 \\
-\texttt{tb\_soc\_power} & 整机活动 & 真实任务窗口 & 采集窗口、活动覆盖 \\
+\texttt{decoder\_\allowbreak{}tb} & 权重解包 & 全部 256 列宽描述、跨字边界 & 四元组值、符号扩展、期望字数 \\
+\addlinespace[1.5pt]
+\texttt{decoder\_\allowbreak{}x\_\allowbreak{}tb} & 输入解包 & 行对差分、末行无配对 & 恢复值、越界故障、尾行零填充 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}w\_\allowbreak{}quad} & W 写入分块 & 相邻两列四值同拍写 & 四个宏的地址与数据 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}x\_\allowbreak{}bank} & X 双缓冲 & 行块切换、前驱读与写冲突 & 块有效位、行对边界停顿 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}int16\_\allowbreak{}queue} & 结果队列 & 满队列、末对同拍交接 & 打包次序、索引、地址保持 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}dma\_\allowbreak{}compressed} & DMA 链路 & 压缩流 + 请求/响应 + 写回 & 目标标签、退休顺序、完成 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}tile\_\allowbreak{}isolation} & 阵列隔离 & 无效拍与有效拍交替 & 隔离后 X 为零、累加器不动 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}sram\_\allowbreak{}gate} & 本地门控 & 空闲周期与读写周期 & 门控使能与 SRAM 片选关系 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}soc\_\allowbreak{}power} & 整机活动 & 真实任务窗口 & 采集窗口、活动覆盖 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 其中两个平台还检查结构与控制条件。\texttt{tb\_tile\_\allowbreak{}isolation} 验证无有效乘积时送入阵列的 X 恒为零，这是第三章隔离逻辑的正确性前提；\texttt{tb\_sram\_gate} 验证本地门控只在不访问时关闭宏时钟，用于核对低功耗控制是否保持访问与算术行为。活动和功耗结论还需结合实际工作负载与映射报告。
 
-图~\ref{fig:test-scope} 给出各层测试最先能定位的问题。算术与格式单测覆盖符号、舍入和有效位，DMA 联动测试覆盖请求与响应的归属，整机回归再检查跨任务状态与最终结果。
+不同层次的测试分别定位不同范围的问题。算术与格式单测覆盖符号、舍入和有效位，DMA 联动测试覆盖请求与响应的归属，整机回归再检查跨任务状态与最终结果。
 
-\ph[38mm]{test-scope}{基础篇从模块到整机的验证层级}{绘制从左至右的三级递进验证框图：第一级“算术与格式单测（乘加、变宽解包、RNE 写回打包）” $\to$ 第二级“模块联动验证（DMA、片内 SRAM 双缓冲、计算阵列与低功耗门控）” $\to$ 第三级“SoC 整机回归（12 层真实向量、每任务复位与连续运行模式、异常与中断注入）”。}
 
 \section{整机回归与异常验证}
 
@@ -1088,11 +1194,11 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 整机回归在每任务复位、连续运行两种模式下各执行十二组真实层任务，共用同源向量、固件和计时口径。前者检查独立任务，后者检查参数切换与跨任务残留；只有两种模式均通过，才能支持当前配置下连续启动的正确性结论。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{12 层整机回归的覆盖与结果}\label{tab:ch5-3}
-\begin{tabulary}{\linewidth}{@{}LrrL@{}}
+\caption{十二组层任务的复位与连续运行回归结果}\label{tab:ch5-3}
+\begin{tabular}{@{\hspace{2pt}}U{32}U{22}U{22}T{54}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 每任务复位}} & \multicolumn{1}{c}{{\sffamily\mdseries 连续运行}} & \multicolumn{1}{c}{{\sffamily\mdseries 说明}} \\
+\thcell{项目} & \thcell{每任务复位} & \thcell{连续运行} & \thleft{说明} \\
 \midrule
 任务数 & 12 & 12 & 对应 12 组真实层参数 \\
 比对 INT40 结果 & 304,128 & 304,128 & 25,344\ensuremath{\times}12，逐位比较 \\
@@ -1102,24 +1208,24 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 平均周期 & 32,006.83 & 32,006.83 & 首个 Host 请求至末笔写响应 \\
 结论 & 通过 & 通过 & 无失配 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 整机回归同时校验数据与事务计数。\texttt{verify.py} 检查 DMA 命令周期等于各状态周期之和，读请求数等于该层实际编码字数，写请求数等于 12,672。逐位比对和计数检查分别覆盖数值错误与冗余传输，逐层结果见附录 D。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{代表性层的传输字数与周期（复位模式）}\label{tab:ch5-4}
-\begin{tabulary}{\linewidth}{@{}Crrrr@{}}
+\caption{代表性层的传输字数与执行周期（复位模式）}\label{tab:ch5-4}
+\begin{tabular}{@{\hspace{2pt}}ccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 层}} & \multicolumn{1}{c}{{\sffamily\mdseries 读请求（字）}} & \multicolumn{1}{c}{{\sffamily\mdseries 写请求（字）}} & \multicolumn{1}{c}{{\sffamily\mdseries 装载周期}} & \multicolumn{1}{c}{{\sffamily\mdseries 运行周期}} \\
+\thcell{层} & \thcell{读请求\\（字）} & \thcell{写请求\\（字）} & \thcell{装载周期\\（拍）} & \thcell{运行周期\\（拍）} \\
 \midrule
 0 & 9,558 & 12,672 & 7,212 & 15,680 \\
 1 & 9,232 & 12,672 & 6,910 & 15,655 \\
 4 & 8,346 & 12,672 & 6,575 & 15,110 \\
 11 & 10,542 & 12,672 & 8,160 & 15,718 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 输出格式与形状固定，因此写字数恒为 12,672。第 11 层的读字数与装载周期在本组记录中均最高，完整任务为 34,929.5 拍。读量包含压缩输入、压缩权重和偏置，无法仅凭总读数将变化归因于某一种数据。
@@ -1129,22 +1235,29 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 定向回归单独控制事件到达时刻，覆盖状态读取后、执行 WFI 前，以及已经休眠之后两个窗口。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{事件、异常与恢复的定向验证}\label{tab:ch5-5}
-\begin{tabulary}{\linewidth}{@{}LlLr@{}}
+\caption{事件、异常与恢复场景的定向验证}\label{tab:ch5-5}
+\begin{tabular}{@{\hspace{2pt}}U{40}U{30}T{53}U{10}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 场景}} & \multicolumn{1}{c}{{\sffamily\mdseries 激励方式}} & \multicolumn{1}{c}{{\sffamily\mdseries 判据}} & \multicolumn{1}{c}{{\sffamily\mdseries 轮数}} \\
+\thcell{场景} & \thcell{激励方式} & \thleft{判据} & \thcell{轮数} \\
 \midrule
 读状态后、WFI 前到达 & 中断注入 & 挂起位保留，唤醒后处理 & 4 \\
+\addlinespace[1.5pt]
 已进入 WFI 后到达 & 中断注入 & 唤醒，上下文完好 & 4 \\
+\addlinespace[1.5pt]
 看门狗唤醒 & 长时间无完成 & 重新检查状态并继续等待 & 1 \\
+\addlinespace[1.5pt]
 空闲等待 & 70,000 拍无事件 & 不误唤醒、不丢事件 & 1 \\
+\addlinespace[1.5pt]
 总线错误 & 响应置错误位 & 停止调度并进入排空 & 多轮 \\
+\addlinespace[1.5pt]
 延迟末笔响应 & 推迟最后写响应 & 完成后置位前保持等待 & 多轮 \\
+\addlinespace[1.5pt]
 取消与重启 & 末字背压时中止 & 两侧状态清空后可重启 & 多轮 \\
+\addlinespace[1.5pt]
 复位恢复 & 任务中复位 & 块有效位与队列归零 & 多轮 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 定向回归同时遍历全部 32 个通用寄存器，确认唤醒路径不破坏处理器上下文；WFI 审计记录表明 8 轮定向注入全部通过，看门狗唤醒与 70,000 拍空闲等待均未出现误唤醒或事件丢失。
@@ -1155,18 +1268,18 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 写回转换的误差可以独立于阵列单独度量。以 12 层真实向量为对象，比较硬件写回的 INT16 与整数参考的 INT40 结果，统计如表~\ref{tab:ch5-6}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{写回转换的误差统计（12 层真实向量）}\label{tab:ch5-6}
-\begin{tabularx}{\linewidth}{@{}>{\hsize=.65\hsize\linewidth=\hsize}Y>{\hsize=1.35\hsize\linewidth=\hsize}Y@{}}
+\caption{十二组层向量的写回转换误差统计}\label{tab:ch5-6}
+\begin{tabular}{@{\hspace{2pt}}U{31}U{32}T{45}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 统计量}} & \multicolumn{1}{c}{{\sffamily\mdseries 结果}} \\
+\thcell{统计量} & \thcell{结果} & \thleft{说明} \\
 \midrule
-饱和次数 & 0 \\
-写回值范围 & $[-23{,}621,\ 18{,}012]$ \\
-单点最大绝对误差 & 16,384（按 INT40 整数单位，为输出半个量化步长） \\
-相对 L2 误差 & $1.27061\times10^{-4}$（0.0127061\%） \\
+饱和次数 & 0 & \\
+写回值范围 & $[-23{,}621,\ 18{,}012]$ & \\
+单点最大绝对误差 & 16,384 & （按 INT40 整数单位，\newline 为输出半个量化步长） \\
+相对 L2 误差 & $1.27061\times10^{-4}$ & （0.0127061\%） \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 表~\ref{tab:ch5-6} 的 0.0127061\% 是\textbf{INT16 写回相对 INT40 参考的重建误差}，用于检查右移与舍入。当前向量未出现饱和，单点误差不超过半个输出量化步长，与第三章的转换规则一致。
@@ -1182,29 +1295,33 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 
 基础篇选取 Q128 的 \Q{} 作为综合对象。服务器匹配流程在 SoC 范围执行，以 \texttt{kwt\_ffn1\_soc} 为顶层，将加速器、E203 及共享 SRAM 纳入同一套连接与时序约束。面积报告再将各类实例划分为新增逻辑、CPU 及其本地存储、共享 SRAM 三组。这样可以保留真实 SoC 的接口关系，同时以新增部分衡量加速器开销。
 
-\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{基础配置的逻辑综合设置与统计边界}
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{基础配置的综合设置与面积统计边界}
 \label{tab:base-synthesis}
-\begin{tabulary}{\linewidth}{@{}lL@{}}
+\begin{tabular}{@{\hspace{2pt}}U{30}T{115}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 设置与说明}} \\
+\thcell{项目} & \thleft{设置与说明} \\
 \midrule
 综合工具与模式 & Synopsys Design Compiler，服务器匹配流程开启时钟门控选项 \\
-顶层与配置 & \texttt{kwt\_ffn1\_soc}，Q128 \Q{} \\
-时钟与接口 & \texttt{core\_clk}，周期 6.666667 ns（目标 150 MHz），脚本分别设置 setup、hold 不确定度及端口时延 \\
+\addlinespace[1.5pt]
+顶层与配置 & \texttt{kwt\_\allowbreak{}ffn1\_\allowbreak{}soc}，Q128 \Q{} \\
+\addlinespace[1.5pt]
+时钟与接口 & \texttt{core\_\allowbreak{}clk}，周期 6.666667 ns（目标 150 MHz），脚本分别设置 setup、hold 不确定度及端口时延 \\
+\addlinespace[1.5pt]
 工艺库 & 仓库默认配置为 SMIC 40 nm RVT SS 标准单元库，另链接单端口 SRAM 宏库。复现时以服务器实际加载库及其报告为准 \\
+\addlinespace[1.5pt]
 加速器内部 SRAM & 36 个 $128\times16$ 宏、16 个 $1024\times16$ 宏，合计 52 个宏、41 KiB \\
+\addlinespace[1.5pt]
 新增面积 & 计入加速器逻辑、相关接口及内部 SRAM，E203（含 ITCM、DTCM）与共享 SRAM 单列 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \subsection{综合流程与工艺映射}
 
-综合入口读取该配置的 RTL 与文件清单，加载标准单元及 SRAM 宏库，完成顶层展开和链接后应用时钟及端口约束，再执行工艺映射与优化。第三章的存储分块保留为对应规格的单端口宏，其中 X 双缓冲与偏置使用 $128\times16$ 宏，W 使用 $1024\times16$ 宏。按宏容量可以核对结构是否符合设计，面积则由映射结果中的单元与宏面积统计得到。流程位置见图~\ref{fig:synthesis-flow}。
+综合入口读取该配置的 RTL 与文件清单，加载标准单元及 SRAM 宏库，完成顶层展开和链接后应用时钟及端口约束，再执行工艺映射与优化。第三章的存储分块保留为对应规格的单端口宏，其中 X 双缓冲与偏置使用 $128\times16$ 宏，W 使用 $1024\times16$ 宏。按宏容量可以核对结构是否符合设计，面积则由映射结果中的单元与宏面积统计得到。
 
-\ph[48mm]{synthesis-flow}{FFN1 逻辑综合、SRAM 宏映射与报告生成流程}{绘制从 RTL 到 PPA 报告的综合与功耗评估流程图：输入 \texttt{kwt\_ffn1\_soc} RTL、52 个单端口 SRAM 宏库与 SMIC 40 nm 标准单元库 $\to$ Design Compiler 顶层展开、应用 150 MHz（6.6667 ns）时钟约束与门控选项并执行工艺映射 $\to$ 输出门级网表、分层面积报告（区分加速器新增面积与复用 E203/共享 SRAM）及 setup/hold STA 报告；同时结合 VCS 采集的真实 \texttt{task00} 严格窗口 SAIF 活动文件，完成映射后动态与漏电功耗分析。}
 
 同一综合配置下，VCS 使用真实 \texttt{task00} 采集严格任务窗口内的 RTL SAIF。活动文件随后用于映射设计的功耗估算，并同时记录活动标注覆盖率。第六章的轮询与 IRQ/WFI 对照采用相同样本和统计窗口，使活动差异能够与任务周期和单任务能耗一并分析。
 
@@ -1219,28 +1336,33 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 基础篇以 Q128 的 \Q{} 作为最终选定配置开展性能、面积与功耗（PPA）评估。为避免不同测试环境或不同计时起止点造成口径混淆，表~\ref{tab:ch6-1} 界定了本报告采用的统一评估口径。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{基础篇的统计口径}\label{tab:ch6-1}
-\begin{tabularx}{\linewidth}{@{}>{\hsize=.65\hsize\linewidth=\hsize}Y>{\hsize=1.35\hsize\linewidth=\hsize}Y@{}}
+\caption{基础任务的性能、面积与活动统计口径}\label{tab:ch6-1}
+\begin{tabular}{@{\hspace{2pt}}U{26}T{105}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 定义}} \\
+\thcell{项目} & \thleft{定义} \\
 \midrule
 计时窗口起 & 首个 Host 对任务数据的读/写请求被接收 \\
+\addlinespace[1.5pt]
 计时窗口止 & 末笔 DMA 写响应返回 \\
+\addlinespace[1.5pt]
 窗口内包含 & 主机写入、DMA 装载、阵列计算、结果写回、总线等待 \\
+\addlinespace[1.5pt]
 窗口内不含 & 固件首次装载、任务后的结果比较、音频预处理与分类头 \\
+\addlinespace[1.5pt]
 频率折算 & 周期按 150 MHz 目标折算，是否收敛由 STA 判断 \\
-面积口径 & 新增加速器 + 接口逻辑 + 内部 SRAM 宏；复用 E203 与共享 SRAM 单列 \\
+\addlinespace[1.5pt]
+面积口径 & 新增加速器 + 接口逻辑 + 内部 SRAM 宏；\newline 复用 E203 与共享 SRAM 单列 \\
+\addlinespace[1.5pt]
 活动口径 & 同一任务窗口的 RTL-SAIF，顺序活动标注覆盖率随报告给出 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 评估使用两组数据，分别回答不同问题。\textbf{本地十二组任务回归}检查参数切换后的功能与跨层周期变化；\textbf{服务器 task00 匹配实验}固定样本、工艺约束和活动窗口，比较六种配置的面积与能耗。跨层平均值用于描述任务集合，同条件单任务结果用于配置选型，不能将两组数值直接拼成同一对照。
 
-图~\ref{fig:measurement-window} 展示了三个嵌套的时间观察窗口之间的关系：最外层为赛题严格任务窗口（从首个 Host 数据写入请求被接收起，至末笔 DMA 写响应返回止）；中间层为 DMA 命令窗口（从 E203 写启动寄存器触发 \texttt{CLEAR} 起，至末笔写响应返回止，由 \texttt{LOAD}、\texttt{RUN} 与状态切换构成）；最内层为计算阵列有效活动窗口（即 416 个输出块共 13,312 拍有效归约，包含在 \texttt{RUN} 阶段之内）。
+统计口径对应三个层次的时间范围，周期构成与累计活动见图~\ref{fig:6-1}：最外层为赛题严格任务窗口（从首个 Host 数据写入请求被接收起，至末笔 DMA 写响应返回止）；中间层为 DMA 命令窗口（从 E203 写启动寄存器触发 \texttt{CLEAR} 起，至末笔写响应返回止，由 \texttt{LOAD}、\texttt{RUN} 与状态切换构成）；最内层为计算阵列有效活动窗口（即 416 个输出块共 13,312 拍有效归约，包含在 \texttt{RUN} 阶段之内）。
 
-\ph[44mm]{measurement-window}{严格任务窗口、DMA 命令窗口与阵列活动的统计边界示意}{用三行条带区分严格任务窗口、DMA 相位和阵列有效归约。严格窗口在末笔 DMA 写响应结束；软件唤醒、状态确认与邮箱发布画在终点之后。阵列活动用分散色块表示累计有效拍，避免画成连续的独立阶段。}
 
 \section{任务周期分解}
 
@@ -1248,14 +1370,17 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 
 严格任务周期先按互斥阶段分解：命令外准备包含 Host 写入数据及 E203 配置，约占窗口三成；DMA 命令窗口再分为 \texttt{LOAD}、\texttt{RUN} 和其他状态。\texttt{LOAD} 完成权重、偏置和首块输入准备，\texttt{RUN} 重叠执行阵列归约、后续行块装载与结果写回。\textbf{阶段计数用于相加，阶段内部的活动与背压计数用于诊断}，两类计数应分开读取。
 
-\ph[44mm]{6-1}{第 0 层任务周期构成与阵列活动占比}{按表~\ref{tab:ch6-2} 绘制命令外、LOAD、RUN 和 3 拍其他状态的互斥周期构成；RUN 下方单独表示阵列有效活动累计占比。EMIT 提交受阻计数作为诊断量另列，不与阶段累计直接相加。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/6-1.pdf}
+\caption{第 0 层任务周期构成与阵列活动占比}\label{fig:6-1}
+\end{figure}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{第 0 层周期分解与诊断计数}\label{tab:ch6-2}
-\begin{tabulary}{\linewidth}{@{}LrrL@{}}
+\caption{第 0 层任务的周期构成与诊断计数}\label{tab:ch6-2}
+\begin{tabular}{@{\hspace{2pt}}U{33}U{20}U{18}T{58}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 周期}} & \multicolumn{1}{c}{{\sffamily\mdseries 占窗口}} & \multicolumn{1}{c}{{\sffamily\mdseries 说明}} \\
+\thcell{项目} & \thcell{周期（拍）} & \thcell{占窗口比例} & \thleft{说明} \\
 \midrule
 DMA 命令之外 & 10,064.5 & 30.5\% & Host 装载与启动等 \\
 DMA 装载 \texttt{LOAD} & 7,212 & 21.9\% & 权重、偏置、首个行块 \\
@@ -1269,7 +1394,7 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 请求受阻 & 55 & 0.2\% & 请求槽未获总线接受 \\
 响应受阻 & 7 & 0.0\% & 响应有效，DMA 未就绪 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 结合表~\ref{tab:ch6-2} 下半部分的硬件诊断计数器，可以定位 \texttt{RUN} 阶段（15,680 拍）与阵列有效归约周期（13,312 拍）之间 2,368 拍差额的来源：
@@ -1284,16 +1409,16 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 表~\ref{tab:ch6-3} 分列本地十二组任务回归与服务器单任务结果。吞吐按目标时钟和各自任务周期计算，公式为 $\text{Throughput}=150\times10^6/C_{\text{task}}$。两组结果的输入范围不同，比较配置时应使用匹配任务。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{吞吐的两组口径}\label{tab:ch6-3}
-\begin{tabulary}{\linewidth}{@{}LrrL@{}}
+\caption{本地回归与服务器任务的吞吐统计口径}\label{tab:ch6-3}
+\begin{tabular}{@{\hspace{2pt}}cccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 来源}} & \multicolumn{1}{c}{{\sffamily\mdseries 平均周期/任务}} & \multicolumn{1}{c}{{\sffamily\mdseries 折算吞吐（任务/秒）}} & \multicolumn{1}{c}{{\sffamily\mdseries 说明}} \\
+\thcell{来源} & \thcell{平均周期\\（拍/任务）} & \thcell{折算吞吐\\（任务/秒）} & \thcell{说明} \\
 \midrule
 本地 12 层回归 & 32,006.83 & 4,686.50 & 连续模式 12 任务均值 \\
 服务器 \texttt{task00} & 32,960 & 4,551 & 单任务综合估算 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 各层的压缩读取量随数据分布变化，完整记录见附录 D。服务器结果与本地第 0 层仅差半拍，属于当前记录的采样与取整差异。表中吞吐均为目标频率下的周期折算值，时序结果见第 6.5 节。
@@ -1305,20 +1430,20 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 \textbf{只改变等待方式的配对}可用于分析 IRQ/WFI 收益；同时改变存储与解包组织的配置，则用于比较整体方案，不宜把全部差异归因于单一机制。
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{同一 task00 下的候选对比（面积单位为库单位）}\label{tab:ch6-4}
-\begin{tabulary}{\linewidth}{@{}Lrrrrrr@{}}
+\caption{同一 task00 下的候选配置 PPA 对比（面积为库单位）}\label{tab:ch6-4}
+\begin{tabular}{@{\hspace{2pt}}ccccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 候选}} & \multicolumn{1}{c}{{\sffamily\mdseries 新增面积}} & \multicolumn{1}{c}{{\sffamily\mdseries 周期}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{任务\\ /秒}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{动态\\mW}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{漏电\\mW}}} & \multicolumn{1}{c}{{\sffamily\mdseries \ensuremath{\mu}J/任务}} \\
+\thcell{候选配置} & \thcell{新增面积} & \thcell{周期\\（拍）} & \thcell{吞吐\\（任务/秒）} & \thcell{动态功耗\\（mW）} & \thcell{漏电功耗\\（mW）} & \thcell{单任务能耗\\（$\mu$J）} \\
 \midrule
 \texttt{reference} & 504,210 & 32,738 & 4,581.9 & 33.877 & 4.41 & 8.3561 \\
 \texttt{compact} & 510,900 & 32,924 & 4,556.0 & 34.190 & 4.41 & 8.4723 \\
 \texttt{dense} & 517,180 & 32,528 & 4,611.3 & 34.595 & 4.42 & 8.4607 \\
-\texttt{dense\_sleep} & 518,090 & 32,644 & 4,595.1 & 32.532 & 4.42 & 8.0416 \\
-\texttt{dense\_sched} & 517,390 & 32,450 & 4,622.4 & 34.938 & 4.42 & 8.5146 \\
+\texttt{dense\_\allowbreak{}sleep} & 518,090 & 32,644 & 4,595.1 & 32.532 & 4.42 & 8.0416 \\
+\texttt{dense\_\allowbreak{}sched} & 517,390 & 32,450 & 4,622.4 & 34.938 & 4.42 & 8.5146 \\
 \textbf{\Q{}} & \textbf{505,560} & \textbf{32,960} & \textbf{4,551.0} & \textbf{31.908} & \textbf{4.41} & \textbf{7.9802} \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 图~\ref{fig:6-2} 将六个候选配置投影到“加速器新增面积—单任务能耗”二维平面上，给出了本组候选配置的两方面比较：
@@ -1327,7 +1452,10 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 \item \textbf{IRQ/\allowbreak{}WFI 休眠对动态功耗的降低作用（\texttt{\_sleep} 对比非 \texttt{\_sleep}）：} 无论在 \texttt{reference} 组还是 \texttt{dense} 组中，引入 IRQ/\allowbreak{}WFI 均使整机动态功耗相应下降约 $1.97\sim2.06\text{ mW}$，使两个休眠配置（\Q{} 与 \texttt{dense\_sleep}）在图~\ref{fig:6-2} 中下移至 $8.0\ \mu\text{J}$ 附近的低能耗区。
 \end{enumerate}
 
-\ph[50mm]{6-2}{候选配置的面积—能耗分布}{绘制横轴为“加速器新增面积（库单位，504,000–519,000）”、纵轴为“单任务能耗（\ensuremath{\mu}J/任务，7.9–8.6）”的六候选散点对比图：标出左上区域的四个轮询配置（\texttt{reference} [504,210, 8.3561]、\texttt{compact} [510,900, 8.4723]、\texttt{dense} [517,180, 8.4607]、\texttt{dense\_sched} [517,390, 8.5146]）与下方低能耗区的两个休眠配置（\texttt{dense\_sleep} [518,090, 8.0416]、选定配置 \Q{} [505,560, 7.9802]），突出 \Q{} 位于左下角帕累托最优前沿。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/6-2.pdf}
+\caption{候选配置的面积—能耗分布}\label{fig:6-2}
+\end{figure}
 
 在本组六个候选中，\Q{} 的任务能耗最低，新增面积略高于面积最小的轮询配置，因此作为后续基础验证配置。\textbf{选型依据是当前匹配实验中的综合取舍}，并不表示该结构对所有任务都最优。面积仍以库单位报告，须核验单位和 SRAM 宏面积后，才能判断是否满足 2.25 mm\textsuperscript{2} 预算。
 
@@ -1336,18 +1464,18 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 表~\ref{tab:ch6-5} 列出了选定配置 \Q{} 在 150 MHz 目标时钟频率（周期 6.6667 ns）下的静态时序分析（STA）与 SAIF 活动标注覆盖结果。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{选定的时序与活动覆盖}\label{tab:ch6-5}
-\begin{tabularx}{\linewidth}{@{}>{\hsize=.65\hsize\linewidth=\hsize}Y>{\hsize=1.35\hsize\linewidth=\hsize}Y@{}}
+\caption{选定配置的静态时序与活动标注覆盖率}\label{tab:ch6-5}
+\begin{tabular}{@{\hspace{2pt}}cc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 结果}} \\
+\thcell{项目} & \thcell{结果} \\
 \midrule
 综合目标频率 & 150 MHz（周期 6.6667 ns） \\
 setup WNS & 0 ns \\
 SS 角 hold WNS & $-0.17$ ns \\
 顺序单元活动标注覆盖 & 68.53\% \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 综合汇总给出的 setup WNS 为 $0\text{ ns}$，未报告负建立时间裕量；最差路径的实际 slack 及路径组成仍需查阅原始时序报告。SS 角 hold WNS 为 $-0.17\text{ ns}$，保持时间尚未收敛，应结合违例路径定位并复核修复结果。顺序单元活动标注覆盖率为 68.53\%；未标注对象的活动来源、传播与估算设置须随功耗报告归档，覆盖率本身不代表门控覆盖率。
@@ -1357,11 +1485,11 @@ SS 角 hold WNS & $-0.17$ ns \\
 为单独量化第四章 IRQ/\allowbreak{}WFI 低功耗等待机制的净收益，表~\ref{tab:ch6-6} 对比了数据通路相同、仅等待机制不同的 \texttt{reference}（轮询）与 \Q{}（IRQ/\allowbreak{}WFI）两组同条件实验结果。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{轮询与 IRQ/\allowbreak{}WFI 的同条件对照}\label{tab:ch6-6}
-\begin{tabulary}{\linewidth}{@{}Lrrr@{}}
+\caption{轮询与 IRQ/WFI 的同条件性能及能耗对比}\label{tab:ch6-6}
+\begin{tabular}{@{\hspace{2pt}}cccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries \texttt{reference}}} & \multicolumn{1}{c}{{\sffamily\mdseries \Q{}}} & \multicolumn{1}{c}{{\sffamily\mdseries 变化}} \\
+\thcell{项目} & \thcell{\texttt{reference}} & \thcell{\Q{}} & \thcell{变化} \\
 \midrule
 周期 & 32,738 & 32,960 & $+0.68\%$ \\
 任务/秒 & 4,581.9 & 4,551.0 & $-0.67\%$ \\
@@ -1370,7 +1498,7 @@ SS 角 hold WNS & $-0.17$ ns \\
 漏电功耗 & 4.41 mW & 4.41 mW & 报告精度下相同 \\
 单任务能耗 & 8.3561 \ensuremath{\mu}J & 7.9802 \ensuremath{\mu}J & $-4.50\%$ \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 从表~\ref{tab:ch6-6} 可以得出三项结论：
@@ -1403,17 +1531,18 @@ SS 角 hold WNS & $-0.17$ ns \\
 
 \textbf{拓展配置与基础 Q128 配置分别评估}。前者增加了中间激活、定点指数链和直传接口，不能直接沿用基础 FFN1 的面积、周期或功耗作为完整编码器结果。
 
-\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{双引擎的职责、基址与命令}\label{tab:ch7-1}
-\begin{tabulary}{\linewidth}{@{}ClLL@{}}
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{双引擎的运算职责、寄存器基址与命令}\label{tab:ch7-1}
+\begin{tabular}{@{\hspace{2pt}}U{23}U{25}T{50}T{44}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 引擎}} & \multicolumn{1}{c}{{\sffamily\mdseries 基址}} & \multicolumn{1}{c}{{\sffamily\mdseries 承担运算}} & \multicolumn{1}{c}{{\sffamily\mdseries 命令形式}} \\
+\thcell{引擎} & \thcell{基址} & \thleft{承担运算} & \thleft{命令形式} \\
 \midrule
-FFN 引擎（KWT5） & \texttt{0x40000000} & 第一线性层、GELU、第二线性层 & 操作码选择 FFN1 或完整 FFN 及写回方式 \\
-编码器引擎（ENC1） & \texttt{0x40080000} & 投影、分数、Softmax、概率加权、残差、LayerNorm & 前段 / 尾段两条命令 \\
+FFN 引擎\newline （KWT5） & \texttt{0x40000000} & 第一线性层、GELU、第二线性层 & 操作码选择 FFN1 或完整 FFN 及写回方式 \\
+\addlinespace[1.5pt]
+编码器引擎\newline （ENC1） & \texttt{0x40080000} & 投影、分数、Softmax、概率加权、残差、LayerNorm & 前段 / 尾段两条命令 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 双引擎架构的划分依据是两类算子在计算模式与访存特征上的不同特点：完整 FFN 包含 $99\times64\times256$ 和 $99\times256\times64$ 两次高密度矩阵乘法，参数量较大且计算规则；而单头自注意力、残差相加与两处 LayerNorm 则包含多次序列级向量归约（行最大值、指数和、均值、方差、平方根倒数），中间激活张量（$Q, K, V$ 及注意力分数行）需要在算子内部紧密流转。
@@ -1435,11 +1564,11 @@ GELU 采用整数分段近似，避免直接计算浮点误差函数。FFN1 的 
 查表插值使用算术向下取整，输入与输出尺度转换使用 RNE，两者的舍入位置不同。表~\ref{tab:ch7-2} 给出第 0 层指数链；全部常数与移位在模型导出时冻结，\textbf{不依赖验证或测试结果后验调整}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{完整 FFN 的定点指数链（第 0 层示例）}\label{tab:ch7-2}
-\begin{tabulary}{\linewidth}{@{}LrL@{}}
+\caption{完整 FFN 的定点指数与移位参数（第 0 层）}\label{tab:ch7-2}
+\begin{tabular}{@{\hspace{2pt}}ccl@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 节点}} & \multicolumn{1}{c}{{\sffamily\mdseries 指数 / 移位}} & \multicolumn{1}{c}{{\sffamily\mdseries 作用}} \\
+\thcell{节点} & \thcell{指数/移位} & \thleft{作用} \\
 \midrule
 GELU 输入移位 & 11 & 由第一线性层输出尺度转到激活尺度 \\
 GELU 输出移位 & 7 & 由激活尺度转到第二线性层输入 \\
@@ -1447,23 +1576,23 @@ GELU 输出移位 & 7 & 由激活尺度转到第二线性层输入 \\
 第二线性层权重指数 & $-16$ & 冻结权重 \\
 第二线性层输出指数 & $-25$ & 与残差对齐前的最终尺度 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 FFN2 每层生成 6,336 个 INT40 有效结果，支持三种交接方式（表~\ref{tab:ch7-3}）：符号扩展为 64 位后写共享 SRAM；按每项 5 字节紧凑写回；或经 40 位 FIFO 直送 ENC1 尾段。前两种适合检查共享存储中的中间数据，直传则省去这一交接边界的 SRAM 中间空间和读写事务。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{完整 FFN 中间结果的三种交接方式}\label{tab:ch7-3}
-\begin{tabulary}{\linewidth}{@{}LrrL@{}}
+\caption{完整 FFN 中间结果交接方式的空间与代价对比}\label{tab:ch7-3}
+\begin{tabular}{@{\hspace{2pt}}U{28}U{24}U{20}T{67}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 方式}} & \multicolumn{1}{c}{{\sffamily\mdseries 中间空间（字节）}} & \multicolumn{1}{c}{{\sffamily\mdseries 相对 64 位}} & \multicolumn{1}{c}{{\sffamily\mdseries 代价}} \\
+\thcell{交接方式} & \thcell{中间空间\\（字节）} & \thcell{相对 64 位} & \thleft{代价} \\
 \midrule
 64 位存储写回 & 50,688 & 100\% & 两次共享 SRAM 访问 \\
 紧凑 40 位传输 & 31,680 & 62.5\% & 打包/解包逻辑，接收端仍需符号扩展 \\
 FIFO 直传 & 0 & 0\% & 必须并行启动对端，取消需清空两侧 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \section{单头注意力计算与数据流}
@@ -1476,49 +1605,54 @@ FIFO 直传 & 0 & 0\% & 必须并行启动对端，取消需清空两侧 \\
 
 第 $i$ 行概率只用于第 $i$ 行的加权输出，因此无需保留完整分数与概率矩阵。实现使用一个容纳 99 项的 0.5 KiB 行缓存，完成当前行的评分、Softmax 和加权后，下一行覆写该缓存。相对完整 $99\times99$ 中间矩阵表示所需的约 38.3 KiB，\textbf{此处缓存规模由 $O(N^2)$ 降为 $O(N)$}；$Q,K,V$ 等其他驻留空间仍需另计。
 
-\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{注意力与归一化的数值契约}\label{tab:ch7-4}
-\begin{tabularx}{\linewidth}{@{}>{\hsize=.65\hsize\linewidth=\hsize}Y>{\hsize=1.35\hsize\linewidth=\hsize}Y@{}}
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{注意力与 LayerNorm 的定点数值约定}\label{tab:ch7-4}
+\begin{tabular}{@{\hspace{2pt}}U{30}T{115}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 环节}} & \multicolumn{1}{c}{{\sffamily\mdseries 规则}} \\
+\thcell{环节} & \thleft{规则} \\
 \midrule
 激活与参数格式 & Q16；概率为 Q24 \\
+\addlinespace[1.5pt]
 QK 结果缩放 & 右移 19 位，同时完成 Q32\ensuremath{\to}Q16 与除以 8 \\
+\addlinespace[1.5pt]
 Softmax 最大值 & 先减行最大值，差值 $\ge 16$ 时指数归零 \\
+\addlinespace[1.5pt]
 指数近似 & $\log_2 e=94548$（Q16），257 项 Q24 表 $2^{-i/256}$ 加线性插值 \\
+\addlinespace[1.5pt]
 行归一化 & 行倒数为 $\lfloor 2^{48}/\text{sum}\rfloor$，概率下取整 \\
+\addlinespace[1.5pt]
 LayerNorm & 每行 64 特征，$\epsilon=4295\times2^{-32}$，整数 \texttt{isqrt} 与 $\lfloor 2^{36}/\text{std}\rfloor$ \\
+\addlinespace[1.5pt]
 饱和 & 中心化、残差、仿射结果饱和到 INT32 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
-表~\ref{tab:ch7-4} 与图~\ref{fig:softmax-row} 给出了单头注意力与逐行定点 Softmax 的数值契约。在分数计算中，$Q$ 与 $K$ 均为 Q16 定点数，其内积处于 Q32 尺度；硬件通过一次算术右移 19 位（RNE 舍入），同时完成从 Q32 退回 Q16（右移 16 位）以及除以 $\sqrt{64}=8$（右移 3 位）的操作。
+表~\ref{tab:ch7-4} 给出了单头注意力与逐行定点 Softmax 的数值契约。在分数计算中，$Q$ 与 $K$ 均为 Q16 定点数，其内积处于 Q32 尺度；硬件通过一次算术右移 19 位（RNE 舍入），同时完成从 Q32 退回 Q16（右移 16 位）以及除以 $\sqrt{64}=8$（右移 3 位）的操作。
 
 Softmax 先求行最大值 $s_{\max}$，再计算 $\Delta_j=s_{\max}-s_j\ge0$。当 $\Delta_j\ge16$ 时将指数项近似为零，以限制计算范围；该阈值是实现选择，不是指数已低于 Q24 最低有效位的证明。
 
 其余项利用 $e^{-\Delta}=2^{-\Delta\log_2e}$ 转为以 2 为底的运算：将乘积拆成整数部分 $I$ 与小数部分 $F$，用 257 项 Q24 查表和插值得到 $2^{-F}$，再右移 $I$ 位并累加行和。最后计算 $\mathrm{inv}=\lfloor2^{48}/\mathrm{sum}\rfloor$，逐项相乘、右移，形成 Q24 概率。\textbf{行最大值、指数和、归一化相互依赖}，因此同一行需要按阶段处理。
 
-\ph[30mm]{softmax-row}{单头注意力的逐行定点 Softmax 通路}{画出行最大值、差值、指数近似、行和与归一化的依赖。标明 $\Delta\geq16$ 时采用截断为零的实现近似；该阈值不是指数已低于一个 Q24 LSB 的证明。}
 
 ENC1 的投影、评分、概率加权和 LayerNorm 统计按阶段执行，因此分时共享\textbf{4 路 $32\times32$ 乘法器与一个 72 位累加器}，非线性查表、倒数和平方根另设控制逻辑，资源用途见表~\ref{tab:ch7-5}。
 
 在记录的 Q/K/V 投影窗口中，308,886 拍内有 304,128 拍执行有效乘加，对应 98.46\%。这一比例只描述该投影窗口的乘法器活动，不能推及全部编码器阶段或整机运行时间。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{共享算术资源与各阶段用途}\label{tab:ch7-5}
-\begin{tabulary}{\linewidth}{@{}LlL@{}}
+\caption{共享算术资源的配置与使用阶段}\label{tab:ch7-5}
+\begin{tabular}{@{\hspace{2pt}}ccl@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 资源}} & \multicolumn{1}{c}{{\sffamily\mdseries 数量}} & \multicolumn{1}{c}{{\sffamily\mdseries 服务的阶段}} \\
+\thcell{资源} & \thcell{配置} & \thleft{使用阶段} \\
 \midrule
 $32\ensuremath{\times}32$ 乘法器 & 4 & Q/K/V 投影、QK、PV、方差、仿射 \\
 累加器 & 72 位 & 上述各阶段的部分和 \\
 指数插值辅助算术 & 独立 & Softmax 的查表插值与归零判断 \\
 GELU 辅助算术 & 独立 & 激活查表与插值 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \section{算子定点实现与模块验证}
@@ -1526,18 +1660,21 @@ GELU 辅助算术 & 独立 & 激活查表与插值 \\
 伴随引擎与完整 FFN 的算子按数值机理归纳为三类定点实现：线性点积类（$Q/K/V/O$ 投影、FFN1、FFN2）采用宽累加器（72 位或 40 位）求和并在出口执行一次 RNE 舍入；逐元素非线性类（Softmax 指数、GELU 激活）采用分段截断加固定步长查表线性插值；行内统计归一化类（Softmax 行倒数、LayerNorm 均值/方差/标准差倒数）采用整数归约、逐位整数平方根（\texttt{isqrt}）与整数试商除法。表~\ref{tab:ch7-2} 与表~\ref{tab:ch7-4} 中的常数、移位位数和查表值均在模型导出阶段一次性冻结，RTL 与 Python 整数参考模型共享一致的算术原语。
 
 \begin{table}[H]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{拓展算子的验证分工}\label{tab:ch7-6}
-\begin{tabulary}{\linewidth}{@{}LlLL@{}}
+\caption{拓展算子的测试入口、激励与验证判据}\label{tab:ch7-6}
+\begin{tabular}{@{\hspace{2pt}}U{31}U{34}T{33}T{41}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 测试入口}} & \multicolumn{1}{c}{{\sffamily\mdseries 对象}} & \multicolumn{1}{c}{{\sffamily\mdseries 激励}} & \multicolumn{1}{c}{{\sffamily\mdseries 判据}} \\
+\thcell{测试入口} & \thcell{对象} & \thleft{激励} & \thleft{判据} \\
 \midrule
-\texttt{tb\_encoder\_math} & 指数、平方根、除法 & 常量、零方差、极值 & 与整数参考逐值一致 \\
-\texttt{tb\_gelu} & 激活查表与插值 & 正负区间、\ensuremath{\pm}8 边界 & 插值结果与表值 \\
-\texttt{tb\_encoder} & 投影至中间结果 & 真实层输入 & 逐段一致 \\
+\texttt{tb\_\allowbreak{}encoder\_\allowbreak{}math} & 指数、平方根、除法 & 常量、零方差、极值 & 与整数参考逐值一致 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}gelu} & 激活查表与插值 & 正负区间、\ensuremath{\pm}8 边界 & 插值结果与表值 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}encoder} & 投影至中间结果 & 真实层输入 & 逐段一致 \\
+\addlinespace[1.5pt]
 整机回归 & 单层与十二层 & 12 条输入 & LN1、FFN、LN2 三个边界 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 单算子的定点规则确定后，编码器集成的重点转向张量交接与执行依赖。第八章将上述算子组织为单层 PostNorm 通路，重点分析双引擎之间的数据供给、背压和结果消费。
@@ -1559,17 +1696,18 @@ Y &= \operatorname{LN2}(U + F).
 \]
 LN1 输出 $U$ 有两个用途：既作为 FFN 输入，也保留用于第二次残差 $U+F$。因此 FFN 执行期间不能提前覆盖它。ENC1 将层内工作拆成前段、尾段两条命令（表~\ref{tab:ch8-1}），前段产生并保留 $U$，尾段等待 $F$ 后完成第二次残差与 LN2。
 
-\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{ENC1 两条命令的职责与完成条件}\label{tab:ch8-1}
-\begin{tabulary}{\linewidth}{@{}ClLL@{}}
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{ENC1 前段与尾段命令的运算范围及完成条件}\label{tab:ch8-1}
+\begin{tabular}{@{\hspace{2pt}}U{13}U{20}T{60}T{48}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 命令}} & \multicolumn{1}{c}{{\sffamily\mdseries 操作码}} & \multicolumn{1}{c}{{\sffamily\mdseries 承担的运算}} & \multicolumn{1}{c}{{\sffamily\mdseries 完成判据}} \\
+\thcell{命令} & \thcell{操作码} & \thleft{承担的运算} & \thleft{完成判据} \\
 \midrule
 前段 & \texttt{0x38}=0 & 注意力\ensuremath{\to}残差 1\ensuremath{\to}LN1\ensuremath{\to}FFN 输入 & FFN 输入已交付（直传时进入 FIFO） \\
+\addlinespace[1.5pt]
 尾段 & \texttt{0x38}=1 & 读 FFN 输出\ensuremath{\to}残差 2\ensuremath{\to}LN2 & 末笔结果写回确认 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 前段与尾段的命令拆分为双引擎交接提供了独立的控制边界，见图~\ref{fig:8-1}。当前实现先完成整层 LN1 算术，再将其打包数据经输入 FIFO 发送给 FFN；LN1 的逐行计算本身尚未与 FFN 重叠。FFN 收满首个行块即可计算，其余输入继续发送。前段完成发送后，固件启动尾段消费 FFN 输出，并利用前段保留的 LN1 结果完成第二次残差和归一化。
@@ -1578,7 +1716,7 @@ LN1 输出 $U$ 有两个用途：既作为 FFN 输入，也保留用于第二次
 
 \section{LayerNorm 与残差数据通路}
 
-在前段（LN1）与尾段（LN2）中，层归一化（LayerNorm）对序列每个位置 $i \in [0,98]$ 的 $D=64$ 个特征通道独立执行标准化与仿射变换。设单行残差相加并饱和至 INT32 后的特征向量为 $z = (z_0, z_1, \ldots, z_{63})$，硬件按图~\ref{fig:layernorm-row} 与表~\ref{tab:ch8-2} 所示的四个依赖步骤完成单行处理：
+在前段（LN1）与尾段（LN2）中，层归一化（LayerNorm）对序列每个位置 $i \in [0,98]$ 的 $D=64$ 个特征通道独立执行标准化与仿射变换。设单行残差相加并饱和至 INT32 后的特征向量为 $z = (z_0, z_1, \ldots, z_{63})$，硬件按以下四个依赖步骤完成单行处理，相关操作与数值处理见表~\ref{tab:ch8-2}：
 \begin{enumerate}
 \item \textbf{行均值与中心化：} 对 64 个通道求和并算术右移 6 位得到整数均值 $\mu = \lfloor \sum_{c=0}^{63} z_c / 64\rfloor$，随后逐通道计算中心化差值 $d_c = \operatorname{sat}_{32}(z_c - \mu)$；
 \item \textbf{总体方差计算：} 利用共享的 4 路 $32\times32$ 乘法器与 72 位累加器累加 $\sum_{c=0}^{63} d_c^2$，除以 64 得到总体方差 $\sigma^2$；
@@ -1587,11 +1725,11 @@ LN1 输出 $U$ 有两个用途：既作为 FFN 输入，也保留用于第二次
 \end{enumerate}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{残差与归一化通路的节点与数值处理}\label{tab:ch8-2}
-\begin{tabulary}{\linewidth}{@{}ClL@{}}
+\caption{残差与 LayerNorm 通路的操作及数值处理}\label{tab:ch8-2}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 节点}} & \multicolumn{1}{c}{{\sffamily\mdseries 关键常量 / 操作}} & \multicolumn{1}{c}{{\sffamily\mdseries 位宽与饱和}} \\
+\thcell{节点} & \thcell{关键常量 / 操作} & \thcell{位宽与饱和} \\
 \midrule
 第一处残差 & 注意力输出加输入 & 饱和到 INT32 \\
 中心化 & 减行均值 & 饱和到 INT32 \\
@@ -1601,27 +1739,26 @@ LN1 输出 $U$ 有两个用途：既作为 FFN 输入，也保留用于第二次
 仿射 & 乘 $\gamma$ 加 $\beta$ & 最近偶数舍入，饱和到 INT32 \\
 $\epsilon$ & $4295\times2^{-32}$ & 加在方差上，避免零除 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
-\ph[38mm]{layernorm-row}{LayerNorm 单行统计量与逐元素输出}{绘制单行 64 个特征通道的 LayerNorm 四步数据依赖图：输入残差相加后的单行 64 个 INT32 特征 $\to$ 行内归约求均值 $\mu$ 与中心化平方和方差 $\sigma^2$ $\to$ 加上 $\epsilon=4295\times2^{-32}$ 后执行整数平方根 \texttt{isqrt} 及定点倒数 $\lfloor 2^{36}/\text{std}\rfloor$ $\to$ 用共享倒数因子对 64 个通道逐一执行中心化缩放并乘 $\gamma_c$ 加 $\beta_c$ 仿射输出。}
 
 跨引擎交接包含两次尺度转换。\textbf{LN1 到 FFN}：Q16 INT32 按本层输入指数移位、饱和并打包为 INT16。\textbf{FFN 到 LN2}：FFN2 结果按输出指数恢复到 Q16，再与驻留的 LN1 相加。
 
 验证在 LN1 打包输出、FFN 整数输出和 LN2 整数输出设置三个检查边界（表~\ref{tab:ch8-3}），用来区分算子内失配与交接尺度、打包或索引错误。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{单层验证的三个观察边界}\label{tab:ch8-3}
-\begin{tabulary}{\linewidth}{@{}LlL@{}}
+\caption{单层编码器验证的三个输出观察边界}\label{tab:ch8-3}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 边界}} & \multicolumn{1}{c}{{\sffamily\mdseries 观察对象}} & \multicolumn{1}{c}{{\sffamily\mdseries 用于区分的问题}} \\
+\thcell{观察边界} & \thcell{观察对象} & \thcell{问题定位} \\
 \midrule
 LN1 打包输出 & 转 INT16 后的 99\ensuremath{\times}64 & 归一化、尺度转换 \\
 FFN 整数输出 & INT64 原始结果 & 两次线性层、GELU \\
 LN2 整数输出 & 恢复 Q16 后的 99\ensuremath{\times}64 & 残差 2、LN2 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \section{双引擎协同与中间数据直传}
@@ -1635,11 +1772,11 @@ LN2 整数输出 & 恢复 Q16 后的 99\ensuremath{\times}64 & 残差 2、LN2 \\
 直传流程依赖输入块有效与写入窗口两个条件。全部权重预装有效后，FFN 接收 LN1 数据，收满首个八行块即可启动，末尾三行按有效长度处理。进入 FFN2 后，计算读取独立的 GELU 中间存储，后续 LN1 数据仍可写入 X 缓冲。保留这条接收路径，使前段有机会完成发送，固件随后才能启动尾段，解除结果 FIFO 的背压。该机制须同时满足下游可恢复接收、在途事务有响应等接口条件。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{直传链路的实测计数（单层匹配实验）}\label{tab:ch8-4}
-\begin{tabulary}{\linewidth}{@{}LrL@{}}
+\caption{单层匹配实验的 FIFO 直传链路计数}\label{tab:ch8-4}
+\begin{tabular}{@{\hspace{2pt}}U{43}U{22}T{72}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 实测}} & \multicolumn{1}{c}{{\sffamily\mdseries 说明}} \\
+\thcell{统计项目} & \thcell{实测值} & \thleft{说明} \\
 \midrule
 输入 FIFO 深度 & 4 & 满占用 4/4 \\
 生产端满等待 & 8,190 拍 & X 单端口被计算读取占用 \\
@@ -1647,7 +1784,7 @@ LN2 整数输出 & 恢复 Q16 后的 99\ensuremath{\times}64 & 残差 2、LN2 \\
 第二线性阶段的 X 写入 & 2,629 次 & 该阶段读独立中间存储，留有写入窗口 \\
 每层 LN1 读写字数 & 6,336 & 输入直传后该边界为 0 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \ph[40mm]{fifo-handoff}{单层 LN1 交接从 SRAM 往返改为 FIFO 直传}{对比 LN1 的两条输入交接路径。基线为 LN1 打包结果写共享 SRAM，再由 FFN 读回；候选为 LN1 数据经深度 4 的输入 FIFO 直接送入 FFN。每层减少 3,168 写字与 3,168 读字。两种模式均保留已有结果 FIFO。}
@@ -1658,20 +1795,24 @@ LN2 整数输出 & 恢复 Q16 后的 99\ensuremath{\times}64 & 残差 2、LN2 \\
 
 整机测试在完整 E203 SoC 上运行共享 SRAM 与 FIFO 两种交接配置，分别比较 LN1、FFN 和 LN2 边界。\textbf{三处逐位一致}支持传输路径变化未改变已测输入的数值结果，压力测试则补充推进与恢复行为的检查。
 
-\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{单层集成相关测试平台}\label{tab:ch8-5}
-\begin{tabulary}{\linewidth}{@{}LlL@{}}
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{单层编码器集成的测试平台与覆盖场景}\label{tab:ch8-5}
+\begin{tabular}{@{\hspace{2pt}}U{38}U{22}T{84}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 测试平台}} & \multicolumn{1}{c}{{\sffamily\mdseries 覆盖对象}} & \multicolumn{1}{c}{{\sffamily\mdseries 主要场景}} \\
+\thcell{测试平台} & \thcell{覆盖对象} & \thleft{主要场景} \\
 \midrule
-\texttt{tb\_ffn\_input} & FFN 输入接口 & 就绪、慢输入、末字背压、取消后重启 \\
-\texttt{tb\_input\_link} & 双引擎链路 & 前段 DONE 与 FIFO 残数、取消、恢复 \\
-\texttt{tb\_encoder\_soc} & 编码器整机 & 单层完整前向 \\
-\texttt{tb\_encoder\_faults} & 异常路径 & 总线错误、中止、看门狗 \\
-\texttt{encoder\_fifo\_monitor} & FIFO 行为 & 占用、满空等待统计 \\
+\texttt{tb\_\allowbreak{}ffn\_\allowbreak{}input} & FFN 输入接口 & 就绪、慢输入、末字背压、取消后重启 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}input\_\allowbreak{}link} & 双引擎链路 & 前段 DONE 与 FIFO 残数、取消、恢复 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}encoder\_\allowbreak{}soc} & 编码器整机 & 单层完整前向 \\
+\addlinespace[1.5pt]
+\texttt{tb\_\allowbreak{}encoder\_\allowbreak{}faults} & 异常路径 & 总线错误、中止、看门狗 \\
+\addlinespace[1.5pt]
+\texttt{encoder\_\allowbreak{}fifo\_\allowbreak{}monitor} & FIFO 行为 & 占用、满空等待统计 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \chapter{十二层编码器调度与系统优化}
@@ -1685,11 +1826,11 @@ LN2 整数输出 & 恢复 Q16 后的 99\ensuremath{\times}64 & 残差 2、LN2 \\
 \ph[46mm]{layer12-flow}{十二层编码器逐层参数装载、双引擎执行与异常恢复流程}{绘制十二层连续调度的主循环流程图：初始化层索引 $l=0$ 并清除陈旧驻留标志 $\to$ 校验层序与设备空闲状态，装载本层参数并配置双引擎（$l=0$ 从共享 SRAM 读初始输入，$l>0$ 启用片内输入驻留；$l<11$ 跳过外部写回，$l=11$ 开启末层写回） $\to$ 按依赖关系启动 FFN 权重预装、编码器前段和编码器尾段 $\to$ 检查双引擎完成与错误状态 $\to$ 成功且 $l<11$ 时递增层索引进入下一层，$l=11$ 完成后通过邮箱交付结果；若任一阶段报错或超时则进入双引擎排空与恢复分支并重置期望层序。}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{单层参数区的组成（连续 16,704 个 32 位字）}\label{tab:ch9-1}
-\begin{tabulary}{\linewidth}{@{}CrL@{}}
+\caption{单层参数区的组成（共 16,704 个 32 位字）}\label{tab:ch9-1}
+\begin{tabular}{@{\hspace{2pt}}ccl@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 参数}} & \multicolumn{1}{c}{{\sffamily\mdseries 字数}} & \multicolumn{1}{c}{{\sffamily\mdseries 说明}} \\
+\thcell{参数} & \thcell{字数} & \thleft{说明} \\
 \midrule
 $W_q$ & 4,096 & 查询投影，按四个输出列成组、$k$ 在组内连续 \\
 $W_k$ & 4,096 & 键投影 \\
@@ -1701,7 +1842,7 @@ $\gamma_2$、$\beta_2$ & 各 64 & LN2 仿射参数 \\
 \midrule
 合计 & 16,704 & 每层独立装载 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 逐层调度需要区分首层、中间层和末层。\textbf{首层}清除旧驻留标志，从共享 SRAM 读取 $X^{(0)}$；\textbf{中间层}直接使用前层保留的 LN2 输出；\textbf{末层}恢复外部写回，发布最终编码结果。地址与数据流见表~\ref{tab:ch9-2}、图~\ref{fig:9-1}。
@@ -1709,18 +1850,21 @@ $\gamma_2$、$\beta_2$ & 各 64 & LN2 仿射参数 \\
 同时启用层内 FIFO 与层间驻留时，正常推理绕过 FFN 中间输入区和结果区。就矩阵数据搬运而言，总线主要承担初始输入、各层参数和最终输出；处理器取指、控制与状态访问仍按系统实现发生，不能据此称总线仅有这三类事务。
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{拓展配置的共享内存布局}\label{tab:ch9-2}
-\begin{tabulary}{\linewidth}{@{}LlrL@{}}
+\caption{拓展配置的共享 SRAM 数据区布局}\label{tab:ch9-2}
+\begin{tabular}{@{\hspace{2pt}}U{32}U{31}U{29}T{48}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 区域}} & \multicolumn{1}{c}{{\sffamily\mdseries 基址}} & \multicolumn{1}{c}{{\sffamily\mdseries 字节}} & \multicolumn{1}{c}{{\sffamily\mdseries 说明}} \\
+\thcell{区域} & \thcell{基址} & \thcell{容量（字节）} & \thleft{说明} \\
 \midrule
 初始 $X$（Q16） & \texttt{0xA0010000} & 25,344 & 首层输入 \\
-FFN 输入（int16 紧凑） & \texttt{0xA0018000} & 12,672 & 直传时不经此区 \\
-$W_1$ / $b_1$ & \texttt{0xA0020000} / \texttt{0xA0028000} & 32,768 / 1,024 & 第一线性层参数 \\
-FFN 结果 & \texttt{0xA0030000} & 50,688 / 31,680 / — & 64 位 / 紧凑 40 位 / 直传不传输 \\
+\addlinespace[1.5pt]
+FFN 输入\newline （int16 紧凑） & \texttt{0xA0018000} & 12,672 & 直传时不经此区 \\
+\addlinespace[1.5pt]
+$W_1$ / $b_1$ & \texttt{0xA0020000} /\newline \texttt{0xA0028000} & 32,768 /\newline 1,024 & 第一线性层参数 \\
+\addlinespace[1.5pt]
+FFN 结果 & \texttt{0xA0030000} & 50,688 /\newline 31,680 / — & 64 位 / 紧凑 40 位 / 直传不传输 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \ph[44mm]{9-1}{十二层调度中首层、中间层与末层的数据流转示意}{绘制首层（Layer 0）、中间层（Layer 1–10）与末层（Layer 11）的三阶段流转框图：首层从共享 SRAM 装载初始输入 $X^{(0)}$ 与第 0 层参数，算出的 LN2 结果留在片内；中间层（$l=1..10$）仅从共享 SRAM 更新第 $l$ 层参数，直接复用片内驻留的上一层 LN2 输出作为本层输入；末层（$l=11$）更新参数并完成计算后，将最终 $99\times64$ 编码器输出写回共享 SRAM 供软件分类头读取。}
@@ -1750,11 +1894,11 @@ FFN 结果 & \texttt{0xA0030000} & 50,688 / 31,680 / — & 64 位 / 紧凑 40 �
 \end{enumerate}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{主机授权实验的计数与收益（十二层任务）}\label{tab:ch9-3}
-\begin{tabulary}{\linewidth}{@{}Llr@{}}
+\caption{十二层任务的主机有界授权计数与收益}\label{tab:ch9-3}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 基线（\texttt{HOST}=0）}} & \multicolumn{1}{c}{{\sffamily\mdseries 候选（\texttt{HOST}=2）}} \\
+\thcell{项目} & \thcell{基线\\（\texttt{HOST}=0）} & \thcell{候选\\（\texttt{HOST}=2）} \\
 \midrule
 十二层输入与参数写入 & 407,232 字 & 407,232 字 \\
 三拍每字的固定成本 & 1,221,696 拍 & 1,221,696 拍 \\
@@ -1762,7 +1906,7 @@ FFN 结果 & \texttt{0xA0030000} & 50,688 / 31,680 / — & 64 位 / 紧凑 40 �
 CPU 取指最长连续等待 & 8 拍 & 8 拍 \\
 整机周期变化 & — & $-407,422$ 拍 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \section{十二层整机回归}
@@ -1770,18 +1914,18 @@ CPU 取指最长连续等待 & 8 拍 & 8 拍 \\
 十二层编码器的整机 RTL 回归在“共享 SRAM 交接”与“FIFO 直传 + 层间驻留 + 有界授权”两种配置下，分别连续运行了 12 条完整语音输入样本，每条样本顺序执行全部 12 个编码器层（每种配置合计执行 144 个编码器层实例）。
 
 \begin{table}[H]\centering\fontsize{10}{13}\selectfont
-\caption{十二层整机回归的比对项（每种配置合计 12 条输入）}\label{tab:ch9-4}
-\begin{tabulary}{\linewidth}{@{}LrL@{}}
+\caption{十二层整机回归的比对数量（每种配置共 12 条输入）}\label{tab:ch9-4}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 比对项}} & \multicolumn{1}{c}{{\sffamily\mdseries 数量}} & \multicolumn{1}{c}{{\sffamily\mdseries 来源}} \\
+\thcell{比对项} & \thcell{数量} & \thcell{来源} \\
 \midrule
 LN1 打包输出 & 456,192 & $3{,}168\times144$ \\
 FFN INT40 结果 & 912,384 & $6{,}336\times144$ \\
 LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 最终编码器输出 & 76,032 & $6{,}336\times12$ \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 表~\ref{tab:ch9-4} 各项均无失配；LN1 按每字含两个 INT16 的打包字计数，其余按矩阵元素计数。仲裁专项另测持续请求、背压、目标锁定、非法地址及在途复位；这些测试支持已覆盖场景的推进与恢复结论，尚不足以证明所有输入条件下均无饥饿。
@@ -1797,28 +1941,31 @@ LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 表~\ref{tab:ch10-1} 与图~\ref{fig:10-2} 在同一十二层任务、冻结参数和计时窗口下逐步增加 LN1 输入直传、DMA 八笔有界突发及 Host 两点优先信用。\textbf{每次只比较相邻两级配置}，对应一项机制的增量收益；最终配置再与基线比较累计变化，避免将不同窗口或不同硬件的结果相减。
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{拓展篇的同条件周期链}\label{tab:ch10-1}
-\begin{tabulary}{\linewidth}{@{}LrrL@{}}
+\caption{十二层编码器逐级优化的同条件周期对比}\label{tab:ch10-1}
+\begin{tabular}{@{\hspace{2pt}}U{37}U{23}U{33}T{48}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 配置}} & \multicolumn{1}{c}{{\sffamily\mdseries 十二层周期}} & \multicolumn{1}{c}{{\sffamily\mdseries 相对上一级}} & \multicolumn{1}{c}{{\sffamily\mdseries 主要变化}} \\
+\thcell{配置} & \thcell{十二层周期\\（拍）} & \thcell{相对上一级\\变化（拍）} & \thleft{主要变化} \\
 \midrule
 共享 SRAM 交接（基线） & 14,549,345 & — & LN1 结果写回共享 SRAM \\
-LN1 输入直传 & 14,315,119 & $-234{,}226$（$-1.61\%$） & DMA 由 489,600 字减至 413,568 字 \\
-DMA 有界授权 & 14,263,416 & $-51{,}703$ & \texttt{DMA\_BURST}=8 \\
+\addlinespace[1.5pt]
+LN1 输入直传 & 14,315,119 & $-234{,}226$（$-1.61\%$） & DMA 由 489,600 字\newline 减至 413,568 字 \\
+\addlinespace[1.5pt]
+DMA 有界授权 & 14,263,416 & $-51{,}703$ & \texttt{DMA\_\allowbreak{}BURST}=8 \\
+\addlinespace[1.5pt]
 主机有界授权 & 13,855,994 & $-407{,}422$ & \texttt{HOST}=0\ensuremath{\to}2 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 三个匹配对照分别针对输入交接、运行期 DMA 访问和 Host 参数装载等待。输入直传减少中间数据往返，DMA 授权改善运行期访问，Host 授权缩短装载等待。表~\ref{tab:ch10-1} 中每步收益相对上一级计算，累计周期减少 4.77\%。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{单层直传前后的分段统计}\label{tab:ch10-2}
-\begin{tabulary}{\linewidth}{@{}Lrr@{}}
+\caption{单层编码器直传前后的阶段周期与传输量}\label{tab:ch10-2}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 分段}} & \multicolumn{1}{c}{{\sffamily\mdseries 共享 SRAM 交接}} & \multicolumn{1}{c}{{\sffamily\mdseries FIFO 直传}} \\
+\thcell{统计项目} & \thcell{共享 SRAM 交接} & \thcell{FIFO 直传} \\
 \midrule
 前段周期 & 837,792 & 844,923 \\
 尾段周期 & 251,933 & 225,100 \\
@@ -1826,7 +1973,7 @@ FFN 核活动周期 & 209,827 & 209,857 \\
 DMA 交接字数 & 52,416 & 46,080 \\
 整层周期 & 1,250,753 & 1,231,235 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 表~\ref{tab:ch10-2} 显示，输入直传减少了共享 SRAM 搬运，并改变了阶段间的重叠。前段因输入 FIFO 背压增加 7,131 拍，FFN 核活动周期基本不变，尾段计数区间缩短 26,833 拍。尾段区间长度的变化不等同于绝对完成时刻的提前量，跨阶段区间也可能重叠；整层净收益按共同任务窗口计为 19,518 拍。
@@ -1838,11 +1985,11 @@ DMA 交接字数 & 52,416 & 46,080 \\
 拓展数值验证分为两个范围。\textbf{RTL 回归}在选定输入上逐层检查整数实现；\textbf{软件扩展评估}使用同一冻结格式扩大样本范围，比较定点与浮点分类以及逐层误差。表~\ref{tab:ch10-3} 汇总后者结果。静音记录使用相同全零输入并保留上游索引权重，不能按彼此独立的音频样本理解。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{软件数值验证的结果}\label{tab:ch10-3}
-\begin{tabularx}{\linewidth}{@{}>{\hsize=.65\hsize\linewidth=\hsize}Y>{\hsize=1.35\hsize\linewidth=\hsize}Y@{}}
+\caption{扩展样本集的软件分类一致性与数值误差}\label{tab:ch10-3}
+\begin{tabular}{@{\hspace{2pt}}cc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 结果}} \\
+\thcell{项目} & \thcell{结果} \\
 \midrule
 记录数 & 4,445（4,074 个音频 + 371 条静音） \\
 浮点模型正确数 & 4,351（97.8853\%） \\
@@ -1852,7 +1999,7 @@ DMA 交接字数 & 52,416 & 46,080 \\
 最大逐层聚合 NRMSE & 0.171308\% \\
 最差单样本逐层 NRMSE & 0.237820\% \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 本地软件验证主要用于考察分类预测、运行时饱和和逐层误差。结果的适用范围如下。
@@ -1862,20 +2009,19 @@ DMA 交接字数 & 52,416 & 46,080 \\
 \item \textbf{逐层误差传播：} LN2 聚合 NRMSE 随层数增加，最大值为 0.171308\%。该统计用于观察编码器的误差传播。赛题的 3\% NRMSE 门槛针对本科前馈线性任务；研究生编码器的分类门槛为同一评测集、同一分类头下 Top-1 相对浮点参考下降不超过 2 个百分点，当前本地软件结果不替代统一评测验收。
 \end{enumerate}
 
-图~\ref{fig:evidence-boundaries} 梳理了拓展篇三类实验证据各自的验证范围：十二层整机 RTL 回归验证硬件实现与整数参考的逐位一致性；同条件匹配对照量化直传与总线仲裁的系统周期收益；独立软件验证评估冻结定点格式相对浮点模型的分类表现与逐层 NRMSE。待官方最终评测集公布后，可按同一冻结格式运行生成验收记录。
+拓展篇三类实验证据分别支持不同范围的结论：十二层整机 RTL 回归验证硬件实现与整数参考的逐位一致性；同条件匹配对照量化直传与总线仲裁的系统周期收益；独立软件验证评估冻结定点格式相对浮点模型的分类表现与逐层 NRMSE。待官方最终评测集公布后，可按同一冻结格式运行生成验收记录。
 
-\ph[44mm]{evidence-boundaries}{拓展篇的功能、周期与数值证据边界}{以三行对应 RTL 回归、匹配配置周期对照和软件扩展评估，分别标出输入范围、观察量及支持的结论。RTL 一致性限定到已测向量；本地分类结果与统一评测验收分开。}
 
 \section{资源开销与综合评估}
 
 表~\ref{tab:ch10-4} 汇总了拓展配置双引擎（KWT5 + ENC1）内部的单端口 SRAM 宏组成。其中，完整 FFN 数据通路存放两级线性层参数与 GELU 中间激活；编码器伴随引擎包含 $X, Q, K, V$ 四组向量缓存、分时复用的单组投影权重缓存、输出偏置与 LayerNorm 参数缓存，以及逐行复用的单行注意力分数/概率缓存。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{拓展配置的内部 SRAM 组成}\label{tab:ch10-4}
-\begin{tabulary}{\linewidth}{@{}LrL@{}}
+\caption{拓展配置的内部 SRAM 用途与容量}\label{tab:ch10-4}
+\begin{tabular}{@{\hspace{2pt}}ccl@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 内容}} & \multicolumn{1}{c}{{\sffamily\mdseries 容量}} & \multicolumn{1}{c}{{\sffamily\mdseries 说明}} \\
+\thcell{内容} & \thcell{容量} & \thleft{说明} \\
 \midrule
 原 FFN 数据通路 & 88.5 KiB & 第一、第二线性层与 GELU 缓冲 \\
 $X$、$Q$、$K$、$V$ 四组向量缓存 & 128 KiB & 注意力中间量 \\
@@ -1885,7 +2031,7 @@ $X$、$Q$、$K$、$V$ 四组向量缓存 & 128 KiB & 注意力中间量 \\
 \midrule
 合计 & 235 KiB & 240,640 B，122 个 16 位宏 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 结构检查得到 122 个 16 位单端口宏：2 个 $4096\times16$、108 个 $1024\times16$ 和 12 个 $128\times16$，合计 235 KiB。\textbf{逻辑容量只说明存储规模，不等于硅片面积}，也不能据此推导功耗或可达频率。
@@ -1894,23 +2040,25 @@ $X$、$Q$、$K$、$V$ 四组向量缓存 & 128 KiB & 注意力中间量 \\
 
 \section{研究生任务对应关系与完成情况}
 
-参照赛题指南中研究生组的第 4 至第 7 项进阶要求，图~\ref{fig:10-1} 与表~\ref{tab:ch10-5} 逐项列出了本作品拓展篇的当前硬件实现范围、已取得的验证证据与待补事项。
+参照赛题指南中研究生组的第 4 至第 7 项进阶要求，表~\ref{tab:ch10-5} 逐项列出了本作品拓展篇的当前硬件实现范围、已取得的验证证据与待补事项。
 
-\ph[44mm]{10-1}{研究生第 4—7 项任务的实现与验证状态}{绘制四列并排的研究生进阶任务完成度矩阵图：（1）第 4 项“单头注意力加速器”：RTL 完整实现（$Q/K/V/O$ 投影、分数、逐行 Softmax、概率加权）并通过组件级位精确验证［已完成］；（2）第 5 项“单层 PostNorm 编码器”：双引擎协同与 FIFO 直传完整实现，通过 LN1/FFN/LN2 三边界逐位验证［已完成］；（3）第 6 项“十二层编码器连续调度”：逐层参数装载、层间 LN2 驻留与有界仲裁完整实现，通过 12 条样本 $\times 12$ 层整机 RTL 回归及 4,445 条样本软件验证［已完成］；（4）第 7 项“逻辑综合与性能评估”：完整获得单层/十二层周期链与访存计数，40 nm 工艺映射 PPA 与门级网表回归待补［部分完成］。}
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{研究生任务第 4—7 项的完成情况}\label{tab:ch10-5}
-\begin{tabulary}{\linewidth}{@{}lLL@{}}
+\caption{研究生任务第 4—7 项的实现与验证状态}\label{tab:ch10-5}
+\begin{tabular}{@{\hspace{2pt}}U{28}T{59}T{54}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 赛题任务}} & \multicolumn{1}{c}{{\sffamily\mdseries 当前实现}} & \multicolumn{1}{c}{{\sffamily\mdseries 验证与证据范围}} \\
+\thcell{赛题任务} & \thleft{当前实现} & \thleft{验证与证据范围} \\
 \midrule
-第 4 项 单头注意力 & $Q/K/V$ 投影、分数、Softmax、概率加权、输出投影 & 组件 RTL 与参考逐段比较 \\
-第 5 项 单层编码器 & 注意力、两次残差、两处 LN、完整 FFN & LN1/FFN/LN2 三边界对照 \\
-第 6 项 十二层调度 & 逐层参数切换、层间驻留、末层写回 & 12 条输入\ensuremath{\times}12 层 RTL \\
-第 7 项 综合与性能 & 周期、访存与阶段计数完整；通用网表为历史版本 & 工艺 PPA 与网表回归待补 \\
+第 4 项\newline 单头注意力 & $Q/K/V$ 投影、分数、Softmax、概率加权、输出投影 & 组件 RTL 与参考逐段比较 \\
+\addlinespace[1.5pt]
+第 5 项\newline 单层编码器 & 注意力、两次残差、两处 LN、完整 FFN & LN1/FFN/LN2 三边界对照 \\
+\addlinespace[1.5pt]
+第 6 项\newline 十二层调度 & 逐层参数切换、层间驻留、末层写回 & 12 条输入\ensuremath{\times}12 层 RTL \\
+\addlinespace[1.5pt]
+第 7 项\newline 综合与性能 & 周期、访存与阶段计数完整；通用网表为历史版本 & 工艺 PPA 与网表回归待补 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 拓展部分已实现单头注意力、单层 PostNorm 和十二层连续编码器的 RTL、固件调度及总线优化，并在记录的整机输入上完成整数逐位比对。系统周期对照与软件分类评估提供了进一步证据。\textbf{这些结果对应已实现与已验证的范围}；统一评测集分类验收、拓展工艺映射 PPA 和网表回归仍需补齐，不将结构或软件结果视为这些工作的替代。
@@ -1927,11 +2075,11 @@ $X$、$Q$、$K$、$V$ 四组向量缓存 & 128 KiB & 注意力中间量 \\
 \chapter{术语约定}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{术语约定}
-\begin{tabularx}{\linewidth}{@{}>{\hsize=.65\hsize\linewidth=\hsize}Y>{\hsize=1.35\hsize\linewidth=\hsize}Y@{}}
+\caption{报告术语与用法约定}
+\begin{tabular}{@{\hspace{2pt}}U{25}T{116}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 术语}} & \multicolumn{1}{c}{{\sffamily\mdseries 报告中的用法}} \\
+\thcell{术语} & \thleft{报告中的用法} \\
 \midrule
 SRAM bank & 首次写“SRAM 分块（bank）”，后续按对象写“存储块”或“分块”。 \\
 SRAM macro & SRAM 宏。用于表示有固定深度、位宽及端口的物理实例。 \\
@@ -1940,28 +2088,35 @@ tile & 首次写“输出块（tile）”，后续写“输出块”或“行块
 MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单元。 \\
 任务周期 & 标明工作负载和结束事件。基础与拓展各自统计。 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 \chapter{版本与证据索引}
 
-\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{版本与证据索引}
-\begin{tabularx}{\linewidth}{@{}>{\hsize=.65\hsize\linewidth=\hsize}Y>{\hsize=1.35\hsize\linewidth=\hsize}Y@{}}
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{报告版本与验证证据索引}
+\begin{tabular}{@{\hspace{2pt}}U{43}T{100}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 内容}} & \multicolumn{1}{c}{{\sffamily\mdseries 对应资料}} \\
+\thcell{内容} & \thleft{对应资料} \\
 \midrule
 赛题和验收 & 工作区 \texttt{赛题.pdf} \\
+\addlinespace[1.5pt]
 版式和章节体例 & 2024 年芯片设计及评估报告、2025 年报告合订本 \\
+\addlinespace[1.5pt]
 基础结构与固件 & 缓存 \texttt{origin/\allowbreak{}main@e0214c1}，\texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}cases/\allowbreak{}reference\_\allowbreak{}sleep/} \\
+\addlinespace[1.5pt]
 基础逐任务及中断证据 & 同目录下的 \texttt{output/\allowbreak{}verification/\allowbreak{}functional.json}；上级目录的 \texttt{LOCAL\_\allowbreak{}RESULTS.md}、\texttt{local\_\allowbreak{}verification/\allowbreak{}wfi\_\allowbreak{}audit.json} \\
+\addlinespace[1.5pt]
 Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}reports/\allowbreak{}RESULTS.md} \\
+\addlinespace[1.5pt]
 历史 16 路面积对照 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}docs/\allowbreak{}soc-\allowbreak{}results-\allowbreak{}2026-\allowbreak{}11-\allowbreak{}02.md} \\
+\addlinespace[1.5pt]
 拓展结构、直传、仲裁 & \texttt{docs/\allowbreak{}full-\allowbreak{}encoder.md}、\texttt{docs/\allowbreak{}input-\allowbreak{}stream.md}、\texttt{docs/\allowbreak{}bus-\allowbreak{}study.md}、\texttt{docs/\allowbreak{}host-\allowbreak{}study.md} \\
+\addlinespace[1.5pt]
 软件分类与逐层误差 & \texttt{docs/\allowbreak{}encoder-\allowbreak{}validation-\allowbreak{}expanded.md} \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
 
 \chapter{待补证据}
@@ -1979,51 +2134,51 @@ Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak
 表 D.1 与表 D.2 完整收录了基础选定配置 Q128 \Q{} 在本地 12 层整机回归（\texttt{output/\allowbreak{}verification/\allowbreak{}functional.json}）中的逐层实测硬件计数。其中，“复位周期”与“连续周期”均为首个 Host 数据请求被接收至第 12,672 笔末笔 DMA 写响应返回的严格任务窗口周期；DMA 命令窗口周期满足 $\text{命令周期} = \text{装载（LOAD）} + \text{运行（RUN）} + 3\text{（其他状态）}$。表 D.2 中的阵列活动、读写请求数与等待受阻计数取自每任务复位模式（连续运行模式与之保持一致）。
 
 \begin{table}[H]\centering\fontsize{10}{13}\selectfont
-\renewcommand{\arraystretch}{1.0}
-\caption{逐层任务与 DMA 命令计数}
-\begin{tabulary}{\linewidth}{@{}Crrrrr@{}}
+\renewcommand{\arraystretch}{1.12}
+\caption{各层任务周期与 DMA 阶段计数}
+\begin{tabular}{@{\hspace{2pt}}cccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 层}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{复位\\周期}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{连续\\周期}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{DMA 命令\\周期}}} & \multicolumn{1}{c}{{\sffamily\mdseries 装载}} & \multicolumn{1}{c}{{\sffamily\mdseries 运行}} \\
+\thcell{层} & \thcell{复位模式\\周期（拍）} & \thcell{连续模式\\周期（拍）} & \thcell{DMA 命令\\周期（拍）} & \thcell{装载\\周期（拍）} & \thcell{运行\\周期（拍）} \\
 \midrule
-0 & 32959.5 & 32959.5 & 22895 & 7212 & 15680 \\
-1 & 32306.5 & 32306.5 & 22568 & 6910 & 15655 \\
-2 & 32026.5 & 32026.5 & 22428 & 6756 & 15669 \\
-3 & 32028.5 & 32028.5 & 22430 & 6788 & 15639 \\
-4 & 30540.5 & 30540.5 & 21688 & 6575 & 15110 \\
-5 & 31343.5 & 31343.5 & 22085 & 6427 & 15655 \\
-6 & 31073.5 & 31073.5 & 21951 & 6251 & 15697 \\
-7 & 31155.5 & 31155.5 & 21993 & 6301 & 15689 \\
-8 & 30901.5 & 30901.5 & 21867 & 6249 & 15615 \\
-9 & 31820.5 & 31820.5 & 22326 & 6649 & 15674 \\
-10 & 32996.5 & 32996.5 & 22914 & 7234 & 15677 \\
-11 & 34929.5 & 34929.5 & 23881 & 8160 & 15718 \\
+0 & 32,959.5 & 32,959.5 & 22,895 & 7,212 & 15,680 \\
+1 & 32,306.5 & 32,306.5 & 22,568 & 6,910 & 15,655 \\
+2 & 32,026.5 & 32,026.5 & 22,428 & 6,756 & 15,669 \\
+3 & 32,028.5 & 32,028.5 & 22,430 & 6,788 & 15,639 \\
+4 & 30,540.5 & 30,540.5 & 21,688 & 6,575 & 15,110 \\
+5 & 31,343.5 & 31,343.5 & 22,085 & 6,427 & 15,655 \\
+6 & 31,073.5 & 31,073.5 & 21,951 & 6,251 & 15,697 \\
+7 & 31,155.5 & 31,155.5 & 21,993 & 6,301 & 15,689 \\
+8 & 30,901.5 & 30,901.5 & 21,867 & 6,249 & 15,615 \\
+9 & 31,820.5 & 31,820.5 & 22,326 & 6,649 & 15,674 \\
+10 & 32,996.5 & 32,996.5 & 22,914 & 7,234 & 15,677 \\
+11 & 34,929.5 & 34,929.5 & 23,881 & 8,160 & 15,718 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
-\begin{table}[H]\centering\fontsize{10}{13}\selectfont
-\renewcommand{\arraystretch}{1.0}
-\caption{逐层阵列、访存与等待计数}
-\begin{tabulary}{\linewidth}{@{}Crrrrrr@{}}
+\begin{table}[H]\centering\fontsize{9.5}{12.5}\selectfont
+\renewcommand{\arraystretch}{1.12}
+\caption{各层阵列活动、总线请求与等待计数}
+\begin{tabular}{@{\hspace{2pt}}ccccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 层}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{阵列\\活动}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{读\\请求}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{写\\请求}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{队列\\等待}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{请求\\受阻}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{响应\\受阻}}} \\
+\thcell{层} & \thcell{阵列活动\\（拍）} & \thcell{读请求\\（字）} & \thcell{写请求\\（字）} & \thcell{队列等待\\（拍）} & \thcell{请求受阻\\（拍）} & \thcell{响应受阻\\（拍）} \\
 \midrule
-0 & 13312 & 9558 & 12672 & 2316 & 55 & 7 \\
-1 & 13312 & 9232 & 12672 & 2291 & 52 & 7 \\
-2 & 13312 & 9092 & 12672 & 2305 & 52 & 7 \\
-3 & 13312 & 9092 & 12672 & 2275 & 56 & 9 \\
-4 & 13312 & 8346 & 12672 & 1746 & 58 & 13 \\
-5 & 13312 & 8752 & 12672 & 2291 & 49 & 5 \\
-6 & 13312 & 8616 & 12672 & 2333 & 53 & 7 \\
-7 & 13312 & 8656 & 12672 & 2325 & 54 & 9 \\
-8 & 13312 & 8528 & 12672 & 2251 & 56 & 11 \\
-9 & 13312 & 8988 & 12672 & 2310 & 54 & 9 \\
-10 & 13312 & 9576 & 12672 & 2313 & 54 & 8 \\
-11 & 13312 & 10542 & 12672 & 2354 & 55 & 7 \\
+0 & 13,312 & 9,558 & 12,672 & 2,316 & 55 & 7 \\
+1 & 13,312 & 9,232 & 12,672 & 2,291 & 52 & 7 \\
+2 & 13,312 & 9,092 & 12,672 & 2,305 & 52 & 7 \\
+3 & 13,312 & 9,092 & 12,672 & 2,275 & 56 & 9 \\
+4 & 13,312 & 8,346 & 12,672 & 1,746 & 58 & 13 \\
+5 & 13,312 & 8,752 & 12,672 & 2,291 & 49 & 5 \\
+6 & 13,312 & 8,616 & 12,672 & 2,333 & 53 & 7 \\
+7 & 13,312 & 8,656 & 12,672 & 2,325 & 54 & 9 \\
+8 & 13,312 & 8,528 & 12,672 & 2,251 & 56 & 11 \\
+9 & 13,312 & 8,988 & 12,672 & 2,310 & 54 & 9 \\
+10 & 13,312 & 9,576 & 12,672 & 2,313 & 54 & 8 \\
+11 & 13,312 & 10,542 & 12,672 & 2,354 & 55 & 7 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \chapter{拓展模型逐层误差}
@@ -2031,11 +2186,11 @@ Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak
 表 E.1 收录了拓展篇冻结定点模型在 4,445 条扩展验证记录上相对浮点参考模型的逐层 LN2 输出误差统计（数据来自 \texttt{docs/\allowbreak{}encoder-validation-expanded.md}）。全集聚合 NRMSE、单样本 95\% 分位数（P95）、最差单样本最大值与最大绝对误差一并列出，以观察跨层变化，末层（第 11 层）聚合 NRMSE 为 $0.171308\%$。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{十二层 LN2 误差统计}
-\begin{tabulary}{\linewidth}{@{}Crrrr@{}}
+\caption{十二层 LN2 输出的数值误差统计}
+\begin{tabular}{@{\hspace{2pt}}ccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 层}} & \multicolumn{1}{c}{{\sffamily\mdseries 聚合 NRMSE}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{样本\\P95}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{样本\\最大值}}} & \multicolumn{1}{c}{{\sffamily\mdseries \shortstack{最大绝对\\误差}}} \\
+\thcell{层} & \thcell{聚合 NRMSE} & \thcell{样本 NRMSE\\P95} & \thcell{样本 NRMSE\\最大值} & \thcell{最大绝对误差} \\
 \midrule
 0 & 0.040468\% & 0.042803\% & 0.044968\% & 0.00326647 \\
 1 & 0.056970\% & 0.062811\% & 0.075001\% & 0.00423823 \\
@@ -2050,7 +2205,7 @@ Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak
 10 & 0.140374\% & 0.159074\% & 0.195128\% & 0.01501811 \\
 11 & 0.171308\% & 0.196950\% & 0.237820\% & 0.02541268 \\
 \bottomrule
-\end{tabulary}
+\end{tabular}
 \end{table}
 
 \chapter{复现与交付}
