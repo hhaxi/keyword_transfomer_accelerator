@@ -142,6 +142,6 @@ kwt_encoder_soc #(.DMA_BURST(8)) system_instance (...);
 
 本轮最初的baseline来自改动前的`c0724ce`，源码与观测器快照保存在`deliverables/c0724ce-baseline/observed-sources.zip`，原提交快照及上轮报告包也在该目录。当前源码上的默认参数重建与它逐项对齐。以后在更新后的源码上重跑`baseline`，测量的是当前默认参数1；机器报告的`original_baseline_production_matches_commit`会明确区分两者，不将重跑结果冒充原提交。各阶段输入指纹位于`output/design/bus-*-inputs.json`，阶段源码包位于`deliverables/bus-*-sources.zip`。
 
-[机器验证记录](bus-study-validation.json)保存互斥归因、响应槽占用、各任务最长等待、完整任务对照及日志指纹；`deliverables/bus-study-c0724ce.zip`收录本轮源码、脚本、报告、固件、日志和输入清单。大体积冻结向量继续使用原v5归档，未重复上传仓库。
+[机器验证记录](evidence/bus-study-validation.json)保存互斥归因、响应槽占用、各任务最长等待、完整任务对照及日志指纹；`deliverables/bus-study-c0724ce.zip`收录本轮源码、脚本、报告、固件、日志和输入清单。大体积冻结向量继续使用原v5归档，未重复上传仓库。
 
 默认仍为原轮转，避免静默改变其他主设备的服务延迟。对当前加速器任务，可按结果选用参数8；若后续要继续优化，先分开测量主机参数加载与邮箱轮询的关键路径，再评估主机服务策略。本轮不继续叠加第二种仲裁或轮询改动。

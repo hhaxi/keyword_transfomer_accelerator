@@ -8,9 +8,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def compare(current):
-    baseline = json.loads((ROOT / 'docs/performance-baseline-v4.json').read_text())
-    first = json.loads((ROOT / 'docs/performance-baseline.json').read_text())
-    second = json.loads((ROOT / 'docs/performance-baseline-v2.json').read_text())
+    baseline = json.loads((ROOT / 'docs/history/performance-baseline-v4.json').read_text())
+    first = json.loads((ROOT / 'docs/history/performance-baseline.json').read_text())
+    second = json.loads((ROOT / 'docs/history/performance-baseline-v2.json').read_text())
     for name, expected in baseline['comparison_contract_sha256'].items():
         data=(ROOT / name).read_bytes().replace(b'\r\n', b'\n')
         actual=hashlib.sha256(data).hexdigest()
@@ -95,9 +95,9 @@ def compare(current):
 
 
 def main():
-    current = json.loads((ROOT / 'docs/design-validation.json').read_text())
+    current = json.loads((ROOT / 'docs/evidence/design-validation.json').read_text())
     result = compare(current)
-    (ROOT / 'docs/performance-comparison.json').write_text(json.dumps(result, indent=2) + '\n')
+    (ROOT / 'docs/evidence/performance-comparison.json').write_text(json.dumps(result, indent=2) + '\n')
     print('Verified SoC speedup: %.4fx; cycle reduction: %.2f%%' %
           (result['soc_speedup'], result['cycle_reduction_percent']))
 

@@ -2,7 +2,7 @@
 
 第八版在完整 FFN 中，将下一组的操作数读取和 MAC 初始化放到当前组退休的边沿，减少组间空拍。保持 **16 个 MAC、1 个 GELU、88.5 KiB 内部 SRAM、40 个 SRAM 宏**。独立第一线性层仍使用原来的调度。
 
-第七版基线提交为 `eefe43199e88a7c603ceeebf4277363923f6694a`，机器记录见 `performance-baseline-v7.json`。本地保留 `deliverables/full-ffn-v7-baseline.zip`、`deliverables/v7-source-baseline.zip`、`output/baseline-v7/`；第四版必做基线及第五、六版归档继续保留。
+第七版基线提交为 `eefe43199e88a7c603ceeebf4277363923f6694a`，机器记录见 `docs/history/performance-baseline-v7.json`。本地保留 `deliverables/full-ffn-v7-baseline.zip`、`deliverables/v7-source-baseline.zip`、`output/baseline-v7/`；第四版必做基线及第五、六版归档继续保留。
 
 ## 同工作负载对比
 
@@ -66,12 +66,12 @@ GELU/MAC 重叠覆盖 GELU 活动的 **99.59%**，剩余 104 周期等于 13 个
 | 总线 | 453 | 453 |
 | 本地 SoC | 73,096 | 72,777 |
 
-记录见 `ffn-performance-comparison.json`。不同顶层经过综合优化后实例数的小幅增减不是物理面积结论。新增的地址选择和控制逻辑仍需在正式库下核对 SRAM 地址路径、MAC 初始化路径及时序。未声称功耗或能耗已下降，也未将黑盒 SRAM 计为零面积。
+记录见 `docs/evidence/ffn-performance-comparison.json`。不同顶层经过综合优化后实例数的小幅增减不是物理面积结论。新增的地址选择和控制逻辑仍需在正式库下核对 SRAM 地址路径、MAC 初始化路径及时序。未声称功耗或能耗已下降，也未将黑盒 SRAM 计为零面积。
 
 ## 复现与下一步
 
 依次运行 `design.ps1` 的 `ffn`、`fourstate`、`accel`、`dma`、`soc`、`soc-ffn`、`synth`、`synth-dma`、`synth-soc`，再执行 `python scripts/collect_results.py` 和 `python scripts/package_submission.py`。首次从资源开始复现可运行 `./design.ps1 all`。
 
-当前记录为 `design-validation.json`、`ffn-validation.json`、`ffn-performance-comparison.json`，交付包为 `deliverables/undergraduate-local-submission.zip`。比较脚本冻结 v7 的数值、DMA、固件及计时合同，只允许计时后 GELU 重叠断言的期望计数改变。
+当前记录为 `docs/evidence/design-validation.json`、`docs/evidence/ffn-validation.json`、`docs/evidence/ffn-performance-comparison.json`，交付包为 `deliverables/undergraduate-local-submission.zip`。比较脚本冻结 v7 的数值、DMA、固件及计时合同，只允许计时后 GELU 重叠断言的期望计数改变。
 
 主机装载仍为 79,495 周期；下一步应结合官方加载端接口评估连续请求，其潜在收益大于继续压缩少量组间控制周期。单独增加 GELU 单元的价值已很有限。更激进的首层分块启动需要额外处理同步单端口 SRAM 读写冲突，应另立基线验证。

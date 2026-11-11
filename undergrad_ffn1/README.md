@@ -2,6 +2,8 @@
 
 当前周期、服务器截图PPA及Git复现说明见 [soc-results-2026-11-02.md](docs/soc-results-2026-11-02.md)。Git版不存重复case目录，首次执行 `python3 tools/sweep.py prepare` 生成16种配置。
 
+后续方案集中在 [candidates/](candidates/README.md)，其中 [Q128 IRQ/WFI](candidates/q128_reference_sleep/README.md) 提供同条件 `task00` 的服务器 PPA 和 12 层本地功能结果。
+
 本目录是后续本科优化的工作根目录。原研究生/完整Encoder工程保留在父目录，
 本版本的RTL、固件、数值模型、向量、E203源文件、测试及DC脚本均独立保存。
 运行源码不依赖父目录；本机工具路径配置可以指向已安装的EDA工具。
@@ -64,6 +66,8 @@ tools/      编译验证、结构检查和打包工具
 config/     工艺库路径、时钟与外部接口预算
 script/     DC综合及报告恢复Tcl
 verification/  基线及验证记录
+experiments/   冻结基线、16 组合配置及对照结果
+candidates/    后续候选方案及各自的复现入口
 docs/       优化计划、接口说明
 ```
 

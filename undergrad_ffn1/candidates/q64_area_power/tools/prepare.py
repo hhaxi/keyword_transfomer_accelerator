@@ -67,7 +67,7 @@ def prepare():
  save(ROOT/'reports/source_reference.json',dict(archive=ARCHIVE.name,archive_sha256=ARCHIVE_SHA,
      original_case='q64_fused_pause',source_sha256=source_hashes))
  save(ROOT/'reports/designs.json',CASES)
- baseline=ROOT.parent/'verification/baseline.json'
+ baseline=ROOT.parents[1]/'verification/baseline.json'
  save(ROOT/'reports/historical_baseline.json',dict(source='undergrad_ffn1/verification/baseline.json',
      sha256=sha(baseline),data=json.loads(baseline.read_text()),
      note='Legacy task_cycles use an older measurement/configuration; not a like-for-like strict-window speedup.'))

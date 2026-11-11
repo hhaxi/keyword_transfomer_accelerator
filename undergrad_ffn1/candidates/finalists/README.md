@@ -22,7 +22,7 @@
 在当前用户 Desktop 的仓库副本中，加载已有 Synopsys 环境及许可证，进入本目录：
 
 ```bash
-cd undergrad_ffn1/finalists
+cd undergrad_ffn1/candidates/finalists
 bash run_vcs_power.sh --check
 bash run_vcs_power.sh
 ```

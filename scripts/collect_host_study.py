@@ -78,7 +78,7 @@ def validate(data):
             matches=hashlib.sha256(original).hexdigest()==h
             original_baseline &= matches
             if not matches:assert n in allowed and h==receipts['full']['sources'][n],n
-    frozen=json.loads((ROOT/'docs/qkv-study-validation.json').read_text())['frozen_numeric_sha256']
+    frozen=json.loads((ROOT/'docs/evidence/qkv-study-validation.json').read_text())['frozen_numeric_sha256']
     for n,h in frozen.items():assert sha(ROOT/n)==h,n
     for name,h in baseline['vectors'].items():assert sha(ROOT/name)==h,name
     for name,h in baseline['firmware'].items():assert sha(ROOT/name)==h,name
@@ -172,7 +172,7 @@ def package(report):
     paths.update(ROOT/n for n in receipt['sources']);paths.update(ROOT/n for n in receipt['vectors']);paths.update(ROOT/n for n in receipt['firmware'])
     paths.update(p for p in OUT.glob('host_*.log') if not p.name.startswith('host_debug'));paths.update(OUT.glob('host-*-inputs.json'))
     paths.update(ROOT/n for n in ['scripts/run_host_study.py','scripts/collect_host_study.py','scripts/collect_bus_study.py',
-                                 'docs/host-study.md','docs/host-study-validation.json','docs/qkv-study-validation.json','README.md'])
+                                 'docs/host-study.md','docs/evidence/host-study-validation.json','docs/evidence/qkv-study-validation.json','README.md'])
     paths.update((ROOT/'deliverables/d9dc461-baseline').glob('*'))
     paths.update((ROOT/'deliverables').glob('host-*-sources.zip'))
     paths.update((OUT/'firmware').glob('*'));paths.update((ROOT/'output/encoder-design/firmware').glob('*'))
@@ -190,7 +190,7 @@ def main():
     data={p.stem:parse(p) for p in sorted(OUT.glob('host_*-run.log'))
           if 'SOC_PASS tasks=' in p.read_text() and 'HOST_ACCOUNTING_PASS' in p.read_text()}
     report=data if args.partial else validate(data)
-    (ROOT/'docs/host-study-validation.json').write_text(json.dumps(report,indent=2)+'\n')
+    (ROOT/'docs/evidence/host-study-validation.json').write_text(json.dumps(report,indent=2)+'\n')
     for label,tests in data.items():
         t=tests[0]
         print(label,len(tests),'cycles',t['cycles'],'load',t['load_cycles'],'wait budget',t['unhidden_host_wait_budget'])

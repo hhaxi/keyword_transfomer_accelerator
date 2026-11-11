@@ -27,7 +27,7 @@ bash run_quick_screen.sh
 小工具包默认从原目录只读复制合格源码、固件及向量，不需要再次上传这些数据。
 原目录不在上述位置时，使用 `--source-study /原工程/vcs_power_study` 指定。
 
-已有Git副本则进入 `undergrad_ffn1/finalists`，运行同一 `run_quick_screen.sh`。
+已有Git副本则进入 `undergrad_ffn1/candidates/finalists`，运行同一 `run_quick_screen.sh`。
 需要 Python3.6+、VCS、g++、vcd2saif、DC，以及 `$HOME/Desktop/lib` 中现有SS库。
 工具路径可通过 `--vcs`、`--cxx`、`--vcd2saif`、`--dc-shell` 指定。
 

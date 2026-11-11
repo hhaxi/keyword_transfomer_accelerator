@@ -1,14 +1,18 @@
 # KWT-1 关键词识别加速器
 
-**2026-11-02：本科 FFN1 独立优化版** 已更新到 [undergrad_ffn1](undergrad_ffn1/README.md)。包含真实E203、共享SRAM、16路MAC、四项可切换优化、16组合DC脚本及已有DDC的PPA恢复统计。任务周期167134→128317，150MHz名义吞吐约1169 task/s；新增面积截图观察约减少19.1%，SS hold仍存在负裕量。详见 [验证与服务器结果](undergrad_ffn1/docs/soc-results-2026-11-02.md)。
+| 工程 | 入口 |
+| --- | --- |
+| 完整编码器及独立 FFN 模式 | 根目录的 `encoder.ps1`、`design.ps1`，详见下文 |
+| 本科 FFN1 独立工程 | [16 路 MAC、四项优化与 16 组合复现](undergrad_ffn1/README.md) |
+| 本科 FFN1 候选方案 | [候选索引](undergrad_ffn1/candidates/README.md) · [Q128 IRQ/WFI 实测 PPA](undergrad_ffn1/candidates/q128_reference_sleep/reports/RESULTS.md) |
 
 面向本科生组芯片设计赛题，基于 **E203 蜂鸟 SoC** 实现第一线性层、完整 FFN 和 **12 层 PostNorm Transformer 编码器**。工程包含可综合 RTL、冻结整数模型、参数转换、RISC-V 固件、SoC 集成及自动化验证。
 
 **当前版本：编码器第五版 + FFN 第十版。** 基于 `b716312` 增加可切换的 LN1→FFN 输入直传和权重预装载，保持 16 路 FFN MAC 与冻结整数运算。单层同条件周期从 **1,250,753 降至 1,231,235**，减少 **19,518 拍（1.5605%）**，输入交接每层减少 **6,336 个32位 DMA 字**。两种独立模式仍为 **167,134 / 305,708 周期**。十二层为 **14,315,119 周期**，减少 **1.6099%**；加速器 DMA 流量减少 **15.5294%**。
 
-[设计与接口](docs/full-encoder.md) · [输入直传与最新性能](docs/input-stream.md) · [验证记录](docs/input-stream-validation.json) · [赛题指南](芯片设计赛题指南.pdf) · [第三方来源](NOTICE.md)
+[设计与接口](docs/full-encoder.md) · [输入直传与最新性能](docs/input-stream.md) · [验证记录](docs/evidence/input-stream-validation.json) · [赛题指南](docs/芯片设计赛题指南.pdf) · [第三方来源](NOTICE.md)
 
-**最新主机装载优化（基于 `d9dc461`）：**精确拆分输入、参数、控制写和完成邮箱轮询后，增加可关闭的有界主机授权。固定 `DMA_BURST=8`，将 `HOST_BURST` 从0切到2，Linear / FFN 完整周期降至 **153,301 / 281,587（减少7.0920% / 6.5761%）**；十二层降至 **13,855,994（减少2.8564%）**。新旧配置的两种独立模式各12项、**12条输入×十二层**均逐位通过，公平性、背压和取消恢复通过。收益来自主机串行装载，编码器硬件运行周期未变；独立模式CPU最长等待可由8增至9拍。**生产默认仍为 `DMA_BURST=1, HOST_BURST=0`，保留下文基线性能**。详见 [主机装载分析与完整对照](docs/host-study.md) 和 [验证记录](docs/host-study-validation.json)。未进行PPA测量。
+**最新主机装载优化（基于 `d9dc461`）：**精确拆分输入、参数、控制写和完成邮箱轮询后，增加可关闭的有界主机授权。固定 `DMA_BURST=8`，将 `HOST_BURST` 从0切到2，Linear / FFN 完整周期降至 **153,301 / 281,587（减少7.0920% / 6.5761%）**；十二层降至 **13,855,994（减少2.8564%）**。新旧配置的两种独立模式各12项、**12条输入×十二层**均逐位通过，公平性、背压和取消恢复通过。收益来自主机串行装载，编码器硬件运行周期未变；独立模式CPU最长等待可由8增至9拍。**生产默认仍为 `DMA_BURST=1, HOST_BURST=0`，保留下文基线性能**。详见 [主机装载分析与完整对照](docs/host-study.md) 和 [验证记录](docs/evidence/host-study-validation.json)。未进行PPA测量。
 
 前一轮 [总线归因与对照](docs/bus-study.md) 基于 `c0724ce`：可选 `DMA_BURST=8` 使 Linear / FFN 为 **165,003 / 301,408 拍**，十二层为 **14,263,416 拍**；该配置是本轮主机优化的同条件对照。
 
@@ -92,6 +96,12 @@
 
 ENC1 的细分计数位于偏移 `0x60—0x90`，配置 `0x34` 的 bit2/bit3 分别选择紧凑40位/FIFO，互斥。bit4 选择本版输入直传，须与 bit3 配合。KWT5 `0x94` 统计直传结果数、`0x98` 统计输入字数。接口与并发启动顺序见 [编码器接口文档](docs/full-encoder.md) 和 [直传协议](docs/frontend-transfer.md)；旧 FFN 协议见 [基础架构](docs/architecture.md)。
 
+<p align="center">
+  <img src="docs/figures/keyword-transformer-architecture.png" alt="KWT-1 模型、12 层编码器与 AI 加速器 SoC 整体架构" width="760">
+</p>
+
+上图为模型、单层编码器与 AI 加速器 SoC 的整体映射；可编辑版本为 `docs/figures/keyword-transformer-architecture.svg`，由 `scripts/draw_kwt_architecture.py` 生成。
+
 ## 4. 验证结果与适用边界
 
 | 验证项目 | 已完成的本地结果 |
@@ -106,7 +116,7 @@ ENC1 的细分计数位于偏移 `0x60—0x90`，配置 `0x34` 的 bit2/bit3 分
 
 扩展数值验证包含 **4,074 个不同音频文件 + 371 个重复静音条目**，与 RTL 整机的 12 条输入是不同验证范围。逐层误差、最差样本、分类差异、各阶段饱和及完整明细见 [扩展验证报告](docs/encoder-validation-expanded.md)。原 120 条样本复测仍为 119/120，12 层聚合误差与历史报告完全一致。模型与整数格式保持冻结，不使用测试集调节尺度。
 
-本轮逐层观测、输入指纹和日志校验值见 [input-stream-validation.json](docs/input-stream-validation.json)；[fifo-study-validation.json](docs/fifo-study-validation.json) 保留第四版证据；[frontend-transfer-validation.json](docs/frontend-transfer-validation.json) 保留第三版证据，[encoder-validation.json](docs/encoder-validation.json) 保留第二版历史网表证据。本轮未重跑 4,445 条软件评估，冻结数学文件未变。新版综合/网表以及正式 **150 MHz、≤2.25 mm²、功耗、能耗及官方 600 条样本评测**仍待完成。
+本轮逐层观测、输入指纹和日志校验值见 [input-stream-validation.json](docs/evidence/input-stream-validation.json)；[fifo-study-validation.json](docs/evidence/fifo-study-validation.json) 保留第四版证据；[frontend-transfer-validation.json](docs/evidence/frontend-transfer-validation.json) 保留第三版证据，[encoder-validation.json](docs/evidence/encoder-validation.json) 保留第二版历史网表证据。本轮未重跑 4,445 条软件评估，冻结数学文件未变。新版综合/网表以及正式 **150 MHz、≤2.25 mm²、功耗、能耗及官方 600 条样本评测**仍待完成。
 
 ## 5. 首次配置
 
@@ -188,7 +198,7 @@ uv run --no-project --python 3.13 scripts/download_competition_assets.py
 冻结格式的完整 validation 数值评估与报告导出（使用新的输出目录）：
 
 ```powershell
-.venv-model\Scripts\python.exe scripts/evaluate_encoder.py --sample-list docs/encoder-validation-expanded.samples.json --output output/encoder-validation-replay
+.venv-model\Scripts\python.exe scripts/evaluate_encoder.py --sample-list docs/evidence/encoder-validation-expanded.samples.json --output output/encoder-validation-replay
 python scripts/report_encoder_evaluation.py --evaluation output/encoder-validation-replay --publish output/encoder-validation-replay-summary
 ```
 
@@ -209,10 +219,14 @@ rtl/                        自研计算核、DMA、数学模块及 SRAM 接口
 integration/                E203 集成、共享 SRAM、System Bus 与 DMA 仲裁
 firmware/                   RISC-V 启动代码、驱动和整机测试程序
 model/                      冻结整数格式、参考模型及样本选择
-scripts/                    资源获取、模型转换、构建、验证和打包
+scripts/                    资源获取、模型转换、构建、验证、打包与架构图绘制
 tests/                     RTL 测试平台、数值检查与性能观察器
 constraints/                目标时钟和顶层接口约束
-docs/                      架构、性能、验证证据与历史基线
+docs/                       设计、验收口径与当前各轮性能研究
+docs/evidence/              机器可读验证/性能证据（JSON 与样本清单）
+docs/history/               被后续版本取代的历史报告与基线快照
+docs/figures/               文档插图（含可编辑的架构图）
+undergrad_ffn1/              本科 FFN1 独立工程、冻结基线和候选方案
 environment/               工具配置模板、依赖锁定及环境自检
 assets/resources.lock.json  上游资源版本与校验值
 encoder.ps1                 完整编码器验证入口
@@ -224,13 +238,16 @@ setup.ps1 / env.ps1          首次安装 / 当前终端环境
 
 | 路径 | 内容 |
 | --- | --- |
-| `output/design/` | 仿真、lint、综合日志及构建目录 |
+| `output/design/` | 仿真、lint、综合日志及构建目录；`build_*/` 为可清理的编译缓存 |
 | `output/encoder-design/` | 编码器固件、通用网表与综合记录 |
 | `output/encoder-vectors/`、`output/encoder-calibration/` | 编码器验证/训练检查向量与数值报告 |
-| `docs/input-stream.md`、`docs/input-stream-validation.json` | 最新前端性能报告与机器可读证据 |
-| `docs/fifo-study.md`、`docs/fifo-study-validation.json` | 第四版 FIFO 分析与历史证据 |
+| `output/baseline-v2/`—`output/baseline-v8/`、`output/baseline-encoder-v1/` | 历史版本输出快照（仅本地保留） |
+| `docs/input-stream.md`、`docs/evidence/input-stream-validation.json` | 最新前端性能报告与机器可读证据 |
+| `docs/fifo-study.md`、`docs/evidence/fifo-study-validation.json` | 第四版 FIFO 分析与历史证据 |
 | `deliverables/undergraduate-encoder-frontend-v5.zip` | 本轮前端交付包，排除旧版网表 |
 | `deliverables/encoder-submission-sha256.txt` | 交付包 SHA-256 |
+
+文档目录的完整索引见 [docs/README.md](docs/README.md)。
 
 当前 `collect` 检查 FIFO A/B 同固件同向量、12 条候选 SoC 覆盖、尾段/FIFO计数守恒、独立模式性能及冻结数学文件。它不替代新版网表验证。`package` 打包源码、参数、向量、已检查日志、输入指纹及固件，排除历史网表并校验归档内容。新增工程文件应先纳入 Git 暂存区，打包仅采集已跟踪/已暂存的源码文件。
 
@@ -251,17 +268,18 @@ setup.ps1 / env.ps1          首次安装 / 当前终端环境
 
 本轮基线的源码、验证包和固件保存在本地 `deliverables/b716312-baseline/`，哈希收录在最新验证报告。
 
-此前另存 `encoder-v3-59487c7-source.zip` 和 `encoder-v3-59487c7-baseline.zip`，包含第三版源码、向量、日志与性能证据，校验值见 [冻结清单](docs/fifo-study-baseline.json)。
+此前另存 `encoder-v3-59487c7-source.zip` 和 `encoder-v3-59487c7-baseline.zip`，包含第三版源码、向量、日志与性能证据，校验值见 [冻结清单](docs/evidence/fifo-study-baseline.json)。
 
 - [完整编码器设计](docs/full-encoder.md)：执行顺序、数值契约、寄存器和内存布局。
 - [最新输入直传](docs/input-stream.md)：预装载、分块、单端口仲裁、背压、取消恢复与同条件对照。
 - [第四版 FIFO 分析](docs/fifo-study.md)：供需判断、尾段分解及单项 RTL 对照。
 - [第三版前端性能](docs/frontend-transfer.md)：16 路独立线性层、连续装载、紧凑打包及 FIFO 对比。
-- [第二版编码器性能](docs/encoder-performance.md)：历史阶段周期及跨层驻留 A/B。
 - [第八版 FFN 调度](docs/ffn-group-scheduling.md)：两种独立模式的当前基线。
 - [完整 FFN 基础设计](docs/full-ffn.md)：双线性层与 GELU。
 - [第四版必做性能](docs/parallel-packed-performance.md)：紧凑打包与必做基线。
 - [赛题范围记录](environment/project-context.json)：已确认的本科组范围、参考平台与约束。
+
+历史版本报告仅作追溯，归档在 `docs/history/`：[第二版编码器性能](docs/history/encoder-performance.md)、[第二版前端性能](docs/history/frontend-performance.md)、[第三版 DMA 性能](docs/history/dma-performance.md)、[第六版完整 FFN 性能](docs/history/full-ffn-performance.md)、[第七版 FFN 重叠性能](docs/history/ffn-overlap-performance.md)；对应基线 JSON 与 `performance-baseline*` 快照同目录保存。文档分层与全部证据文件索引见 [docs/README.md](docs/README.md)。
 
 ## 9. 清理与来源
 
@@ -271,6 +289,6 @@ setup.ps1 / env.ps1          首次安装 / 当前终端环境
 .\scripts\clean-project.ps1 -WhatIf
 ```
 
-确认后去掉 `-WhatIf` 执行。该脚本会删除 **整个 `output/`**、临时文件和下载缓存，包括其中的日志、向量及历史输出备份；请先保存需要保留的验证证据。已安装工具、模型环境、解压的数据集和参考源码会保留。清理后需重新生成输出才能再次汇总或打包。
+确认后去掉 `-WhatIf` 执行。脚本只删除可再生内容：`output/design/build_*/` 编译缓存、`output/baseline-v1/` 旧活动波形归档、各候选目录的 `study/` 与 `tmp/` 工作区，以及 `__pycache__`、下载缓存和临时目录。SHA-256 清单引用的 `output/` 证据、`assets/`、`.tools/`、`.venv-model/` 与 `deliverables/` 均保留。清理后需重新生成对应输出才能再次汇总或打包。
 
 官方 SoC 参考为 [riscv-mcu/e203_hbirdv2](https://github.com/riscv-mcu/e203_hbirdv2)，模型来自 [ARM-software/keyword-transformer](https://github.com/ARM-software/keyword-transformer)，数据集为 Speech Commands V2。固定提交、下载地址和校验值均记录在资源清单中；上游许可文件随下载内容保留。自研与第三方边界见 [NOTICE.md](NOTICE.md)。

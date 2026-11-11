@@ -94,7 +94,7 @@ def collect():
             'internal_sram_bytes':90624,'macro_instances':{'16x4096_SP':2,'16x1024_SP':36,'16x128_SP':2},
             'ffn_vector_manifest_sha256':sha(ROOT/'output/ffn-vectors/manifest.json'),
             'note':'Do not compare full FFN tasks/s directly against the undergraduate FFN1 throughput score.'}
-    (ROOT/'docs/ffn-validation.json').write_text(json.dumps(result,indent=2)+'\n')
+    (ROOT/'docs/evidence/ffn-validation.json').write_text(json.dumps(result,indent=2)+'\n')
     return result
 
 if __name__=='__main__':collect()

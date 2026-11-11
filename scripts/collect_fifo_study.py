@@ -56,7 +56,7 @@ def main():
         return dict(tasks=[dict(task=int(t),cycles=int(c)) for t,c in rows],layers=layers,inputs=inputs)
 
     base=profile('baseline',1);candidate=profile('candidate',12)
-    frozen=json.loads((ROOT/'docs/frontend-transfer-validation.json').read_text())
+    frozen=json.loads((ROOT/'docs/evidence/frontend-transfer-validation.json').read_text())
     require(base['tasks'][0]['cycles']==14561648,'Observer perturbed frozen baseline')
     require(base['inputs']['firmware_sha256']==candidate['inputs']['firmware_sha256'],'Different firmware')
     require(base['inputs']['firmware_sha256']==frozen['firmware_sha256'],'Firmware differs from frozen v3')
@@ -65,7 +65,7 @@ def main():
     changes=[p for p,h in base['inputs']['sources'].items() if p.startswith(('rtl/','integration/','firmware/')) and candidate['inputs']['sources'].get(p)!=h]
     require(changes in ([],['rtl/kwt_accel.sv']),'Unexpected datapath/firmware changes: '+str(changes))
     if changes:
-        old=json.loads((ROOT/'docs/frontend-transfer-validation.json').read_text())
+        old=json.loads((ROOT/'docs/evidence/frontend-transfer-validation.json').read_text())
         require(base['inputs']['sources']['rtl/kwt_accel.sv']==old['sources_sha256']['rtl/kwt_accel.sv'],'Baseline is not frozen v3')
     else:
         require('KWT_BASELINE_OUTPUT_MERGE' in base['inputs']['compile_defines'] and 'KWT_BASELINE_OUTPUT_MERGE' not in candidate['inputs']['compile_defines'],'Missing A/B compile switch')
@@ -97,7 +97,7 @@ def main():
     require(not (OUT/'encoder-lint.log').read_text().strip(),'Lint failed')
     checks['output/design/encoder-lint.log']={'sha256':digest(OUT/'encoder-lint.log'),'marker':'empty strict lint log'}
     for p,h in frozen['frozen_numeric_sha256'].items():require(digest(ROOT/p)==h,'Numeric contract changed')
-    archive_record=json.loads((ROOT/'docs/fifo-study-baseline.json').read_text())
+    archive_record=json.loads((ROOT/'docs/evidence/fifo-study-baseline.json').read_text())
     archives={}
     for prefix in ['source','artifact']:
         p=ROOT/archive_record[prefix+'_archive']
@@ -109,11 +109,11 @@ def main():
                 cycle_saving=base['tasks'][0]['cycles']-candidate['tasks'][0]['cycles'],
                 cycle_reduction_percent=100*(base['tasks'][0]['cycles']-candidate['tasks'][0]['cycles'])/base['tasks'][0]['cycles'],
                 fifo_counters='RTL-only observer; no synthesized MMIO counters or additional CPU accesses',
-                traffic_words32=489600,mac_lanes=16,baseline_archive='docs/fifo-study-baseline.json',
+                traffic_words32=489600,mac_lanes=16,baseline_archive='docs/evidence/fifo-study-baseline.json',
                 baseline_archives=archives,
                 frozen_numeric_sha256=frozen['frozen_numeric_sha256'],
                 pending='LN1-to-FFN input streaming not implemented; requires a separate single-layer readiness/backpressure/cancel experiment',passed=True)
-    (ROOT/'docs/fifo-study-validation.json').write_text(json.dumps(report,indent=2)+'\n')
+    (ROOT/'docs/evidence/fifo-study-validation.json').write_text(json.dumps(report,indent=2)+'\n')
     print('FIFO_STUDY_PASS',json.dumps({'baseline':base['tasks'][0]['cycles'],'candidate':candidate['tasks'][0]['cycles'],'independent':independent}))
     return report
 

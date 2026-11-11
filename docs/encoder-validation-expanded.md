@@ -79,15 +79,15 @@ FFN 权重/偏置离线量化裁剪事件：**0**。Softmax 固定截断（分�
 ## 复现与证据
 
 ```powershell
-.venv-model\Scripts\python.exe scripts/evaluate_encoder.py --sample-list docs/encoder-validation-expanded.samples.json --output output/encoder-validation-replay
+.venv-model\Scripts\python.exe scripts/evaluate_encoder.py --sample-list docs/evidence/encoder-validation-expanded.samples.json --output output/encoder-validation-replay
 python scripts/report_encoder_evaluation.py --evaluation output/encoder-validation-replay --publish output/encoder-validation-replay-summary
 ```
 
 使用未占用的输出目录。首次选择完整上游索引可省略 `--sample-list`；提交的清单固定音频及顺序，避免不同系统目录遍历顺序改变 unknown 抽样。
 
-- [聚合 JSON](encoder-validation-expanded.json)：逐层误差、最差样本、混淆矩阵、分类差异、格式/权重/脚本 SHA-256。
-- [样本清单](encoder-validation-expanded.samples.json)：可直接用于重新评估。
-- [逐样本明细（gzip JSONL）](encoder-validation-expanded.samples.jsonl.gz)：音频 SHA-256、全部层误差、饱和与 Softmax 截断、浮点/整数 logits、分类分差。
+- [聚合 JSON](evidence/encoder-validation-expanded.json)：逐层误差、最差样本、混淆矩阵、分类差异、格式/权重/脚本 SHA-256。
+- [样本清单](evidence/encoder-validation-expanded.samples.json)：可直接用于重新评估。
+- [逐样本明细（gzip JSONL）](evidence/encoder-validation-expanded.samples.jsonl.gz)：音频 SHA-256、全部层误差、饱和与 Softmax 截断、浮点/整数 logits、分类分差。
 
 冻结的三个格式 JSON 及三个原整数算术文件在运行前后 SHA-256 一致。统计器使用私有模型实例，首条样本全部 12 层中间结果与原整数模型逐位核对；发布前再次校验逐样本文件与汇总计数。
 

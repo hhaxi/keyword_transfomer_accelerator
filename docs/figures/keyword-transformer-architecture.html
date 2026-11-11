@@ -1,0 +1,188 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>KWT-1 结构框图</title><style>html,body{margin:0;background:white}svg{display:block;width:2000px;height:1940px}</style><svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1940" viewBox="0 0 2000 1940" role="img" aria-labelledby="title desc">
+<title id="title">Keyword Transformer（KWT-1）模型与 AI 加速器结构框图</title>
+<desc id="desc">依据本项目实际 RTL：12 层单头 PostNorm 编码器，由 ENC1 注意力归一化引擎与 KWT5 FFN 引擎复用执行，经双路 DMA 仲裁器、System Bus 和 512 KiB 共享 SRAM 交接数据。</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#576b83"/></marker>
+<marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3678c5"/></marker>
+<marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#29916e"/></marker>
+</defs><g font-family="Microsoft YaHei, Noto Sans CJK SC, Arial, sans-serif">
+<rect x="0" y="0" width="2000" height="1940" rx="0" fill="#ffffff" stroke="#ffffff" stroke-width="2"/>
+<text x="65" y="73" text-anchor="start" font-size="44" fill="#172e4c" font-weight="700">Keyword Transformer</text>
+<text x="65" y="118" text-anchor="start" font-size="29" fill="#526a84" font-weight="400">KWT-1 关键词识别 · 模型数据流与 AI 加速器映射</text>
+<rect x="1410" y="42" width="525" height="80" rx="15" fill="#eef5ff" stroke="#d5e5f9" stroke-width="2"/>
+<text x="1672" y="76" text-anchor="middle" font-size="23" fill="#245da0" font-weight="650">12 层  /  1 个注意力头  /  d = 64</text>
+<text x="1672" y="106" text-anchor="middle" font-size="20" fill="#526a84" font-weight="400">99 tokens  ·  FFN 64 → 256 → 64</text>
+<rect x="60" y="156" width="1880" height="58" rx="12" fill="#edf2f8" stroke="#edf2f8" stroke-width="2"/>
+<text x="83" y="194" text-anchor="start" font-size="27" fill="#1f3654" font-weight="650">01  模型整体结构</text>
+<text x="1915" y="193" text-anchor="end" font-size="19" fill="#60758c" font-weight="400">灰色：软件参考边界    蓝色 / 绿色：硬件编码器</text>
+<rect x="85" y="249" width="230" height="124" rx="13" fill="#f5f7fa" stroke="#d7e0ea" stroke-width="2"/>
+<text x="200.0" y="285.0" text-anchor="middle" font-size="24" fill="#31445c" font-weight="650">语音输入</text>
+<text x="200.0" y="319.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">1 s · 16 kHz</text>
+<text x="200.0" y="353.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">16,000 个采样点</text>
+<rect x="360" y="249" width="230" height="124" rx="13" fill="#f5f7fa" stroke="#d7e0ea" stroke-width="2"/>
+<text x="475.0" y="285.0" text-anchor="middle" font-size="24" fill="#31445c" font-weight="650">MFCC 特征</text>
+<text x="475.0" y="319.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">98 帧 × 40 维</text>
+<text x="475.0" y="353.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">时间维 token 化</text>
+<rect x="635" y="232" width="350" height="158" rx="13" fill="#f5f7fa" stroke="#d7e0ea" stroke-width="2"/>
+<text x="810.0" y="268.0" text-anchor="middle" font-size="24" fill="#31445c" font-weight="650">线性嵌入 40 → 64</text>
+<text x="810.0" y="302.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">加入 [CLS] 与位置编码</text>
+<text x="810.0" y="336.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">98 + 1 = 99 tokens</text>
+<text x="810.0" y="370.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">X₀ ∈ ℝ⁹⁹ˣ⁶⁴</text>
+<rect x="1030" y="232" width="350" height="158" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="1205.0" y="268.0" text-anchor="middle" font-size="23" fill="#245da0" font-weight="650">Transformer Encoder × 12</text>
+<text x="1205.0" y="302.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">PostNorm · 层间参数切换</text>
+<text x="1205.0" y="336.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">同一套硬件逐层复用</text>
+<text x="1205.0" y="370.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">各层输入 / 输出：99 × 64</text>
+<rect x="1425" y="249" width="230" height="124" rx="13" fill="#f5f7fa" stroke="#d7e0ea" stroke-width="2"/>
+<text x="1540.0" y="285.0" text-anchor="middle" font-size="24" fill="#31445c" font-weight="650">提取 [CLS]</text>
+<text x="1540.0" y="319.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">第 0 个 token</text>
+<text x="1540.0" y="353.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">64 维向量</text>
+<rect x="1700" y="249" width="215" height="124" rx="13" fill="#f5f7fa" stroke="#d7e0ea" stroke-width="2"/>
+<text x="1807.5" y="285.0" text-anchor="middle" font-size="24" fill="#31445c" font-weight="650">分类头</text>
+<text x="1807.5" y="319.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">Linear 64 → 12</text>
+<text x="1807.5" y="353.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">12 类关键词结果</text>
+<polyline points="315,311 360,311" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="590,311 635,311" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="985,311 1030,311" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1380,311 1425,311" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1655,311 1700,311" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="60" y="430" width="1880" height="58" rx="12" fill="#edf2f8" stroke="#edf2f8" stroke-width="2"/>
+<text x="83" y="468" text-anchor="start" font-size="27" fill="#1f3654" font-weight="650">02  单层编码器展开</text>
+<text x="1915" y="467" text-anchor="end" font-size="19" fill="#60758c" font-weight="400">PostNorm：先残差相加，再 LayerNorm；下图展示硬件数值转换</text>
+<rect x="80" y="510" width="1840" height="256" rx="18" fill="#fbfdff" stroke="#c6d9f1" stroke-width="2"/>
+<text x="104" y="545" text-anchor="start" font-size="23" fill="#245da0" font-weight="650">ENC1 / FRONT  ·  注意力 + 残差 + LN1</text>
+<rect x="100" y="620" width="120" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="160.0" y="660.0" text-anchor="middle" font-size="24" fill="#245da0" font-weight="650">X</text>
+<text x="160.0" y="694.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">99 × 64</text>
+<rect x="270" y="620" width="220" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="380.0" y="660.0" text-anchor="middle" font-size="23" fill="#245da0" font-weight="650">Q / K / V 投影</text>
+<text x="380.0" y="694.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">各 99 × 64</text>
+<rect x="535" y="620" width="180" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="625.0" y="660.0" text-anchor="middle" font-size="24" fill="#245da0" font-weight="650">QKᵀ / 8</text>
+<text x="625.0" y="694.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">99 × 99</text>
+<rect x="760" y="620" width="180" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="850.0" y="660.0" text-anchor="middle" font-size="24" fill="#245da0" font-weight="650">Softmax</text>
+<text x="850.0" y="694.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">逐行归一化</text>
+<rect x="985" y="620" width="160" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="1065.0" y="660.0" text-anchor="middle" font-size="24" fill="#245da0" font-weight="650">P × V</text>
+<text x="1065.0" y="694.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">99 × 64</text>
+<rect x="1190" y="620" width="180" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="1280.0" y="660.0" text-anchor="middle" font-size="24" fill="#245da0" font-weight="650">输出投影</text>
+<text x="1280.0" y="694.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">× Wₒ + bₒ</text>
+<circle cx="1435" cy="669" r="26" fill="white" stroke="#3678c5" stroke-width="3"/>
+<text x="1435" y="678" text-anchor="middle" font-size="35" fill="#3678c5" font-weight="500">+</text>
+<rect x="1530" y="620" width="180" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="1620.0" y="660.0" text-anchor="middle" font-size="22" fill="#245da0" font-weight="650">LayerNorm 1</text>
+<text x="1620.0" y="694.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">沿 64 维特征</text>
+<rect x="1770" y="620" width="120" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="1830.0" y="660.0" text-anchor="middle" font-size="24" fill="#245da0" font-weight="650">Z</text>
+<text x="1830.0" y="694.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">99 × 64</text>
+<polyline points="220,669 270,669" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="490,669 535,669" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="715,669 760,669" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="940,669 985,669" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="1145,669 1190,669" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="1370,669 1409,669" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="1461,669 1530,669" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="1710,669 1770,669" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="240,669 240,577 1435,577 1435,643" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="1000" y="568" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">残差 1：X</text>
+<text x="1690" y="747" text-anchor="middle" font-size="18" fill="#60758c" font-weight="400">P = softmax(QKᵀ / √64)</text>
+<rect x="80" y="790" width="1840" height="250" rx="18" fill="#fcfefc" stroke="#c6e0d5" stroke-width="2"/>
+<text x="104" y="826" text-anchor="start" font-size="23" fill="#207b5b" font-weight="650">KWT5 / FFN  ·  两层线性 + GELU</text>
+<text x="1530" y="826" text-anchor="middle" font-size="23" fill="#245da0" font-weight="650">ENC1 / TAIL  ·  残差 + LN2</text>
+<rect x="100" y="910" width="120" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="160.0" y="950.0" text-anchor="middle" font-size="24" fill="#245da0" font-weight="650">Z</text>
+<text x="160.0" y="984.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">Q16</text>
+<rect x="270" y="910" width="230" height="98" rx="13" fill="#eaf8f3" stroke="#83c5ad" stroke-width="2"/>
+<text x="385.0" y="950.0" text-anchor="middle" font-size="22" fill="#207b5b" font-weight="650">FFN 1：64 → 256</text>
+<text x="385.0" y="984.0" text-anchor="middle" font-size="20" fill="#207b5b" font-weight="400">int16 输入 / 权重</text>
+<rect x="550" y="910" width="180" height="98" rx="13" fill="#eaf8f3" stroke="#83c5ad" stroke-width="2"/>
+<text x="640.0" y="950.0" text-anchor="middle" font-size="24" fill="#207b5b" font-weight="650">GELU</text>
+<text x="640.0" y="984.0" text-anchor="middle" font-size="20" fill="#207b5b" font-weight="400">512 B 行缓冲</text>
+<rect x="780" y="910" width="230" height="98" rx="13" fill="#eaf8f3" stroke="#83c5ad" stroke-width="2"/>
+<text x="895.0" y="950.0" text-anchor="middle" font-size="22" fill="#207b5b" font-weight="650">FFN 2：256 → 64</text>
+<text x="895.0" y="984.0" text-anchor="middle" font-size="20" fill="#207b5b" font-weight="400">int40 累加</text>
+<rect x="1060" y="910" width="180" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="1150.0" y="950.0" text-anchor="middle" font-size="22" fill="#245da0" font-weight="650">输出重标定</text>
+<text x="1150.0" y="984.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">int64 → Q16</text>
+<circle cx="1435" cy="959" r="26" fill="white" stroke="#3678c5" stroke-width="3"/>
+<text x="1435" y="968" text-anchor="middle" font-size="35" fill="#3678c5" font-weight="500">+</text>
+<rect x="1530" y="910" width="180" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="1620.0" y="950.0" text-anchor="middle" font-size="22" fill="#245da0" font-weight="650">LayerNorm 2</text>
+<text x="1620.0" y="984.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">沿 64 维特征</text>
+<rect x="1770" y="910" width="120" height="98" rx="13" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="1830.0" y="950.0" text-anchor="middle" font-size="24" fill="#245da0" font-weight="650">Xₗ₊₁</text>
+<text x="1830.0" y="984.0" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">99 × 64</text>
+<polyline points="220,959 270,959" fill="none" stroke="#29916e" stroke-width="3" stroke-linejoin="round" marker-end="url(#green)"/>
+<polyline points="500,959 550,959" fill="none" stroke="#29916e" stroke-width="3" stroke-linejoin="round" marker-end="url(#green)"/>
+<polyline points="730,959 780,959" fill="none" stroke="#29916e" stroke-width="3" stroke-linejoin="round" marker-end="url(#green)"/>
+<polyline points="1010,959 1060,959" fill="none" stroke="#29916e" stroke-width="3" stroke-linejoin="round" marker-end="url(#green)"/>
+<polyline points="1240,959 1409,959" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="1461,959 1530,959" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<polyline points="1710,959 1770,959" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="242" y="1030" text-anchor="middle" font-size="17" fill="#207b5b" font-weight="400">量化</text>
+<polyline points="240,959 240,866 1435,866 1435,933" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="1000" y="857" text-anchor="middle" font-size="20" fill="#245da0" font-weight="400">残差 2：Z</text>
+<polyline points="1830,718 1830,779 64,779 64,959 100,959" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="680" y="774" text-anchor="middle" font-size="18" fill="#526a84" font-weight="400">Z → FFN；残差 Z 保留在 ENC1 内部</text>
+<text x="100" y="1077" text-anchor="start" font-size="22" fill="#435d77" font-weight="400">调度顺序：FRONT → FFN → TAIL，重复 12 层；LN2 输出驻留复用为下一层 X，最后一层写回。</text>
+<rect x="60" y="1110" width="1880" height="58" rx="12" fill="#edf2f8" stroke="#edf2f8" stroke-width="2"/>
+<text x="83" y="1148" text-anchor="start" font-size="27" fill="#1f3654" font-weight="650">03  AI 加速器 SoC 结构</text>
+<text x="1915" y="1147" text-anchor="end" font-size="19" fill="#60758c" font-weight="400">对应顶层：integration/kwt_encoder_soc.sv</text>
+<rect x="90" y="1210" width="330" height="116" rx="13" fill="#f4effc" stroke="#baa3df" stroke-width="2"/>
+<text x="255.0" y="1242.0" text-anchor="middle" font-size="24" fill="#6b479b" font-weight="650">E203 RISC-V CPU</text>
+<text x="255.0" y="1276.0" text-anchor="middle" font-size="20" fill="#6b479b" font-weight="400">切换层参数 / 下发命令</text>
+<text x="255.0" y="1310.0" text-anchor="middle" font-size="20" fill="#6b479b" font-weight="400">轮询状态 / 读取计数器</text>
+<rect x="90" y="1362" width="330" height="94" rx="13" fill="#f5f7fa" stroke="#d7e0ea" stroke-width="2"/>
+<text x="255.0" y="1400.0" text-anchor="middle" font-size="24" fill="#31445c" font-weight="650">Host 加载接口</text>
+<text x="255.0" y="1434.0" text-anchor="middle" font-size="20" fill="#31445c" font-weight="400">装载输入、固件与参数</text>
+<rect x="510" y="1210" width="510" height="246" rx="13" fill="#f4effc" stroke="#baa3df" stroke-width="2"/>
+<text x="765.0" y="1273.0" text-anchor="middle" font-size="27" fill="#6b479b" font-weight="650">32-bit System Bus</text>
+<text x="765.0" y="1307.0" text-anchor="middle" font-size="20" fill="#6b479b" font-weight="400">CPU / Host / DMA 三方轮转</text>
+<text x="765.0" y="1341.0" text-anchor="middle" font-size="20" fill="#6b479b" font-weight="400">MMIO 地址译码与响应路由</text>
+<text x="765.0" y="1375.0" text-anchor="middle" font-size="20" fill="#6b479b" font-weight="400">KWT5：0x40000000</text>
+<text x="765.0" y="1409.0" text-anchor="middle" font-size="20" fill="#6b479b" font-weight="400">ENC1：0x40080000</text>
+<rect x="1105" y="1210" width="300" height="126" rx="13" fill="#f4effc" stroke="#baa3df" stroke-width="2"/>
+<text x="1255.0" y="1247.0" text-anchor="middle" font-size="23" fill="#6b479b" font-weight="650">双路 DMA 仲裁器</text>
+<text x="1255.0" y="1281.0" text-anchor="middle" font-size="20" fill="#6b479b" font-weight="400">ENC1 / FFN 轮转</text>
+<text x="1255.0" y="1315.0" text-anchor="middle" font-size="20" fill="#6b479b" font-weight="400">记录请求与响应归属</text>
+<rect x="1500" y="1210" width="410" height="150" rx="13" fill="#fff7e9" stroke="#e7c687" stroke-width="2"/>
+<text x="1705.0" y="1242.0" text-anchor="middle" font-size="26" fill="#91651e" font-weight="650">512 KiB 共享 SRAM</text>
+<text x="1705.0" y="1276.0" text-anchor="middle" font-size="20" fill="#91651e" font-weight="400">输入 / 本层权重 / FFN 交接数据</text>
+<text x="1705.0" y="1310.0" text-anchor="middle" font-size="20" fill="#91651e" font-weight="400">最终编码器输出</text>
+<text x="1705.0" y="1344.0" text-anchor="middle" font-size="20" fill="#91651e" font-weight="400">0xA0000000 – 0xA007FFFF</text>
+<polyline points="420,1268 510,1268" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<polyline points="420,1409 510,1409" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<polyline points="1020,1273 1105,1273" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<polyline points="1020,1425 1450,1425 1450,1285 1500,1285" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<text x="1710" y="1402" text-anchor="middle" font-size="18" fill="#60758c" font-weight="400">经共享 SRAM 完成两个引擎间的数据交接</text>
+<rect x="485" y="1570" width="665" height="275" rx="18" fill="#eef5ff" stroke="#91b9f0" stroke-width="2"/>
+<text x="817" y="1611" text-anchor="middle" font-size="27" fill="#245da0" font-weight="650">ENC1 注意力 / 归一化引擎</text>
+<text x="817" y="1647" text-anchor="middle" font-size="19" fill="#526a84" font-weight="400">rtl/kwt_encoder.sv</text>
+<text x="817" y="1688" text-anchor="middle" font-size="23" fill="#245da0" font-weight="400">4 路共享 32 × 32 乘法器 · 72-bit 累加器</text>
+<text x="817" y="1727" text-anchor="middle" font-size="23" fill="#245da0" font-weight="400">Q/K/V/O · QKᵀ · PV · 残差 · LayerNorm</text>
+<text x="817" y="1765" text-anchor="middle" font-size="23" fill="#245da0" font-weight="400">Softmax 查表插值 · 整数平方根 / 除法</text>
+<text x="817" y="1804" text-anchor="middle" font-size="22" fill="#245da0" font-weight="400">内部 SRAM：146.5 KiB · 内置 DMA 主接口</text>
+<rect x="1210" y="1570" width="700" height="275" rx="18" fill="#eaf8f3" stroke="#83c5ad" stroke-width="2"/>
+<text x="1560" y="1611" text-anchor="middle" font-size="27" fill="#207b5b" font-weight="650">KWT5 FFN 引擎</text>
+<text x="1560" y="1647" text-anchor="middle" font-size="19" fill="#526a84" font-weight="400">rtl/kwt_dma.sv + rtl/kwt_accel.sv</text>
+<text x="1560" y="1688" text-anchor="middle" font-size="23" fill="#207b5b" font-weight="400">16 路 16 × 16 MAC · 40-bit 累加器</text>
+<text x="1560" y="1727" text-anchor="middle" font-size="23" fill="#207b5b" font-weight="400">FFN1 / FFN2 复用 MAC · 1 个 GELU 单元</text>
+<text x="1560" y="1765" text-anchor="middle" font-size="23" fill="#207b5b" font-weight="400">512 B 行缓冲 · 16 项输出 FIFO · 自主 DMA</text>
+<text x="1560" y="1804" text-anchor="middle" font-size="22" fill="#207b5b" font-weight="400">内部 SRAM：88.5 KiB · 保留独立 FFN1 模式</text>
+<polyline points="1200,1336 1200,1495 817,1495 817,1570" fill="none" stroke="#3678c5" stroke-width="3" stroke-linejoin="round" marker-end="url(#blue)" marker-start="url(#blue)"/>
+<polyline points="1320,1336 1320,1495 1560,1495 1560,1570" fill="none" stroke="#29916e" stroke-width="3" stroke-linejoin="round" marker-end="url(#green)" marker-start="url(#green)"/>
+<text x="1030" y="1483" text-anchor="middle" font-size="19" fill="#245da0" font-weight="400">ENC1 DMA</text>
+<text x="1465" y="1483" text-anchor="middle" font-size="19" fill="#207b5b" font-weight="400">FFN DMA</text>
+<polyline points="600,1456 600,1527 525,1527 525,1570" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<polyline points="600,1527 1250,1527 1250,1570" fill="none" stroke="#576b83" stroke-width="3" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+<text x="185" y="1542" text-anchor="middle" font-size="21" fill="#526a84" font-weight="400">实线：数据传输</text>
+<text x="185" y="1576" text-anchor="middle" font-size="21" fill="#526a84" font-weight="400">虚线：MMIO 控制</text>
+<text x="185" y="1640" text-anchor="middle" font-size="23" fill="#243449" font-weight="650">硬件复用 12 次</text>
+<text x="185" y="1675" text-anchor="middle" font-size="21" fill="#526a84" font-weight="400">逐层加载权重</text>
+<text x="185" y="1710" text-anchor="middle" font-size="21" fill="#526a84" font-weight="400">CPU 负责调度</text>
+<text x="185" y="1745" text-anchor="middle" font-size="21" fill="#526a84" font-weight="400">算子由引擎执行</text>
+<text x="65" y="1893" text-anchor="start" font-size="21" fill="#526a84" font-weight="400">资源口径：内部 SRAM 共 235 KiB（122 个宏）；512 KiB 共享 SRAM 单独统计。推理模式，Dropout 关闭。</text>
+<text x="65" y="1925" text-anchor="start" font-size="18" fill="#718398" font-weight="400">依据：docs/full-encoder.md、实际 RTL 与固定 KWT-1 flags.json；音频前处理、嵌入和分类头属于软件参考边界。</text>
+</g></svg></html>

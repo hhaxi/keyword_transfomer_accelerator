@@ -145,10 +145,10 @@ def main():
     report['performance']['baseline_speedup']=comparison['soc_speedup']
     report['performance']['baseline_version']='v4'
     report['performance']['first_version_speedup']=comparison['speedup_over_first_version']
-    (ROOT/'docs/cycle-analysis.json').write_text(json.dumps(report['cycle_analysis'],indent=2)+'\n')
-    (ROOT/'docs/performance-comparison.json').write_text(json.dumps(comparison,indent=2)+'\n')
-    (ROOT/'docs/design-validation.json').write_text(json.dumps(report,indent=2)+'\n')
-    (ROOT/'docs/numeric-validation.json').write_text(json.dumps(numeric,indent=2)+'\n')
+    (ROOT/'docs/evidence/cycle-analysis.json').write_text(json.dumps(report['cycle_analysis'],indent=2)+'\n')
+    (ROOT/'docs/evidence/performance-comparison.json').write_text(json.dumps(comparison,indent=2)+'\n')
+    (ROOT/'docs/evidence/design-validation.json').write_text(json.dumps(report,indent=2)+'\n')
+    (ROOT/'docs/evidence/numeric-validation.json').write_text(json.dumps(numeric,indent=2)+'\n')
     print('Saved verified local results; official physical metrics remain unverified.')
 
 if __name__=='__main__':main()

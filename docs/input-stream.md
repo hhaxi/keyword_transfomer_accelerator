@@ -1,6 +1,6 @@
 # LN1→FFN 输入直传与权重预装载（编码器第五版）
 
-基于 `b71631230c868b6f1f8e8d3e1a9afdb986280512`，保留原 SRAM 输入交接路径，通过运行时配置启用输入直传。先完成单层对照与协议验证，再进入十二层验证；结果及文件指纹由 `collect_input_study.py` 生成到 [机器报告](input-stream-validation.json)。本轮只评估前端 RTL。
+基于 `b71631230c868b6f1f8e8d3e1a9afdb986280512`，保留原 SRAM 输入交接路径，通过运行时配置启用输入直传。先完成单层对照与协议验证，再进入十二层验证；结果及文件指纹由 `collect_input_study.py` 生成到 [机器报告](evidence/input-stream-validation.json)。本轮只评估前端 RTL。
 
 ## 数据通路和启动条件
 

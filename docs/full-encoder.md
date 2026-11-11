@@ -23,7 +23,7 @@ Z ─┬────────────────────────
 | 6：12 层系统 | E203 执行命令、切换参数、调用两个真实硬件 DMA；同一分类头比较浮点/定点预测；支持跨层驻留 | 音频前处理、嵌入及最后分类头属于软件参考边界；官方 600 条清单待提供 |
 | 7：综合与性能 | 可复现通用网表、综合后整机测试、周期/访问计数、同配置跨层复用 A/B、150 MHz 目标约束 | 正式库 STA、总面积、功耗和每次推理能耗待官方环境，不能认定 2.25 mm²/150 MHz 已达标 |
 
-当前前端机器结果在 [fifo-study-validation.json](fifo-study-validation.json)，实测对比在 [fifo-study.md](fifo-study.md)。第三版传输对照见 [frontend-transfer.md](frontend-transfer.md)；[encoder-validation.json](encoder-validation.json) 和 [encoder-performance.md](encoder-performance.md) 保留第二版历史综合/网表证据。本轮未重新执行综合和网表。`design-validation.json`、`ffn-group-scheduling.md` 表示第八版 FFN 工作负载。
+当前前端机器结果在 [fifo-study-validation.json](evidence/fifo-study-validation.json)，实测对比在 [fifo-study.md](fifo-study.md)。第三版传输对照见 [frontend-transfer.md](frontend-transfer.md)；[encoder-validation.json](evidence/encoder-validation.json) 和 [encoder-performance.md](history/encoder-performance.md) 保留第二版历史综合/网表证据。本轮未重新执行综合和网表。`docs/evidence/design-validation.json`、`docs/ffn-group-scheduling.md` 表示第八版 FFN 工作负载。
 
 ## 硬件与资源
 
@@ -148,10 +148,10 @@ JSON 清单为数据集相对音频路径数组，静音写 `"silence"`。脚本
 
 ## 保留基线与交付
 
-第一版编码器固定在提交 `ccc7641dfae7148d7c574b2735149e1137fc8b47`；对照记录见 `docs/encoder-baseline-v1.json`，本地源码/交付包为 `deliverables/encoder-v1-source-baseline.zip` 与 `encoder-v1-baseline.zip`，报告和日志备份在 `output/baseline-encoder-v1/`。第二版性能采集脚本从该提交读取原始验证记录，强制核对相同固件、相同向量、相同 DMA/SRAM 访问量及无回退条件。
+第一版编码器固定在提交 `ccc7641dfae7148d7c574b2735149e1137fc8b47`；对照记录见 `docs/history/encoder-baseline-v1.json`，本地源码/交付包为 `deliverables/encoder-v1-source-baseline.zip` 与 `encoder-v1-baseline.zip`，报告和日志备份在 `output/baseline-encoder-v1/`。第二版性能采集脚本从该提交读取原始验证记录，强制核对相同固件、相同向量、相同 DMA/SRAM 访问量及无回退条件。
 
 
-第八版提交 `3461cf71deb5296f6b221e94a188ec94758a55d9` 与 `docs/encoder-baseline-v8.json` 固定 FFN 对照；本地 `deliverables/full-ffn-v8-baseline.zip`、`deliverables/v8-source-baseline.zip` 和 `output/baseline-v8/` 保留。第四版必做基线继续保留。当前包由 `scripts/package_encoder.py` 生成，源码仅取 Git 已跟踪/已暂存的文件。包内含源码、参数、向量、已检查的前端日志、固件和 SHA-256 清单，排除旧网表、工具缓存与完整音频库；不代表新版网表已验证。
+第八版提交 `3461cf71deb5296f6b221e94a188ec94758a55d9` 与 `docs/evidence/encoder-baseline-v8.json` 固定 FFN 对照；本地 `deliverables/full-ffn-v8-baseline.zip`、`deliverables/v8-source-baseline.zip` 和 `output/baseline-v8/` 保留。第四版必做基线继续保留。当前包由 `scripts/package_encoder.py` 生成，源码仅取 Git 已跟踪/已暂存的文件。包内含源码、参数、向量、已检查的前端日志、固件和 SHA-256 清单，排除旧网表、工具缓存与完整音频库；不代表新版网表已验证。
 
 正式 PPA 必须统计加速器控制、两个 DMA、计算逻辑、增加的接口/仲裁和全部内部 SRAM，不能只报乘加核面积。150 MHz 折算吞吐不是实测 Fmax，通用门数量不是 mm²。缺少工艺标准单元/SRAM 的面积、时序和功耗数据时，面积、功耗、能耗均保留为未验证。
 

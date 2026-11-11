@@ -1,30 +1,49 @@
-# Deletes only reproducible local caches/output. Keeps data, sources and installed tools.
+# Deletes only reproducible local caches/output. Keeps evidence, data, sources and installed tools.
 [CmdletBinding(SupportsShouldProcess)]
 param()
 $ErrorActionPreference = 'Stop'
 $CleanupRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $CleanupPrefix = $CleanupRoot.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+$CleanupTargets = @()
+
+# Caches and manifests that are always regenerable.
 $CleanupRelativePaths = @(
-    'assets/downloads', '.tools/downloads', '.tools/wheels', 'output', 'tmp',
-    'scripts/__pycache__', 'assets/metadata',
+    'assets/downloads', '.tools/downloads', '.tools/wheels', 'tmp',
+    'assets/metadata',
     'environment/installed-model-packages.txt',
     'environment/native-tools-manifest.json', 'environment/model-wheel-manifest.json'
 )
-$CleanupTargets = @()
 foreach ($CleanupRelative in $CleanupRelativePaths) {
     $CleanupCandidate = Join-Path $CleanupRoot $CleanupRelative
     if (Test-Path -LiteralPath $CleanupCandidate) {
         $CleanupTargets += Get-Item -LiteralPath $CleanupCandidate -Force
     }
 }
-$CleanupSourceRoot = Join-Path $CleanupRoot 'assets/sources'
-if (Test-Path -LiteralPath $CleanupSourceRoot) {
-    $CleanupTargets += Get-ChildItem -LiteralPath $CleanupSourceRoot -Directory -Filter '__pycache__' -Recurse -Force
+
+# Reproducible build output and candidate working copies. Local evidence that is
+# SHA-256 pinned by tracked docs/*.json, the installed environments, downloaded
+# datasets/reference sources and deliverables/ are intentionally preserved.
+$CleanupPatterns = @(
+    'output/design/build_*',
+    'output/baseline-v1',
+    'undergrad_ffn1/tmp',
+    'undergrad_ffn1/candidates/*/study',
+    'undergrad_ffn1/candidates/*/tmp'
+)
+foreach ($CleanupPattern in $CleanupPatterns) {
+    $CleanupTargets += @(Get-ChildItem -Path (Join-Path $CleanupRoot $CleanupPattern) -Force -ErrorAction SilentlyContinue)
 }
-$CleanupFinderFile = Join-Path $CleanupRoot 'assets/datasets/speech_commands_v0.02/.DS_Store'
-if (Test-Path -LiteralPath $CleanupFinderFile) {
-    $CleanupTargets += Get-Item -LiteralPath $CleanupFinderFile -Force
+
+# Python bytecode caches outside installed environments.
+$CleanupCodeRoots = @('scripts', 'tests', 'model', 'docs', 'environment', 'integration', 'rtl', 'firmware', 'constraints', 'undergrad_ffn1')
+foreach ($CleanupCodeRoot in $CleanupCodeRoots) {
+    $CleanupCodePath = Join-Path $CleanupRoot $CleanupCodeRoot
+    if (Test-Path -LiteralPath $CleanupCodePath) {
+        $CleanupTargets += @(Get-ChildItem -Path $CleanupCodePath -Directory -Recurse -Force -Filter '__pycache__' -ErrorAction SilentlyContinue)
+    }
 }
+
+$CleanupTargets = @($CleanupTargets | Sort-Object -Property FullName -Unique)
 $CleanupBytes = 0L
 foreach ($CleanupItem in $CleanupTargets) {
     $CleanupResolved = (Resolve-Path -LiteralPath $CleanupItem.FullName).ProviderPath
@@ -46,4 +65,4 @@ foreach ($CleanupItem in $CleanupTargets) {
         $CleanupBytes += [long]$CleanupSize
     }
 }
-Write-Output ("Removed {0:N0} bytes ({1:N2} GB). Installed environments, datasets and reference sources retained." -f $CleanupBytes, ($CleanupBytes / 1e9))
+Write-Output ("Removed {0:N0} bytes ({1:N2} GB). Installed environments, datasets, reference sources, pinned evidence and deliverables retained." -f $CleanupBytes, ($CleanupBytes / 1e9))

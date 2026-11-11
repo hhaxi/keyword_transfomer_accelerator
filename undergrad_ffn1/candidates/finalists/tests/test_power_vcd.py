@@ -201,8 +201,9 @@ class PowerVcdTests(unittest.TestCase):
 class NativePowerVcdTests(PowerVcdTests):
     @classmethod
     def setUpClass(cls):
-        compiler = MODULE.parents[3] / '.tools/w64devkit/bin/g++.exe'
-        if not compiler.is_file():
+        compilers = (parent / '.tools/w64devkit/bin/g++.exe' for parent in MODULE.parents)
+        compiler = next((path for path in compilers if path.is_file()), None)
+        if compiler is None:
             raise unittest.SkipTest('optional native compiler unavailable')
         cls.native_temp = tempfile.TemporaryDirectory(dir=str(MODULE.parents[1]))
         if not hasattr(power_vcd, 'build_native_exporter'):

@@ -5,7 +5,7 @@ This single case uses the published `reference` tensor streams, DMA schedule, IN
 Use this directory from a repository checkout in a short server path. Load the same VCS and Design Compiler environment and use the same libraries and constraints as the previous five-case study. If the previous run used a private `local_config.tcl`, use the same settings here.
 
 ```bash
-cd undergrad_ffn1/q128_reference_sleep
+cd undergrad_ffn1/candidates/q128_reference_sleep
 sha256sum -c --quiet SHA256SUMS
 bash run_combined.sh --resume
 bash run_combined.sh --report-only

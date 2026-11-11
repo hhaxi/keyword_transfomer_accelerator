@@ -10,4 +10,4 @@
 | dual32_f0_p0_o1_w1_b1_d1_h0 | 74716.5 | 2007.59 | 1.870 |
 
 12层真实权重，合成X；无量化变化。功耗及面积等待服务器实际库计算。
-详细运行说明见 [activity-power-study.md](activity-power-study.md)。
+详细运行说明见 [VCS 功耗流程](vcs-power.md) 与 [活动/DC 分析](power-server.md)。

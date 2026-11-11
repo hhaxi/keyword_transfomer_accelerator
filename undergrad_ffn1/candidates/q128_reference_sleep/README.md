@@ -10,7 +10,7 @@ This is the lowest-energy variant in the matched 150 MHz task00 server compariso
 From a repository checkout on the EDA server, run the following with the same libraries and constraints as the comparison.
 
 ```bash
-cd undergrad_ffn1/q128_reference_sleep
+cd undergrad_ffn1/candidates/q128_reference_sleep
 sha256sum -c --quiet SHA256SUMS
 bash run_combined.sh --resume
 bash run_combined.sh --report-only

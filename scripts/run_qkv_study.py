@@ -14,7 +14,7 @@ from run_encoder import ROOT, OUT, DEST, firmware, soc, compatibility, linux
 BASE = 'f7a3a47d48c5581319d580d98f7145515976ee06'
 LABEL = 'tb_qkv_study'
 RECEIPT = OUT / 'qkv-study-inputs.json'
-REPORT = ROOT / 'docs/qkv-study-validation.json'
+REPORT = ROOT / 'docs/evidence/qkv-study-validation.json'
 
 
 def sha(path, normalized=False):
@@ -37,7 +37,7 @@ def inputs():
     for name in ['run_qkv_study.py', 'run_encoder.py', 'run_design.py', 'build_soc.py']:
         sources['scripts/'+name] = sha(ROOT/'scripts'/name, True)
     vectors = {p.relative_to(ROOT).as_posix(): sha(p) for p in sorted((ROOT/'output/encoder-vectors').rglob('*')) if p.is_file()}
-    previous = json.loads((ROOT/'docs/input-stream-validation.json').read_text())
+    previous = json.loads((ROOT/'docs/evidence/input-stream-validation.json').read_text())
     if vectors != previous['inputs']['vectors'] or sha(DEST/'firmware/encoder.bin') != previous['inputs']['firmware_sha256']:
         raise RuntimeError('Vectors/firmware differ from verified v5 baseline')
     frozen = previous['frozen_numeric_sha256']

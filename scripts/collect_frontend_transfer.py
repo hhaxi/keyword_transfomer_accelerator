@@ -130,7 +130,7 @@ def main():
                   fifo_payload_bits=160, ffn_mac_lanes=16, encoder_multiply_lanes=4, gelu_units=1,
                   pending='Encoder-to-FFN packed int16 input remains via shared SRAM; synthesis/netlist/PPA to be rerun on this revision',
                   passed=True)
-    output = ROOT/'docs/frontend-transfer-validation.json'
+    output = ROOT/'docs/evidence/frontend-transfer-validation.json'
     output.write_text(json.dumps(report, indent=2)+'\n')
     print('Frontend transfer validation PASS: 12 SoC inputs, 3 transport modes, independent modes, faults and four-state checks')
     print(json.dumps({k:v['cycles'] for k,v in report['transport_comparison'].items()}, indent=2))

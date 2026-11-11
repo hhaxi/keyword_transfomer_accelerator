@@ -54,7 +54,7 @@ X 为 3,168 字（12,672 字节），W 为 8,192 字（32,768 字节），b 为 
 
 ## 同条件比较与验证
 
-第三版基线为提交 `e85a6899ac7c363ecf9dcce3809bfeaa80ccd41d`，记录在 `performance-baseline-v3.json`；本地历史日志在 `output/baseline-v3/`。
+第三版基线为提交 `e85a6899ac7c363ecf9dcce3809bfeaa80ccd41d`，记录在 `docs/history/performance-baseline-v3.json`；本地历史日志在 `output/baseline-v3/`。
 
 `compare_performance.py` 检查原始向量和冻结格式未变，紧凑字可无损还原，并验证共享 SRAM、CPU 连接及总线源码未变。测试平台只允许新增紧凑数组/一致性检查、替换 X/W 装载字数及对应活动计数断言；将这些指定差异还原后必须与第三版测试平台哈希一致。主机握手、时钟、计时起止、任务前复位、轮询和最终输出检查都保持原样。所有实际装载事务仍在计时内，统计快照仍在计时外。
 
@@ -102,4 +102,4 @@ python scripts/collect_results.py
 python scripts/package_submission.py
 ```
 
-从模型重新提取并执行完整流程使用 `.\design.ps1 all`。当前结果在 `design-validation.json`、`cycle-analysis.json`、`performance-comparison.json`；本地交付包为 `deliverables/undergraduate-local-submission.zip`。
+从模型重新提取并执行完整流程使用 `.\design.ps1 all`。当前结果在 `docs/evidence/design-validation.json`、`docs/evidence/cycle-analysis.json`、`docs/evidence/performance-comparison.json`；本地交付包为 `deliverables/undergraduate-local-submission.zip`。

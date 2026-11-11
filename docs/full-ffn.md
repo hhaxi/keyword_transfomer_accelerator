@@ -4,7 +4,7 @@
 
 第五版在同一个 E203/DMA/计算引擎中支持两种运行模式。模式 0 保留本科必做的第一线性层，模式 1 完成 `Linear1 → GELU → Linear2`。完整 FFN 不包含残差、LayerNorm、注意力或分类头，不能称为完整 Transformer 编码器。
 
-第四版基线固定为提交 `d501f0dee548969ee397622a42ced29ca8219239`，记录在 `performance-baseline-v4.json`。本地还保存了 `deliverables/undergraduate-v4-baseline.zip`、`deliverables/v4-source-baseline.zip` 和 `output/baseline-v4/`；当前交付包与这些历史文件分开。
+第四版基线固定为提交 `d501f0dee548969ee397622a42ced29ca8219239`，记录在 `docs/history/performance-baseline-v4.json`。本地还保存了 `deliverables/undergraduate-v4-baseline.zip`、`deliverables/v4-source-baseline.zip` 和 `output/baseline-v4/`；当前交付包与这些历史文件分开。
 
 ## 两种任务的结果
 
@@ -136,4 +136,4 @@ python scripts/package_submission.py
 .venv-model\Scripts\python.exe scripts/decode_output.py hardware-output.hex --layer 0 --ffn --output output/decoded-ffn.npy
 ```
 
-`docs/ffn-validation.json` 单独记录选做精度、周期和日志哈希；`performance-comparison.json` 专门比较第四版与当前独立第一层模式，不混用两种任务。第四版源代码和交付包可直接恢复，不需要从第五版删除模块来重建历史结果。
+`docs/evidence/ffn-validation.json` 单独记录选做精度、周期和日志哈希；`docs/evidence/performance-comparison.json` 专门比较第四版与当前独立第一层模式，不混用两种任务。第四版源代码和交付包可直接恢复，不需要从第五版删除模块来重建历史结果。

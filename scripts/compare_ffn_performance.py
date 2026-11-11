@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 def compare(current):
-    baseline=json.loads((ROOT/'docs/performance-baseline-v7.json').read_text())
+    baseline=json.loads((ROOT/'docs/history/performance-baseline-v7.json').read_text())
     old=baseline['ffn'];new=current['optional_ffn']
     contracts=['model/format.json','model/numeric.py','model/ffn-format.json','model/ffn_numeric.py',
                'rtl/kwt_gelu.sv','rtl/kwt_mac40.sv','rtl/kwt_sram16.sv','rtl/kwt_dma.sv',
@@ -62,9 +62,9 @@ def compare(current):
             'sram_macros_before':40,'sram_macros_after':40,
             'generic_cells':cells,'target_clock_hz':hz,'timing_closed':False,
             'note':'Same 16 MAC units and 90624-byte SRAM. Next-group read/init overlaps L1 MERGE or L2 FIFO acceptance; merge register preserved. No measured power/energy or physical area claim. Mandatory FFN1 remains a separate workload.'}
-    (ROOT/'docs/ffn-performance-comparison.json').write_text(json.dumps(result,indent=2)+'\n')
+    (ROOT/'docs/evidence/ffn-performance-comparison.json').write_text(json.dumps(result,indent=2)+'\n')
     return result
 
 
 if __name__=='__main__':
-    print(json.dumps(compare(json.loads((ROOT/'docs/design-validation.json').read_text())),indent=2))
+    print(json.dumps(compare(json.loads((ROOT/'docs/evidence/design-validation.json').read_text())),indent=2))

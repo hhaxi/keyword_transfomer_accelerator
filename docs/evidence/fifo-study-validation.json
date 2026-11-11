@@ -7996,7 +7996,7 @@
   "fifo_counters": "RTL-only observer; no synthesized MMIO counters or additional CPU accesses",
   "traffic_words32": 489600,
   "mac_lanes": 16,
-  "baseline_archive": "docs/fifo-study-baseline.json",
+  "baseline_archive": "docs/evidence/fifo-study-baseline.json",
   "baseline_archives": {
     "deliverables/encoder-v3-59487c7-source.zip": {
       "available_locally": true,

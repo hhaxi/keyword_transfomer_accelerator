@@ -111,7 +111,7 @@ def main():
         require(old['numeric'][split]['manifest_sha256']==sha(ROOT/'output'/('encoder-vectors' if split=='validation' else 'encoder-calibration')/'manifest.json'),'Frozen vector baseline changed')
     for counter in STATS[3:]:require(old_task['sums'][counter]==b['sums'][counter],'Traffic/clipping changed: '+counter)
     require(b['cycles']<old_task['cycles'],'Encoder speed regression')
-    architecture=read(DEST/'architecture-stat.json');frozen=read(ROOT/'docs/encoder-baseline-v1.json')
+    architecture=read(DEST/'architecture-stat.json');frozen=read(ROOT/'docs/history/encoder-baseline-v1.json')
     mul_by_module={k:v['num_cells_by_type'].get('$mul',0) for k,v in architecture['modules'].items() if v['num_cells_by_type'].get('$mul',0)}
     require(mul_by_module==frozen['preoptimization_mul_operators_by_module'],'Multiplier operators changed')
     require(architecture['design']['num_cells_by_type']['$mul']==frozen['preoptimization_mul_operators_total'],'Hierarchy multiplier operators changed')
@@ -200,7 +200,7 @@ def main():
                 firmware_sha256=sha(DEST/'firmware/encoder.bin'),netlist_sha256=sha(DEST/'encoder_soc_netlist.v'),
                 synthesis_log_sha256=sha(LOG/'encoder-synthesis.log'),synthesis_script_sha256=sha(DEST/'synth.ys'),
                 synthesis_source_manifest_sha256=sha(DEST/'synthesis-source-sha256.json'))
-    (ROOT/'docs/encoder-validation.json').write_text(json.dumps(report,indent=2)+'\n')
+    (ROOT/'docs/evidence/encoder-validation.json').write_text(json.dumps(report,indent=2)+'\n')
     cycles=b['cycles'];ms=cycles/150000.;rate=150000000/cycles
     rows='\n'.join('| '+s+' | '+str(a['sums'][s])+' | '+str(b['sums'][s])+' |' for s in STATS)
     phase_rows='\n'.join('| '+name+' | '+str(value)+' |' for name,value in optimized['phase_profiles'][0]['phase_sums'].items())
@@ -267,9 +267,9 @@ DMA 请求背压 **{w['request']:,}** 拍、存在在途请求但没有响应 **
 
 正式 **150 MHz、≤2.25 mm²、功耗和每次推理能耗尚未验证**，仍需官方单元/SRAM 库与评测条件。本轮仅验证调度、传输与逻辑功能；通用网表仿真不涉及工艺时序、面积和功耗验收。
 
-原始证据和 SHA-256 见 [encoder-validation.json](encoder-validation.json)，接口及复现见 [full-encoder.md](full-encoder.md)。
+原始证据和 SHA-256 见 [encoder-validation.json](../evidence/encoder-validation.json)，接口及复现见 [full-encoder.md](../full-encoder.md)。
 '''
-    (ROOT/'docs/encoder-performance.md').write_text(md,encoding='utf-8')
+    (ROOT/'docs/history/encoder-performance.md').write_text(md,encoding='utf-8')
     print(json.dumps({'cycles':cycles,'nominal_ms':ms,'reuse':ab,'hardware':hardware},indent=2))
 
 if __name__=='__main__':main()

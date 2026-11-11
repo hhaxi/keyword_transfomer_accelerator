@@ -1,10 +1,10 @@
 # 第六版：完整 FFN 双项并行优化
 
-> 本文保留第六版 `411a151` 的历史结果。当前第八版见 [组间调度优化](ffn-group-scheduling.md)。
+> 本文保留第六版 `411a151` 的历史结果。当前第八版见 [组间调度优化](../ffn-group-scheduling.md)。
 
 第六版保持完整 FFN 的输入、权重、冻结量化配置、GELU 数学表、输出格式和 KWT5 协议不变。完整模式在八个输出通道内各并行处理两个相邻 k 项，独立第一层继续使用原来的单项路径。
 
-第五版基线提交为 `aa344f96043682ecf8009b62c2484145764994a5`，机器记录在 `performance-baseline-v5.json`，本地归档在 `deliverables/full-ffn-v5-baseline.zip`、`deliverables/v5-source-baseline.zip` 和 `output/baseline-v5/`。第四版本科必做基线 `d501f0d` 继续保留。
+第五版基线提交为 `aa344f96043682ecf8009b62c2484145764994a5`，机器记录在 `docs/history/performance-baseline-v5.json`，本地归档在 `deliverables/full-ffn-v5-baseline.zip`、`deliverables/v5-source-baseline.zip` 和 `output/baseline-v5/`。第四版本科必做基线 `d501f0d` 继续保留。
 
 ## 相同完整 FFN 任务的性能
 
@@ -96,4 +96,4 @@ python scripts/collect_results.py
 python scripts/package_submission.py
 ```
 
-从资源与向量开始完整复现使用 `.\design.ps1 all`。机器结果在 `ffn-validation.json`、`ffn-performance-comparison.json` 和 `design-validation.json`；交付包仍为 `deliverables/undergraduate-local-submission.zip`。第五版、第四版基线包独立保留。
+从资源与向量开始完整复现使用 `.\design.ps1 all`。机器结果在 `docs/evidence/ffn-validation.json`、`docs/evidence/ffn-performance-comparison.json` 和 `docs/evidence/design-validation.json`；交付包仍为 `deliverables/undergraduate-local-submission.zip`。第五版、第四版基线包独立保留。

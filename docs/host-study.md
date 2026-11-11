@@ -89,7 +89,7 @@
 | FFN | 8→9 | 8→8 | 0→1 | 8→0 | 2→2 | 1→2 | 0→0 | 0→0 |
 | 十二层编码器 | 8→8 | 6→6 | 5→5 | 8→0 | 2→2 | 0→0 | 2→2 | 2→1 |
 
-最终结果由 `scripts/collect_host_study.py` 从逐任务日志核对，详细记录见 [机器可读验证报告](host-study-validation.json)。
+最终结果由 `scripts/collect_host_study.py` 从逐任务日志核对，详细记录见 [机器可读验证报告](evidence/host-study-validation.json)。
 
 编码器逐层检查 LN1 输入流、FFN 输出流和 LN2 写入值，最后再通过主机读取最终输出核对。现有 Q/K/V 直接参考文件只覆盖 task 0：两种原基线各检查 task 0 的十二层，候选小规模对照各检查 task 0 单层；全量 12 条输入使用逐层 LN1/FFN/LN2 和最终输出检查，没有声称逐条直接比对所有 Q/K/V 中间张量。
 

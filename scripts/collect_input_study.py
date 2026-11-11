@@ -80,7 +80,7 @@ def main():
         rows=[(int(t),int(c)) for t,c in re.findall(pattern,text)]
         if [t for t,c in rows]!=list(range(12)) or any(c!=expected for t,c in rows):raise RuntimeError('Independent regression')
         independent[label]={'cycles':expected,'tasks':12,'no_regression':True}
-    frozen=json.loads((ROOT/'docs/fifo-study-validation.json').read_text())['frozen_numeric_sha256']
+    frozen=json.loads((ROOT/'docs/evidence/fifo-study-validation.json').read_text())['frozen_numeric_sha256']
     for name,value in frozen.items():
         # Preserve the byte-exact numeric contract recorded by the prior report.
         data=(ROOT/name).read_bytes()
@@ -101,7 +101,7 @@ def main():
             'comparison':comparisons,'independent':independent,'checks':checks,'inputs':evidence,'frozen_numeric_sha256':frozen,
             'scope':'Front-end RTL only. Matched current firmware/executable; SRAM mode is the b716312 data path. Historical b716312 firmware has a different control schedule.',
             'pending':['synthesis','netlist regression','official PPA','official evaluation'],'passed':True}
-    (ROOT/'docs/input-stream-validation.json').write_text(json.dumps(report,indent=2)+'\n')
+    (ROOT/'docs/evidence/input-stream-validation.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(comparisons,indent=2));return report
 
 if __name__=='__main__':main()

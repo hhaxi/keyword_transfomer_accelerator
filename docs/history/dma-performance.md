@@ -1,6 +1,6 @@
 # 第三版：DMA、连续传输与周期分析
 
-本页保留第三版历史结果；当前实现及寄存器格式见 [第四版性能分析](parallel-packed-performance.md) 和 [架构说明](architecture.md)。复现本页结果请使用提交 `e85a6899ac7c363ecf9dcce3809bfeaa80ccd41d`，当前工作区执行下列命令会验证第四版。
+本页保留第三版历史结果；当前实现及寄存器格式见 [第四版性能分析](../parallel-packed-performance.md) 和 [架构说明](../architecture.md)。复现本页结果请使用提交 `e85a6899ac7c363ecf9dcce3809bfeaa80ccd41d`，当前工作区执行下列命令会验证第四版。
 
 第三版保留四路 MAC、8 项输出 FIFO、52 KiB 内部 SRAM 和冻结数值格式，增加自主参数加载、结果写回和周期统计。CPU 负责配置及通知，全部矩阵计算与输入输出搬运由硬件完成。共享 SRAM 仍为 512 KiB 同步单端口。
 
@@ -92,4 +92,4 @@ DMA 内部总周期为 **499,598 = 30,717 + 468,879 + 2**。诊断计数中：�
 .venv-model\Scripts\python.exe scripts/package_submission.py
 ```
 
-完整从模型到网表的入口仍是 `.\design.ps1 all`。机器可读结果见 `cycle-analysis.json`、`performance-comparison.json` 和 `design-validation.json`；第二版历史报告与日志另存于本地 `output/baseline-v2/`。
+完整从模型到网表的入口仍是 `.\design.ps1 all`。机器可读结果见 `docs/evidence/cycle-analysis.json`、`docs/evidence/performance-comparison.json` 和 `docs/evidence/design-validation.json`；第二版历史报告与日志另存于本地 `output/baseline-v2/`。

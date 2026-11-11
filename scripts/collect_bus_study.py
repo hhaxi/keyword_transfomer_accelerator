@@ -41,7 +41,7 @@ def collect():
         if not n.startswith('scripts/'):
             require(hashlib.sha256((ROOT/n).read_bytes().replace(b'\r\n',b'\n')).hexdigest()==h,'Current source changed '+n)
     for n,h in dict(target['vectors'],**target['firmware']).items():require(sha(ROOT/n)==h,'Current data changed '+n)
-    frozen=json.loads((ROOT/'docs/qkv-study-validation.json').read_text())['frozen_numeric_sha256']
+    frozen=json.loads((ROOT/'docs/evidence/qkv-study-validation.json').read_text())['frozen_numeric_sha256']
     for n,h in frozen.items():require(sha(ROOT/n)==h,'Frozen arithmetic changed '+n)
     changed=subprocess.check_output(['git','diff',BASE,'--name-only','--','rtl','integration','firmware','model'],cwd=str(ROOT)).decode().splitlines()
     require(set(changed)=={'integration/kwt_bus_fabric.sv','integration/kwt_extended_system_bus.sv','integration/kwt_encoder_soc.sv'},'Unexpected production changes')
@@ -173,7 +173,7 @@ def collect():
                 comparison=comparison,critical_path=critical_path,experiments=experiments,protocols=protocols,frozen_numeric_sha256=frozen,
                 baseline_archives=archives,checks_sha256=checks,
                 scope='RTL cycles only; task 0 twelve-layer encoder, 12 independent Linear tasks and 12 independent FFN tasks per parameter; no new PPA results',passed=True)
-    (ROOT/'docs/bus-study-validation.json').write_text(json.dumps(report,indent=2)+'\n')
+    (ROOT/'docs/evidence/bus-study-validation.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(comparison,indent=2))
     return report
 
@@ -183,7 +183,7 @@ def package():
     receipt=json.loads((OUT/'bus-full-inputs.json').read_text())
     files.update(ROOT/n for n in receipt['sources'])
     files.update(ROOT/n for n in receipt['firmware'])
-    files.update(ROOT/n for n in ['README.md','docs/bus-study.md','docs/bus-study-validation.json','scripts/run_bus_study.py','scripts/collect_bus_study.py'])
+    files.update(ROOT/n for n in ['README.md','docs/bus-study.md','docs/evidence/bus-study-validation.json','scripts/run_bus_study.py','scripts/collect_bus_study.py'])
     target=ROOT/'deliverables/bus-study-c0724ce.zip'
     with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED) as z:
         for p in sorted(files):z.write(p,p.relative_to(ROOT).as_posix())
