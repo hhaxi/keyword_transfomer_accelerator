@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="图3.4b_行隔离与PE内部计算">
+    <mxGraphModel page="0" pageWidth="680" pageHeight="705">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="detail-panel" value="" style="rounded=1;absoluteArcSize=1;arcSize=14;fillColor=#FFFFFF;strokeColor=#7C858C;strokeWidth=1.5;dashed=1;dashPattern=7 5;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20.0" y="20.0" width="640" height="665" />
+        </mxCell>
+        <mxCell id="detail-title" value="Row isolation and PE computation" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=30;fontStyle=3;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="38.0" y="34.0" width="604" height="40" />
+        </mxCell>
+        <mxCell id="x-input" value="" style="rounded=1;absoluteArcSize=1;arcSize=14;fillColor=#EEF7FD;strokeColor=#007DB8;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="44.0" y="99.0" width="229" height="104" />
+        </mxCell>
+        <mxCell id="x-input-heading" value="Active X bank" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=27;fontStyle=3;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="56.0" y="109.0" width="205" height="35" />
+        </mxCell>
+        <mxCell id="x-input-body" value="2 × INT16" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=23;fontStyle=0;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="58.0" y="151.0" width="201" height="44" />
+        </mxCell>
+        <mxCell id="isolation" value="" style="rounded=1;absoluteArcSize=1;arcSize=14;fillColor=#F3ECFA;strokeColor=#7541A6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="320.0" y="99.0" width="316" height="104" />
+        </mxCell>
+        <mxCell id="isolation-heading" value="Shared row isolation" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=27;fontStyle=3;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="332.0" y="109.0" width="292" height="35" />
+        </mxCell>
+        <mxCell id="isolation-body" value="Active: X / Idle: 0" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=23;fontStyle=0;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="334.0" y="151.0" width="288" height="44" />
+        </mxCell>
+        <mxCell id="x-to-gate" edge="1" parent="1" style="edgeStyle=none;rounded=1;endArrow=block;endFill=1;strokeColor=#202020;strokeWidth=2;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="273.0" y="151.0" />
+            <mxPoint as="targetPoint" x="320.0" y="151.0" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="w-input" value="" style="rounded=1;absoluteArcSize=1;arcSize=14;fillColor=#F2F7E7;strokeColor=#6FAD45;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="44.0" y="257.0" width="229" height="129" />
+        </mxCell>
+        <mxCell id="w-input-heading" value="W column pair" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=27;fontStyle=3;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="56.0" y="267.0" width="205" height="35" />
+        </mxCell>
+        <mxCell id="w-input-body" value="2 × INT16" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=23;fontStyle=0;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="58.0" y="309.0" width="201" height="69" />
+        </mxCell>
+        <mxCell id="multiply" value="" style="rounded=1;absoluteArcSize=1;arcSize=14;fillColor=#FEECEC;strokeColor=#C82027;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="320.0" y="257.0" width="316" height="129" />
+        </mxCell>
+        <mxCell id="multiply-heading" value="Dual product" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=27;fontStyle=3;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="332.0" y="267.0" width="292" height="35" />
+        </mxCell>
+        <mxCell id="multiply-body" value="2 × INT32" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=23;fontStyle=0;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="334.0" y="309.0" width="288" height="69" />
+        </mxCell>
+        <mxCell id="gate-to-product" edge="1" parent="1" style="edgeStyle=none;rounded=1;endArrow=block;endFill=1;strokeColor=#202020;strokeWidth=2;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="478.0" y="203.0" />
+            <mxPoint as="targetPoint" x="478.0" y="257.0" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="w-to-product" edge="1" parent="1" style="edgeStyle=none;rounded=1;endArrow=block;endFill=1;strokeColor=#202020;strokeWidth=2;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="273.0" y="309.0" />
+            <mxPoint as="targetPoint" x="320.0" y="309.0" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sum" value="" style="rounded=1;absoluteArcSize=1;arcSize=14;fillColor=#EEF7FD;strokeColor=#007DB8;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="320.0" y="420.0" width="316" height="108" />
+        </mxCell>
+        <mxCell id="sum-heading" value="Extend and add" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=27;fontStyle=3;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="332.0" y="430.0" width="292" height="35" />
+        </mxCell>
+        <mxCell id="sum-body" value="INT40" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=23;fontStyle=0;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="334.0" y="472.0" width="288" height="48" />
+        </mxCell>
+        <mxCell id="product-to-sum" edge="1" parent="1" style="edgeStyle=none;rounded=1;endArrow=block;endFill=1;strokeColor=#202020;strokeWidth=2;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="478.0" y="386.0" />
+            <mxPoint as="targetPoint" x="478.0" y="420.0" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="accumulator" value="" style="rounded=1;absoluteArcSize=1;arcSize=14;fillColor=#E8F5F4;strokeColor=#268C88;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="320.0" y="560.0" width="316" height="102" />
+        </mxCell>
+        <mxCell id="accumulator-heading" value="INT40 accumulator" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=27;fontStyle=3;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="332.0" y="570.0" width="292" height="35" />
+        </mxCell>
+        <mxCell id="accumulator-body" value="First: bias&#10;Next: partial sum" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=23;fontStyle=0;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="334.0" y="612.0" width="288" height="42" />
+        </mxCell>
+        <mxCell id="sum-to-acc" edge="1" parent="1" style="edgeStyle=none;rounded=1;endArrow=block;endFill=1;strokeColor=#202020;strokeWidth=2;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="478.0" y="528.0" />
+            <mxPoint as="targetPoint" x="478.0" y="560.0" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="selection" value="" style="rounded=1;absoluteArcSize=1;arcSize=14;fillColor=#FFF3E3;strokeColor=#ED852E;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="44.0" y="560.0" width="229" height="102" />
+        </mxCell>
+        <mxCell id="selection-heading" value="Column bias seed" style="text;html=0;whiteSpace=wrap;fillColor=none;strokeColor=none;fontFamily=Times New Roman;fontSize=27;fontStyle=3;fontColor=#151515;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="56.0" y="582" width="205" height="58" />
+        </mxCell>
+        <mxCell id="bias-to-acc" edge="1" parent="1" style="edgeStyle=none;rounded=1;endArrow=block;endFill=1;strokeColor=#202020;strokeWidth=2;">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="273.0" y="611.0" />
+            <mxPoint as="targetPoint" x="320.0" y="611.0" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

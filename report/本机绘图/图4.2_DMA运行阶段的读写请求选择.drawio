@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="32.6.10">
+  <diagram name="FFN1 数据复用" id="ffn-reuse">
+    <mxGraphModel dx="1100" dy="930" grid="0" page="0" pageWidth="1040" pageHeight="450" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="n1" value="X prefetch&#10;Target bank available&#10;Input tiles remaining" vertex="1" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#BBD1F4;strokeColor=#111111;strokeWidth=1.2;fontFamily=Microsoft YaHei;fontSize=19;fontColor=#111111;fontStyle=0;align=center;verticalAlign=middle;spacing=3;">
+          <mxGeometry x="30" y="100" width="270" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="Y writeback&#10;Result available" vertex="1" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#FFDF55;strokeColor=#111111;strokeWidth=1.2;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#111111;fontStyle=0;align=center;verticalAlign=middle;spacing=3;">
+          <mxGeometry x="30" y="300" width="270" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="Read-priority&#10;selection" vertex="1" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#111111;strokeWidth=1.2;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#111111;fontStyle=0;align=center;verticalAlign=middle;spacing=3;">
+          <mxGeometry x="440" y="195" width="185" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="Request&#10;hold slot" vertex="1" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#111111;strokeWidth=1.2;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#111111;fontStyle=0;align=center;verticalAlign=middle;spacing=3;">
+          <mxGeometry x="795" y="200" width="205" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" edge="1" parent="1" style="endArrow=none;endFill=1;strokeColor=#111111;strokeWidth=1.5;dashed=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="150" as="sourcePoint" />
+            <mxPoint x="355" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n6" edge="1" parent="1" style="endArrow=none;endFill=1;strokeColor=#111111;strokeWidth=1.5;dashed=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="150" as="sourcePoint" />
+            <mxPoint x="355" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n7" edge="1" parent="1" style="endArrow=block;endFill=1;strokeColor=#111111;strokeWidth=1.5;dashed=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="220" as="sourcePoint" />
+            <mxPoint x="440" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n8" edge="1" parent="1" style="endArrow=none;endFill=1;strokeColor=#111111;strokeWidth=1.5;dashed=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="342.5" as="sourcePoint" />
+            <mxPoint x="355" y="342.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n9" edge="1" parent="1" style="endArrow=none;endFill=1;strokeColor=#111111;strokeWidth=1.5;dashed=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="342.5" as="sourcePoint" />
+            <mxPoint x="355" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n10" edge="1" parent="1" style="endArrow=block;endFill=1;strokeColor=#111111;strokeWidth=1.5;dashed=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="270" as="sourcePoint" />
+            <mxPoint x="440" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n11" edge="1" parent="1" style="endArrow=block;endFill=1;strokeColor=#111111;strokeWidth=1.5;dashed=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="625" y="245" as="sourcePoint" />
+            <mxPoint x="795" y="245" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n12" value="Selected request" vertex="1" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=none;strokeColor=none;strokeWidth=1.2;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#111111;fontStyle=0;align=center;verticalAlign=middle;spacing=3;">
+          <mxGeometry x="632" y="192" width="155" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="n13" value="Slot available&#10;N′ &lt; 2 · Not draining" vertex="1" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=none;strokeColor=none;strokeWidth=1.2;fontFamily=Microsoft YaHei;fontSize=20;fontColor=#111111;fontStyle=0;align=center;verticalAlign=middle;spacing=3;">
+          <mxGeometry x="351" y="28" width="362" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="n14" edge="1" parent="1" style="endArrow=block;endFill=1;strokeColor=#111111;strokeWidth=1.5;dashed=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="532.5" y="100" as="sourcePoint" />
+            <mxPoint x="532.5" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n15" value="Enable" vertex="1" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=none;strokeColor=none;strokeWidth=1.2;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#111111;fontStyle=0;align=center;verticalAlign=middle;spacing=3;">
+          <mxGeometry x="541" y="130" width="175" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="n16" value="Otherwise: idle" vertex="1" parent="1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=none;strokeColor=none;strokeWidth=1.2;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#111111;fontStyle=0;align=center;verticalAlign=middle;spacing=3;">
+          <mxGeometry x="400" y="325" width="270" height="36" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
