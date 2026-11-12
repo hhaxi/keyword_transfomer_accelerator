@@ -1131,20 +1131,22 @@ E203 固件在收到 Host 邮箱请求后，负责完成加速器的空闲确认
 
 \section{验证方案与参考模型}
 
-验证分别使用\textbf{浮点参考、位精确整数参考与映射网表回归}。浮点参考评价量化误差；整数参考检查 RTL 是否实现既定算法；网表回归检查综合前后行为是否一致。三者不能互相替代。当前已取得整数逐位比对及结构检查结果，最终浮点 NRMSE 与映射网表回归仍待完成。
+功能验证按\textbf{浮点参考、位精确整数参考与映射网表回归}三个层次展开，并以 RTL 参考设计与实现设计的形式等价检查补充综合一致性证据。浮点参考评价量化误差，整数参考检查 RTL 是否实现既定算法，网表动态回归核对同源向量下的输出与完成事件；形式等价检查则在工具设置与模型约束下比较对应逻辑点。当前已取得整数逐位比对、结构检查及形式等价通过摘要，后者的比较范围见第~\ref{sec:formal-equivalence} 节。最终浮点 NRMSE 与映射网表动态回归仍待完成。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{浮点、整数与网表三级比对的参考对象及检查内容}\label{tab:ch5-1}
+\caption{分层功能比对与形式等价检查的参考对象及内容}\label{tab:ch5-1}
 \begin{tabular}{@{\hspace{2pt}}U{15}T{35}T{38}T{54}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\thcell{比对层级} & \thleft{参考对象} & \thleft{比对内容} & \thleft{失配定位方向} \\
+\thcell{检查层次} & \thleft{参考对象} & \thleft{比对内容} & \thleft{失配定位方向} \\
 \midrule
 浮点层 & 官方模型 + 冻结权重 & 层输入、层输出、分类结果 & 尺度、移位或数值契约 \\
 \addlinespace[1.5pt]
 整型层 & 整数参考模型 & 25,344 个 INT40 与 INT16 & 解包、地址、偏置、部分和、舍入 \\
 \addlinespace[1.5pt]
 网表层 & RTL 黄金向量 & 同一向量的输出与完成事件 & 综合优化、SRAM 模型、时序 \\
+\addlinespace[1.5pt]
+等价检查 & RTL 参考设计与实现设计 & 对应比较点的逻辑等价性 & 综合转换、约束与模型解释 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1288,7 +1290,7 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 
 赛题精度验收则需将写回值按冻结尺度解码，再与浮点参考计算逐层 NRMSE，并取十二层最大值。它同时包含定点化与运算传播误差，不能用上述写回重建误差替代；所需尺度表与评测样本证据列于附录 C。
 
-当前已完成整机 RTL 与整数参考的功能比对及结构检查。映射网表的一致性仍需在同一配置下，使用同源向量、驱动和 SRAM 功能模型进行回归，核对输出与任务完成事件。
+当前已完成整机 RTL 与整数参考的功能比对及结构检查，并取得 RTL 与实现设计的形式等价通过摘要，统计结果与配置绑定范围见第~\ref{sec:formal-equivalence} 节。映射网表的动态功能回归仍需在同一配置下，使用同源向量、驱动和 SRAM 功能模型核对输出与任务完成事件。
 
 \section{逻辑综合与工艺映射}
 \label{sec:base-synthesis}
@@ -1327,8 +1329,35 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 
 同一综合配置下，VCS 使用真实 \texttt{task00} 采集严格任务窗口内的 RTL SAIF。活动文件随后用于映射设计的功耗估算，并同时记录活动标注覆盖率。第六章的轮询与 IRQ/WFI 对照采用相同样本和统计窗口，使活动差异能够与任务周期和单任务能耗一并分析。
 
-综合同时输出网表、DDC、SDC、SDF 及面积和时序报告。原始报告归档与网表回归仍待补齐；回归须复用同源配置、向量、固件和 SRAM 模型，核对写回与完成事件。\textbf{RTL 一致性不替代网表验证}，第六章的频率折算与时序结果也分别评价。
+综合同时输出网表、DDC、SDC、SDF 及面积和时序报告。目前已取得 RTL 与实现设计的形式等价通过摘要，比较点统计及配置核对事项见第~\ref{sec:formal-equivalence} 节；完整工具报告归档与映射网表的动态回归仍待补齐。动态回归须复用同源配置、向量、固件和 SRAM 模型，核对写回与完成事件，并按需要进行 SDF 反标。形式等价结果、动态回归和 STA 分别提供不同范围的证据，第六章仍单独评价频率折算与时序状态。
 
+\subsection{RTL 与综合网表的形式等价验证}
+\label{sec:formal-equivalence}
+
+逻辑综合通过逻辑优化、单元替换和时钟门控改变电路的实现形式。本节采用形式等价验证，检查这些变换是否保持 RTL 的逻辑功能，确认\textbf{综合前后的设计行为一致}。
+
+验证使用 Synopsys 工具，以 \texttt{kwt\_ffn1\_soc} 的 RTL 为参考、综合网表为实现，建立端口、触发器及黑盒引脚之间的比较关系，并执行等价检查。验证结果见表~\ref{tab:formal-equivalence}。
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{RTL 与综合网表的形式等价验证结果}\label{tab:formal-equivalence}
+\begin{tabular}{@{\hspace{2pt}}cccc@{\hspace{5pt}}}
+\toprule
+\rowcolor{TableHeader}
+\thcell{比较点类型} & \thcell{通过} & \thcell{失败} & \thcell{未比较} \\
+\midrule
+黑盒引脚（BBPin） & 6,784 & 0 & — \\
+端口（Port） & 67 & 0 & — \\
+触发器（DFF） & 9,174 & 0 & — \\
+\midrule
+已比较点合计 & \textbf{16,025} & \textbf{0} & — \\
+\midrule
+时钟门控锁存器（Clock-gate LAT） & — & — & 60 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+表中共有 \textbf{16,025 个比较点通过，失败点为 0}。其中，9,174 个触发器比较点对应设计中的状态存储，6,784 个黑盒引脚比较点与 67 个端口比较点对应模块边界及设计接口。三类比较点均通过，说明综合后的状态逻辑和接口逻辑在本次验证条件下与 RTL 保持一致。另有 60 个时钟门控锁存器未参与比较，因此该结果不包含这些锁存器的独立等价检查，也不涉及黑盒内部逻辑的证明。
+
+本次验证返回 \texttt{Verification SUCCEEDED}，\textbf{RTL 与综合网表在已比较范围内通过形式等价验证}，表明综合优化和工艺映射未改变该范围内的逻辑功能。电路能否满足目标时钟周期，则由第六章的静态时序分析进一步评价。
 \chapter{性能、面积与功耗评估}
 
 本章在第五章的验证与综合边界内，评价\textbf{完整任务耗时、加速器新增面积和单任务能耗}。先区分数据来源与计时窗口，再分析阶段开销、比较候选配置，最后说明时序状态及基础任务尚需补齐的验收证据。
@@ -1519,7 +1548,7 @@ SS 角 hold WNS & $-0.17$ ns \\
 
 基础设计以 $(8,8,2)$ 阵列及分层存储减少重复取数，以预取、融合提交和双缓冲衔接计算，再由 DMA 与中断机制完成系统执行。十二组真实层任务的 INT40 和 INT16 逐位比对通过，平均严格周期为 32,006.83 拍；服务器 task00 匹配实验中，选定配置单任务能耗为 $7.9802\ \mu\mathrm{J}$。这些结果分别支持\textbf{功能一致性、跨层运行与同条件方案选型}。
 
-当前基础任务已取得 RTL 功能一致性、周期分解与同条件 PPA 选型结论；正式验收前还需补齐以下证据：基于最终冻结尺度表与评测集计算 INT16 写回相对浮点参考的逐层 NRMSE、修复 SS 角 hold 违例、核验面积单位与预算、执行映射后门级网表的功能回归，以及归档完整的原始综合与功耗报告（详见附录 C 与附录 F）。
+当前基础任务已取得 RTL 功能一致性、周期分解与同条件 PPA 选型结论，并新取得形式等价通过摘要，其配置绑定与工具提示仍需复核（见第~\ref{sec:formal-equivalence} 节）。正式验收前还需补齐以下证据：基于最终冻结尺度表与评测集计算 INT16 写回相对浮点参考的逐层 NRMSE、修复 SS 角 hold 违例、核验面积单位与预算、执行映射后门级网表的功能回归，以及归档完整的原始综合与功耗报告（详见附录 C 与附录 F）。
 
 \part{拓展篇}
 
@@ -2098,6 +2127,8 @@ MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单�
 \addlinespace[1.5pt]
 基础逐任务及中断证据 & 同目录下的 \texttt{output/\allowbreak{}verification/\allowbreak{}functional.json}；上级目录的 \texttt{LOCAL\_\allowbreak{}RESULTS.md}、\texttt{local\_\allowbreak{}verification/\allowbreak{}wfi\_\allowbreak{}audit.json} \\
 \addlinespace[1.5pt]
+形式等价验证摘要 & \texttt{evidence/\allowbreak{}formal-\allowbreak{}equivalence-\allowbreak{}summary.txt}；完整日志、配置绑定及工具提示待复核 \\
+\addlinespace[1.5pt]
 Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}reports/\allowbreak{}RESULTS.md} \\
 \addlinespace[1.5pt]
 历史 16 路面积对照 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}docs/\allowbreak{}soc-\allowbreak{}results-\allowbreak{}2026-\allowbreak{}11-\allowbreak{}02.md} \\
@@ -2115,7 +2146,7 @@ Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak
 \begin{enumerate}
 \item \textbf{基础任务最终 INT16 写回相对浮点参考的逐层 NRMSE：} 第五章表 5.6 已给出 12 层真实向量上 INT16 写回相对 INT40 整数参考的重建误差（相对 L2 误差 $0.0127061\%$，单点误差不超过半个 LSB 且零饱和）；按赛题公式解码为浮点数并与浮点参考模型逐层对比的最大 NRMSE，需绑定最终评测样本清单与层输出尺度表统一生成。
 \item \textbf{基础配置 SS 角保持时间违例修复与门级网表回归：} 当前 Q128 \Q{} 在 150 MHz 下的 setup WNS 为 $0\text{ ns}$，但 SS 角 hold WNS 为 $-0.17\text{ ns}$；需依据原始违例路径制定修复方案并重新检查保持时间，并使用与 RTL 相同的 12 层向量和 \texttt{verify.py} 流程完成映射后门级网表（含 SDF 反标与 SRAM 宏模型）的功能复核。
-\item \textbf{基础配置原始后端报告归档：} 当前第六章的面积、时序、SAIF 覆盖率（68.53\%）与功耗数据取自服务器同条件实验汇总表 \texttt{RESULTS.md}，正式交付包需同步归档 Design Compiler 导出的原始分层面积报告、完整时序路径报告与功耗分项报告。
+\item \textbf{基础配置原始后端报告归档：} 当前第六章的面积、时序、SAIF 覆盖率（68.53\%）与功耗数据取自服务器同条件实验汇总表 \texttt{RESULTS.md}，正式交付包需同步归档 Design Compiler 导出的原始分层面积报告、完整时序路径报告与功耗分项报告。形式等价验证已取得通过摘要，还需补齐完整运行日志、Auto Setup Summary、RTL interpretation 详情、运行脚本及源文件与网表版本绑定，并核对 60 个时钟门控锁存器未比较项的处理。
 \item \textbf{拓展双引擎配置的 40 nm 工艺映射 PPA 与官方评测集复跑：} 拓展篇已完成 122 个 SRAM 宏的结构统计与十二层 RTL 周期验证，后续需在相同 40 nm 工艺流程下补齐双引擎 SoC 的映射面积、时序与功耗报告，基础配置另需核验库面积单位与 2.25 mm\textsuperscript{2} 预算，并在官方 600 条评测集发布后重跑冻结定点模型。
 \end{enumerate}
 
@@ -2202,9 +2233,11 @@ Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak
 
 \textbf{基础配置复现流程。} 基础任务定版工程位于缓存提交 \texttt{e0214c1} 对应的 \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep} 目录（驱动实现位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}driver.c}）。复现时首先检查 \texttt{cases/\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}case.json}，确认输出格式号为 2（INT16、右移 15 位、RNE 舍入）、启用压缩传输与 IRQ/\allowbreak{}WFI 等待。按照 \texttt{SERVER.md} 配置仿真与综合工具链环境变量后，在案例目录执行 \texttt{python verify.py}，脚本将自动运行模块单测、12 层每任务复位回归与 12 层连续运行回归，并输出 \texttt{output/\allowbreak{}verification/\allowbreak{}functional.json} 与 \texttt{structure.json}。服务器 PPA 复跑需固定使用 \texttt{task00} 激励、150 MHz 时钟约束、SMIC 40 nm 标准单元及单端口 SRAM 宏库，以及严格任务窗口 SAIF 采集脚本；输入向量、固件镜像与黄金参考结果的哈希绑定关系记录于 \texttt{reference\_\allowbreak{}binding.json} 与 \texttt{SHA256SUMS}。
 
+\textbf{形式等价验证复现与归档。} 当前已收录 \texttt{evidence/\allowbreak{}formal-\allowbreak{}equivalence-\allowbreak{}summary.txt} 中的通过摘要。复现时应固定 RTL 与实现网表的读入清单及哈希、参数展开、工具版本、库模型、约束与黑盒设置，并保存完整运行日志、Auto Setup Summary 和 RTL interpretation 消息。需核对参考设计 \texttt{kwt\_\allowbreak{}ffn1\_\allowbreak{}soc\_\allowbreak{}DMA\_\allowbreak{}BURST1\_\allowbreak{}HOST\_\allowbreak{}BURST0} 与选定配置的对应关系，分别归档 16,025 个通过比较点及 60 个时钟门控锁存器未比较项的处理依据；原始运行脚本与可执行复现入口仍待归档。
+
 \textbf{拓展配置复现流程。} 编码器拓展工程位于仓库根目录（SoC 顶层为 \texttt{integration/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}soc.sv}，单层与十二层调度固件位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}driver.c} 与 \texttt{firmware/\allowbreak{}main\_\allowbreak{}encoder.c}，冻结定点参数与参考模型位于 \texttt{model/\allowbreak{}format.json}、\texttt{model/\allowbreak{}ffn-format.json} 与 \texttt{model/\allowbreak{}ffn\_\allowbreak{}numeric.py}），按 \texttt{encoder.ps1} 及 \texttt{docs/\allowbreak{}input-\allowbreak{}stream.md} 组织验证：首先运行算术单测（\texttt{tb\_encoder\_math}、\texttt{tb\_gelu}）及单层直传协议测试（\texttt{tb\_ffn\_input}、\texttt{tb\_input\_link}、\texttt{tb\_encoder\_soc}），随后执行 12 条样本 $\times 12$ 层的整机 RTL 回归及异常故障恢复测试（\texttt{tb\_encoder\_faults}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}bus.sv}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}dma\_\allowbreak{}arbiter.sv}）。复现第十章的四级周期优化链时，保持测试向量与固件不变，依次切换共享 SRAM 交接、LN1 FIFO 直传、\texttt{DMA\_BURST}=8 与 \texttt{HOST}=2 宏参数即可提取对应周期日志。
 
-\textbf{正式验收交付清单。} 最终交付归档包须在同一配置快照下打包 RTL 源码、E203 固件与链接脚本、测试平台、12 层/十二层二进制测试向量、Python 位精确整数参考模型、SDC 时序约束、工艺映射后门级网表，以及附录 C 列明的完整综合面积报告、STA 时序报告、SAIF 功耗报告与最终浮点 NRMSE 评估记录。
+\textbf{正式验收交付清单。} 最终交付归档包须在同一配置快照下打包 RTL 源码、E203 固件与链接脚本、测试平台、12 层/十二层二进制测试向量、Python 位精确整数参考模型、SDC 时序约束、工艺映射后门级网表，以及附录 C 列明的完整综合面积报告、STA 时序报告、SAIF 功耗报告、完整形式等价验证日志及脚本与配置绑定资料，以及最终浮点 NRMSE 评估记录。
 
 \section{拓展配置共享 SRAM 地址表}
 
