@@ -1,3 +1,7 @@
+## ASIC/DC 编码器独立工程
+
+本分支的 DC 提取工程位于 [`encoder_asic/`](encoder_asic/README.md)，顶层为 `kwt_encoder_dc_top`，保留加宽编码器与 7 路 FFN，不依赖 Z100、PS、AXI/DDR 桥或 Vivado。综合命令、工艺配置和测试入口见该目录。原 FPGA 工程作为来源保留。
+
 # KWT-1 关键词识别加速器
 
 | 工程 | 入口 |

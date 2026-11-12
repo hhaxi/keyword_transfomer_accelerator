@@ -1,0 +1,12 @@
+rtl/kwt_mac40.sv
+rtl/kwt_gelu.sv
+rtl/kwt_udiv64.sv
+rtl/kwt_isqrt64.sv
+rtl/kwt_exp_negative.sv
+rtl/kwt_vecmem32.sv
+rtl/kwt_ffn1_core.sv
+rtl/kwt_ffn2_stream.sv
+rtl/kwt_ffn_rows_parallel.sv
+rtl/kwt_encoder.sv
+rtl/kwt_dma_arbiter.sv
+rtl/kwt_encoder_dc_top.sv

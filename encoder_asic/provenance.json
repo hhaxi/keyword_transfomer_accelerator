@@ -1,0 +1,84 @@
+{
+  "upstream_commit": "4c219d8e2e7665b57e5bb6ccf3283e9e8df9c685",
+  "files": [
+    {
+      "source": "rtl/kwt_vecmem32.sv",
+      "destination": "rtl/kwt_vecmem32.sv",
+      "source_sha256": "bfcb9bec3babebc5fed904a43037ce6a180e4686ef269c04a5bde3a97f27b8a0",
+      "extracted_sha256": "bfcb9bec3babebc5fed904a43037ce6a180e4686ef269c04a5bde3a97f27b8a0"
+    },
+    {
+      "source": "rtl/kwt_udiv64.sv",
+      "destination": "rtl/kwt_udiv64.sv",
+      "source_sha256": "62b2607bbc12bbd7492fb24535ee117fbe68609aed74edbcc52556b2f924f018",
+      "extracted_sha256": "62b2607bbc12bbd7492fb24535ee117fbe68609aed74edbcc52556b2f924f018"
+    },
+    {
+      "source": "rtl/kwt_isqrt64.sv",
+      "destination": "rtl/kwt_isqrt64.sv",
+      "source_sha256": "2949b76ab53fcd1ebef521e0541c589d8bd21d87766bb85f51c29b4aa2170afb",
+      "extracted_sha256": "2949b76ab53fcd1ebef521e0541c589d8bd21d87766bb85f51c29b4aa2170afb"
+    },
+    {
+      "source": "rtl/kwt_exp_negative.sv",
+      "destination": "rtl/kwt_exp_negative.sv",
+      "source_sha256": "1bcbeeeca2adfc47e23b2cb4d43fd0439e6c19d6708252fa7f84c0e2b7b4b6d3",
+      "extracted_sha256": "1bcbeeeca2adfc47e23b2cb4d43fd0439e6c19d6708252fa7f84c0e2b7b4b6d3"
+    },
+    {
+      "source": "rtl/kwt_gelu.sv",
+      "destination": "rtl/kwt_gelu.sv",
+      "source_sha256": "c90731e826a9e8878d2d15c905a30017aaa9d7af116baf72984a980aae873a7b",
+      "extracted_sha256": "c90731e826a9e8878d2d15c905a30017aaa9d7af116baf72984a980aae873a7b"
+    },
+    {
+      "source": "rtl/kwt_mac40.sv",
+      "destination": "rtl/kwt_mac40.sv",
+      "source_sha256": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63",
+      "extracted_sha256": "80472f57703b1703aa23c7adab107112432cff77fc9366aa3d731e000c461c63"
+    },
+    {
+      "source": "undergrad_ffn1/rtl/kwt_ffn1_core.sv",
+      "destination": "rtl/kwt_ffn1_core.sv",
+      "source_sha256": "5a26f47ebdc51c16cc774fd90c0324772a926f3d357a89df51e55895838540fe",
+      "extracted_sha256": "5a26f47ebdc51c16cc774fd90c0324772a926f3d357a89df51e55895838540fe"
+    },
+    {
+      "source": "undergrad_ffn1/rtl/kwt_options.vh",
+      "destination": "rtl/kwt_options.vh",
+      "source_sha256": "9e67ef2fb256dfc5da9646560a2d79a6fe52d0d08c9cd069a0ab4bab4a7c9304",
+      "extracted_sha256": "946e8987ad20088655ccdc30efb7f01b67d5ef95bf88679be1c346c9a01e54a8"
+    },
+    {
+      "source": "integration/kwt_dma_arbiter.sv",
+      "destination": "rtl/kwt_dma_arbiter.sv",
+      "source_sha256": "f7ab60f6279f8094e4be881dd941782da146c91de6c8384b0266af7ca36fc644",
+      "extracted_sha256": "f7ab60f6279f8094e4be881dd941782da146c91de6c8384b0266af7ca36fc644"
+    },
+    {
+      "source": "rtl/kwt_sram16.sv",
+      "destination": "sim/kwt_sram16.sv",
+      "source_sha256": "3c14d9652dc4550a016274910d1b6a4721d0e1e84621a57fe6355e00a9ea6a9d",
+      "extracted_sha256": "3c14d9652dc4550a016274910d1b6a4721d0e1e84621a57fe6355e00a9ea6a9d"
+    },
+    {
+      "source": "integration/z100/z100_ffn2.sv",
+      "destination": "rtl/kwt_ffn2_stream.sv",
+      "source_sha256": "dd63e9553b30379116789a924fbba88e05473c0f2a393d6b3ab3ad8f31142fc3",
+      "extracted_sha256": "2fad44f8f30d64da8c56c48318d2989f463ea3ce0d7ec89cce3e40e814cc7dca"
+    },
+    {
+      "source": "rtl/kwt_encoder.sv",
+      "destination": "rtl/kwt_encoder.sv",
+      "source_sha256": "0228dbb658eb73d07b62ab7a62b8e2c6a890a3f688589121c868e6f6752b0d12",
+      "extracted_sha256": "83ededda2df9f6d9fc556f207e1d9c33ce771f7863b1a71fc70a6ff04a4dbe3d"
+    },
+    {
+      "source": "integration/z100/z100_ffn_rows.sv",
+      "destination": "rtl/kwt_ffn_rows_parallel.sv",
+      "source_sha256": "8fad36d241f8f72d5a964f89177579f4dcc0c4fe5cb130519ff9777b8a6deb73",
+      "extracted_sha256": "1f781acf67c130cb4e86e14b000d3ccce5750a3838a3b4f5ef8b0dbd88399aad"
+    }
+  ],
+  "extracted_hash_normalization": "UTF-8, LF line endings"
+}
