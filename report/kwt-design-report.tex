@@ -1729,7 +1729,7 @@ $\epsilon$ & $4295\times2^{-32}$ & 加在方差上，避免零除 \\
 
 FFN1 读取单端口 X SRAM 时，后续 LN1 数据只能等空闲拍写入。FFN2 读取的是独立的 GELU 激活 SRAM，此时 X SRAM 可以接收后续数据。这样即使 FFN2 受结果 FIFO 背压，输入侧仍可在 X 端口空闲时继续交付。尾段启动后从 40 位 FIFO 逐项接收 FFN2 输出，经重缩放后完成第二次残差和 LN2。
 
-前段与尾段是同一个 ENC1 的两条固件命令。前段完成表示全部输入字已交给 FIFO，FIFO 中仍可能有数据等待 KWT5 接收。E203 随即启动尾段并等待两个模块完成；任一侧报错或取消时停止新请求、清空 FIFO 并排空已发事务。命令边界见表~\ref{tab:ch8-1}，直传与共享 SRAM 交接的实测对照见第十章。
+前段与尾段是同一个 ENC1 的两条固件命令。前段完成表示全部输入字已交给 FIFO，FIFO 中仍可能有数据等待 KWT5 接收。E203 随即启动尾段并等待两个模块完成；任一侧报错或取消时停止新请求、清空 FIFO 并排空已发事务。命令边界见表~\ref{tab:ch8-1}，两种交接方式的功能核对见第~\ref{sec:extension-single-layer}~节。
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
 \caption{ENC1 两条命令的职责与完成条件}\label{tab:ch8-1}
@@ -1803,139 +1803,25 @@ $\gamma_2$、$\beta_2$ & 各 64 & LN2 仿射参数 \\
 \item \textbf{Host 优先额度（\texttt{HOST\_BURST}=2）。} 外层未锁定请求且额度未用完时，可让 Host 优先获得授权。计数按请求接纳更新，每次 CPU 请求被接受后重置。插入的 Host 优先授权保留原轮转位置及已用 DMA 额度。
 \end{enumerate}
 
-正常结束时，末层将最终编码结果写回共享 SRAM，E203 再发布完成状态。若出现超时或错误，先停止新请求并排空在途事务，清除驻留有效状态，再从第 0 层重新开始。第十章分别给出 RTL 回归与仲裁性能对照。
+正常结束时，末层将最终编码结果写回共享 SRAM，E203 再发布完成状态。若出现超时或错误，先停止新请求并排空在途事务，清除驻留有效状态，再从第 0 层重新开始。十二层回归结果见第~\ref{sec:extension-twelve-layer}~节。
 
 \chapter{拓展任务验证与完成度评估}
 
-本章分别评价\textbf{周期收益、实现一致性、软件数值表现与资源完成度}。这些证据来自不同实验，回答的问题也不同：匹配对照量化优化收益，RTL 回归检查整数实现，软件扩展集考察分类与误差，结构和综合记录说明资源开销。结论按各自验证范围给出。
+本章从算子、单层和十二层三个层级检查编码器的 RTL 功能，再用扩展验证集比较定点与浮点模型的分类结果和逐层误差。随后列出编码器内部的存储开销，介绍 Z100 FPGA 的部署方式、上板验证结果和实测性能，并按赛题第 4 至第 7 项归纳验证结果。
 
-\section{同条件优化对照}
+\section{RTL 功能验证}\label{sec:extension-rtl}
 
-表~\ref{tab:ch10-1} 与图~\ref{fig:10-2} 在同一十二层任务、冻结参数和计时窗口下逐步增加 LN1 输入直传、DMA 八笔有界突发及 Host 两点优先信用。\textbf{每次只比较相邻两级配置}，对应一项机制的增量收益；最终配置再与基线比较累计变化，避免将不同窗口或不同硬件的结果相减。
+\subsection{算子验证}\label{sec:extension-operators}
 
-\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{拓展篇的同条件周期链}\label{tab:ch10-1}
-\begin{tabular}{@{}T{39}U{24}U{38}T{42}@{}}
-\toprule
-\rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 配置}} & \multicolumn{1}{c}{{\sffamily\mdseries 十二层周期}} & \multicolumn{1}{c}{{\sffamily\mdseries 相对上一级}} & \multicolumn{1}{c}{{\sffamily\mdseries 主要变化}} \\
-\midrule
-共享 SRAM 交接（基线） & 14,549,345 & — & LN1 结果写回共享 SRAM \\
-LN1 输入直传 & 14,315,119 & $-234{,}226$（$-1.61\%$） & DMA 由 489,600 字减至 413,568 字 \\
-DMA 有界授权 & 14,263,416 & $-51{,}703$ & \texttt{DMA\_BURST}=8 \\
-主机有界授权 & 13,855,994 & $-407{,}422$ & \texttt{HOST\_BURST}=0\ensuremath{\to}2 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\textbf{功能与测试重点。} GELU、Softmax 的指数近似、平方根及除法实现编码器中的非线性和归一化运算。单头注意力则把这些运算与投影、点积及概率加权串接起来。测试先检查定点算术及边界行为，再检查注意力各阶段的数据和运算顺序。
 
-三个匹配对照分别针对输入交接、运行期 DMA 访问和 Host 参数装载等待。输入直传减少中间数据往返，DMA 授权改善运行期访问，Host 授权缩短装载等待。表~\ref{tab:ch10-1} 中每步收益相对上一级计算，累计周期减少 4.77\%。
+\textbf{测试方法与结果。} \texttt{tb\_gelu} 覆盖正负输入、插值和 $\pm8$ 边界，\texttt{tb\_encoder\_math} 检查指数、整数平方根及除法的常量和极值。随后，\texttt{tb\_encoder} 使用真实层输入，逐段核对 $Q/K/V$ 投影、$QK^{\mathsf T}$ 缩放、Softmax、$PV$ 和输出投影。所测结果与整数参考逐值一致，验证了定点算术、查表边界和注意力阶段间的数值交接。
 
-\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{单层编码器直传前后的阶段周期与传输量}\label{tab:ch10-2}
-\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
-\toprule
-\rowcolor{TableHeader}
-\thcell{统计项目} & \thcell{共享 SRAM 交接} & \thcell{FIFO 直传} \\
-\midrule
-前段周期 & 837,792 & 844,923 \\
-尾段周期 & 251,933 & 225,100 \\
-FFN 核活动周期 & 209,827 & 209,857 \\
-DMA 交接字数 & 52,416 & 46,080 \\
-整层周期 & 1,250,753 & 1,231,235 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\subsection{单层验证}\label{sec:extension-single-layer}
 
-表~\ref{tab:ch10-2} 显示，输入直传减少了共享 SRAM 搬运，并改变了阶段间的重叠。前段因输入 FIFO 背压增加 7,131 拍，FFN 核活动周期基本不变，尾段计数区间缩短 26,833 拍。尾段区间长度的变化不等同于绝对完成时刻的提前量，跨阶段区间也可能重叠；整层净收益按共同任务窗口计为 19,518 拍。
+\textbf{功能与测试重点。} 一个 PostNorm 层串接注意力、两次残差与 LayerNorm 以及完整 FFN。测试同时检查两条残差所用的数据、模块间的定点格式转换，以及 FIFO 背压或取消时的状态更新。
 
-\ph[48mm]{10-2}{十二层编码器的分阶段优化周期对照（纵轴截断）}{绘制十二层编码器任务周期的四柱阶梯对比柱状图（纵轴从 13.2 百万拍起，单位：百万拍）：依次标出（1）共享 SRAM 交接基线：14.549M（14,549,345 拍）；（2）+ LN1 输入直传：14.315M（14,315,119 拍，$-234{,}226$ 拍）；（3）+ DMA 有界授权（\texttt{DMA\_BURST}=8）：14.263M（14,263,416 拍，$-51{,}703$ 拍）；（4）+ Host 有界授权（\texttt{HOST\_BURST}=2）：13.856M（13,855,994 拍，$-407{,}422$ 拍）。}
-
-两种单层配置均使用 FFN 结果 FIFO，匹配实验仅对照 LN1 通过共享 SRAM 往返与通过输入 FIFO 直传的配置，并包含配套的权重预装和启动调度。LN1 每层少经共享 SRAM 写入 3,168 字和读出 3,168 字。图~\ref{fig:fifo-handoff} 和表~\ref{tab:ch8-4} 分别给出路径差异和链路计数。
-
-\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{单层匹配实验的 FIFO 直传链路计数}\label{tab:ch8-4}
-\begin{tabular}{@{\hspace{2pt}}U{43}U{22}T{72}@{\hspace{5pt}}}
-\toprule
-\rowcolor{TableHeader}
-\thcell{统计项目} & \thcell{实测值} & \thleft{说明} \\
-\midrule
-输入 FIFO 深度 & 4 & 满占用 4/4 \\
-生产端满等待 & 8,190 拍 & X 单端口被计算读取占用 \\
-消费端空等待 & 1 拍 & 正常传输期间几乎不空 \\
-第二线性阶段的 X 写入 & 2,629 次 & 该阶段读独立中间存储，留有写入窗口 \\
-每层 LN1 读写字数 & 6,336 & 输入直传后该边界为 0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\ph[40mm]{fifo-handoff}{单层 LN1 交接从 SRAM 往返改为 FIFO 直传}{对比 LN1 的两条输入交接路径。基线为 LN1 打包结果写共享 SRAM，再由 FFN 读回；候选为 LN1 数据经深度 4 的输入 FIFO 直接送入 FFN。每层减少 3,168 写字与 3,168 读字。两种模式均保留已有结果 FIFO。}
-
-Host 授权对照固定 DMA 额度为 8，只切换 Host 额度。表~\ref{tab:ch9-3} 的三拍每字是该测试驱动的固定装载节拍；额外请求等待独立计数。CPU 取指最长连续等待的数值来自本次实验。
-
-\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{主机授权实验的计数与收益（十二层任务）}\label{tab:ch9-3}
-\begin{tabular}{@{}T{60}U{39}U{39}@{}}
-\toprule
-\rowcolor{TableHeader}
-\multicolumn{1}{c}{{\sffamily\mdseries 项目}} & \multicolumn{1}{c}{{\sffamily\mdseries 基线（\texttt{HOST\_BURST}=0）}} & \multicolumn{1}{c}{{\sffamily\mdseries 候选（\texttt{HOST\_BURST}=2）}} \\
-\midrule
-十二层输入与参数写入 & 407,232 字 & 407,232 字 \\
-三拍每字的固定成本 & 1,221,696 拍 & 1,221,696 拍 \\
-额外请求等待 & 407,219 拍 & 0 拍 \\
-CPU 取指最长连续等待 & 8 拍 & 8 拍 \\
-整机周期变化 & — & $-407,422$ 拍 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\section{算子、单层与十二层 RTL 验证}
-\begin{table}[H]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{拓展算子的测试入口、激励与验证判据}\label{tab:ch7-6}
-\begin{tabular}{@{\hspace{2pt}}U{31}U{34}T{33}T{41}@{\hspace{5pt}}}
-\toprule
-\rowcolor{TableHeader}
-\thcell{测试入口} & \thcell{对象} & \thleft{激励} & \thleft{判据} \\
-\midrule
-\texttt{tb\_\allowbreak{}encoder\_\allowbreak{}math} & 指数、平方根、除法 & 常量、零方差、极值 & 与整数参考逐值一致 \\
-\addlinespace[1.5pt]
-\texttt{tb\_\allowbreak{}gelu} & 激活查表与插值 & 正负区间、\ensuremath{\pm}8 边界 & 插值结果与表值 \\
-\addlinespace[1.5pt]
-\texttt{tb\_\allowbreak{}encoder} & 投影至中间结果 & 真实层输入 & 逐段一致 \\
-\addlinespace[1.5pt]
-整机回归 & 单层与十二层 & 12 条输入 & LN1、FFN、LN2 三个边界 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-\subsection{单层功能与接口压力测试}
-
-单层验证分为接口压力测试与整机结果比较，平台见表~\ref{tab:ch8-5}。接口测试覆盖慢输入、末字背压，以及前段已完成但输入 FIFO 尚未排空时的中止；检查取消后 FIFO、驻留标志和在途队列能够清理，并可重新启动。
-
-整机测试在完整 E203 SoC 上运行共享 SRAM 与 FIFO 两种交接配置，分别比较 LN1、FFN 和 LN2 边界。\textbf{三处逐位一致}支持传输路径变化未改变已测输入的数值结果，压力测试则补充推进与恢复行为的检查。
-
-\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{单层编码器集成的测试平台与覆盖场景}\label{tab:ch8-5}
-\begin{tabular}{@{\hspace{2pt}}U{38}U{22}T{84}@{\hspace{5pt}}}
-\toprule
-\rowcolor{TableHeader}
-\thcell{测试平台} & \thcell{覆盖对象} & \thleft{主要场景} \\
-\midrule
-\texttt{tb\_\allowbreak{}ffn\_\allowbreak{}input} & FFN 输入接口 & 就绪、慢输入、末字背压、取消后重启 \\
-\addlinespace[1.5pt]
-\texttt{tb\_\allowbreak{}input\_\allowbreak{}link} & 双引擎链路 & 前段 DONE 与 FIFO 残数、取消、恢复 \\
-\addlinespace[1.5pt]
-\texttt{tb\_\allowbreak{}encoder\_\allowbreak{}soc} & 编码器整机 & 单层完整前向 \\
-\addlinespace[1.5pt]
-\texttt{tb\_\allowbreak{}encoder\_\allowbreak{}faults} & 异常路径 & 总线错误、中止、看门狗 \\
-\addlinespace[1.5pt]
-\texttt{encoder\_\allowbreak{}fifo\_\allowbreak{}monitor} & FIFO 行为 & 占用、满空等待统计 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-单层整数比对以表~\ref{tab:ch8-3} 所列边界为准。
+\textbf{测试方法与结果。} 在 E203 SoC 上，以同一组输入和参数运行共享 SRAM 与 FIFO 两种交接方式，按表~\ref{tab:ch8-3} 的三个位置与整数模型逐位比较。\texttt{tb\_ffn\_input} 和 \texttt{tb\_input\_link} 另外覆盖慢输入、末字背压以及前段完成但输入 FIFO 仍有数据时的取消。\texttt{tb\_encoder\_faults} 检查总线错误、中止和超时恢复。三处数值比对均一致。已覆盖的异常场景中，系统能清理 FIFO 和驻留状态、排空在途事务，并重新启动，验证了单层交接与恢复机制。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{单层验证的三个观察边界}\label{tab:ch8-3}
@@ -1951,9 +1837,11 @@ LN2 整数输出 & 恢复 Q16 后的 99\ensuremath{\times}64 & 残差 2、LN2 \\
 \end{tabular}
 \end{table}
 
-\subsection{十二层整机回归}
+\subsection{十二层验证}\label{sec:extension-twelve-layer}
 
-十二层整机 RTL 回归启用 FIFO 直传与层间驻留，固定 \texttt{DMA\_BURST}=8，分别检查 \texttt{HOST\_BURST}=0 和 2。每种配置连续执行 12 条语音输入，每条执行全部 12 层，共检查 144 个编码器层实例。共享 SRAM 交接与 FIFO 直传的周期对照采用相同的代表性输入。
+\textbf{功能与测试重点。} E203 逐层更新参数并启动计算，ENC1 把本层 LN2 输出留给下一层，末层把最终结果写回共享 SRAM。测试检查参数与层号是否对应、层间结果是否正确传递，以及末层是否完整写回。
+
+\textbf{测试方法与结果。} 启用 FIFO 直传与层间驻留，固定 \texttt{DMA\_BURST}=8，分别在 \texttt{HOST\_BURST}=0 和 2 下运行 12 条语音输入。每条执行全部 12 层，每种配置共验证 144 个层实例。逐层核对 LN1、FFN、LN2 和末层输出，表~\ref{tab:ch9-4} 中各项均无失配，验证了已测配置的层序、参数切换、片内驻留和结果写回。在 \texttt{HOST\_BURST}=2 配置下，每条完整任务为 13,855,994 拍。测试从 Host 开始装载输入与参数计时，到观察到任务完成为止。
 
 \begin{table}[H]\centering\fontsize{10}{13}\selectfont
 \caption{十二层整机回归的比对数量（每种配置共 12 条输入）}\label{tab:ch9-4}
@@ -1970,11 +1858,11 @@ LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 \end{tabular}
 \end{table}
 
-表~\ref{tab:ch9-4} 各项均无失配；LN1 按每字含两个 INT16 的打包字计数，其余按矩阵元素计数。仲裁专项另测持续请求、背压、目标锁定、非法地址及在途复位；这些测试支持已覆盖场景的推进与恢复结论，尚不足以证明所有输入条件下均无饥饿。
+\section{软件分类与逐层数值误差}\label{sec:extension-software}
 
-\section{软件分类与逐层数值误差}
+\textbf{测试场景。} 使用 Speech Commands V2 的上游 12 类验证索引，共 4,445 条记录，含 4,074 个不同音频文件和 371 条静音记录。静音使用同一全零输入，按原索引计权。每条记录分别运行原浮点 KWT-1 和冻结定点编码器。两条路径共用音频预处理、输入嵌入与软件分类头，定点路径使用固定的权重和尺度。
 
-拓展数值验证分为两个范围。\textbf{RTL 回归}在选定输入上逐层检查整数实现；\textbf{软件扩展评估}使用同一冻结格式扩大样本范围，比较定点与浮点分类以及逐层误差。表~\ref{tab:ch10-3} 汇总后者结果。静音记录使用相同全零输入并保留上游索引权重，不能按彼此独立的音频样本理解。
+\textbf{评价方法。} 分类以预测类别与真实标签的一致性计算 Top-1，同时记录定点和浮点预测的逐条一致性。数值误差以每层 LN2 为观察点，将定点输出从 Q16 解码后与同一输入的浮点层输出比较。逐层聚合 NRMSE 使用该层全部样本及元素的误差平方和与浮点参考平方和之比，再取平方根。该指标包含误差经过前面各层传播的影响。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{扩展样本集的软件分类一致性与数值误差}\label{tab:ch10-3}
@@ -1994,18 +1882,11 @@ LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 \end{tabular}
 \end{table}
 
-本地软件验证主要用于考察分类预测、运行时饱和和逐层误差。结果的适用范围如下。
-\begin{enumerate}
-\item \textbf{分类预测保持一致：} 当前扩展验证集上的定点与浮点预测逐条一致。准确率及样本组成集中列于表~\ref{tab:ch10-3}，统一评测集上的分类表现仍需另行核验。
-\item \textbf{监测节点无饱和溢出：} 在全部层实例的监测节点上，实际触发饱和限幅的次数为 0，说明第七、八章设计的定点位宽与冻结移位指数留有动态范围余量；
-\item \textbf{逐层误差传播：} LN2 聚合 NRMSE 随层数增加，最大值为 0.171308\%。该统计用于观察编码器的误差传播。赛题的 3\% NRMSE 门槛针对本科前馈线性任务；研究生编码器的分类门槛为同一评测集、同一分类头下 Top-1 相对浮点参考下降不超过 2 个百分点，当前本地软件结果不替代统一评测验收。
-\end{enumerate}
+\textbf{结果。} 两条路径都正确识别 4,351 条记录，Top-1 均为 97.8853\%，相差 0 个百分点，逐条预测完全一致。末层的聚合 NRMSE 为各层最大值 0.171308\%，最差单样本逐层 NRMSE 为 0.237820\%，监测节点的实际饱和计数为 0。附录表列出了 12 层的误差分布。
 
-拓展篇三类实验证据分别支持不同范围的结论：十二层整机 RTL 回归验证硬件实现与整数参考的逐位一致性；同条件匹配对照量化直传与总线仲裁的系统周期收益；独立软件验证评估冻结定点格式相对浮点模型的分类表现与逐层 NRMSE。待官方最终评测集公布后，可按同一冻结格式运行生成验收记录。
+\section{资源开销}
 
-\section{资源开销与综合评估}
-
-表~\ref{tab:ch10-4} 汇总了拓展配置双引擎（KWT5 + ENC1）内部的单端口 SRAM 宏组成。其中，完整 FFN 数据通路存放两级线性层参数与 GELU 中间激活；编码器伴随引擎包含 $X, Q, K, V$ 四组向量缓存、分时复用的单组投影权重缓存、输出偏置与 LayerNorm 参数缓存，以及逐行复用的单行注意力分数/概率缓存。
+表~\ref{tab:ch10-4} 统计第七至九章 E203 编码器配置中的片内存储。KWT5 的 88.5 KiB 用于两级线性层的参数及 GELU 中间激活。ENC1 的 146.5 KiB 用于 $X,Q,K,V$、分时复用的投影权重、归一化参数和单行分数及概率缓存。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{拓展配置的内部 SRAM 用途与容量}\label{tab:ch10-4}
@@ -2014,7 +1895,7 @@ LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 \rowcolor{TableHeader}
 \thcell{内容} & \thcell{容量} & \thleft{说明} \\
 \midrule
-原 FFN 数据通路 & 88.5 KiB & 第一、第二线性层与 GELU 缓冲 \\
+完整 FFN 数据通路 & 88.5 KiB & 第一、第二线性层与 GELU 缓冲 \\
 $X$、$Q$、$K$、$V$ 四组向量缓存 & 128 KiB & 注意力中间量 \\
 复用的一组投影权重 & 16 KiB & Q/K/V/O 依次复用 \\
 输出偏置与两组 LN 参数 & 2 KiB & 逐层更新 \\
@@ -2025,33 +1906,101 @@ $X$、$Q$、$K$、$V$ 四组向量缓存 & 128 KiB & 注意力中间量 \\
 \end{tabular}
 \end{table}
 
-结构检查得到 122 个 16 位单端口宏：2 个 $4096\times16$、108 个 $1024\times16$ 和 12 个 $128\times16$，合计 235 KiB。\textbf{逻辑容量只说明存储规模，不等于硅片面积}，也不能据此推导功耗或可达频率。
+片内存储合计 235 KiB，由 122 个 16 位单端口宏组成，其中 $4096\times16$ 宏 2 个、$1024\times16$ 宏 108 个、$128\times16$ 宏 12 个。此处统计范围为两个计算模块内部。
 
-拓展配置尚未完成同一服务器流程下的 SMIC 40 nm 映射、STA、SAIF 功耗与网表回归。因而资源表属于结构统计，10.4 节仍将综合评估标为部分完成，不能沿用基础 Q128 的 PPA 作为替代。
+\section{FPGA 验证}\label{sec:fpga-validation}
 
-\section{研究生任务对应关系与完成情况}
+\subsection{平台与部署}
 
-参照赛题指南中研究生组的第 4 至第 7 项进阶要求，表~\ref{tab:ch10-5} 逐项列出了本作品拓展篇的当前硬件实现范围、已取得的验证证据与待补事项。
+验证平台为 Z100 开发板（图~\ref{fig:z100-board}），器件为 Zynq XC7Z035-2FFG900。Vivado 2026.1 生成 PL 位流和 XSA，ARM 固件通过板卡的以太网 BSP 与 lwIP 接收上位机请求。部署时配置 PL 位流，将 Cortex-A9 固件和冻结模型参数包加载到板卡，PL 工作在约 66.7 MHz~\cite{z100-validation}。
 
-\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{研究生任务第 4—7 项的实现与验证状态}\label{tab:ch10-5}
-\begin{tabular}{@{\hspace{2pt}}U{28}T{59}T{54}@{\hspace{5pt}}}
+\textbf{处理器与存储映射。} 在上板配置中，Zynq PS 的 Cortex-A9 承担原 E203 配置的任务控制职责，通过 AXI GP0 访问 PL 的控制寄存器。板载 DDR 承担共享存储角色，保存模型参数包、初始输入和最终输出。PL 经 AXI HP0 及 DDR 桥按层读取参数。片内工作存储使用 FPGA 可综合的同步 RAM 描述，由 Vivado 按用途映射到 BRAM 等 FPGA 存储资源。LN1 输入和 FFN 结果经 PL 内的 BRAM 缓冲与握手链路交接。
+
+\textbf{FPGA 适配与数据流程。} PL 复用 FFN1、GELU 和 FFN2 的算术模块，并加入 AXI 控制与 DDR 访问桥、7 路 FFN 行调度和权重广播。编码器加宽了投影和注意力计算，并将 Softmax 与 LayerNorm 流水化。上位机读取 WAV、提取 MFCC 并完成嵌入，将 $99\times64$ 个 Q16 特征通过 TCP 发往板卡。PL 执行全部 12 层，Cortex-A9 读取最终 CLS 向量并计算分类头，返回类别、logits 与层进度。
+
+\begin{figure}[!htp]\centering
+\includegraphics[width=.68\linewidth]{figures/z100-board.jpg}
+\caption{Z100 FPGA 上板验证平台实物}\label{fig:z100-board}
+\end{figure}
+
+\FloatBarrier
+\subsection{上板功能验证}
+
+冻结向量回读覆盖 12 条输入，每条核对 6,336 个编码器输出，共 76,032 个值与整数参考逐位一致。在另一组 120 条固定验证样本上，板卡分类与软件定点参考一致 120/120，与真实标签一致 119/120（99.17\%）。向板卡发送坏 CRC 帧后重连，随后两次推理均完成 12 层并通过全量回读，验证了已测通信错误后的恢复流程~\cite{z100-validation}。
+
+\subsection{布局布线后资源与时序}
+
+表~\ref{tab:fpga-resource} 统计完整 PL 的资源，包含编码器、FFN 行调度和 AXI 集成。PL 时钟约束为 14.999 ns（66.671 MHz）。表~\ref{tab:fpga-timing} 的 setup、hold 和脉宽检查均有正裕量，失败端点数均为 0。
+
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{Z100 FPGA 布线后 PL 资源占用}\label{tab:fpga-resource}
+\begin{tabular}{@{}T{53}U{24}U{24}U{22}@{}}
 \toprule
 \rowcolor{TableHeader}
-\thcell{赛题任务} & \thleft{当前实现} & \thleft{验证与证据范围} \\
+\thleft{资源} & \thcell{已用} & \thcell{可用} & \thcell{使用率} \\
 \midrule
-第 4 项\newline 单头注意力 & $Q/K/V$ 投影、分数、Softmax、概率加权、输出投影 & 组件 RTL 与参考逐段比较 \\
-\addlinespace[1.5pt]
-第 5 项\newline 单层编码器 & 注意力、两次残差、两处 LN、完整 FFN & LN1/FFN/LN2 三边界对照 \\
-\addlinespace[1.5pt]
-第 6 项\newline 十二层调度 & 逐层参数切换、层间驻留、末层写回 & 12 条输入\ensuremath{\times}12 层 RTL \\
-\addlinespace[1.5pt]
-第 7 项\newline 综合与性能 & 周期、访存与阶段计数完整；通用网表为历史版本 & 工艺 PPA 与网表回归待补 \\
+Slice LUT & 54,759 & 171,900 & 31.86\% \\
+Slice 寄存器 & 32,687 & 343,800 & 9.51\% \\
+BRAM（36 Kb 等效） & 296.5 & 500 & 59.30\% \\
+DSP48E1 & 633 & 900 & 70.33\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-拓展部分已实现单头注意力、单层 PostNorm 和十二层连续编码器的 RTL、固件调度及总线优化，并在记录的整机输入上完成整数逐位比对。系统周期对照与软件分类评估提供了进一步证据。\textbf{这些结果对应已实现与已验证的范围}；统一评测集分类验收、拓展工艺映射 PPA 和网表回归仍需补齐，不将结构或软件结果视为这些工作的替代。
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{Z100 FPGA 布线后时序裕量}\label{tab:fpga-timing}
+\begin{tabular}{@{}T{36}U{29}U{30}U{25}@{}}
+\toprule
+\rowcolor{TableHeader}
+\thleft{检查项} & \thcell{最差裕量（ns）} & \thcell{总负裕量（ns）} & \thcell{失败端点} \\
+\midrule
+Setup & $+0.753$ & 0.000 & 0 \\
+Hold & $+0.036$ & 0.000 & 0 \\
+脉宽 & $+6.731$ & 0.000 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
+\subsection{实测时延与吞吐}
+
+测试使用单板、单客户端，上一条输入收到完整结果后才发送下一条。端到端从上位机读取 WAV 开始，包含特征计算、上传及结果接收。板上计时包含 12 层调度和 Cortex-A9 分类头。表~\ref{tab:fpga-latency} 的持续组将同一批 12 条 WAV 循环运行 10 轮，120 次全部预测正确，总耗时 6.027 s，端到端实测吞吐为 \textbf{19.91 条输入/秒}。这里的任务包含上位机预处理与软件分类头，赛题硬件吞吐的计时边界见赛题指南~\cite{rules,z100-validation}。
+
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{Z100 FPGA 板上与端到端时延}\label{tab:fpga-latency}
+\begin{tabular}{@{}T{40}U{15}U{28}U{22}U{27}@{}}
+\toprule
+\rowcolor{TableHeader}
+\thleft{连接方式} & \thcell{次数} & \thcell{端到端中位数\\（ms）} & \thcell{端到端 P95\\（ms）} & \thcell{板上中位数\\（ms）} \\
+\midrule
+热连接 & 12 & 50.70 & 53.21 & 46.20 \\
+每次新建连接 & 12 & 51.98 & 77.57 & 46.20 \\
+热连接持续测试 & 120 & 50.06 & 51.18 & 46.20 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{研究生赛题要求与验证结果}
+
+表~\ref{tab:ch10-5} 按赛题指南第 4 至第 7 项列出本章对应的实现和验证记录~\cite{rules}。软件分类结果以本章的上游验证索引为统计范围。第 7 项的工艺综合指标对应指定平台的加速器及 SoC，表中板上资源、时序和吞吐对应 Z100 FPGA 配置。
+
+\begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
+\caption{研究生赛题第 4—7 项与验证结果}\label{tab:ch10-5}
+\begin{tabular}{@{}U{25}T{61}T{61}@{}}
+\toprule
+\rowcolor{TableHeader}
+\thcell{赛题任务} & \thleft{主要要求} & \thleft{对应实现与验证结果} \\
+\midrule
+第 4 项\newline 单头注意力 & 实现投影、缩放打分、逐行 Softmax、概率加权及输出投影，验证各级运算与缓存复用 & 按查询行复用分数和概率缓存，算子及中间结果与整数模型逐段一致。见第~\ref{sec:extension-operators}~节。 \\
+\addlinespace[1.5pt]
+第 5 项\newline 单层编码器 & 按 PostNorm 顺序集成注意力、两次残差和 LayerNorm、完整 FFN 与 GELU & LN1、FFN、LN2 三个边界通过逐位核对，FIFO 接口完成背压和恢复测试。见第~\ref{sec:extension-single-layer}~节。 \\
+\addlinespace[1.5pt]
+第 6 项\newline 十二层与调度 & E203 逐层更新参数并执行 12 层，验证层间传递、软件分类及调度优化 & 每组 12 条输入均完成 12 层逐位核对。记录 FIFO 交接、LN2 驻留和仲裁的对照实验，定点与浮点 Top-1 在扩展验证索引上均为 97.8853\%。 \\
+\addlinespace[1.5pt]
+第 7 项\newline 综合与性能 & 检查综合前后功能与 150 MHz 时序，统计面积、周期、吞吐、功耗、能耗、访存和加载开销 & E203 RTL 记录周期、访存及参数加载计数。Z100 FPGA 提供布线后资源与时序及板上吞吐。见第~\ref{sec:fpga-validation}~节。 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \chapter*{参赛感想}
 \addcontentsline{toc}{chapter}{参赛感想}
@@ -2105,6 +2054,8 @@ Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak
 拓展结构、直传、仲裁 & \texttt{docs/\allowbreak{}full-\allowbreak{}encoder.md}、\texttt{docs/\allowbreak{}input-\allowbreak{}stream.md}、\texttt{docs/\allowbreak{}bus-\allowbreak{}study.md}、\texttt{docs/\allowbreak{}host-\allowbreak{}study.md} \\
 \addlinespace[1.5pt]
 软件分类与逐层误差 & \texttt{docs/\allowbreak{}encoder-\allowbreak{}validation-\allowbreak{}expanded.md} \\
+\addlinespace[1.5pt]
+Z100 FPGA 验证 & 提交 \texttt{4c219d8} 的 \texttt{integration/z100/} 与 \texttt{docs/fpga-validation/}，含重建入口、布线后报告及板上逐请求记录~\cite{z100-validation} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2202,7 +2153,7 @@ Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak
 
 \textbf{基础配置复现流程。} 基础任务定版工程位于缓存提交 \texttt{e0214c1} 对应的 \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep} 目录（驱动实现位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}driver.c}）。复现时首先检查 \texttt{cases/\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}case.json}，确认输出格式号为 2（INT16、右移 15 位、RNE 舍入）、启用压缩传输与 IRQ/\allowbreak{}WFI 等待。按照 \texttt{SERVER.md} 配置仿真与综合工具链环境变量后，在案例目录执行 \texttt{python verify.py}，脚本将自动运行模块单测、12 层每任务复位回归与 12 层连续运行回归，并输出 \texttt{output/\allowbreak{}verification/\allowbreak{}functional.json} 与 \texttt{structure.json}。服务器 PPA 复跑需固定使用 \texttt{task00} 激励、150 MHz 时钟约束、SMIC 40 nm 标准单元及单端口 SRAM 宏库，以及严格任务窗口 SAIF 采集脚本；输入向量、固件镜像与黄金参考结果的哈希绑定关系记录于 \texttt{reference\_\allowbreak{}binding.json} 与 \texttt{SHA256SUMS}。
 
-\textbf{拓展配置复现流程。} 编码器拓展工程位于仓库根目录（SoC 顶层为 \texttt{integration/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}soc.sv}，单层与十二层调度固件位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}driver.c} 与 \texttt{firmware/\allowbreak{}main\_\allowbreak{}encoder.c}，冻结定点参数与参考模型位于 \texttt{model/\allowbreak{}format.json}、\texttt{model/\allowbreak{}ffn-format.json} 与 \texttt{model/\allowbreak{}ffn\_\allowbreak{}numeric.py}），按 \texttt{encoder.ps1} 及 \texttt{docs/\allowbreak{}input-\allowbreak{}stream.md} 组织验证：首先运行算术单测（\texttt{tb\_encoder\_math}、\texttt{tb\_gelu}）及单层直传协议测试（\texttt{tb\_ffn\_input}、\texttt{tb\_input\_link}、\texttt{tb\_encoder\_soc}），随后执行 12 条样本 $\times 12$ 层的整机 RTL 回归及异常故障恢复测试（\texttt{tb\_encoder\_faults}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}bus.sv}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}dma\_\allowbreak{}arbiter.sv}）。复现第十章的四级周期优化链时，保持测试向量与固件不变，依次切换共享 SRAM 交接、LN1 FIFO 直传、\texttt{DMA\_BURST}=8 与 \texttt{HOST}=2 宏参数即可提取对应周期日志。
+\textbf{拓展配置复现流程。} 编码器拓展工程位于仓库根目录（SoC 顶层为 \texttt{integration/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}soc.sv}，单层与十二层调度固件位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}driver.c} 与 \texttt{firmware/\allowbreak{}main\_\allowbreak{}encoder.c}，冻结定点参数与参考模型位于 \texttt{model/\allowbreak{}format.json}、\texttt{model/\allowbreak{}ffn-format.json} 与 \texttt{model/\allowbreak{}ffn\_\allowbreak{}numeric.py}），按 \texttt{encoder.ps1} 及 \texttt{docs/\allowbreak{}input-\allowbreak{}stream.md} 组织验证：首先运行算术单测（\texttt{tb\_encoder\_math}、\texttt{tb\_gelu}）及单层直传协议测试（\texttt{tb\_ffn\_input}、\texttt{tb\_input\_link}、\texttt{tb\_encoder\_soc}），随后执行 12 条样本 $\times 12$ 层的整机 RTL 回归及异常故障恢复测试（\texttt{tb\_encoder\_faults}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}bus.sv}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}dma\_\allowbreak{}arbiter.sv}）。复现存档中的调度对照时，保持测试向量与固件不变，依次切换共享 SRAM 交接、LN1 FIFO 直传、\texttt{DMA\_BURST}=8 与 \texttt{HOST\_BURST}=2 配置即可提取对应周期日志。
 
 \textbf{正式验收交付清单。} 最终交付归档包须在同一配置快照下打包 RTL 源码、E203 固件与链接脚本、测试平台、12 层/十二层二进制测试向量、Python 位精确整数参考模型、SDC 时序约束、工艺映射后门级网表，以及附录 C 列明的完整综合面积报告、STA 时序报告、SAIF 功耗报告与最终浮点 NRMSE 评估记录。
 
@@ -2234,5 +2185,6 @@ ENC1 参数 & \texttt{0xA0050000} & 66,816 & 投影、偏置与 LayerNorm 参数
 \bibitem{checkpoint} Arm Software. Keyword Transformer 实现与 KWT-1 预训练权重. 提交 \texttt{237e4097}.
 \bibitem{sc} Warden P. Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition. 2018. arXiv:1804.03209.
 \bibitem{e203} 芯来科技. 蜂鸟 E203 开源 RISC-V 处理器及平台工程.
+\bibitem{z100-validation} 本项目. \href{https://github.com/hhaxi/keyword_transfomer_accelerator/tree/4c219d8e2e7665b57e5bb6ccf3283e9e8df9c685/docs/fpga-validation}{Z100 FPGA 功能验证报告与原始记录}. 提交 \texttt{4c219d8}.
 \end{thebibliography}
 \end{document}
