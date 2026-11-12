@@ -1,0 +1,18 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=0mm]{geometry}
+\usepackage{fontspec,xeCJK,pdfpages,eso-pic,xcolor}
+\setmainfont{Times New Roman}
+\setCJKmainfont[AutoFakeBold=2]{SimSun}
+\pagestyle{empty}
+\begin{document}
+\AddToShipoutPictureFG*{\AtPageLowerLeft{\setlength{\unitlength}{1bp}%
+\put(170,425){\color{white}\rule{265bp}{48bp}}%
+\put(0,433.51){\makebox[594.96bp][c]{\fontsize{27.96}{32}\selectfont\bfseries 芯片设计报告}}%
+\put(230,288.89){\resizebox{310bp}{!}{\mdseries\fontsize{12}{15}\selectfont 声智芯擎——基于 RISC-V 的轻量级 Transformer 推理加速器}}%
+\put(230,257.66){\makebox[310bp][c]{\mdseries\fontsize{14.04}{18}\selectfont 30011}}%
+\put(230,226.46){\makebox[310bp][c]{\mdseries\fontsize{14.04}{18}\selectfont Attention Please!!!}}%
+\put(326,132.86){\mdseries\fontsize{14.04}{18}\selectfont 11}%
+\put(360,132.86){\mdseries\fontsize{14.04}{18}\selectfont 12}%
+}}
+\includepdf[pages=1,pagecommand={\thispagestyle{empty}}]{submission-cover.pdf}
+\end{document}

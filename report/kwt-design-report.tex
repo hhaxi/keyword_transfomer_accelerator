@@ -114,8 +114,9 @@
 \renewcommand{\normalsize}{\fontsize{11}{14.5}\selectfont}
 \AtBeginDocument{\normalsize}
 \begin{document}
+\ctexset{chapter/pagestyle=fancy,part/pagestyle=fancy}
 % Official submission template: include the cover only, omit its empty second page.
-\includepdf[pages=1,pagecommand={\thispagestyle{empty}},fitpaper=true]{cover/submission-cover.pdf}
+\includepdf[pages=1,pagecommand={\thispagestyle{empty}},fitpaper=true]{cover/submission-cover-filled.pdf}
 \pagenumbering{Roman}
 
 
@@ -795,7 +796,7 @@ X_{\text{odd}}=X_{\text{even}}+\delta_1.
 
 所有恢复出的 $X_{\text{even}}$ 与 $X_{\text{odd}}$ 在写入内部 SRAM 前均经过 16 位有符号范围检查（$[-32{,}768,\,32{,}767]$）：若恢复值越出 INT16 范围，硬件置位故障标志并禁止写入 SRAM，将比特流损坏拦截在进入计算阵列之前。
 
-表~\ref{tab:ch3-9} 汇总第 0 层的传输量。编码后总读取由 11,616 字降至 9,558 字，减少\textbf{2,058 个 32 位读事务（17.72\%）}；输出仍按标准 INT16 格式打包，写回量保持 12,672 字。该结果说明传输表示缩减了多少数据，不直接等同于任务周期降幅；总线等待及计算重叠还需在整机评估中检查。其余层的实测读取量见附录 D。
+表~\ref{tab:ch3-9} 汇总第 0 层的传输量。编码后总读取由 11,616 字降至 9,558 字，减少\textbf{2,058 个 32 位读事务（17.72\%）}；输出仍按标准 INT16 格式打包，写回量保持 12,672 字。该结果说明传输表示缩减了多少数据，不直接等同于任务周期降幅；总线等待及计算重叠还需在整机评估中检查。其余层的实测读取量见附录~\ref{app:counts}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{第 0 层定宽表示与变宽编码的传输字数对比}\label{tab:ch3-9}
@@ -922,7 +923,7 @@ $W$ 传输流 & \texttt{0xA0018000} & 32,896 & 32 字头部加 4,096 个变宽�
 \end{tabular}
 \end{table}
 
-表~\ref{tab:ch4-2} 下半部分的 15 个只读 32 位性能计数器构成了第六章与附录 D 周期分解的硬件数据源，按观测职责分为四组：
+表~\ref{tab:ch4-2} 下半部分的 15 个只读 32 位性能计数器构成了第六章与附录~\ref{app:counts} 周期分解的硬件数据源，按观测职责分为四组：
 \begin{itemize}
 \item \textbf{互斥相位计数：} 记录 DMA 命令窗口总周期及装载、运行与其他状态耗时；
 \item \textbf{核心与背压诊断：} 阵列活动计数记录有效归约拍，\texttt{fifo\_wait} 在 \texttt{EMIT} 状态无法提交结果时递增；\texttt{producer\_wait} 在 \texttt{RUN} 中结果尚未全部生成且格式化端和核心端均无有效输出时递增。两者分别观察结果提交受阻与输出供给间隙。
@@ -1208,7 +1209,7 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 \end{tabular}
 \end{table}
 
-整机回归同时校验数据与事务计数。\texttt{verify.py} 检查 DMA 命令周期等于各状态周期之和，读请求数等于该层实际编码字数，写请求数等于 12,672。逐位比对和计数检查分别覆盖数值错误与冗余传输，逐层结果见附录 D。
+整机回归同时校验数据与事务计数。\texttt{verify.py} 检查 DMA 命令周期等于各状态周期之和，读请求数等于该层实际编码字数，写请求数等于 12,672。逐位比对和计数检查分别覆盖数值错误与冗余传输，逐层结果见附录~\ref{app:counts}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{代表性层的传输字数与执行周期（复位模式）}\label{tab:ch5-4}
@@ -1281,7 +1282,7 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 
 表~\ref{tab:ch5-6} 的 0.0127061\% 是\textbf{INT16 写回相对 INT40 参考的重建误差}，用于检查右移与舍入。当前向量未出现饱和，单点误差不超过半个输出量化步长，与第三章的转换规则一致。
 
-赛题精度验收则需将写回值按冻结尺度解码，再与浮点参考计算逐层 NRMSE，并取十二层最大值。它同时包含定点化与运算传播误差，不能用上述写回重建误差替代；该项评估的范围与后续工作见附录 C。
+赛题精度验收则需将写回值按冻结尺度解码，再与浮点参考计算逐层 NRMSE，并取十二层最大值。它同时包含定点化与运算传播误差，不能用上述写回重建误差替代；该项评估的范围与后续工作见附录~\ref{app:scope}。
 
 上述逐位比对验证了 RTL 对整数运算和写回规则的实现；第~\ref{sec:formal-equivalence} 节进一步检查综合前后的逻辑一致性。映射网表在同源向量下的动态功能回归尚未完成。
 
@@ -1441,7 +1442,7 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 \end{tabular}
 \end{table}
 
-\textbf{跨层周期差异主要体现于数据传输，而非归约计算量。} 附录 D 中，十二组任务的阵列有效归约均为 13,312 拍，写请求均为 12,672 字；读请求则从第 4 层的 8,346 字变化到第 11 层的 10,542 字，对应严格任务周期分别为最小的 30,540.5 拍和最大的 34,929.5 拍。两者相差 4,389 拍，其中 \texttt{LOAD} 相差 1,585 拍，命令外准备相差 2,196 拍，\texttt{RUN} 相差 608 拍。这说明在相同矩阵规模下，压缩数据量及其装载开销会影响完整任务吞吐。
+\textbf{跨层周期差异主要体现于数据传输，而非归约计算量。} 附录~\ref{app:counts} 中，十二组任务的阵列有效归约均为 13,312 拍，写请求均为 12,672 字；读请求则从第 4 层的 8,346 字变化到第 11 层的 10,542 字，对应严格任务周期分别为最小的 30,540.5 拍和最大的 34,929.5 拍。两者相差 4,389 拍，其中 \texttt{LOAD} 相差 1,585 拍，命令外准备相差 2,196 拍，\texttt{RUN} 相差 608 拍。这说明在相同矩阵规模下，压缩数据量及其装载开销会影响完整任务吞吐。
 
 十二组任务平均周期为 32,006.83 拍，按 150 MHz 折算为 4,686.50 任务/秒；服务器 \texttt{task00} 则为 32,960 拍、4,551 任务/秒。服务器记录与本地第 0 层的 32,959.5 拍相差半拍，因此本节保留各来源的记录精度。上述吞吐均为\textbf{目标频率下的周期折算值}，目标频率对应的时序状态见第 6.5 节。
 \section{面积、功耗与候选对比}
@@ -1536,7 +1537,7 @@ SS 角 hold WNS & $-0.17$ ns \\
 
 同条件候选比较中，\Q{} 以相对轮询配置 0.27\% 的新增面积和 0.68\% 的周期增幅，将整机动态功耗降低 5.81\%、单任务能耗降低 4.50\%，达到 $7.9802\ \mu\mathrm{J}$。因此，本设计采用该配置，在保留现有数据通路的基础上，通过 IRQ/WFI 等待取得更低的整机任务能耗。
 
-\textbf{当前评估支持该配置的功能一致性与同条件能耗优势，尚不能据此认定全部物理指标达标。} SS 角仍有 $-0.17\text{ ns}$ 的 hold 违例，面积采用库单位，吞吐按 150 MHz 目标频率折算；完成时序修复与面积单位确认后，才能进一步判断最终性能和面积预算。基础任务的浮点精度验收、网表动态回归与交付资料清单见附录 C、F。
+\textbf{当前评估支持该配置的功能一致性与同条件能耗优势，尚不能据此认定全部物理指标达标。} SS 角仍有 $-0.17\text{ ns}$ 的 hold 违例，面积采用库单位，吞吐按 150 MHz 目标频率折算；完成时序修复与面积单位确认后，才能进一步判断最终性能和面积预算。基础任务的浮点精度验收、网表动态回归与交付资料清单见附录~\ref{app:scope}、\ref{app:delivery}。
 \part{拓展篇}
 
 \chapter{完整前馈网络与单头注意力设计}
@@ -1898,7 +1899,7 @@ LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 \end{tabular}
 \end{table}
 
-\textbf{结果。} 两条路径都正确识别 4,351 条记录，Top-1 均为 97.8853\%，相差 0 个百分点，逐条预测完全一致。末层的聚合 NRMSE 为各层最大值 0.171308\%，最差单样本逐层 NRMSE 为 0.237820\%，监测节点的实际饱和计数为 0。附录表列出了 12 层的误差分布。
+\textbf{结果。} 两条路径都正确识别 4,351 条记录，Top-1 均为 97.8853\%，相差 0 个百分点，逐条预测完全一致。末层的聚合 NRMSE 为各层最大值 0.171308\%，最差单样本逐层 NRMSE 为 0.237820\%，监测节点的实际饱和计数为 0。附录表~\ref{tab:appendix-errors} 列出了 12 层的误差分布。
 
 \section{资源开销}
 
@@ -2026,6 +2027,8 @@ Hold & $+0.036$ & 0.000 & 0 \\
 参考模型与分层检查点也影响了迭代方式。局部算术可以在单测中定位，跨模块改动还需要检查握手、取消恢复与连续任务。保留与同一配置绑定的向量和日志，使一次修改的功能与性能结果能够相互对应。
 
 \appendix
+\ctexset{chapter/pagestyle=fancy}
+\pagestyle{fancy}
 
 \chapter{术语约定}
 
@@ -2046,39 +2049,7 @@ MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单�
 \end{tabular}
 \end{table}
 
-\chapter{版本与证据索引}
-
-\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{报告版本与验证证据索引}
-\begin{tabular}{@{\hspace{2pt}}U{43}T{100}@{\hspace{5pt}}}
-\toprule
-\rowcolor{TableHeader}
-\thcell{内容} & \thleft{对应资料} \\
-\midrule
-赛题和验收 & 工作区 \texttt{赛题.pdf} \\
-\addlinespace[1.5pt]
-版式和章节体例 & 2024 年芯片设计及评估报告、2025 年报告合订本 \\
-\addlinespace[1.5pt]
-基础结构与固件 & 缓存 \texttt{origin/\allowbreak{}main@e0214c1}，\texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}cases/\allowbreak{}reference\_\allowbreak{}sleep/} \\
-\addlinespace[1.5pt]
-基础逐任务及中断证据 & 同目录下的 \texttt{output/\allowbreak{}verification/\allowbreak{}functional.json}；上级目录的 \texttt{LOCAL\_\allowbreak{}RESULTS.md}、\texttt{local\_\allowbreak{}verification/\allowbreak{}wfi\_\allowbreak{}audit.json} \\
-\addlinespace[1.5pt]
-形式等价验证摘要 & \texttt{evidence/\allowbreak{}formal-\allowbreak{}equivalence-\allowbreak{}summary.txt}；完整日志、配置绑定及工具提示待复核 \\
-\addlinespace[1.5pt]
-Q128 同条件服务器结果 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}reports/\allowbreak{}RESULTS.md} \\
-\addlinespace[1.5pt]
-历史 16 路面积对照 & \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}docs/\allowbreak{}soc-\allowbreak{}results-\allowbreak{}2026-\allowbreak{}11-\allowbreak{}02.md} \\
-\addlinespace[1.5pt]
-拓展结构、直传、仲裁 & \texttt{docs/\allowbreak{}full-\allowbreak{}encoder.md}、\texttt{docs/\allowbreak{}input-\allowbreak{}stream.md}、\texttt{docs/\allowbreak{}bus-\allowbreak{}study.md}、\texttt{docs/\allowbreak{}host-\allowbreak{}study.md} \\
-\addlinespace[1.5pt]
-软件分类与逐层误差 & \texttt{docs/\allowbreak{}encoder-\allowbreak{}validation-\allowbreak{}expanded.md} \\
-\addlinespace[1.5pt]
-Z100 FPGA 验证 & 提交 \texttt{4c219d8} 的 \texttt{integration/z100/} 与 \texttt{docs/fpga-validation/}，含重建入口、布线后报告及板上逐请求记录~\cite{z100-validation} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\chapter{验证范围与后续工作}
+\chapter{验证范围与后续工作}\label{app:scope}
 
 基础配置已完成整数逐位比对和形式等价检查，拓展配置已完成编码器 RTL 回归、软件数值评估与 FPGA 上板验证。后续工作集中于基础浮点精度、ASIC 时序与面积，以及拓展配置的工艺映射评估：
 \begin{enumerate}
@@ -2088,13 +2059,13 @@ Z100 FPGA 验证 & 提交 \texttt{4c219d8} 的 \texttt{integration/z100/} 与 \t
 \item \textbf{拓展双引擎配置的 40 nm 工艺映射 PPA 与官方评测集复跑：} 拓展篇已完成 122 个 SRAM 宏的结构统计与十二层 RTL 周期验证，后续需在相同 40 nm 工艺流程下补齐双引擎 SoC 的映射面积、时序与功耗报告，基础配置另需核验库面积单位与 2.25 mm\textsuperscript{2} 预算，并在官方 600 条评测集发布后重跑冻结定点模型。
 \end{enumerate}
 
-\chapter{基础任务逐层计数}
+\chapter{基础任务逐层计数}\label{app:counts}
 
-表 D.1 与表 D.2 完整收录了基础选定配置 Q128 \Q{} 在本地 12 层整机回归（\texttt{output/\allowbreak{}verification/\allowbreak{}functional.json}）中的逐层实测硬件计数。其中，“复位周期”与“连续周期”均为首个 Host 数据请求被接收至第 12,672 笔末笔 DMA 写响应返回的严格任务窗口周期；DMA 命令窗口周期满足 $\text{命令周期} = \text{装载（LOAD）} + \text{运行（RUN）} + 3\text{（其他状态）}$。表 D.2 中的阵列活动、读写请求数与等待受阻计数取自每任务复位模式（连续运行模式与之保持一致）。
+表~\ref{tab:appendix-cycles} 与表~\ref{tab:appendix-activity} 完整收录了基础选定配置 Q128 \Q{} 在本地 12 层整机回归（\texttt{output/\allowbreak{}verification/\allowbreak{}functional.json}）中的逐层实测硬件计数。其中，“复位周期”与“连续周期”均为首个 Host 数据请求被接收至第 12,672 笔末笔 DMA 写响应返回的严格任务窗口周期；DMA 命令窗口周期满足 $\text{命令周期} = \text{装载（LOAD）} + \text{运行（RUN）} + 3\text{（其他状态）}$。表 D.2 中的阵列活动、读写请求数与等待受阻计数取自每任务复位模式（连续运行模式与之保持一致）。
 
 \begin{table}[H]\centering\fontsize{10}{13}\selectfont
 \renewcommand{\arraystretch}{1.12}
-\caption{各层任务周期与 DMA 阶段计数}
+\caption{各层任务周期与 DMA 阶段计数}\label{tab:appendix-cycles}
 \begin{tabular}{@{\hspace{2pt}}cccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
@@ -2118,7 +2089,7 @@ Z100 FPGA 验证 & 提交 \texttt{4c219d8} 的 \texttt{integration/z100/} 与 \t
 
 \begin{table}[H]\centering\fontsize{9.5}{12.5}\selectfont
 \renewcommand{\arraystretch}{1.12}
-\caption{各层阵列活动、总线请求与等待计数}
+\caption{各层阵列活动、总线请求与等待计数}\label{tab:appendix-activity}
 \begin{tabular}{@{\hspace{2pt}}ccccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
@@ -2140,12 +2111,12 @@ Z100 FPGA 验证 & 提交 \texttt{4c219d8} 的 \texttt{integration/z100/} 与 \t
 \end{tabular}
 \end{table}
 
-\chapter{拓展模型逐层误差}
+\chapter{拓展模型逐层误差}\label{app:errors}
 
-表 E.1 收录了拓展篇冻结定点模型在 4,445 条扩展验证记录上相对浮点参考模型的逐层 LN2 输出误差统计（数据来自 \texttt{docs/\allowbreak{}encoder-validation-expanded.md}）。全集聚合 NRMSE、单样本 95\% 分位数（P95）、最差单样本最大值与最大绝对误差一并列出，以观察跨层变化，末层（第 11 层）聚合 NRMSE 为 $0.171308\%$。
+表~\ref{tab:appendix-errors} 收录了拓展篇冻结定点模型在 4,445 条扩展验证记录上相对浮点参考模型的逐层 LN2 输出误差统计（数据来自 \texttt{docs/\allowbreak{}encoder-validation-expanded.md}）。全集聚合 NRMSE、单样本 95\% 分位数（P95）、最差单样本最大值与最大绝对误差一并列出，以观察跨层变化，末层（第 11 层）聚合 NRMSE 为 $0.171308\%$。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{十二层 LN2 输出的数值误差统计}
+\caption{十二层 LN2 输出的数值误差统计}\label{tab:appendix-errors}
 \begin{tabular}{@{\hspace{2pt}}ccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
@@ -2167,7 +2138,7 @@ Z100 FPGA 验证 & 提交 \texttt{4c219d8} 的 \texttt{integration/z100/} 与 \t
 \end{tabular}
 \end{table}
 
-\chapter{复现与交付}
+\chapter{复现与交付}\label{app:delivery}
 
 \textbf{基础配置复现流程。} 基础任务定版工程位于缓存提交 \texttt{e0214c1} 对应的 \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep} 目录（驱动实现位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}driver.c}）。复现时首先检查 \texttt{cases/\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}case.json}，确认输出格式号为 2（INT16、右移 15 位、RNE 舍入）、启用压缩传输与 IRQ/\allowbreak{}WFI 等待。按照 \texttt{SERVER.md} 配置仿真与综合工具链环境变量后，在案例目录执行 \texttt{python verify.py}，脚本将自动运行模块单测、12 层每任务复位回归与 12 层连续运行回归，并输出 \texttt{output/\allowbreak{}verification/\allowbreak{}functional.json} 与 \texttt{structure.json}。服务器 PPA 复跑需固定使用 \texttt{task00} 激励、150 MHz 时钟约束、SMIC 40 nm 标准单元及单端口 SRAM 宏库，以及严格任务窗口 SAIF 采集脚本；输入向量、固件镜像与黄金参考结果的哈希绑定关系记录于 \texttt{reference\_\allowbreak{}binding.json} 与 \texttt{SHA256SUMS}。
 
@@ -2175,7 +2146,7 @@ Z100 FPGA 验证 & 提交 \texttt{4c219d8} 的 \texttt{integration/z100/} 与 \t
 
 \textbf{拓展配置复现流程。} 编码器拓展工程位于仓库根目录（SoC 顶层为 \texttt{integration/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}soc.sv}，单层与十二层调度固件位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}driver.c} 与 \texttt{firmware/\allowbreak{}main\_\allowbreak{}encoder.c}，冻结定点参数与参考模型位于 \texttt{model/\allowbreak{}format.json}、\texttt{model/\allowbreak{}ffn-format.json} 与 \texttt{model/\allowbreak{}ffn\_\allowbreak{}numeric.py}），按 \texttt{encoder.ps1} 及 \texttt{docs/\allowbreak{}input-\allowbreak{}stream.md} 组织验证：首先运行算术单测（\texttt{tb\_encoder\_math}、\texttt{tb\_gelu}）及单层直传协议测试（\texttt{tb\_ffn\_input}、\texttt{tb\_input\_link}、\texttt{tb\_encoder\_soc}），随后执行 12 条样本 $\times 12$ 层的整机 RTL 回归及异常故障恢复测试（\texttt{tb\_encoder\_faults}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}bus.sv}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}dma\_\allowbreak{}arbiter.sv}）。复现存档中的调度对照时，保持测试向量与固件不变，依次切换共享 SRAM 交接、LN1 FIFO 直传、\texttt{DMA\_BURST}=8 与 \texttt{HOST\_BURST}=2 配置即可提取对应周期日志。
 
-\textbf{正式验收交付清单。} 最终交付归档包须在同一配置快照下打包 RTL 源码、E203 固件与链接脚本、测试平台、12 层/十二层二进制测试向量、Python 位精确整数参考模型、SDC 时序约束、工艺映射后门级网表，以及附录 C 列明的完整综合面积报告、STA 时序报告、SAIF 功耗报告、完整形式等价验证日志及脚本与配置绑定资料，以及最终浮点 NRMSE 评估记录。
+\textbf{正式验收交付清单。} 最终交付归档包须在同一配置快照下打包 RTL 源码、E203 固件与链接脚本、测试平台、12 层/十二层二进制测试向量、Python 位精确整数参考模型、SDC 时序约束、工艺映射后门级网表，以及附录~\ref{app:scope} 列明的完整综合面积报告、STA 时序报告、SAIF 功耗报告、完整形式等价验证日志及脚本与配置绑定资料，以及最终浮点 NRMSE 评估记录。
 
 \section{拓展配置共享 SRAM 地址表}
 
