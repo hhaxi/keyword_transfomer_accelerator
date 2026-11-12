@@ -873,12 +873,12 @@ IRQ/WFI 减少等待期间的处理器活动。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{基础配置的共享 SRAM 任务区布局}\label{tab:ch4-1}
-\begin{tabular}{@{\hspace{2pt}}U{24}U{28}U{24}T{66}@{\hspace{5pt}}}
+\begin{tabular}{@{\hspace{2pt}}U{24}U{28}U{24}U{66}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\thcell{区域} & \thcell{基址} & \thcell{长度（字节）} & \thleft{说明} \\
+\thcell{区域} & \thcell{基址} & \thcell{长度（字节）} & \thcell{说明} \\
 \midrule
-任务邮箱 & \texttt{0xA000F000} & 4 KiB & Host 与 E203 的任务请求、返回码与计数发布 \\
+任务邮箱 & \texttt{0xA000F000} & 4 KiB & 任务请求、返回码与计数发布 \\
 \addlinespace[1.5pt]
 $X$ 传输流 & \texttt{0xA0010000} & 13,424 & 16 字头部加 1,600 个差分四元组 \\
 \addlinespace[1.5pt]
@@ -900,10 +900,10 @@ $W$ 传输流 & \texttt{0xA0018000} & 32,896 & 32 字头部加 4,096 个变宽�
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{FFN1 加速器的寄存器映射}\label{tab:ch4-2}
-\begin{tabular}{@{\hspace{2pt}}ccl@{\hspace{5pt}}}
+\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\thcell{偏移} & \thcell{属性} & \thleft{功能} \\
+\thcell{偏移} & \thcell{属性} & \thcell{功能} \\
 \midrule
 \texttt{0x00} & 写 & 启动（写 1）或中止并排空（写 2） \\
 \addlinespace[1.5pt]
@@ -944,10 +944,10 @@ DMA 控制器在系统总线侧作为主设备发起 32 位读写事务，在加
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{DMA 总线主接口的信号与握手约定}\label{tab:ch4-3}
-\begin{tabular}{@{\hspace{2pt}}cccl@{\hspace{5pt}}}
+\begin{tabular}{@{\hspace{2pt}}cccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\thcell{信号} & \thcell{位宽（位）} & \thcell{方向} & \thleft{含义} \\
+\thcell{信号} & \thcell{位宽（位）} & \thcell{方向} & \thcell{含义} \\
 \midrule
 \mbox{\texttt{m\_valid}} & 1 & out & 请求有效；未握手时保持请求 \\
 \mbox{\texttt{m\_ready}} & 1 & in & 请求就绪 \\
