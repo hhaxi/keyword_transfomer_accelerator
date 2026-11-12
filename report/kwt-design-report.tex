@@ -276,10 +276,10 @@ DMA & 装载操作数，写回打包结果 & 共享 SRAM、解包器、结果队
 \end{tabular}
 \end{table}
 
-计算核由内部 SRAM、处理单元和结果队列构成，外围 DMA 连接配置接口、解包器和系统总线。工程中另设不含 E203 的总线级顶层，便于独立检查加速器接口；完整 SoC 顶层再接入 E203、事件控制器和共享 SRAM。
+图~\ref{fig:2-1} 从上到下展示片内计算通路和 SoC 互连。DMA 读取共享 SRAM 中的压缩权重与差分输入，分别恢复后送入权重缓存和 X 双缓冲；偏置与操作数一起送入 $8\times8$ 处理单元阵列。累加结果经就近取偶舍入、饱和及结果队列交还 DMA 写回，完成事件通过 IRQ 路径通知 E203。工程中另设不含 E203 的总线级顶层，便于独立检查加速器接口。
 
 \begin{figure}[!htp]\centering
-\includegraphics[width=1.0\linewidth]{figures/integrated/2-1.pdf}
+\includegraphics[width=.94\linewidth]{figures/integrated/ffn1-system-palette.pdf}
 \caption{E203 SoC 与 FFN1 加速器的共享存储和片内数据通路}\label{fig:2-1}
 \end{figure}
 
@@ -450,6 +450,13 @@ $b$ 项 & 输入行（$i$） & 99 & 列寄存器与小容量存储 \\
 
 \subsection{定点格式与累加位宽}
 
+图~\ref{fig:ffn1-operands} 展示第 2 层任务的输入和权重如何映射到有符号 INT16。输入与权重的步长分别为 $2^{-11}$ 和 $2^{-16}$，零点均为 0。左图的浮点值由本地测试向量中的整数输入按步长重建，右图从检查点浮点权重出发，经就近取偶舍入得到整数码。权重压缩和输入差分编码均作用于这些整数码。
+
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/ffn1-operand-quantization.pdf}
+\caption{FFN1 输入和权重的定点量化示例}\label{fig:ffn1-operands}
+\end{figure}
+
 输入与权重恢复为 INT16 后参与计算，偏置采用 INT32。\textbf{累加位宽按整数最坏情况确定}，不依赖样本中数值较小的假设：先推导单项乘积，再计算 64 项求和与偏置叠加的上界，结果见表~\ref{tab:ch3-2}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
@@ -592,6 +599,13 @@ T_{\text{array}}=416\times32=13{,}312\ \text{拍}.
 \end{table}
 
 表~\ref{tab:ch3-5} 以\textbf{一次 16 位操作数读取}为单位比较两种取数方式。一个输出块包含 4,096 次 MAC：独立取数需读取 8,192 个操作数，行列广播只需 1,024 个，因此每 MAC 读取次数由\textbf{2.00 降至 0.25}，减少为原来的 $1/8$。按 150 MHz 目标频率折算，32 个 INT16 操作数/拍对应 9.6 GB/s 聚合读带宽，可支撑 19.2 GMAC/s 的峰值计算。
+
+图~\ref{fig:ffn1-reuse-trace} 按尾块优先的执行顺序，在跳过首个尾块后取三个输出块的前 8 个有效 MAC 周期。每个输出块的归约持续 32 个有效拍，部分和在本地寄存器中更新。切换列组时复用同一行块的 $X$，切换行块后相同列组复用驻留的 $W$。为便于观察，输出和输入面板各取一行，权重面板取一个块内列位置。
+
+\begin{figure}[!htp]\centering
+\includegraphics[width=1.0\linewidth]{figures/integrated/ffn1-reuse-trace.pdf}
+\caption{Q128 输出驻留与输入、权重复用的索引示意}\label{fig:ffn1-reuse-trace}
+\end{figure}
 
 \subsection{阵列结构与操作数广播}
 
@@ -1479,6 +1493,14 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 \textbf{跨层周期差异主要体现于数据传输，而非归约计算量。} 附录~\ref{app:counts} 中，十二组任务的阵列有效归约均为 13,312 拍，写请求均为 12,672 字；读请求则从第 4 层的 8,346 字变化到第 11 层的 10,542 字，对应严格任务周期分别为最小的 30,540.5 拍和最大的 34,929.5 拍。两者相差 4,389 拍，其中 \texttt{LOAD} 相差 1,585 拍，命令外准备相差 2,196 拍，\texttt{RUN} 相差 608 拍。这说明在相同矩阵规模下，压缩数据量及其装载开销会影响完整任务吞吐。
 
 十二组任务平均周期为 32,006.83 拍，按 150 MHz 折算为 4,686.50 任务/秒；服务器 \texttt{task00} 则为 32,960 拍、4,551 任务/秒。
+\par\Needspace{.50\textheight}
+图~\ref{fig:ffn1-roofline} 以本地回归的第 0、4、11 层说明共享 SRAM 接口的理论上限与端到端吞吐。横轴以每任务 1,622,016 次有效 MAC 除以 DMA 读写字节数，纵轴由同一批次的严格任务周期按 150 MHz 折算。共享 SRAM 理想接收一个 32 位字/拍，对应 0.60 GB/s；128 路 MAC 对应 19.2 GMAC/s，拐点为 32 MAC/B。图中第 4 层读事务最少，对应三个标记中最高的算术强度与吞吐。任务点与理论上限的差距可结合图~\ref{fig:6-1} 中的主机准备、装载与运行开销解读。
+
+\begin{figure}[H]\centering
+\includegraphics[width=.90\linewidth]{figures/integrated/ffn1-roofline.pdf}
+\caption{Q128 的共享 SRAM Roofline 与代表层任务吞吐}\label{fig:ffn1-roofline}
+\end{figure}
+
 \section{面积、功耗与候选对比}
 
 候选比较固定工艺库、150 MHz 目标约束、task00 输入与 SAIF 窗口，见表~\ref{tab:ch6-4}。\texttt{reference} 使用压缩传输和轮询等待；\Q{} 保留其数据通路，增加事件控制并改用 IRQ/WFI；其余四项探索存储打包、定宽直读或调度变化。
