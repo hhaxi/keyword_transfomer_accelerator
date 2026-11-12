@@ -196,7 +196,7 @@ Transformer 将序列间的关联建模与特征变换组织为重复堆叠的�
 \addlinespace[1.5pt]
 \textbf{高吞吐} & 提高从数据装载到结果写回的完整任务吞吐，按 150 MHz 统一折算 & 统计首个 Host 数据请求至末笔 DMA 写响应的周期；单独检查目标频率下的时序 \\
 \addlinespace[1.5pt]
-\textbf{低面积} & 将加速器、接口逻辑及内部 SRAM 宏的新增总面积控制在 2.25 mm\textsuperscript{2} 以内 & 基于工艺映射结果核算新增面积，核对库单位与宏面积 \\
+\textbf{低面积} & 将加速器、接口逻辑及内部 SRAM 宏的新增总面积控制在 2.25 mm\textsuperscript{2} 以内 & 统计工艺映射后的新增逻辑与 SRAM 宏面积，与预算比较 \\
 \addlinespace[1.5pt]
 \textbf{低能耗} & 减少重复访存和处理器等待活动，降低完成一次任务所需的能量 & 在匹配任务窗口下比较功耗与周期，计算单任务能耗 \\
 \bottomrule
@@ -284,7 +284,7 @@ DMA & 装载操作数，写回打包结果 & 共享 SRAM、解包器、结果队
 
 两级存储承担不同职责。\textbf{512 KiB 系统共享 SRAM} 位于总线侧，按线性地址存放传输流和输出结果，是 Host、E203 与 DMA 的数据交接区。\textbf{41 KiB 加速器内部 SRAM} 则按阵列的并行读取需求分块，每个有效归约周期提供 16 个输入与 16 个权重操作数，供 64 个处理单元复用。前者解决系统间的数据交接，后者解决阵列同拍供数，两者不能相互替代。
 
-面积评估也沿此边界统计：计算核、解包器、DMA、总线与事件接口及 52 个内部 SRAM 宏计入\textbf{加速器新增面积}；E203 及其本地存储、系统共享 SRAM 作为平台资源分列。第六章据此给出综合结果与面积预算核验。
+面积评估也沿此边界统计：计算核、解包器、DMA、总线与事件接口及 52 个内部 SRAM 宏计入\textbf{加速器新增面积}；E203 及其本地存储、系统共享 SRAM 作为平台资源分列。第六章据此给出综合结果与面积预算对比。
 
 \section{FFN1 任务执行流程}
 
@@ -1449,33 +1449,32 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 
 候选比较固定工艺库、150 MHz 目标约束、task00 输入与 SAIF 窗口，见表~\ref{tab:ch6-4}。\texttt{reference} 使用压缩传输和轮询等待；\Q{} 保留其数据通路，增加事件控制并改用 IRQ/WFI；其余四项探索存储打包、定宽直读或调度变化。
 
-面积统计采用\textbf{加速器新增逻辑、接口及内部 SRAM}的合计值；动态功耗和漏电功耗采用\textbf{整机统计值}，包含 E203 等复用部分。由此既能比较新增硬件开销，也能评价等待方式改变后对整机能耗的影响。
+面积统计采用\textbf{加速器新增逻辑、接口及内部 SRAM}的合计值；动态功耗和漏电功耗采用\textbf{整机统计值}，包含 E203 等复用部分。各配置新增面积均低于 2.25 mm\textsuperscript{2}，其中 \Q{} 为 \textbf{0.505560 mm\textsuperscript{2}}，占面积预算的 \textbf{22.47\%}。
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
-\caption{同一 task00 下的候选配置 PPA 对比（面积为库单位）}\label{tab:ch6-4}
+\caption{同一 task00 下的候选配置 PPA 对比}\label{tab:ch6-4}
 \begin{tabular}{@{\hspace{2pt}}ccccccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\thcell{候选配置} & \thcell{新增面积} & \thcell{周期\\（拍）} & \thcell{吞吐\\（任务/秒）} & \thcell{动态功耗\\（mW）} & \thcell{漏电功耗\\（mW）} & \thcell{单任务能耗\\（$\mu$J）} \\
+\thcell{候选配置} & \thcell{新增面积\\（mm\textsuperscript{2}）} & \thcell{周期\\（拍）} & \thcell{吞吐\\（任务/秒）} & \thcell{动态功耗\\（mW）} & \thcell{漏电功耗\\（mW）} & \thcell{单任务能耗\\（$\mu$J）} \\
 \midrule
-\texttt{reference} & 504,210 & 32,738 & 4,581.9 & 33.877 & 4.41 & 8.3561 \\
-\texttt{compact} & 510,900 & 32,924 & 4,556.0 & 34.190 & 4.41 & 8.4723 \\
-\texttt{dense} & 517,180 & 32,528 & 4,611.3 & 34.595 & 4.42 & 8.4607 \\
-\texttt{dense\_\allowbreak{}sleep} & 518,090 & 32,644 & 4,595.1 & 32.532 & 4.42 & 8.0416 \\
-\texttt{dense\_\allowbreak{}sched} & 517,390 & 32,450 & 4,622.4 & 34.938 & 4.42 & 8.5146 \\
-\textbf{\Q{}} & \textbf{505,560} & \textbf{32,960} & \textbf{4,551.0} & \textbf{31.908} & \textbf{4.41} & \textbf{7.9802} \\
+\texttt{reference} & 0.504210 & 32,738 & 4,581.9 & 33.877 & 4.41 & 8.3561 \\
+\texttt{compact} & 0.510900 & 32,924 & 4,556.0 & 34.190 & 4.41 & 8.4723 \\
+\texttt{dense} & 0.517180 & 32,528 & 4,611.3 & 34.595 & 4.42 & 8.4607 \\
+\texttt{dense\_\allowbreak{}sleep} & 0.518090 & 32,644 & 4,595.1 & 32.532 & 4.42 & 8.0416 \\
+\texttt{dense\_\allowbreak{}sched} & 0.517390 & 32,450 & 4,622.4 & 34.938 & 4.42 & 8.5146 \\
+\textbf{\Q{}} & \textbf{0.505560} & \textbf{32,960} & \textbf{4,551.0} & \textbf{31.908} & \textbf{4.41} & \textbf{7.9802} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-图~\ref{fig:6-2} 展示六个候选的新增面积与单任务能耗。\texttt{dense\_sched} 的周期最短，为 32,450 拍，但面积为 517,390，任务能耗为 $8.5146\ \mu\mathrm{J}$；\texttt{reference} 的面积最小，为 504,210，任务能耗为 $8.3561\ \mu\mathrm{J}$；\Q{} 的任务能耗最低，为 $7.9802\ \mu\mathrm{J}$，面积为 505,560。因而最快、最小面积和最低能耗分别对应不同配置，选型需要同时考虑三项指标。
+图~\ref{fig:6-2} 展示六个候选的新增面积与单任务能耗。\texttt{dense\_sched} 的周期最短，为 32,450 拍，但面积为 0.517390 mm\textsuperscript{2}，任务能耗为 $8.5146\ \mu\mathrm{J}$；\texttt{reference} 的面积最小，为 0.504210 mm\textsuperscript{2}，任务能耗为 $8.3561\ \mu\mathrm{J}$；\Q{} 的任务能耗最低，为 $7.9802\ \mu\mathrm{J}$，面积为 0.505560 mm\textsuperscript{2}。因而最快、最小面积和最低能耗分别对应不同配置，选型需要同时考虑三项指标。
 \begin{figure}[!htp]\centering
-\includegraphics[width=1.0\linewidth]{figures/integrated/6-2.pdf}
+\includegraphics[width=1.0\linewidth]{figures/integrated/6-2-area.pdf}
 \caption{候选配置的面积—能耗分布}\label{fig:6-2}
 \end{figure}
 
-本设计选择 \Q{}：相对面积最小的 \texttt{reference}，新增面积仅增加 0.27\%，任务能耗降低 4.50\%；相对周期最短的 \texttt{dense\_sched}，任务周期增加约 1.57\%，但新增面积和任务能耗均更低。\textbf{以较小的面积和周期代价换取更低的任务能耗}，是本组匹配实验中的选型依据。面积数值当前采用库单位，尚不能直接换算为相对 2.25 mm\textsuperscript{2} 预算的占比。
-
+综合比较后，基础设计采用 \Q{}。相对面积最小的 \texttt{reference}，其新增面积增加 0.27\%，单任务能耗降低 4.50\%；相对周期最短的 \texttt{dense\_sched}，其任务周期增加 1.57\%，新增面积和单任务能耗则分别降低约 2.29\% 和 6.28\%。\textbf{该配置保留原有计算数据通路，通过 IRQ/WFI 减少处理器等待期间的活动，以较小的面积和周期开销获得本组候选中最低的单任务能耗。}
 \section{目标频率与时序检查}
 
 表~\ref{tab:ch6-5} 列出了选定配置 \Q{} 在 150 MHz 目标时钟频率（周期 6.6667 ns）下的静态时序分析（STA）结果。
@@ -1511,7 +1510,7 @@ SS 角 hold WNS & $-0.17$ ns \\
 \midrule
 周期 & 32,738 & 32,960 & $+0.68\%$ \\
 任务/秒 & 4,581.9 & 4,551.0 & $-0.67\%$ \\
-新增面积 & 504,210 & 505,560 & $+0.27\%$ \\
+新增面积（mm\textsuperscript{2}） & 0.504210 & 0.505560 & $+0.27\%$ \\
 动态功耗 & 33.877 mW & 31.908 mW & $-5.81\%$ \\
 漏电功耗 & 4.41 mW & 4.41 mW & 报告精度下相同 \\
 单任务能耗 & 8.3561 \ensuremath{\mu}J & 7.9802 \ensuremath{\mu}J & $-4.50\%$ \\
@@ -1537,7 +1536,7 @@ SS 角 hold WNS & $-0.17$ ns \\
 
 同条件候选比较中，\Q{} 以相对轮询配置 0.27\% 的新增面积和 0.68\% 的周期增幅，将整机动态功耗降低 5.81\%、单任务能耗降低 4.50\%，达到 $7.9802\ \mu\mathrm{J}$。因此，本设计采用该配置，在保留现有数据通路的基础上，通过 IRQ/WFI 等待取得更低的整机任务能耗。
 
-\textbf{当前评估支持该配置的功能一致性与同条件能耗优势，尚不能据此认定全部物理指标达标。} SS 角仍有 $-0.17\text{ ns}$ 的 hold 违例，面积采用库单位，吞吐按 150 MHz 目标频率折算；完成时序修复与面积单位确认后，才能进一步判断最终性能和面积预算。基础任务的浮点精度验收、网表动态回归与交付资料清单见附录~\ref{app:scope}、\ref{app:delivery}。
+\textbf{选定配置新增面积为 0.505560 mm\textsuperscript{2}，占 2.25 mm\textsuperscript{2} 预算的 22.47\%，满足新增面积约束。} 该配置同时取得本组候选中最低的单任务能耗；SS 角 hold WNS 为 $-0.17\text{ ns}$，保持时间仍需修复，任务吞吐按 150 MHz 目标频率折算。基础任务的浮点精度验收、网表动态回归与交付资料清单见附录~\ref{app:scope}、\ref{app:delivery}。
 \part{拓展篇}
 
 \chapter{完整前馈网络与单头注意力设计}
@@ -2055,8 +2054,8 @@ MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单�
 \begin{enumerate}
 \item \textbf{基础任务最终 INT16 写回相对浮点参考的逐层 NRMSE：} 第五章表 5.6 已给出 12 层真实向量上 INT16 写回相对 INT40 整数参考的重建误差（相对 L2 误差 $0.0127061\%$，单点误差不超过半个 LSB 且零饱和）；按赛题公式解码为浮点数并与浮点参考模型逐层对比的最大 NRMSE，需绑定最终评测样本清单与层输出尺度表统一生成。
 \item \textbf{基础配置 SS 角保持时间违例修复与门级网表回归：} 当前 Q128 \Q{} 在 150 MHz 下的 setup WNS 为 $0\text{ ns}$，但 SS 角 hold WNS 为 $-0.17\text{ ns}$；需依据原始违例路径制定修复方案并重新检查保持时间，并使用与 RTL 相同的 12 层向量和 \texttt{verify.py} 流程完成映射后门级网表（含 SDF 反标与 SRAM 宏模型）的功能复核。
-\item \textbf{基础配置面积与功耗评估：} 第六章采用服务器同条件实验的面积与功耗统计。面积以库单位表示，后续需确认标准单元库和 SRAM 宏的面积单位，再换算为 mm\textsuperscript{2} 并与 2.25 mm\textsuperscript{2} 预算比较。功耗采用顺序单元活动标注覆盖率为 68.53\% 的 RTL-SAIF 估算，进一步分析可结合分层功耗与未标注单元的活动设置展开。
-\item \textbf{拓展双引擎配置的 40 nm 工艺映射 PPA 与官方评测集复跑：} 拓展篇已完成 122 个 SRAM 宏的结构统计与十二层 RTL 周期验证，后续需在相同 40 nm 工艺流程下补齐双引擎 SoC 的映射面积、时序与功耗报告，基础配置另需核验库面积单位与 2.25 mm\textsuperscript{2} 预算，并在官方 600 条评测集发布后重跑冻结定点模型。
+\item \textbf{基础配置面积与功耗评估：} 第六章采用服务器同条件实验的面积与功耗统计。选定配置新增面积为 0.505560 mm\textsuperscript{2}，满足 2.25 mm\textsuperscript{2} 预算。功耗采用顺序单元活动标注覆盖率为 68.53\% 的 RTL-SAIF 估算，进一步分析可结合分层功耗与未标注单元的活动设置展开。
+\item \textbf{拓展双引擎配置的 40 nm 工艺映射 PPA 与官方评测集复跑：} 拓展篇已完成 122 个 SRAM 宏的结构统计与十二层 RTL 周期验证，后续需在相同 40 nm 工艺流程下补齐双引擎 SoC 的映射面积、时序与功耗报告，并在官方 600 条评测集发布后重跑冻结定点模型。
 \end{enumerate}
 
 \chapter{基础任务逐层计数}\label{app:counts}
