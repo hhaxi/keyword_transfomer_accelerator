@@ -17,6 +17,7 @@
 \usepackage[left=28mm,right=25mm,top=25mm,bottom=24mm,headheight=17pt]{geometry}
 \usepackage{amsmath,amssymb,graphicx,booktabs,tabularx,array,longtable,float,xcolor,fancyhdr,hyperref}
 \usepackage{caption,colortbl,etoolbox,tabulary,needspace,flafter}
+\usepackage{pdfpages}
 \usepackage[above,below]{placeins}
 \hypersetup{hidelinks,bookmarksnumbered=true,pdftitle={面向端侧语音指令识别的 KWT-1 前馈线性加速器设计与编码器拓展}}
 \ctexset{
@@ -34,11 +35,17 @@
 \linespread{1.35}
 \renewcommand{\arraystretch}{1.27}
 \setcounter{tocdepth}{2}
-\pagestyle{fancy}\fancyhf{}
-\fancyhead[L]{\small 芯片设计及评估报告}
-\fancyhead[R]{\small KWT-1 前馈线性加速器与编码器拓展}
-\fancyfoot[C]{\small\thepage}
-\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+% Official template header: competition name, official logo, thin bottom rule.
+\newcommand{\officialreportheader}{%
+  \fancyhf{}%
+  \fancyhead[L]{\fontsize{10}{12}\selectfont 2026年全国大学生嵌入式芯片与系统设计竞赛芯片设计赛道}%
+  \fancyhead[R]{\includegraphics[width=25mm]{cover/official-logo.png}}%
+  \fancyfoot[C]{\small\thepage}%
+  \renewcommand{\headrulewidth}{0.25pt}%
+}
+\setlength{\headheight}{40pt}
+\pagestyle{fancy}\officialreportheader
+\fancypagestyle{plain}{\officialreportheader}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{Z}{>{\centering\arraybackslash}X}
 
@@ -107,22 +114,8 @@
 \renewcommand{\normalsize}{\fontsize{11}{14.5}\selectfont}
 \AtBeginDocument{\normalsize}
 \begin{document}
-\begin{titlepage}
-\centering
-\vspace*{22mm}
-{\sffamily\zihao{2} 2026 年全国大学生嵌入式芯片与系统设计竞赛\par}
-\vspace{6mm}
-{\sffamily\zihao{3} 芯片设计赛道\par}
-\vspace{24mm}
-{\sffamily\zihao{1} 芯片设计及评估报告\par}
-\vspace{18mm}
-{\sffamily\zihao{2} 面向端侧语音指令识别的 KWT-1\\[4mm]前馈线性加速器设计与编码器拓展\par}
-\vfill
-{\zihao{4} 参赛组别：本科生组\par}
-\vspace{9mm}
-{\zihao{4} 2026 年 11 月\par}
-\vspace*{14mm}
-\end{titlepage}
+% Official submission template: include the cover only, omit its empty second page.
+\includepdf[pages=1,pagecommand={\thispagestyle{empty}},fitpaper=true]{cover/submission-cover.pdf}
 \pagenumbering{Roman}
 
 
@@ -144,8 +137,8 @@
 \noindent\textbf{关键词}\quad 关键词识别，KWT-1，前馈线性加速器，定点计算，E203，SoC 集成
 
 \tableofcontents
-{\linespread{1.12}\selectfont\listoffigures}
-\listoftables
+
+
 \clearpage
 \pagenumbering{arabic}
 \chapter{设计规划}
