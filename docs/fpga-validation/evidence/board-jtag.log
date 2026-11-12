@@ -1,0 +1,15 @@
+  1  APU
+     2  ARM Cortex-A9 MPCore #0 (Running)
+     3  ARM Cortex-A9 MPCore #1 (Running)
+  4  xc7z035
+AXI test address: 43C00000:   4B57545A
+
+JTAG_PL_REGS_PASS
+Encoder ID: 43C1200C:   454E4331
+
+FFN ID: 43C1100C:   46464E5A
+
+KWT parameters loaded into DDR
+pc: 00100000
+
+Cortex-A9 started

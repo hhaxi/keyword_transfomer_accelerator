@@ -22,3 +22,29 @@ module kwt_vecmem32 #(parameter AW=11)(
         end
     end endgenerate
 endmodule
+
+// A row contains sixteen vectors of four words. Four banks expose adjacent
+// vectors together for attention, while projections retain their narrow port.
+module kwt_attention_mem #(parameter BANKS=4)(
+    input wire clk, cs, we, wide,
+    input wire [3:0] mask,
+    input wire [10:0] addr,
+    input wire [127:0] din,
+    input wire [128*BANKS-1:0] wide_din,
+    output wire [127:0] dout,
+    output wire [128*BANKS-1:0] wide_dout
+);
+    localparam BITS=$clog2(BANKS);
+    reg [BITS-1:0] read_bank;
+    always @(posedge clk) if (cs && !we && !wide) read_bank <= addr[BITS-1:0];
+    assign dout = wide_dout[128*read_bank+:128];
+    genvar bank;
+    generate for (bank=0; bank<BANKS; bank=bank+1) begin: banks
+        kwt_vecmem32 #(.AW(11-BITS)) memory(
+            .clk(clk), .cs(cs && (wide || addr[BITS-1:0]==bank)), .we(we),
+            .mask(wide ? 4'hf : mask), .addr(addr[10:BITS]),
+            .din(wide ? wide_din[128*bank+:128] : din),
+            .dout(wide_dout[128*bank+:128])
+        );
+    end endgenerate
+endmodule

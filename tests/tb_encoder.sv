@@ -7,6 +7,7 @@ module tb_encoder;
     reg [19:0] cmd_addr=0;reg [31:0] cmd_wdata=0;reg [3:0] cmd_wmask=15;
     wire cmd_ready,rsp_valid,rsp_err;wire [31:0] rsp_rdata;
     wire m_valid,m_read,m_rsp_ready;wire [31:0] m_addr,m_wdata;wire [3:0] m_mask;
+    integer cycles=0;
     integer dma_mode=2,queued=0,due[0:1],max_queued=0,refills=0,read_streak=0,write_streak=0,max_read_streak=0,max_write_streak=0;
     reg head=0,tail=0;reg [31:0] response_data[0:1];
     wire m_ready=queued<(dma_mode==0 ? 1 : 2) && (dma_mode==1 || cycles%7!=0);
@@ -16,8 +17,9 @@ module tb_encoder;
     reg [31:0] mem[0:131071],params[0:16703],initial_x[0:6335],expected[0:6335],packed_x[0:3167],cfg[0:1];
     reg [63:0] ffn_expected[0:6335];
     reg [31:0] rd;
-    integer cycles=0,j,li,layers=12,polls,constant_edge=0,transport=0,stream_index=0,input_stream=0,input_count=0,input_stalls=0;
+    integer j,li,layers=12,polls,constant_edge=0,transport=0,stream_index=0,input_stream=0,input_count=0,input_stalls=0;
     wire input_valid;wire [31:0] input_data;reg block_input=0,input_held=0;
+    reg stream_feed=0,link_abort_in=0;
     reg [31:0] input_held_data;
     wire input_ready=!block_input && cycles%11>3;
     always @(posedge clk) if(rst_n) begin
@@ -32,7 +34,6 @@ module tb_encoder;
             end
         end
     end
-    reg stream_feed=0,link_abort_in=0;
     wire result_valid=stream_feed && stream_index<6336;
     wire result_ready,link_abort_out;
     wire [39:0] result_data=ffn_expected[stream_index<6336 ? stream_index : 0][39:0];
@@ -45,8 +46,9 @@ module tb_encoder;
     reg [31:0] ts[0:9800],tp[0:9800];
     integer idx;
     always @(posedge clk) if(rst_n && !dut.stopping) begin
-        if(dut.state==dut.SSAVE && dut.si!==ts[integer'(dut.row)*99+integer'(dut.keyrow)]) $fatal(1,"QK/scale trace mismatch");
-        if(dut.state==dut.NCALC && dut.si!==tp[integer'(dut.row)*99+integer'(dut.k)]) $fatal(1,"Softmax trace mismatch");
+        if((dut.state==dut.SSAVE || dut.score_retire) &&
+            dut.si!==ts[integer'(dut.row)*99+integer'(dut.keyrow)]) $fatal(1,"QK/scale trace mismatch");
+        if(dut.prob_retire && dut.si!==tp[integer'(dut.row)*99+integer'(dut.k)]) $fatal(1,"Softmax trace mismatch");
         for(integer t=0;t<4;t++) begin
             idx=integer'(dut.row)*64+integer'(dut.group_)*4+t;
             if(dut.state==dut.PSAVE) begin
@@ -54,14 +56,28 @@ module tb_encoder;
                 if(dut.projection==1 && dut.ki[t*32+:32]!==tk[idx]) $fatal(1,"K trace mismatch");
                 if(dut.projection==2 && dut.vi[t*32+:32]!==tv[idx]) $fatal(1,"V trace mismatch");
             end
-            if(dut.state==dut.VSAVE && dut.qi[t*32+:32]!==tc[idx]) $fatal(1,"PV trace mismatch");
+            if(dut.state==dut.VSAVE && dut.ATTENTION_K16==0 && dut.qi[t*32+:32]!==tc[idx])
+                $fatal(1,"PV trace mismatch");
             if(dut.state==dut.RSAVE && (dut.clip32(dut.projected[t])!==ta[idx] || dut.xi[t*32+:32]!==tr1[idx])) $fatal(1,"Output projection/residual1 trace mismatch");
-            if(dut.state==dut.AFFINE && !dut.norm_second && dut.xi[t*32+:32]!==tz[idx]) $fatal(1,"LN1 trace mismatch");
+            if(dut.state==(dut.PIPELINED_SCORE ? dut.AFFINE_WRITE : dut.AFFINE) &&
+                !dut.norm_second && dut.xi[t*32+:32]!==tz[idx]) $fatal(1,"LN1 trace mismatch");
             if(dut.state==dut.TSTORE && dut.xi[t*32+:32]!==tr2[integer'(dut.tail_index>>3)*4+t]) $fatal(1,"Residual2 trace mismatch");
         end
+        if(dut.state==dut.VSAVE && dut.ATTENTION_K16!=0)
+            for(integer t=0;t<dut.ATTENTION_LANES;t++)
+                if(dut.context_words[t*32+:32]!==tc[integer'(dut.row)*64+integer'(dut.group_)*4+t])
+                    $fatal(1,"Wide PV trace mismatch row=%0d group=%0d lane=%0d",dut.row,dut.group_,t);
     end
 `endif
+`ifdef KWT_TEST_WIDE_ENCODER
+    kwt_encoder #(.STREAM_ENABLE(1),.PROJECTION_K4(2),.ATTENTION_K16(2)) dut(.preload_permit(),.*);
+`elsif KWT_TEST_ATTENTION_K16
+    kwt_encoder #(.STREAM_ENABLE(1),.PROJECTION_K4(1),.ATTENTION_K16(1)) dut(.preload_permit(),.*);
+`elsif KWT_TEST_PROJECTION_K4
+    kwt_encoder #(.STREAM_ENABLE(1),.PROJECTION_K4(1)) dut(.preload_permit(),.*);
+`else
     kwt_encoder #(.STREAM_ENABLE(1)) dut(.preload_permit(),.*);
+`endif
     always @(posedge clk) begin
         cycles<=cycles+1;
         if(cycles>30000000) $fatal(1,"Encoder timeout state=%0d",dut.state);

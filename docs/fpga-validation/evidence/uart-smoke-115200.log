@@ -1,0 +1,4 @@
+PL ID=0x4b57545a, version=0x00010000, cycles=5142721
+PL scratch=0x55aa55aa
+PL scratch=0xaa55aa55
+Z100_SMOKE_PASS cycles=5575340, bad CRC ignored

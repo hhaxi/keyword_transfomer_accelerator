@@ -1,0 +1,14 @@
+LAYER 0 cycles 256259
+LAYER 1 cycles 241874
+LAYER 2 cycles 241874
+LAYER 3 cycles 241874
+LAYER 4 cycles 241874
+LAYER 5 cycles 241874
+LAYER 6 cycles 241874
+LAYER 7 cycles 241874
+LAYER 8 cycles 241874
+LAYER 9 cycles 241874
+LAYER 10 cycles 241874
+LAYER 11 cycles 260879
+Z100_STREAM_AXI_PASS cycles=2935901
+- output/z100/latency/wide-integration/tb.sv:108: Verilog $finish

@@ -1,0 +1,15 @@
+Z100_FFN_DMA_FAULT_DRAIN_PASS
+Z100_FFN_ROWS_ABORT_PASS
+Z100_FFN_PASS layer=0 words=6336 trace=0 cycles=91215
+Z100_FFN_PASS layer=1 words=6336 trace=0 cycles=91215
+Z100_FFN_PASS layer=2 words=6336 trace=0 cycles=91214
+Z100_FFN_PASS layer=3 words=6336 trace=0 cycles=91215
+Z100_FFN_PASS layer=4 words=6336 trace=0 cycles=91215
+Z100_FFN_PASS layer=5 words=6336 trace=0 cycles=91215
+Z100_FFN_PASS layer=6 words=6336 trace=0 cycles=91214
+Z100_FFN_PASS layer=7 words=6336 trace=0 cycles=91215
+Z100_FFN_PASS layer=8 words=6336 trace=0 cycles=91215
+Z100_FFN_PASS layer=9 words=6336 trace=0 cycles=91215
+Z100_FFN_PASS layer=10 words=6336 trace=0 cycles=91214
+Z100_FFN_PASS layer=11 words=6336 trace=0 cycles=91215
+- integration/z100/tb_z100_ffn.sv:176: Verilog $finish

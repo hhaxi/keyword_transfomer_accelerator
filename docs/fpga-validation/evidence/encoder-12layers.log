@@ -1,0 +1,28 @@
+ENCODER_FRONT_PASS layer=0 cycles=214345
+ENCODER_TAIL_PASS layer=0 cycles=49863
+ENCODER_FRONT_PASS layer=1 cycles=194180
+ENCODER_TAIL_PASS layer=1 cycles=49865
+ENCODER_FRONT_PASS layer=2 cycles=194179
+ENCODER_TAIL_PASS layer=2 cycles=49863
+ENCODER_FRONT_PASS layer=3 cycles=194179
+ENCODER_TAIL_PASS layer=3 cycles=49866
+ENCODER_FRONT_PASS layer=4 cycles=194180
+ENCODER_TAIL_PASS layer=4 cycles=49864
+ENCODER_FRONT_PASS layer=5 cycles=194183
+ENCODER_TAIL_PASS layer=5 cycles=49868
+ENCODER_FRONT_PASS layer=6 cycles=194177
+ENCODER_TAIL_PASS layer=6 cycles=49864
+ENCODER_FRONT_PASS layer=7 cycles=194180
+ENCODER_TAIL_PASS layer=7 cycles=49866
+ENCODER_FRONT_PASS layer=8 cycles=194181
+ENCODER_TAIL_PASS layer=8 cycles=49868
+ENCODER_FRONT_PASS layer=9 cycles=194179
+ENCODER_TAIL_PASS layer=9 cycles=49864
+ENCODER_FRONT_PASS layer=10 cycles=194180
+ENCODER_TAIL_PASS layer=10 cycles=49860
+ENCODER_FRONT_PASS layer=11 cycles=194180
+ENCODER_TAIL_PASS layer=11 cycles=49863
+ENC_DMA_STREAM mode=2 outstanding=2 refill=59761 read_streak=2 write_streak=2
+LN1_INPUT_COVERAGE mode=1 stalls=25368 words=3168
+ENCODER_PASS layers=12 constant_edge=0 transport=2
+- tests/tb_encoder.sv:208: Verilog $finish

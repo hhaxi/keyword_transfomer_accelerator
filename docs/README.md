@@ -12,6 +12,7 @@
 
 ## 设计与验收
 
+- [Z100 FPGA 功能验证](fpga-validation/README.md)记录上位机截图、布线后资源与时序、板上数值和端到端性能。
 - [完整编码器设计](full-encoder.md)：执行顺序、数值契约、寄存器与内存布局。
 - [完整 FFN 设计](full-ffn.md)：双线性层与 GELU。
 - [基础架构与第一线性层](architecture.md)：早期接口与数据转换说明。

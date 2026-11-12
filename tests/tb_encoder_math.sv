@@ -4,12 +4,13 @@ module tb_encoder_math;
     reg clk=0;always #5 clk=~clk;
     reg rst_n=0,clear=0,div_start=0,sqrt_start=0;
     reg [63:0] numerator=0,value=0;reg [31:0] denominator=1;reg [32:0] delta=0;
-    wire db,dd,sb,sd;wire [63:0] quotient;wire [31:0] root,result;
+    wire db,dd,sb,sd;wire [63:0] quotient;wire [31:0] root,result,exp_pipelined;
     reg [159:0] dv[0:`DIV_CASES-1];reg [95:0] sq[0:`SQ_CASES-1],ex[0:`EXP_CASES-1];
     integer i;
-    kwt_udiv64 divide(clk,rst_n,clear,div_start,numerator,denominator,db,dd,quotient);
+    kwt_udiv64 #(.SKIP_LEADING(1)) divide(clk,rst_n,clear,div_start,numerator,denominator,db,dd,quotient);
     kwt_isqrt64 sqrt_(clk,rst_n,clear,sqrt_start,value,sb,sd,root);
     kwt_exp_negative exp_(delta,result);
+    kwt_exp_negative_core #(.PIPELINE(1)) exp_pipe(clk,delta,exp_pipelined);
     initial begin
         $readmemh("output/encoder-math/divide.hex",dv);$readmemh("output/encoder-math/sqrt.hex",sq);$readmemh("output/encoder-math/exp.hex",ex);
         repeat(3) @(negedge clk);rst_n=1;
@@ -25,9 +26,14 @@ module tb_encoder_math;
             while(!sd) @(negedge clk);
             if(root!==sq[i][31:0] || sb) $fatal(1,"Sqrt mismatch %0d",i);
         end
-        for(i=0;i<`EXP_CASES;i++) begin
-            delta=ex[i][64:32];#1;
-            if(result!==ex[i][31:0]) $fatal(1,"Exp mismatch %0d",i);
+        for(i=0;i<`EXP_CASES+3;i++) begin
+            @(negedge clk);
+            if(i<`EXP_CASES) begin
+                delta=ex[i][64:32];#1;
+                if(result!==ex[i][31:0]) $fatal(1,"Exp mismatch %0d",i);
+            end
+            @(posedge clk);#1;
+            if(i>=3 && exp_pipelined!==ex[i-3][31:0]) $fatal(1,"Exp pipeline mismatch %0d",i-3);
         end
         @(negedge clk);div_start=1;sqrt_start=1;
         @(negedge clk);div_start=0;sqrt_start=0;
