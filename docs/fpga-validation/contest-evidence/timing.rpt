@@ -1,0 +1,817 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (win64) Build 6511674 Tue Jun 16 11:02:23 MDT 2026
+| Date         : Fri Nov 13 10:57:10 2026
+| Command      : report_timing_summary -report_unconstrained -file output/z100/contest40-fpga-clock/contest-40-timing.rpt
+| Design       : z100_wrapper
+| Device       : 7z035-ffg900
+| Speed File   : -2  PRODUCTION 1.12 2019-11-22
+| Design State : Routed
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Summary Report
+
+------------------------------------------------------------------------------------------------
+| Timer Settings
+| --------------
+------------------------------------------------------------------------------------------------
+
+  Enable Multi Corner Analysis               :  Yes
+  Enable Pessimism Removal                   :  Yes
+  Pessimism Removal Resolution               :  Nearest Common Node
+  Enable Input Delay Default Clock           :  No
+  Enable Preset / Clear Arcs                 :  No
+  Disable Flight Delays                      :  No
+  Ignore I/O Paths                           :  No
+  Timing Early Launch at Borrowing Latches   :  No
+  Borrow Time for Max Delay Exceptions       :  Yes
+  Merge Timing Exceptions                    :  Yes
+  Inter-SLR Compensation                     :  Conservative
+
+  Corner  Analyze    Analyze
+  Name    Max Paths  Min Paths
+  ------  ---------  ---------
+  Slow    Yes        Yes
+  Fast    Yes        Yes
+
+
+------------------------------------------------------------------------------------------------
+| Report Methodology
+| ------------------
+------------------------------------------------------------------------------------------------
+
+No report available as report_methodology has not been run prior. Run report_methodology on the current design for the summary of methodology violations.
+
+
+
+check_timing report
+
+Table of Contents
+-----------------
+1. checking no_clock (0)
+2. checking constant_clock (0)
+3. checking pulse_width_clock (0)
+4. checking unconstrained_internal_endpoints (0)
+5. checking no_input_delay (0)
+6. checking no_output_delay (0)
+7. checking multiple_clock (0)
+8. checking generated_clocks (0)
+9. checking loops (0)
+10. checking partial_input_delay (0)
+11. checking partial_output_delay (0)
+12. checking latch_loops (0)
+
+1. checking no_clock (0)
+------------------------
+ There are 0 register/latch pins with no clock.
+
+
+2. checking constant_clock (0)
+------------------------------
+ There are 0 register/latch pins with constant_clock.
+
+
+3. checking pulse_width_clock (0)
+---------------------------------
+ There are 0 register/latch pins which need pulse_width check
+
+
+4. checking unconstrained_internal_endpoints (0)
+------------------------------------------------
+ There are 0 pins that are not constrained for maximum delay.
+
+ There are 0 pins that are not constrained for maximum delay due to constant clock.
+
+
+5. checking no_input_delay (0)
+------------------------------
+ There are 0 input ports with no input delay specified.
+
+ There are 0 input ports with no input delay but user has a false path constraint.
+
+
+6. checking no_output_delay (0)
+-------------------------------
+ There are 0 ports with no output delay specified.
+
+ There are 0 ports with no output delay but user has a false path constraint
+
+ There are 0 ports with no output delay but with a timing clock defined on it or propagating through it
+
+
+7. checking multiple_clock (0)
+------------------------------
+ There are 0 register/latch pins with multiple clocks.
+
+
+8. checking generated_clocks (0)
+--------------------------------
+ There are 0 generated clocks that are not connected to a clock source.
+
+
+9. checking loops (0)
+---------------------
+ There are 0 combinational loops in the design.
+
+
+10. checking partial_input_delay (0)
+------------------------------------
+ There are 0 input ports with partial input delay specified.
+
+
+11. checking partial_output_delay (0)
+-------------------------------------
+ There are 0 ports with partial output delay specified.
+
+
+12. checking latch_loops (0)
+----------------------------
+ There are 0 combinational latch loops in the design through latch input
+
+
+
+------------------------------------------------------------------------------------------------
+| Design Timing Summary
+| ---------------------
+------------------------------------------------------------------------------------------------
+
+    WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints
+    -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------
+      0.344        0.000                      0                36974        0.062        0.000                      0                36974       11.732        0.000                       0                  9560
+
+
+All user specified timing constraints are met.
+
+
+------------------------------------------------------------------------------------------------
+| Clock Summary
+| -------------
+------------------------------------------------------------------------------------------------
+
+Clock       Waveform(ns)       Period(ns)      Frequency(MHz)
+-----       ------------       ----------      --------------
+clk_fpga_0  {0.000 12.500}     25.000          40.000
+
+
+------------------------------------------------------------------------------------------------
+| Intra Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints
+-----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------
+clk_fpga_0          0.344        0.000                      0                31911        0.062        0.000                      0                31911       11.732        0.000                       0                  9560
+
+
+------------------------------------------------------------------------------------------------
+| Inter Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints
+----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------
+
+
+------------------------------------------------------------------------------------------------
+| Other Path Groups Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group         From Clock         To Clock               WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints
+----------         ----------         --------               -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------
+**async_default**  clk_fpga_0         clk_fpga_0               8.168        0.000                      0                 5063        0.598        0.000                      0                 5063
+
+
+------------------------------------------------------------------------------------------------
+| User Ignored Path Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock
+----------    ----------    --------
+(none)                      clk_fpga_0
+(none)        clk_fpga_0    clk_fpga_0
+
+
+------------------------------------------------------------------------------------------------
+| Unconstrained Path Table
+| ------------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock
+----------    ----------    --------
+
+
+------------------------------------------------------------------------------------------------
+| Timing Details
+| --------------
+------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clk_fpga_0
+  To Clock:  clk_fpga_0
+
+Setup :            0  Failing Endpoints,  Worst Slack        0.344ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.062ns,  Total Violation        0.000ns
+PW    :            0  Failing Endpoints,  Worst Slack       11.732ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             0.344ns  (required time - arrival time)
+  Source:                 z100_i/contest/inst/contest/bus/accelerator/core/gelu_lane_reg[1]/C
+                            (rising edge-triggered cell FDCE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            z100_i/contest/inst/contest/bus/accelerator/core/intermediate[0].gm/mem_reg/DIADI[1]
+                            (rising edge-triggered cell RAMB18E1 clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             clk_fpga_0
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            25.000ns  (clk_fpga_0 rise@25.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        23.699ns  (logic 10.482ns (44.229%)  route 13.217ns (55.771%))
+  Logic Levels:           61  (CARRY4=36 DSP48E1=1 LUT1=2 LUT2=1 LUT3=2 LUT4=1 LUT5=10 LUT6=7 MUXF7=1)
+  Clock Path Skew:        -0.037ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.582ns = ( 27.582 - 25.000 )
+    Source Clock Delay      (SCD):    2.850ns
+    Clock Pessimism Removal (CPR):    0.231ns
+  Clock Uncertainty:      0.377ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.750ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           1.339     1.339    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.093     1.432 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        1.418     2.850    z100_i/contest/inst/contest/bus/accelerator/core/aclk
+    SLICE_X131Y207       FDCE                                         r  z100_i/contest/inst/contest/bus/accelerator/core/gelu_lane_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X131Y207       FDCE (Prop_fdce_C_Q)         0.204     3.054 r  z100_i/contest/inst/contest/bus/accelerator/core/gelu_lane_reg[1]/Q
+                         net (fo=84, routed)          0.553     3.607    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/mem_reg_9
+    SLICE_X129Y210       LUT6 (Prop_lut6_I2_O)        0.124     3.731 f  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_604/O
+                         net (fo=1, routed)           0.000     3.731    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_604_n_0
+    SLICE_X129Y210       MUXF7 (Prop_muxf7_I0_O)      0.107     3.838 f  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_399/O
+                         net (fo=3, routed)           0.493     4.331    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_0[0]
+    SLICE_X129Y211       LUT1 (Prop_lut1_I0_O)        0.124     4.455 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_551/O
+                         net (fo=1, routed)           0.282     4.737    z100_i/contest/inst/contest/bus/accelerator/core/activation/p_0_in[0]
+    SLICE_X131Y209       CARRY4 (Prop_carry4_CYINIT_CO[3])
+                                                      0.287     5.024 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_374/CO[3]
+                         net (fo=1, routed)           0.000     5.024    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_374_n_0
+    SLICE_X131Y210       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053     5.077 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_366/CO[3]
+                         net (fo=1, routed)           0.000     5.077    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_219[0]
+    SLICE_X131Y211       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053     5.130 r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_370/CO[3]
+                         net (fo=1, routed)           0.000     5.130    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_370_n_0
+    SLICE_X131Y212       CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.149     5.279 r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_362/O[3]
+                         net (fo=3, routed)           0.447     5.727    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_710[7]
+    SLICE_X130Y211       LUT3 (Prop_lut3_I0_O)        0.120     5.847 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_325/O
+                         net (fo=2, routed)           0.335     6.181    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_336_0[5]
+    SLICE_X130Y213       LUT2 (Prop_lut2_I0_O)        0.052     6.233 r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_488/O
+                         net (fo=3, routed)           0.434     6.667    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/activation/q43_out[16]
+    SLICE_X124Y215       LUT6 (Prop_lut6_I0_O)        0.132     6.799 r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_404/O
+                         net (fo=1, routed)           0.370     7.169    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_404_n_0
+    SLICE_X125Y214       CARRY4 (Prop_carry4_DI[0]_CO[3])
+                                                      0.269     7.438 r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_229/CO[3]
+                         net (fo=1, routed)           0.000     7.438    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_229_n_0
+    SLICE_X125Y215       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053     7.491 r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_109/CO[3]
+                         net (fo=1, routed)           0.000     7.491    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_109_n_0
+    SLICE_X125Y216       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053     7.544 r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_37/CO[3]
+                         net (fo=26, routed)          0.489     8.032    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_117_0[0]
+    SLICE_X123Y214       LUT4 (Prop_lut4_I3_O)        0.043     8.075 r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[1].gm/product_i_66/O
+                         net (fo=73, routed)          0.595     8.670    z100_i/contest/inst/contest/bus/accelerator/core/activation/q17_out
+    SLICE_X120Y212       LUT5 (Prop_lut5_I4_O)        0.043     8.713 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_26/O
+                         net (fo=5, routed)           0.000     8.713    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_77_n_0
+    SLICE_X120Y212       CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.267     8.980 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_22/CO[3]
+                         net (fo=1, routed)           0.000     8.980    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_22_n_0
+    SLICE_X120Y213       CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.166     9.146 f  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_16/O[1]
+                         net (fo=4, routed)           0.308     9.454    z100_i/contest/inst/contest/bus/accelerator/core/activation/round_even_return0[9]
+    SLICE_X118Y213       LUT3 (Prop_lut3_I0_O)        0.123     9.577 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_69/O
+                         net (fo=1, routed)           0.000     9.577    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_69_n_0
+    SLICE_X118Y213       CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.256     9.833 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_19/CO[3]
+                         net (fo=1, routed)           0.000     9.833    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_19_n_0
+    SLICE_X118Y214       CARRY4 (Prop_carry4_CI_O[0])
+                                                      0.108     9.941 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_274/O[0]
+                         net (fo=1, routed)           0.447    10.388    z100_i/contest/inst/contest/bus/accelerator/core/activation/magnitude0[13]
+    SLICE_X116Y214       LUT6 (Prop_lut6_I0_O)        0.123    10.511 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_255/O
+                         net (fo=62, routed)          0.591    11.102    z100_i/contest/inst/contest/bus/accelerator/core/activation/gelu_lane_reg[2][2]
+    SLICE_X113Y213       LUT6 (Prop_lut6_I3_O)        0.043    11.145 f  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_289/O
+                         net (fo=2, routed)           0.433    11.577    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_289_n_0
+    SLICE_X109Y213       LUT6 (Prop_lut6_I0_O)        0.043    11.620 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_143/O
+                         net (fo=1, routed)           0.333    11.953    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_143_n_0
+    SLICE_X104Y212       CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.302    12.255 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_47/CO[3]
+                         net (fo=1, routed)           0.000    12.255    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_47_n_0
+    SLICE_X104Y213       CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.166    12.421 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_42/O[1]
+                         net (fo=2, routed)           0.314    12.736    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_42_n_6
+    SLICE_X103Y212       CARRY4 (Prop_carry4_DI[2]_CO[3])
+                                                      0.277    13.013 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_14/CO[3]
+                         net (fo=1, routed)           0.000    13.013    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_14_n_0
+    SLICE_X103Y213       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    13.066 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_13/CO[3]
+                         net (fo=1, routed)           0.000    13.066    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_13_n_0
+    SLICE_X103Y214       CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.111    13.177 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product_i_12/O[2]
+                         net (fo=16, routed)          0.547    13.723    z100_i/contest/inst/contest/bus/accelerator/core/activation/delta0_out[14]
+    DSP48_X4Y84          DSP48E1 (Prop_dsp48e1_A[27]_P[19])
+                                                      2.816    16.539 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/product/P[19]
+                         net (fo=2, routed)           0.853    17.393    z100_i/contest/inst/contest/bus/accelerator/core/activation/product_n_86
+    SLICE_X110Y215       LUT5 (Prop_lut5_I4_O)        0.043    17.436 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_714/O
+                         net (fo=1, routed)           0.000    17.436    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_714_n_0
+    SLICE_X110Y215       CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.246    17.682 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_567/CO[3]
+                         net (fo=1, routed)           0.000    17.682    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_567_n_0
+    SLICE_X110Y216       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.054    17.736 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_380/CO[3]
+                         net (fo=1, routed)           0.000    17.736    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_380_n_0
+    SLICE_X110Y217       CARRY4 (Prop_carry4_CI_CO[0])
+                                                      0.133    17.869 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_237__4/CO[0]
+                         net (fo=1, routed)           0.429    18.298    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_237__4_n_3
+    SLICE_X114Y222       LUT6 (Prop_lut6_I0_O)        0.128    18.426 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_133__5/O
+                         net (fo=24, routed)          0.560    18.986    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_62__17_n_0
+    SLICE_X114Y217       LUT5 (Prop_lut5_I4_O)        0.043    19.029 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_516/O
+                         net (fo=1, routed)           0.000    19.029    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_516_n_0
+    SLICE_X114Y217       CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.256    19.285 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_338__0/CO[3]
+                         net (fo=1, routed)           0.000    19.285    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_338__0_n_0
+    SLICE_X114Y218       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.054    19.339 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_362/CO[3]
+                         net (fo=1, routed)           0.000    19.339    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_362_n_0
+    SLICE_X114Y219       CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.112    19.451 f  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_221__4/O[2]
+                         net (fo=5, routed)           0.378    19.829    z100_i/contest/inst/contest/bus/accelerator/core/activation/activated[26]
+    SLICE_X113Y221       LUT1 (Prop_lut1_I0_O)        0.127    19.956 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_405/O
+                         net (fo=1, routed)           0.000    19.956    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_405_n_0
+    SLICE_X113Y221       CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.267    20.223 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_244__0/CO[3]
+                         net (fo=1, routed)           0.000    20.223    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_244__0_n_0
+    SLICE_X113Y222       CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.111    20.334 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_219__4/O[2]
+                         net (fo=4, routed)           0.271    20.605    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_219__4_n_5
+    SLICE_X110Y222       LUT6 (Prop_lut6_I0_O)        0.122    20.727 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_253/O
+                         net (fo=2, routed)           0.355    21.083    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_253_n_0
+    SLICE_X110Y220       LUT5 (Prop_lut5_I0_O)        0.043    21.126 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_183__3/O
+                         net (fo=3, routed)           0.262    21.388    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_183__3_n_0
+    SLICE_X110Y218       LUT5 (Prop_lut5_I0_O)        0.043    21.431 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_194__4/O
+                         net (fo=2, routed)           0.325    21.756    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_194__4_n_0
+    SLICE_X109Y218       LUT5 (Prop_lut5_I0_O)        0.043    21.799 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_105__11/O
+                         net (fo=4, routed)           0.193    21.992    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_105__11_n_0
+    SLICE_X109Y219       LUT5 (Prop_lut5_I0_O)        0.043    22.035 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_52__17/O
+                         net (fo=5, routed)           0.377    22.413    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_52__17_n_0
+    SLICE_X117Y219       CARRY4 (Prop_carry4_CYINIT_CO[3])
+                                                      0.287    22.700 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_102__14/CO[3]
+                         net (fo=1, routed)           0.000    22.700    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_102__14_n_0
+    SLICE_X117Y220       CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.166    22.866 f  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_92__14/O[1]
+                         net (fo=2, routed)           0.443    23.309    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_92__14_n_6
+    SLICE_X111Y220       LUT5 (Prop_lut5_I3_O)        0.123    23.432 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_89__17/O
+                         net (fo=1, routed)           0.000    23.432    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_89__17_n_0
+    SLICE_X111Y220       CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.267    23.699 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_40__17/CO[3]
+                         net (fo=1, routed)           0.000    23.699    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_40__17_n_0
+    SLICE_X111Y221       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    23.752 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_35__18/CO[3]
+                         net (fo=1, routed)           0.000    23.752    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_35__18_n_0
+    SLICE_X111Y222       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    23.805 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_28__18/CO[3]
+                         net (fo=1, routed)           0.000    23.805    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_28__18_n_0
+    SLICE_X111Y223       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    23.858 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_612/CO[3]
+                         net (fo=1, routed)           0.000    23.858    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_612_n_0
+    SLICE_X111Y224       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    23.911 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_425/CO[3]
+                         net (fo=1, routed)           0.007    23.918    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_425_n_0
+    SLICE_X111Y225       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    23.971 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_420/CO[3]
+                         net (fo=1, routed)           0.000    23.971    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_420_n_0
+    SLICE_X111Y226       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    24.024 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_268__0/CO[3]
+                         net (fo=1, routed)           0.000    24.024    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_268__0_n_0
+    SLICE_X111Y227       CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.166    24.190 f  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_263__0/O[1]
+                         net (fo=4, routed)           0.657    24.847    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_263__0_n_6
+    SLICE_X118Y227       LUT5 (Prop_lut5_I1_O)        0.123    24.970 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_165__4/O
+                         net (fo=1, routed)           0.000    24.970    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_165__4_n_0
+    SLICE_X118Y227       CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.183    25.153 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_73__17/CO[3]
+                         net (fo=1, routed)           0.000    25.153    z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_73__17_n_0
+    SLICE_X118Y228       CARRY4 (Prop_carry4_CI_CO[0])
+                                                      0.133    25.286 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_32__18/CO[0]
+                         net (fo=17, routed)          0.681    25.967    z100_i/contest/inst/contest/bus/accelerator/core/activation/result1
+    SLICE_X122Y224       LUT5 (Prop_lut5_I0_O)        0.128    26.095 r  z100_i/contest/inst/contest/bus/accelerator/core/activation/mem_reg_i_26__18/O
+                         net (fo=2, routed)           0.454    26.549    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[0].gm/DIADI[1]
+    RAMB18_X5Y88         RAMB18E1                                     r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[0].gm/mem_reg/DIADI[1]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                     25.000    25.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000    25.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           1.241    26.241    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.083    26.324 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        1.258    27.582    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[0].gm/aclk
+    RAMB18_X5Y88         RAMB18E1                                     r  z100_i/contest/inst/contest/bus/accelerator/core/intermediate[0].gm/mem_reg/CLKARDCLK
+                         clock pessimism              0.231    27.813    <hidden>
+                         clock uncertainty           -0.377    27.436    <hidden>
+    RAMB18_X5Y88         RAMB18E1 (Setup_ramb18e1_CLKARDCLK_DIADI[1])
+                                                     -0.543    26.893    z100_i/contest/inst/contest/bus/accelerator/core/intermediate[0].gm/mem_reg
+  -------------------------------------------------------------------
+                         required time                         26.893    <hidden>
+                         arrival time                         -26.549    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.344    <hidden>
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             0.062ns  (arrival time - required time)
+  Source:                 z100_i/contest/inst/contest/bus/encoder/sqrt_unit/shift__reg[27]/C
+                            (rising edge-triggered cell FDCE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            z100_i/contest/inst/contest/bus/encoder/sqrt_unit/shift__reg[29]/D
+                            (rising edge-triggered cell FDCE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             clk_fpga_0
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        0.346ns  (logic 0.175ns (50.648%)  route 0.171ns (49.352%))
+  Logic Levels:           1  (LUT3=1)
+  Clock Path Skew:        0.188ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.551ns
+    Source Clock Delay      (SCD):    1.315ns
+    Clock Pessimism Removal (CPR):    0.048ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.725     0.725    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.751 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        0.564     1.315    z100_i/contest/inst/contest/bus/encoder/sqrt_unit/aclk
+    SLICE_X106Y149       FDCE                                         r  z100_i/contest/inst/contest/bus/encoder/sqrt_unit/shift__reg[27]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X106Y149       FDCE (Prop_fdce_C_Q)         0.107     1.422 r  z100_i/contest/inst/contest/bus/encoder/sqrt_unit/shift__reg[27]/Q
+                         net (fo=1, routed)           0.171     1.593    z100_i/contest/inst/contest/bus/encoder/sqrt_unit/shift__reg_n_0_[27]
+    SLICE_X106Y150       LUT3 (Prop_lut3_I0_O)        0.068     1.661 r  z100_i/contest/inst/contest/bus/encoder/sqrt_unit/shift_[29]_i_1/O
+                         net (fo=1, routed)           0.000     1.661    z100_i/contest/inst/contest/bus/encoder/sqrt_unit/p_0_in[29]
+    SLICE_X106Y150       FDCE                                         r  z100_i/contest/inst/contest/bus/encoder/sqrt_unit/shift__reg[29]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.769     0.769    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.030     0.799 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        0.752     1.551    z100_i/contest/inst/contest/bus/encoder/sqrt_unit/aclk
+    SLICE_X106Y150       FDCE                                         r  z100_i/contest/inst/contest/bus/encoder/sqrt_unit/shift__reg[29]/C
+                         clock pessimism             -0.048     1.503    <hidden>
+    SLICE_X106Y150       FDCE (Hold_fdce_C_D)         0.096     1.599    z100_i/contest/inst/contest/bus/encoder/sqrt_unit/shift__reg[29]
+  -------------------------------------------------------------------
+                         required time                         -1.599    <hidden>
+                         arrival time                           1.661    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.062    <hidden>
+
+
+
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         clk_fpga_0
+Waveform(ns):       { 0.000 12.500 }
+Period(ns):         25.000
+Sources:            { z100_i/ps/inst/PS7_i/FCLKCLK[0] }
+
+Check Type        Corner  Lib Pin             Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location       Pin
+Min Period        n/a     RAMB36E1/CLKARDCLK  n/a            2.095         25.000      22.905     RAMB36_X2Y52   z100_i/contest/inst/contest/bus/shared/banks[0].mem_reg/CLKARDCLK
+Low Pulse Width   Slow    RAMD32/CLK          n/a            0.768         12.500      11.732     SLICE_X90Y180  z100_i/contest/inst/contest/bus/input_fifo/data_reg_0_3_0_5/RAMA/CLK
+High Pulse Width  Slow    RAMD32/CLK          n/a            0.768         12.500      11.732     SLICE_X90Y180  z100_i/contest/inst/contest/bus/input_fifo/data_reg_0_3_0_5/RAMA/CLK
+
+
+
+---------------------------------------------------------------------------------------------------
+Path Group:  **async_default**
+From Clock:  clk_fpga_0
+  To Clock:  clk_fpga_0
+
+Setup :            0  Failing Endpoints,  Worst Slack        8.168ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.598ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             8.168ns  (required time - arrival time)
+  Source:                 z100_i/reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            z100_i/contest/inst/contest/bus/accelerator/core/wbanks[7].odd_mac/acc_reg[19]/CLR
+                            (recovery check against rising-edge clock clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             **async_default**
+  Path Type:              Recovery (Max at Slow Process Corner)
+  Requirement:            25.000ns  (clk_fpga_0 rise@25.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        15.885ns  (logic 0.266ns (1.675%)  route 15.619ns (98.325%))
+  Logic Levels:           1  (LUT2=1)
+  Clock Path Skew:        -0.384ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.494ns = ( 27.494 - 25.000 )
+    Source Clock Delay      (SCD):    2.999ns
+    Clock Pessimism Removal (CPR):    0.121ns
+  Clock Uncertainty:      0.377ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.750ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           1.339     1.339    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.093     1.432 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        1.567     2.999    z100_i/reset/U0/slowest_sync_clk
+    SLICE_X45Y297        FDRE                                         r  z100_i/reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X45Y297        FDRE (Prop_fdre_C_Q)         0.223     3.222 r  z100_i/reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/Q
+                         net (fo=34, routed)          0.705     3.927    z100_i/contest/inst/contest/bus/accelerator/core/aresetn
+    SLICE_X50Y289        LUT2 (Prop_lut2_I0_O)        0.043     3.970 f  z100_i/contest/inst/contest/bus/accelerator/core/state[5]_i_11/O
+                         net (fo=4342, routed)       14.914    18.884    z100_i/contest/inst/contest/bus/accelerator/core/wbanks[7].odd_mac/acc_reg[39]_2
+    SLICE_X158Y194       FDCE                                         f  z100_i/contest/inst/contest/bus/accelerator/core/wbanks[7].odd_mac/acc_reg[19]/CLR
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                     25.000    25.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000    25.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           1.241    26.241    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.083    26.324 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        1.170    27.494    z100_i/contest/inst/contest/bus/accelerator/core/wbanks[7].odd_mac/aclk
+    SLICE_X158Y194       FDCE                                         r  z100_i/contest/inst/contest/bus/accelerator/core/wbanks[7].odd_mac/acc_reg[19]/C
+                         clock pessimism              0.121    27.615    <hidden>
+                         clock uncertainty           -0.377    27.238    <hidden>
+    SLICE_X158Y194       FDCE (Recov_fdce_C_CLR)     -0.187    27.051    z100_i/contest/inst/contest/bus/accelerator/core/wbanks[7].odd_mac/acc_reg[19]
+  -------------------------------------------------------------------
+                         required time                         27.051    <hidden>
+                         arrival time                         -18.884    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  8.168    <hidden>
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             0.598ns  (arrival time - required time)
+  Source:                 z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_reset_ctrl/master_gen.rst_sync_r_reg[1]/C
+                            (rising edge-triggered cell FDCE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_core/u_e203_ifu/u_e203_ifu_ifetch/pc_dfflr/qout_r_reg[19]/CLR
+                            (removal check against rising-edge clock clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             **async_default**
+  Path Type:              Removal (Min at Fast Process Corner)
+  Requirement:            0.000ns  (clk_fpga_0 rise@0.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        0.551ns  (logic 0.128ns (23.228%)  route 0.423ns (76.772%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Path Skew:        0.022ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.733ns
+    Source Clock Delay      (SCD):    1.450ns
+    Clock Pessimism Removal (CPR):    0.261ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.725     0.725    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.751 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        0.699     1.450    z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_reset_ctrl/aclk
+    SLICE_X60Y291        FDCE                                         r  z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_reset_ctrl/master_gen.rst_sync_r_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X60Y291        FDCE (Prop_fdce_C_Q)         0.100     1.550 r  z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_reset_ctrl/master_gen.rst_sync_r_reg[1]/Q
+                         net (fo=1, routed)           0.154     1.704    z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_reset_ctrl/p_0_in_1
+    SLICE_X70Y291        LUT1 (Prop_lut1_I0_O)        0.028     1.732 f  z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_reset_ctrl/qout_r[1]_i_2__2/O
+                         net (fo=725, routed)         0.270     2.001    z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_core/u_e203_ifu/u_e203_ifu_ifetch/pc_dfflr/qout_r_reg[31]_1
+    SLICE_X79Y285        FDCE                                         f  z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_core/u_e203_ifu/u_e203_ifu_ifetch/pc_dfflr/qout_r_reg[19]/CLR
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.769     0.769    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.030     0.799 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        0.934     1.733    z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_core/u_e203_ifu/u_e203_ifu_ifetch/pc_dfflr/aclk
+    SLICE_X79Y285        FDCE                                         r  z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_core/u_e203_ifu/u_e203_ifu_ifetch/pc_dfflr/qout_r_reg[19]/C
+                         clock pessimism             -0.261     1.472    <hidden>
+    SLICE_X79Y285        FDCE (Remov_fdce_C_CLR)     -0.069     1.403    z100_i/contest/inst/contest/cpu/u_e203_cpu/u_e203_core/u_e203_ifu/u_e203_ifu_ifetch/pc_dfflr/qout_r_reg[19]
+  -------------------------------------------------------------------
+                         required time                         -1.403    <hidden>
+                         arrival time                           2.001    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.598    <hidden>
+
+
+
+
+
+--------------------------------------------------------------------------------------
+Path Group:  (none)
+From Clock:
+  To Clock:  clk_fpga_0
+
+Max Delay             1 Endpoint
+Min Delay             1 Endpoint
+--------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack:                    inf
+  Source:                 z100_i/ps/inst/PS7_i/FCLKRESETN[0]
+                            (internal pin)
+  Destination:            z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/syncstages_ff_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             (none)
+  Path Type:              Setup (Max at Slow Process Corner)
+  Data Path Delay:        1.363ns  (logic 0.043ns (3.155%)  route 1.320ns (96.845%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Uncertainty:      0.376ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.050ns
+    Total Input Jitter      (TIJ):    0.750ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Timing Exception:       False Path
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+    PS7_X0Y0             PS7                          0.000     0.000 f  z100_i/ps/inst/PS7_i/FCLKRESETN[0]
+                         net (fo=1, routed)           1.053     1.053    z100_i/reset/U0/EXT_LPF/ext_reset_in
+    SLICE_X42Y295        LUT1 (Prop_lut1_I0_O)        0.043     1.096 r  z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT_i_1/O
+                         net (fo=1, routed)           0.267     1.363    z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/src_in
+    SLICE_X43Y296        FDRE                                         r  z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/syncstages_ff_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           1.241     1.241    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.083     1.324 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        1.366     2.690    z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/dest_clk
+    SLICE_X43Y296        FDRE                                         r  z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/syncstages_ff_reg[0]/C
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack:                    inf
+  Source:                 z100_i/ps/inst/PS7_i/FCLKRESETN[0]
+                            (internal pin)
+  Destination:            z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/syncstages_ff_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             (none)
+  Path Type:              Hold (Min at Fast Process Corner)
+  Data Path Delay:        0.729ns  (logic 0.028ns (3.841%)  route 0.701ns (96.159%))
+  Logic Levels:           1  (LUT1=1)
+  Clock Uncertainty:      0.376ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.050ns
+    Total Input Jitter      (TIJ):    0.750ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Timing Exception:       False Path
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+    PS7_X0Y0             PS7                          0.000     0.000 f  z100_i/ps/inst/PS7_i/FCLKRESETN[0]
+                         net (fo=1, routed)           0.566     0.566    z100_i/reset/U0/EXT_LPF/ext_reset_in
+    SLICE_X42Y295        LUT1 (Prop_lut1_I0_O)        0.028     0.594 r  z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT_i_1/O
+                         net (fo=1, routed)           0.135     0.729    z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/src_in
+    SLICE_X43Y296        FDRE                                         r  z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/syncstages_ff_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.769     0.769    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.030     0.799 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        0.955     1.754    z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/dest_clk
+    SLICE_X43Y296        FDRE                                         r  z100_i/reset/U0/EXT_LPF/ACTIVE_LOW_EXT.ACT_LO_EXT/syncstages_ff_reg[0]/C
+
+
+
+
+
+--------------------------------------------------------------------------------------
+Path Group:  (none)
+From Clock:  clk_fpga_0
+  To Clock:  clk_fpga_0
+
+Max Delay             1 Endpoint
+Min Delay             1 Endpoint
+--------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack:                    inf
+  Source:                 z100_i/reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/syncstages_ff_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             (none)
+  Path Type:              Setup (Max at Slow Process Corner)
+  Data Path Delay:        0.932ns  (logic 0.223ns (23.929%)  route 0.709ns (76.071%))
+  Logic Levels:           0
+  Clock Path Skew:        -0.178ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.821ns
+    Source Clock Delay      (SCD):    2.999ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.377ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.750ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Timing Exception:       False Path
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           1.339     1.339    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.093     1.432 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        1.567     2.999    z100_i/reset/U0/slowest_sync_clk
+    SLICE_X45Y297        FDRE                                         r  z100_i/reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X45Y297        FDRE (Prop_fdre_C_Q)         0.223     3.222 r  z100_i/reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/Q
+                         net (fo=34, routed)          0.709     3.931    z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/src_rst
+    SLICE_X32Y300        FDRE                                         r  z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/syncstages_ff_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           1.241     1.241    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.083     1.324 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        1.497     2.821    z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/dest_clk
+    SLICE_X32Y300        FDRE                                         r  z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/syncstages_ff_reg[0]/C
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack:                    inf
+  Source:                 z100_i/reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/syncstages_ff_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             (none)
+  Path Type:              Hold (Min at Fast Process Corner)
+  Data Path Delay:        0.477ns  (logic 0.100ns (20.967%)  route 0.377ns (79.033%))
+  Logic Levels:           0
+  Clock Path Skew:        0.396ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.856ns
+    Source Clock Delay      (SCD):    1.460ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.377ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.750ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Timing Exception:       False Path
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.725     0.725    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     0.751 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        0.709     1.460    z100_i/reset/U0/slowest_sync_clk
+    SLICE_X45Y297        FDRE                                         r  z100_i/reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X45Y297        FDRE (Prop_fdre_C_Q)         0.100     1.560 r  z100_i/reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/Q
+                         net (fo=34, routed)          0.377     1.937    z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/src_rst
+    SLICE_X32Y300        FDRE                                         r  z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/syncstages_ff_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           0.769     0.769    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.030     0.799 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=9560, routed)        1.057     1.856    z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/dest_clk
+    SLICE_X32Y300        FDRE                                         r  z100_i/axi_ctrl/inst/sc_ul/inst/cdc_aresetn/syncstages_ff_reg[0]/C

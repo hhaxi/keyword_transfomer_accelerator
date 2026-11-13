@@ -3,7 +3,7 @@ source [file join $script_dir create_smoke.tcl]
 if {[info exists ::env(Z100_IN_PROCESS)] && $::env(Z100_IN_PROCESS) eq "1"} {
     synth_design -top z100_wrapper -part xc7z035ffg900-2
     opt_design
-    power_opt_design
+    if {!$contest} {power_opt_design}
     place_design
     phys_opt_design
     route_design

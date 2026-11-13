@@ -53,16 +53,19 @@ def firmware():
     (dest/'encoder_size.vh').write_text('`define ENC_FW_WORDS %d\n'%(len(data)//4))
 
 
-def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1,transport=2,fifo_metrics=False,extra_flags=None,layers=12,input_stream=0):
+def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1,transport=2,fifo_metrics=False,extra_flags=None,layers=12,input_stream=0,contest=False):
     includes=['+incdir+output/encoder-design/firmware']
     if netlist:
+        netlist_dir='output/encoder-design/contest' if contest else 'output/encoder-design'
         files=[str((SOC/'rtl/e203/general'/n).relative_to(ROOT)).replace('\\','/') for n in ['sirv_gnrl_ram.v','sirv_sim_ram.v']]
-        files+=['rtl/kwt_sram16.sv','integration/kwt_shared_sram.sv','output/encoder-design/encoder_soc_netlist.v']
+        files+=['rtl/kwt_sram16.sv','integration/kwt_shared_sram.sv',netlist_dir+'/encoder_soc_netlist.v']
     else:
         files=source_files()+SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv','integration/kwt_encoder_soc.sv']
         includes+=['+incdir+'+str((SOC/'rtl/e203/core').relative_to(ROOT)).replace('\\','/'),'+define+DISABLE_SV_ASSERTION']
-    label=label or ('tb_encoder_soc_netlist' if netlist else 'tb_encoder_soc')
-    if not netlist:includes+=['+define+ENCODER_PHASE_METRICS']
+    label=label or ('tb_encoder_soc' + ('_contest' if contest else '') + ('_netlist' if netlist else ''))
+    if not netlist:
+        includes+=['+define+ENCODER_PHASE_METRICS']
+        if contest: includes+=['+define+KWT_CONTEST_PROJECTION']
     if metrics:includes+=['+define+ENCODER_MEMORY_METRICS','+incdir+tests']
     if fifo_metrics:includes+=['+define+ENCODER_FIFO_METRICS','+incdir+tests']
     includes+=extra_flags or []
@@ -74,7 +77,7 @@ def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activ
         source=(ROOT/testbench).read_text()
         first_observer=source.index('    integer in_words=')
         after_observer=source.index('    integer taskid,',first_observer)
-        generated=DEST/'tb_encoder_soc_netlist.sv'
+        generated=ROOT/netlist_dir/'tb_encoder_soc_netlist.sv'
         generated.write_text(source[:first_observer]+source[after_observer:])
         testbench=generated.relative_to(ROOT).as_posix()
     text=sim('tb_encoder_soc',files+[testbench],includes,label=label,
@@ -83,25 +86,33 @@ def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activ
     if 'ENC_SOC_PASS tasks='+str(tasks) not in text and 'ENC_SOC_SHARDS_PASS tasks='+str(tasks) not in text:raise RuntimeError('Encoder SoC incomplete')
 
 
-def synthesize():
-    DEST.mkdir(exist_ok=True)
+def synthesize(contest=False):
+    build=DEST/'contest' if contest else DEST
+    build.mkdir(parents=True,exist_ok=True)
+    directory=build.relative_to(ROOT).as_posix()
     fingerprints={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes().replace(b'\r\n',b'\n').rstrip()+b'\n').hexdigest()
                   for d in ['rtl','integration'] for p in (ROOT/d).glob('*') if p.suffix in ['.v','.sv']}
-    (DEST/'synthesis-source-sha256.json').write_text(json.dumps({'capture':'Before synthesis; normalized line endings and EOF whitespace','sha256':fingerprints},indent=2)+'\n')
+    (build/'synthesis-source-sha256.json').write_text(json.dumps({'capture':'Before synthesis; normalized line endings and EOF whitespace','sha256':fingerprints},indent=2)+'\n')
     include=str((SOC/'rtl/e203/core').relative_to(ROOT)).replace('\\','/')
     upstream=[f for f in source_files() if not f.endswith('/sirv_gnrl_ram.v')]
     files=upstream+[f for f in SYSTEM_RTL if f!='rtl/kwt_sram16.sv']+ENC_RTL+ENC_BUS+['integration/kwt_encoder_soc.sv']
-    script='\n'.join([
-        'read_verilog -sv -D KWT_SRAM_BLACKBOX rtl/kwt_sram16.sv integration/kwt_shared_sram.sv integration/e203_ram_boundary.v',
-        'read_verilog -sv -I'+include+' '+' '.join(files),
+    boundaries='rtl/kwt_sram16.sv integration/kwt_shared_sram.sv integration/e203_ram_boundary.v'
+    if contest:
+        # The pinned E203 uses simulation-only #1 assignments in its DFF cells.
+        frontend=['read_slang --ignore-timing --allow-use-before-declare --top kwt_encoder_soc -G PROJECTION_K4=1 -D KWT_SRAM_BLACKBOX -D DISABLE_SV_ASSERTION -I'+include+' '+boundaries+' '+' '.join(files)]
+    else:
+        frontend=['read_verilog -sv -D KWT_SRAM_BLACKBOX '+boundaries,
+                  'read_verilog -sv -I'+include+' '+' '.join(files)]
+    script='\n'.join(frontend+[
         'hierarchy -top kwt_encoder_soc',
-        'tee -o output/encoder-design/architecture-stat.json stat -json',
+        f'tee -o {directory}/architecture-stat.json stat -json',
         'synth -top kwt_encoder_soc -flatten -noabc','abc -fast','clean','check -assert',
-        'tee -o output/encoder-design/soc-synthesis-stat.json stat -json',
-        'write_verilog -noattr output/encoder-design/encoder_soc_netlist.v',
-        'write_json output/encoder-design/encoder_soc_netlist.json'])+'\n'
-    (DEST/'synth.ys').write_text(script)
-    linux('encoder-synthesis',shlex.quote(CONFIG.get('wsl_yosys','yosys'))+' -Q -T -s output/encoder-design/synth.ys',1800)
+        f'tee -o {directory}/soc-synthesis-stat.json stat -json',
+        f'write_verilog -noattr {directory}/encoder_soc_netlist.v',
+        f'write_json {directory}/encoder_soc_netlist.json'])+'\n'
+    (build/'synth.ys').write_text(script)
+    linux('encoder-contest-synthesis' if contest else 'encoder-synthesis',
+          shlex.quote(CONFIG.get('wsl_yosys','yosys'))+f' -Q -T -s {directory}/synth.ys',1800)
 
 
 def compatibility(netlist=False):
@@ -133,6 +144,7 @@ def main():
     p.add_argument('--layers',type=int,choices=[1,12],default=12)
     p.add_argument('--input-stream',type=int,choices=[0,1],default=0)
     p.add_argument('--baseline',type=int,choices=[0,1],default=0)
+    p.add_argument('--contest',action='store_true',help='Use the macro-backed four-input projection configuration')
     a=p.parse_args();DEST.mkdir(exist_ok=True)
     if a.jobs<1 or a.jobs>a.tasks or (a.jobs>1 and (a.task!='soc' or a.baseline)):
         p.error('--jobs must be 1..tasks, and sharding is supported for optimized RTL soc only')
@@ -188,12 +200,12 @@ def main():
         firmware();soc(tasks=1,label='tb_encoder_soc_profile',metrics=True)
         text=linux('tb_encoder_soc_baseline-run','output/design/build_tb_encoder_soc_profile/Vtb_encoder_soc +tasks=1 +baseline=1',14400)
         if 'ENC_SOC_PASS tasks=1' not in text:raise RuntimeError('Baseline incomplete')
-    elif a.task=='synth':synthesize()
+    elif a.task=='synth':synthesize(a.contest)
     elif a.task=='lint':
         linux('encoder-lint',CONFIG['wsl_verilator']+' --lint-only -Wall --top-module kwt_extended_system_bus '+
               ' '.join(SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv']))
     else:
-        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs,transport=a.transport,layers=a.layers,input_stream=a.input_stream)
+        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs,transport=a.transport,layers=a.layers,input_stream=a.input_stream,contest=a.contest)
 
 
 if __name__=='__main__':main()

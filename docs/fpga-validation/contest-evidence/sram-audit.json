@@ -1,0 +1,31 @@
+{
+  "shared_sram_bytes": 524288,
+  "accelerator_sram": [
+    {
+      "width_bits": 16,
+      "depth": 128,
+      "count": 76
+    },
+    {
+      "width_bits": 16,
+      "depth": 1024,
+      "count": 100
+    },
+    {
+      "width_bits": 16,
+      "depth": 4096,
+      "count": 2
+    }
+  ],
+  "accelerator_sram_bytes": 240640,
+  "e203_tcm": [
+    {
+      "depth": 8192,
+      "width_bits": 64
+    },
+    {
+      "depth": 16384,
+      "width_bits": 32
+    }
+  ]
+}

@@ -206,6 +206,19 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         localparam BANKS=4*PROJECTION_K, BITS=$clog2(BANKS);
         wire [11-BITS:0] weight_address = wwe ? load_index[11:BITS] : wa[9:BITS-2];
         for (weight_bank=0; weight_bank<BANKS; weight_bank=weight_bank+1) begin: banks
+          if (!WIDE_PROJECTION) begin: macro_banks
+            wire [31:0] words [0:1];
+            reg read_bank;
+            always @(posedge clk) if(wcs && !wwe) read_bank<=weight_address[7];
+            for(genvar page=0;page<2;page=page+1) begin: pages
+                wire select=wcs && weight_address[7]==page && (!wwe || load_index[3:0]==weight_bank);
+                for(genvar half=0;half<2;half=half+1) begin: halves
+                    kwt_sram16 #(.AW(7)) macro_(.clk(clk),.cs(select),.we(wwe),
+                        .addr(weight_address[6:0]),.din(m_rdata[16*half+:16]),.dout(words[page][16*half+:16]));
+                end
+            end
+            assign wide_weights[weight_bank*32+:32]=words[read_bank];
+          end else begin: fpga_wide
             (* ram_style = "block" *) reg [31:0] weights [0:(4096/BANKS)-1];
             reg [31:0] read_data;
             always @(posedge clk) if (wcs) begin
@@ -214,6 +227,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
                     weights[weight_address] <= m_rdata;
             end
             assign wide_weights[weight_bank*32+:32] = read_data;
+          end
         end
         assign wd=wide_weights[127:0];
     end else begin: scalar_projection
@@ -275,15 +289,16 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         assign product[l]=lhs[l]*rhs[l];
         assign centered[l]=clip32(sx32($signed(xd[l*32+:32]))-{{32{mean[39]}},mean});
         assign projected[l]=rne(acc[l],6'd16);
-        assign affine_value[l]=PIPELINED_SCORE ? affine_stage[l] :
-            rne(sx64(product[l]),6'd16)+sx32($signed(pd[l*32+:32]));
         if(PIPELINED_SCORE) begin: norm_pipeline
+            assign affine_value[l]=affine_stage[l];
             always @(posedge clk) begin
                 if(state==VARMAC || state==ANORM) norm_centered[l]<=centered[l];
                 if(state==VARMAC || state==VARFLUSH || state==AFFINE) norm_product[l]<=product[l];
                 if(state==AFFINE_ROUND) affine_stage[l]<=
                     rne(sx64(norm_product[l]),6'd16)+sx32($signed(pd[l*32+:32]));
             end
+        end else begin: norm_combinational
+            assign affine_value[l]=rne(sx64(product[l]),6'd16)+sx32($signed(pd[l*32+:32]));
         end
         if (WIDE_PROJECTION) begin: pipeline_projection
             reg signed [63:0] term[0:15];
@@ -404,7 +419,8 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
                 SMAC:begin lhs[u]=$signed(qd[u*32+:32]);rhs[u]=$signed(kd[u*32+:32]);end
                 VMAC:begin lhs[u]=$signed(sd);rhs[u]=$signed(vd[u*32+:32]);end
                 VARMAC,VARFLUSH:begin
-                    lhs[u]=PIPELINED_SCORE ? norm_centered[u] : centered[u];rhs[u]=lhs[u];
+                    lhs[u]=PIPELINED_SCORE ? norm_centered[u] : centered[u];
+                    rhs[u]=PIPELINED_SCORE ? norm_centered[u] : centered[u];
                 end
                 ANORM,ANORM_MUL:begin
                     lhs[u]=PIPELINED_SCORE ? norm_centered[u] : centered[u];rhs[u]=$signed(reciprocal);

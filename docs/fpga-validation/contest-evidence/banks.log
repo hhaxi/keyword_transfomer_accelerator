@@ -1,0 +1,2 @@
+CONTEST_SHARED_SRAM_PASS banks=128 bytes=524288 byte_mask=pass
+integration/z100/tb_contest_shared.sv:41: $finish called at 5180000 (1ps)

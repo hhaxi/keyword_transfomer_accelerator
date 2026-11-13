@@ -1,5 +1,7 @@
 # Z100 FPGA 功能验证报告
 
+按赛题组织的 E203、512 KiB 共享 SRAM 和逐层装载版本见 [赛题存储配置验证](contest-sram.md)。本页记录早期 Zynq DDR 演示版。
+
 Z100 的 **XC7Z035-2FFG900** 以约 **66.7 MHz** 运行完整 12 层 KWT-1。Windows 上位机读取 Speech Commands V2 验证集 WAV，提取 MFCC 并完成嵌入，通过 PS 千兆以太网将 `99 × 64` Q16 特征送到板卡。PL 执行全部定点编码层，Cortex-A9 执行分类头并返回 logits、12 层进度和耗时。每个请求含 25,344 字节特征及帧头和 CRC32。
 
 ## 上位机实拍

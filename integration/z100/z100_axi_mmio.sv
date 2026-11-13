@@ -1,6 +1,6 @@
-module z100_axi_mmio (
+module z100_axi_mmio #(parameter ADDR_WIDTH=16) (
     input wire aclk, aresetn,
-    input wire [15:0] s_axi_awaddr,
+    input wire [ADDR_WIDTH-1:0] s_axi_awaddr,
     input wire s_axi_awvalid,
     output wire s_axi_awready,
     input wire [31:0] s_axi_wdata,
@@ -10,7 +10,7 @@ module z100_axi_mmio (
     output wire [1:0] s_axi_bresp,
     output wire s_axi_bvalid,
     input wire s_axi_bready,
-    input wire [15:0] s_axi_araddr,
+    input wire [ADDR_WIDTH-1:0] s_axi_araddr,
     input wire s_axi_arvalid,
     output wire s_axi_arready,
     output wire [31:0] s_axi_rdata,
@@ -19,7 +19,7 @@ module z100_axi_mmio (
     input wire s_axi_rready,
     output wire cmd_valid,
     input wire cmd_ready,
-    output wire [15:0] cmd_addr,
+    output wire [ADDR_WIDTH-1:0] cmd_addr,
     output wire cmd_read,
     output reg [31:0] cmd_wdata,
     output reg [3:0] cmd_wmask,
@@ -29,7 +29,7 @@ module z100_axi_mmio (
     input wire rsp_error
 );
     reg aw_pending, w_pending, ar_pending, in_flight, response_read;
-    reg [15:0] write_address, read_address;
+    reg [ADDR_WIDTH-1:0] write_address, read_address;
     wire write_complete = aw_pending && w_pending;
     assign s_axi_awready = !aw_pending && !in_flight;
     assign s_axi_wready = !w_pending && !in_flight;
