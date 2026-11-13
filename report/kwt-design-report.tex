@@ -1774,7 +1774,7 @@ Y &= \operatorname{LN2}(Z + F).
 
 第一次残差将注意力投影输出与同为 Q16 的 $X$ 对齐相加。第二次残差接收 FFN2 的 INT40 累加结果，依据本层输出指数将其舍入到 Q16，再与 ENC1 保留的 LN1 输出 $Z$ 相加。两处相加都饱和为 INT32，并将结果送入对应的 LayerNorm。
 
-两处层归一化（LayerNorm）均对序列每个位置 $i \in [0,98]$ 的 $D=64$ 个特征通道独立执行标准化与仿射变换。设单行残差相加并饱和至 INT32 后的特征向量为 $z = (z_0, z_1, \ldots, z_{63})$，硬件按图~\ref{fig:layernorm-row} 与表~\ref{tab:ch8-2} 所示的四个依赖步骤完成单行处理：
+两处层归一化（LayerNorm）均对序列每个位置 $i \in [0,98]$ 的 $D=64$ 个特征通道独立执行标准化与仿射变换。设单行残差相加并饱和至 INT32 后的特征向量为 $z = (z_0, z_1, \ldots, z_{63})$，硬件按图~\ref{fig:layernorm-row} 所示的四个依赖步骤完成单行处理：
 \begin{enumerate}\linespread{1.15}\selectfont\setlength{\itemsep}{2pt}\setlength{\parsep}{0pt}
 \item \textbf{行均值与中心化：} 对 64 个通道求和并算术右移 6 位得到整数均值 $\mu = \lfloor \sum_{c=0}^{63} z_c / 64\rfloor$，随后逐通道计算中心化差值 $d_c = \operatorname{sat}_{32}(z_c - \mu)$；
 \item \textbf{总体方差计算：} 利用共享的 4 路 $32\times32$ 乘法器与 72 位累加器累加 $\sum_{c=0}^{63} d_c^2$，除以 64 得到总体方差 $\sigma^2$；
@@ -1783,31 +1783,8 @@ Y &= \operatorname{LN2}(Z + F).
 \end{enumerate}
 
 \begin{figure}[!htbp]\centering
-\begin{minipage}[c]{.49\linewidth}\centering
-\captionsetup{font=footnotesize,justification=centering,singlelinecheck=false}
-\includegraphics[width=\linewidth]{figures/layernorm-row.pdf}
-\captionof{figure}{LayerNorm 单行统计量与逐元素输出~\cite{jiang2024sta}}\label{fig:layernorm-row}
-\end{minipage}\hfill
-\begin{minipage}[c]{.47\linewidth}\centering
-\linespread{1.05}\fontsize{8.5}{11}\selectfont
-\setlength{\tabcolsep}{2.5pt}\renewcommand{\arraystretch}{1.15}
-\captionsetup{font=footnotesize}
-\captionof{table}{残差与 LayerNorm 通路的操作及数值处理}\label{tab:ch8-2}
-\begin{tabularx}{\linewidth}{@{}C{.8}C{1.1}C{1.1}@{}}
-\toprule
-\rowcolor{TableHeader}
-\thcell{节点} & \thcell{关键常量 / 操作} & \thcell{位宽与饱和} \\
-\midrule
-第一处残差 & 注意力输出加输入 & 饱和到 INT32 \\
-中心化 & 减行均值 & 饱和到 INT32 \\
-方差 & 总体方差（除以 64） & 整数取整 \\
-标准差 & 整数 \texttt{isqrt} & 72 位中间量 \\
-倒数 & $\lfloor 2^{36}/\text{std}\rfloor$ & 定点除法 \\
-仿射 & 乘 $\gamma$ 加 $\beta$ & 最近偶数舍入，饱和到 INT32 \\
-$\epsilon$ & $4295\times2^{-32}$ & 加在方差上，避免零除 \\
-\bottomrule
-\end{tabularx}
-\end{minipage}
+\includegraphics[width=.62\linewidth]{figures/layernorm-row.pdf}
+\caption{LayerNorm 单行统计量与逐元素输出~\cite{jiang2024sta}}\label{fig:layernorm-row}
 \end{figure}
 
 跨引擎交接包含两次尺度转换。\textbf{LN1 到 FFN}：Q16 INT32 按本层输入指数移位、饱和并打包为 INT16。\textbf{FFN 到 LN2}：FFN2 结果按输出指数恢复到 Q16，再与驻留的 LN1 相加。
