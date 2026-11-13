@@ -1,0 +1,100 @@
+reference_sleep task_04
+cycles=30540.500 tasks/s@150MHz=4911.511
+dynamic_mW=32.93600 leakage_mW=4.41000 total_mW=37.34600 energy_uJ=7.60377
+DC reports: /storage1/2026contest/server3/s3_20usr/Desktop/ffn1_q128_reference_sleep/cases/reference_sleep/run/20261113_120714_64288_clock_gate_soc/report
+SAIF power: /storage1/2026contest/server3/s3_20usr/Desktop/ffn1_q128_reference_sleep/cases/reference_sleep/run/20261113_120714_64288_clock_gate_soc/report/rtl_activity/task_00/power.rpt
+
+[Units]
+Time_unit            : 1.0e-09 Second(ns)
+
+[Clock]
+core_clk         6.67   {0 3.33333}                   {clk}
+
+[Cell area]
+Number of cells:                       128881
+Combinational area:             239494.805864
+Buf/Inv area:                    10750.337027
+Noncombinational area:           54572.666062
+Macro/Black Box area:          2444135.540039
+Net Interconnect area:      undefined  (No wire load specified)
+Total cell area:               2738203.011965
+Total area:                 undefined
+
+[Area breakdown]
+status=COMPLETE
+added leaves=110739 area=505555.248324 known_area=505555.248324 unknown_leaves=0 constant_pseudo_leaves=123
+cpu leaves=16534 area=470253.772896 known_area=470253.772896 unknown_leaves=0 constant_pseudo_leaves=309
+shared leaves=933 area=1762393.98758 known_area=1762393.98758 unknown_leaves=0 constant_pseudo_leaves=2
+
+[SRAM macros]
+RAMSP128X16 count=36 area_per_macro=2677.051025 subtotal=96373.8369
+RAMSP1024X16 count=16 area_per_macro=9148.524414 subtotal=146376.390624
+RAMSP4096X16 count=80 area_per_macro=27517.316406 subtotal=2201385.31248
+Total=132 macros; payload=697344 bytes; .db macro area sum=2444135.54
+
+[Setup and SS hold]
+  Timing Path Group 'FEEDTHROUGH'
+  Critical Path Length:          1.39
+  Critical Path Slack:           3.18
+  Total Negative Slack:          0.00
+  No. of Violating Paths:        0.00
+  Worst Hold Violation:          0.00
+  Total Hold Violation:          0.00
+  No. of Hold Violations:        0.00
+  Timing Path Group 'INPUTS'
+  Critical Path Length:          2.34
+  Critical Path Slack:           0.00
+  Total Negative Slack:          0.00
+  No. of Violating Paths:        0.00
+  Worst Hold Violation:         -0.17
+  Total Hold Violation:        -18.05
+  No. of Hold Violations:      344.00
+  Timing Path Group 'OUTPUTS'
+  Critical Path Length:          2.97
+  Critical Path Slack:           2.60
+  Total Negative Slack:          0.00
+  No. of Violating Paths:        0.00
+  Worst Hold Violation:          0.00
+  Total Hold Violation:          0.00
+  No. of Hold Violations:        0.00
+  Timing Path Group 'core_clk'
+  Critical Path Length:          6.16
+  Critical Path Slack:           0.00
+  Total Negative Slack:          0.00
+  No. of Violating Paths:        0.00
+  Worst Hold Violation:         -0.14
+  Total Hold Violation:        -15.09
+  No. of Hold Violations:      339.00
+  Design  WNS: 0.00  TNS: 0.00  Number of Violating Paths: 0
+  Design (Hold)  WNS: 0.17  TNS: 33.14  Number of Violating Paths: 683
+/storage1/2026contest/server3/s3_20usr/Desktop/ffn1_q128_reference_sleep/cases/reference_sleep/run/20261113_120714_64288_clock_gate_soc/report/timing_setup.rpt: worst slack = 0
+/storage1/2026contest/server3/s3_20usr/Desktop/ffn1_q128_reference_sleep/cases/reference_sleep/run/20261113_120714_64288_clock_gate_soc/report/timing_hold_ss_only.rpt: worst slack = -0.17
+
+[Clock gating]
+          |    Number of Clock gating elements    |      255         |
+          |    Number of Gated registers          |  9763 (97.58%)   |
+          |    Number of Ungated registers        |   242 (2.42%)    |
+          |    Total number of registers          |    10005         |
+          |  Number of tool-inserted clock gating elements  |   255 (100.00%)  |
+          |  Number of gated registers                      |  9763 (97.58%)   |
+          |  Number of ungated registers                    |   242 (2.42%)    |
+
+[SAIF coverage and conflicts]
+Warning: There are 227 switching activity information conflicts. (PWR-19)
+ Ports        141(100.00%)      0(0.00%)          0(0.00%)           141
+ Seq Cells    6898(68.53%)      0(0.00%)          0(0.00%)           10065
+ Tri Cells    0(0.00%)          0(0.00%)          0(0.00%)           0
+
+[SAIF hierarchy: Switch / Internal / Leak / Total / %]
+Operating Conditions: ss_v0p99_125c   Library: scc40nll_vhsc40_rvt_ss_v0p99_125c_basic
+Global Operating Voltage = 0.99
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1uW
+kwt_ffn1_soc                              9.703   23.233 4.41e+03   37.345 100.0
+  cpu (e203_cpu_top)                   3.11e-02    0.215  758.831    1.005   2.7
+    u_e203_srams (e203_srams)          1.92e-03 8.83e-02  737.527    0.828   2.2
+    u_e203_cpu (e203_cpu_MASTER1)      2.92e-02    0.127   21.303    0.177   0.5
+  bus (kwt_ffn1_bus_DMA_BURST1_HOST_BURST0)
+                                          9.670   23.017 3.65e+03   36.337  97.3
+    accelerator (kwt_ffn1_dma)            9.582   18.516  702.761   28.801  77.1
+    shared (kwt_shared_sram)           2.59e-02    4.458 2.95e+03    7.431  19.9

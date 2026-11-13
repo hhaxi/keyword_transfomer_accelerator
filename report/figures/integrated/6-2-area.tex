@@ -1,19 +1,20 @@
-\documentclass[tikz,border=3pt]{standalone}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.16}
-\definecolor{scatterBlue}{HTML}{1F77B4}
-\definecolor{scatterOrange}{HTML}{D65F00}
+\documentclass[tikz,border=5pt]{standalone}
+\definecolor{addedblue}{HTML}{315A84}
+\definecolor{cpuTeal}{HTML}{2E796C}
+\definecolor{memoryBlue}{HTML}{D4E9F2}
 \begin{document}
-\begin{tikzpicture}
-\begin{axis}[width=15cm,height=8cm,xmin=0.502,xmax=0.523,ymin=7.90,ymax=8.65,xlabel={Added accelerator area (mm$^2$)},ylabel={Energy per task ($\mu$J)},scaled x ticks=false,xtick={0.504,0.508,0.512,0.516,0.520},xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=3},grid=major,grid style={gray!20},tick label style={font=\small},label style={font=\small},clip=false]
-\addplot[only marks,mark=*,mark size=2.6pt,color=scatterBlue] coordinates {(0.504210,8.3561) (0.510900,8.4723) (0.517180,8.4607) (0.518090,8.0416) (0.517390,8.5146)};
-\addplot[only marks,mark=star,mark size=4pt,color=scatterOrange] coordinates {(0.505560,7.9802)};
-\node[anchor=south west,font=\small] at (axis cs:0.504210,8.3561) {reference};
-\node[anchor=south east,font=\small] at (axis cs:0.510900,8.4723) {compact};
-\node[anchor=north west,font=\small] at (axis cs:0.517180,8.4607) {dense};
-\node[anchor=south west,font=\small] at (axis cs:0.518090,8.0416) {dense\_sleep};
-\node[anchor=south west,font=\small] at (axis cs:0.517390,8.5146) {dense\_sched};
-\node[anchor=south west,font=\small,text=scatterOrange] at (axis cs:0.505560,7.9802) {reference\_sleep};
-\end{axis}
+\begin{tikzpicture}[x=.135cm,y=.9cm,font=\small]
+\fill[addedblue] (0,.28) rectangle (18.463,1);
+\fill[cpuTeal] (18.463,.28) rectangle (35.637,1);
+\fill[memoryBlue] (35.637,.28) rectangle (100,1);
+\node[white] at (9.232,.64) {Added 18.46\%};
+\node[white] at (27.05,.64) {E203 17.17\%};
+\node at (67.819,.64) {Shared SRAM 64.36\%};
+\draw[black!60] (0,.10) -- (100,.10);
+\foreach \x in {0,20,40,60,80,100}{
+  \draw[black!60] (\x,.10) -- (\x,.03);
+  \node[below] at (\x,.02) {\x};
+}
+\node at (50,-.50) {Share of total cell area (\%)};
 \end{tikzpicture}
 \end{document}
