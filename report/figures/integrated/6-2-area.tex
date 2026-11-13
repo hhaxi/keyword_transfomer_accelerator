@@ -1,14 +1,15 @@
 \documentclass[tikz,border=5pt]{standalone}
-\definecolor{addedblue}{HTML}{315A84}
-\definecolor{cpuTeal}{HTML}{2E796C}
-\definecolor{memoryBlue}{HTML}{D4E9F2}
+\definecolor{addedfill}{HTML}{FCCCDA}
+\definecolor{cpufill}{HTML}{DEF6D6}
+\definecolor{memoryfill}{HTML}{DFEFFE}
+\definecolor{chartink}{HTML}{234675}
 \begin{document}
-\begin{tikzpicture}[x=.135cm,y=.9cm,font=\small]
-\fill[addedblue] (0,.28) rectangle (18.463,1);
-\fill[cpuTeal] (18.463,.28) rectangle (35.637,1);
-\fill[memoryBlue] (35.637,.28) rectangle (100,1);
-\node[white] at (9.232,.64) {Added 18.46\%};
-\node[white] at (27.05,.64) {E203 17.17\%};
+\begin{tikzpicture}[x=.135cm,y=.9cm,font=\small,text=chartink]
+\fill[addedfill] (0,.28) rectangle (18.463,1);
+\fill[cpufill] (18.463,.28) rectangle (35.637,1);
+\fill[memoryfill] (35.637,.28) rectangle (100,1);
+\node at (9.232,.64) {Added 18.46\%};
+\node at (27.05,.64) {E203 17.17\%};
 \node at (67.819,.64) {Shared SRAM 64.36\%};
 \draw[black!60] (0,.10) -- (100,.10);
 \foreach \x in {0,20,40,60,80,100}{
