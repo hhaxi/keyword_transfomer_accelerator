@@ -127,9 +127,9 @@
 
 基础加速器完成 $99\times64$ 输入与 $64\times256$ 权重的矩阵乘加及偏置处理，支持十二组层参数连续切换。计算核采用\textbf{输出驻留阵列}，通过\textbf{行列广播}复用操作数，将部分和保留在处理单元内；\textbf{权重常驻、输入双缓冲与无损压缩传输}共同减少访存和装载等待。\textbf{DMA 独立搬运}数据，E203 通过\textbf{IRQ/WFI 低功耗等待}响应任务完成，使计算、存储与任务控制协同运行。输入和权重采用 INT16、内部采用 INT40 累加，输出经就近取偶舍入和饱和转换写回 INT16。
 
-基础任务在十二组层参数下的 RTL 输出均与整数模型逐位一致，本地浮点对照的\textbf{十二层最大汇总 NRMSE 为 0.022\%}。在\textbf{150 MHz 目标频率}下，选定配置的完整任务吞吐为\textbf{4,551 任务/秒}，新增面积为\textbf{0.505 mm\textsuperscript{2}}，占 2.25 mm\textsuperscript{2} 预算的 22.47\%；整机平均功耗为\textbf{36.3 mW}，单任务能耗为\textbf{7.98 $\mu$J}。相对同结构轮询方案，IRQ/WFI 使单任务能耗降低 4.50\%。
+基础任务在十二组层参数下的 RTL 输出均与整数模型逐位一致，本地浮点对照的\textbf{十二层最大汇总 NRMSE 为 0.022\%}。在\textbf{150 MHz 目标频率}下，选定配置的完整任务吞吐为\textbf{4,551 任务/秒}，新增面积为\textbf{0.506 mm\textsuperscript{2}}，占 2.25 mm\textsuperscript{2} 预算的 22.47\%；整机平均功耗为\textbf{36.3 mW}，单任务能耗为\textbf{7.98 $\mu$J}。相对同结构轮询方案，IRQ/WFI 使单任务能耗降低 4.50\%。
 
-在本科基础任务之上，自主拓展采用双引擎结构，实现\textbf{完整 FFN、单头注意力、残差、LayerNorm 及十二层 PostNorm 编码器}。层内 FIFO 直传、层间结果驻留和突发传输减少中间数据搬运，十二层 RTL 回归的各级输出与整数模型逐位一致。本地软件分类的\textbf{Top-1 为 97.88\%，与浮点模型逐条预测一致}。在 150 MHz 目标频率下，\textbf{十二层 Transformer 编码器预计吞吐为 48.7 任务/秒}。
+在本科基础任务之上，自主拓展采用双引擎结构，实现\textbf{完整 FFN、单头注意力、残差、LayerNorm 及十二层 PostNorm 编码器}。层内 FIFO 直传、层间结果驻留和突发传输减少中间数据搬运，十二层 RTL 回归的各级输出与整数模型逐位一致。本地软件分类的\textbf{Top-1 为 97.89\%，与浮点模型逐条预测一致}。在 150 MHz 目标频率下，\textbf{十二层 Transformer 编码器预计吞吐为 48.7 任务/秒}。
 
 拓展系统已部署于 Z100 FPGA，完成上位机音频处理与传输、板上编码器推理、软件分类及结果展示。固定十二条输入连续运行十轮均识别正确，\textbf{板上时延中位数为 46.2 ms，端到端吞吐为 19.9 条输入/秒}。
 
@@ -142,7 +142,7 @@
 \pagenumbering{arabic}
 \chapter{设计规划}
 
-端侧语音指令识别要求在受限的存储容量与功耗预算内完成特征提取、序列编码与指令分类。本章从 KWT-1 模型的运算结构出发，界定本科基础任务与编码器拓展任务的硬件加速范围，说明关键设计指标的评价口径，并概括整体工程方案。
+端侧语音指令识别要求在受限的存储容量与功耗预算内完成特征提取、序列编码与指令分类。本章从 KWT-1 模型的运算结构出发，界定本科基础任务与编码器拓展任务的硬件加速范围，说明关键设计指标的评价方法，并概括整体工程方案。
 
 \section{设计场景与需求}
 
@@ -150,7 +150,7 @@
 
 语音指令识别将一段短时语音映射为预定义的离散指令类别。在智能家居控制、可穿戴设备与离线终端交互等场景中，识别过程需要在本地芯片上实时完成，以降低云端通信带来的延迟、功耗与隐私开销。一段 1 秒的语音指令通常被切分为数十个连续声学帧，单个时间帧仅反映局部频谱包络；同时，不同说话人的语速差异与起止位置偏移会使同一关键词的能量分布在时间轴上拉伸或平移。因此，声学编码模型需要具备跨时间帧建立长程关联的能力。
 
-Keyword Transformer（KWT-1）利用自注意力机制建模语音帧之间的关联，沿时间帧维度对声学特征做序列编码。赛题给定的预训练模型接收 1 秒、16 kHz 采样的语音波形，经预处理提取 $98\times40$ 的 MFCC 特征，再通过线性投影映射至 64 维特征空间，并在序列首部拼接 1 个可学习的分类 token（\texttt{CLS}），叠加位置编码后形成 $99\times64$ 的编码器输入张量。
+Keyword Transformer（KWT-1）利用自注意力机制建模语音帧之间的关联，沿时间帧维度对声学特征做序列编码~\cite{kwt}。赛题给定的预训练模型~\cite{rules,checkpoint}接收 1 秒、16 kHz 采样的语音波形，经预处理提取 $98\times40$ 的 MFCC 特征，再通过线性投影映射至 64 维特征空间，并在序列首部拼接 1 个可学习的分类 token（\texttt{CLS}），叠加位置编码后形成 $99\times64$ 的编码器输入张量。
 
 随后，数据依次流经 12 层结构相同的 PostNorm Transformer 编码器；每层包含单头自注意力子层与前馈网络（FFN）子层，其中 FFN 的特征维度按 $64\to256\to64$ 先升维后降维。完成 12 层编码后，分类头取第 0 行分类 token 的 64 维特征完成 12 类指令判决。图~\ref{fig:1-1} 给出了从输入语音到分类输出的完整处理链路。
 
@@ -181,27 +181,27 @@ Transformer 将序列间的关联建模与特征变换组织为重复堆叠的�
 
 \section{设计目的及关键指标}
 
-本设计面向 E203 SoC 上的 FFN1 运算，目标是在保证计算正确性和定点精度的前提下，\textbf{提高完整任务的处理吞吐，并控制新增面积与单任务能耗}。加速器不仅需要更快地完成矩阵乘加，还需要减少操作数搬运、计算等待和处理器轮询开销，使阵列并行能力能够转化为系统层面的收益。
+本设计面向蜂鸟 E203 SoC~\cite{e203} 上的 FFN1 运算，目标是在保证计算正确性和定点精度的前提下，\textbf{提高完整任务的处理吞吐，并控制新增面积与单任务能耗}。加速器不仅需要更快地完成矩阵乘加，还需要减少操作数搬运、计算等待和处理器轮询开销，使阵列并行能力能够转化为系统层面的收益。
 
 \begin{table}[H]\centering\fontsize{10}{13}\selectfont
-\caption{基础任务的设计目标与评价依据}
+\caption{基础任务的设计目标与评价依据}\label{tab:ch1-1}
 \begin{tabular}{@{\hspace{2pt}}U{19}T{62}T{63}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
 \thcell{设计目标} & \thleft{具体要求} & \thleft{评价依据} \\
 \midrule
-\textbf{计算正确} & 正确完成矩阵乘加、偏置与写回，支持十二组参数切换；按赛题口径满足 NRMSE $\leq3\%$ & RTL 与整数参考逐位比对；最终写回解码值与浮点参考比较 \\
+\textbf{计算正确} & 正确完成矩阵乘加、偏置与写回，支持十二组参数切换；满足赛题 NRMSE $\leq3\%$ 要求 & RTL 与整数参考逐位比对；最终写回解码值与浮点参考比较 \\
 \addlinespace[1.5pt]
 \textbf{高吞吐} & 提高从数据装载到结果写回的完整任务吞吐，按 150 MHz 统一折算 & 统计首个 Host 数据请求至末笔 DMA 写响应的周期；单独检查目标频率下的时序 \\
 \addlinespace[1.5pt]
 \textbf{低面积} & 将加速器、接口逻辑及内部 SRAM 宏的新增总面积控制在 2.25 mm\textsuperscript{2} 以内 & 统计工艺映射后的新增逻辑与 SRAM 宏面积，与预算比较 \\
 \addlinespace[1.5pt]
-\textbf{低能耗} & 减少重复访存和处理器等待活动，降低完成一次任务所需的能量 & 在匹配任务窗口下比较功耗与周期，计算单任务能耗 \\
+\textbf{低能耗} & 减少重复访存和处理器等待活动，降低完成一次任务所需的能量 & 在相同任务窗口下比较功耗与周期，计算单任务能耗 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-四项目标中，正确性与精度是前提，面积和频率是实现约束，吞吐与能耗用于评价方案收益。表中要求是否达到，分别由第五章的功能与精度验证、第六章的性能和综合结果确认。
+四项目标中，正确性与精度是前提，面积和频率是实现约束，吞吐与能耗用于评价方案收益。表~\ref{tab:ch1-1} 所列要求是否达到，分别由第五章的功能与精度验证、第六章的性能和综合结果确认。
 
 \Needspace{10\baselineskip}
 \section{设计内容与工程实现方案}
@@ -233,11 +233,11 @@ Transformer 将序列间的关联建模与特征变换组织为重复堆叠的�
 
 本报告围绕\textbf{FFN1 独立加速}与\textbf{完整编码器拓展}两项任务展开，依次说明硬件实现方法、系统验证结果及性能优化效果。
 
-\textbf{第一章介绍设计背景与任务要求。} 从端侧语音识别和 KWT-1 的运算特点出发，界定基础与拓展任务的加速范围，明确\textbf{正确性、吞吐、面积与能耗}四项目标，并给出主要设计内容，为后续架构选择和结果评价提供依据。
+\textbf{第一章介绍设计背景与任务要求。} 从端侧语音识别和 KWT-1 的运算特点出发，界定基础与拓展任务的加速范围，明确\textbf{正确性、吞吐、面积与能耗}四项目标，并给出主要设计内容。
 
-\textbf{第二至四章展开基础加速器的硬件设计。}首先从一次任务的输入、输出和控制交互出发，明确\textbf{处理器、DMA 与计算核的分工}；随后分析矩阵运算中的并行性与复用关系，说明\textbf{双路乘加阵列、内部 SRAM 和输入双缓冲}如何共同支撑计算；最后将这条数据通路接入 SoC，落实总线握手、完成判定、异常处理与中断等待机制。这部分既解释计算核如何工作，也交代数据如何送达、结果何时可用。
+\textbf{第二至四章展开基础加速器的硬件设计。} 首先从一次任务的输入、输出和控制交互出发，明确\textbf{处理器、DMA 与计算核的分工}；随后分析矩阵运算中的并行性与复用关系，说明\textbf{双路乘加阵列、内部 SRAM 和输入双缓冲}如何协同供数；最后将计算通路接入 SoC，落实总线握手、完成判定、异常处理与中断等待机制。
 
-\textbf{第五、六章给出功能验证与性能评估。} 检验上述设计能否正确执行，以及并行计算带来了多少系统收益。功能验证以\textbf{整数参考和浮点参考}区分实现错误与定点误差，综合和性能评估则结合\textbf{完整任务周期、面积与任务活动数据}比较候选方案。结合任务周期分解和同条件实验，分析阵列计算、数据搬运与处理器等待对系统性能的影响。
+\textbf{第五、六章给出功能验证与性能评估。} 以\textbf{整数参考和浮点参考}区分实现错误与定点误差，并结合\textbf{完整任务周期、面积与任务活动数据}比较候选方案，通过周期分解和同条件对照实验分析阵列计算、数据搬运与处理器等待对系统性能的影响。
 
 \textbf{第七至九章展开完整编码器的拓展设计。} 补齐完整 FFN、单头注意力、残差与归一化运算，说明\textbf{双引擎的层内数据交接}与\textbf{十二层参数调度和结果驻留}，并解释共享 SRAM 的仲裁方式。
 
@@ -276,7 +276,7 @@ DMA & 装载操作数，写回打包结果 & 共享 SRAM、解包器、结果队
 \end{tabular}
 \end{table}
 
-图~\ref{fig:2-1} 从上到下展示片内计算通路和 SoC 互连。DMA 读取共享 SRAM 中的压缩权重与差分输入，分别恢复后送入权重缓存和 X 双缓冲；偏置与操作数一起送入 $8\times8$ 处理单元阵列。累加结果经就近取偶舍入、饱和及结果队列交还 DMA 写回，完成事件通过 IRQ 路径通知 E203。工程中另设不含 E203 的总线级顶层，便于独立检查加速器接口。
+图~\ref{fig:2-1} 从上到下展示片内计算通路和 SoC 互连。DMA 读取共享 SRAM 中的压缩权重与差分输入，分别恢复后送入权重缓存和 X 双缓冲；偏置与操作数一起送入 $8\times8$ 处理单元阵列。累加结果经就近取偶舍入、饱和及结果队列交还 DMA 写回，完成事件通过 IRQ 路径通知 E203。此外，加速器总线封装也可脱离 E203 独立例化，用于接口级功能仿真。
 
 \begin{figure}[!htp]\centering
 \includegraphics[width=.94\linewidth]{figures/integrated/ffn1-system-palette.pdf}
@@ -291,7 +291,7 @@ DMA & 装载操作数，写回打包结果 & 共享 SRAM、解包器、结果队
 
 \section{FFN1 任务执行流程}
 
-一次任务依次经历\textbf{准备与配置、首块装载、分块执行、写回与通知}。其中，Host 写入数据与 E203 启动 DMA 是两个不同节点；严格任务窗口从首个 Host 数据请求被接收开始，包含数据准备和驱动启动，结束于末笔 DMA 写响应返回。表~\ref{tab:task-stages} 列出各阶段的推进条件。
+一次任务依次经历\textbf{准备与配置、首块装载、分块执行、写回与通知}。其中，Host 写入数据与 E203 启动 DMA 是两个不同节点；完整任务窗口从首个 Host 数据请求被接收开始，包含数据准备和驱动启动，结束于末笔 DMA 写响应返回。表~\ref{tab:task-stages} 列出各阶段的推进条件。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{FFN1 任务的执行阶段与推进条件}\label{tab:task-stages}
@@ -322,7 +322,7 @@ Host 完成数据准备并置位邮箱后，E203 检查设备状态和任务地�
 
 \par\Needspace{5\baselineskip}\addvspace{0.25\baselineskip}\noindent{\reportitemfont\bfseries\color{black}\fontsize{12}{16}\selectfont（3）区分计算核完成、写回完成与软件通知}\par\nobreak\vspace{1pt}
 
-\textbf{计算核完成}表示末个打包结果字已被 DMA 从结果队列取走，内部计算与格式化通路排空；此时总线写事务仍可能尚未结束。DMA 继续等待在途事务归零、末笔写响应返回，并确认计算核完成与结果队列为空，才置位完成状态并触发中断，这一时刻为\textbf{硬件严格完成}。随后 E203 读取状态和计数器、更新邮箱，形成\textbf{软件发布完成}。计算核完成与末笔写响应的先后关系见图~\ref{fig:4-2}。
+\textbf{计算核完成}表示末个打包结果字已被 DMA 从结果队列取走，内部计算与格式化通路排空；此时总线写事务仍可能尚未结束。DMA 继续等待在途事务归零、末笔写响应返回，并确认计算核完成与结果队列为空，才置位完成状态并触发中断，这一时刻为\textbf{硬件写回完成}。随后 E203 读取状态和计数器、更新邮箱，形成\textbf{软件发布完成}。计算核完成与末笔写响应的先后关系见图~\ref{fig:4-2}。
 
 
 \section{加速器模块划分与接口关系}
@@ -382,7 +382,7 @@ W/X 解包器 & 接收 32 位传输字；\newline 输出 64 位 W 四元组或 6
 
 \par\Needspace{5\baselineskip}\addvspace{0.25\baselineskip}\noindent{\reportitemfont\bfseries\color{black}\fontsize{12}{16}\selectfont（5）用 IRQ/WFI 等待，减少处理器轮询活动}\par\nobreak\vspace{1pt}
 
-任务运行期间，持续轮询会带来额外取指和 MMIO 访问。本设计用事件控制器记录完成、错误等事件，E203 确认任务仍在运行后执行 \texttt{wfi}，待事件唤醒后收尾。为防止检查与休眠之间丢失通知，事件逻辑需处理同拍清除与新事件，固件也需遵守相应临界区顺序。该机制以少量控制逻辑换取等待活动减少，其能耗收益由第六章匹配实验评价。
+任务运行期间，持续轮询会带来额外取指和 MMIO 访问。本设计用事件控制器记录完成、错误等事件，E203 确认任务仍在运行后执行 \texttt{wfi}，待事件唤醒后收尾。为防止检查与休眠之间丢失通知，事件逻辑需处理同拍清除与新事件，固件也需遵守相应临界区顺序。该机制以少量控制逻辑换取等待活动减少，其能耗收益由第六章同条件对比实验评价。
 
 \par\Needspace{5\baselineskip}\addvspace{0.25\baselineskip}\noindent{\reportitemfont\bfseries\color{black}\fontsize{12}{16}\selectfont（6）总线传输采用无损编码，内部计算格式不变}\par\nobreak\vspace{1pt}
 
@@ -547,7 +547,7 @@ RNE 在余数恰为半步时选择相邻偶数，避免所有半步都朝同一�
 \text{MAC/cycle}=P_i\cdot P_j\cdot P_k.
 \end{equation}
 
-从内部存储供数角度看，在同一拍内驱动这 $P_i P_j P_k$ 个乘法器无需读取同等数量的操作数。同一行 $r \in [0, P_i-1]$ 的 $P_j$ 个处理单元共享该行的 $P_k$ 个输入值 $X_{i+r,\,k:k+P_k-1}$，而同一列 $c \in [0, P_j-1]$ 的 $P_i$ 个处理单元共享该列的 $P_k$ 个权重值 $W_{k:k+P_k-1,\,j+c}$。通过阵列内的行向与列向广播，内部 SRAM 在每个有效拍需要提供的独立 16 位操作数总数为：
+从内部存储供数角度看，遵循通用矩阵乘法的分块与操作数复用原则~\cite{nvidia-gemm}，在同一拍内驱动这 $P_i P_j P_k$ 个乘法器无需读取同等数量的操作数。同一行 $r \in [0, P_i-1]$ 的 $P_j$ 个处理单元共享该行的 $P_k$ 个输入值 $X_{i+r,\,k:k+P_k-1}$，而同一列 $c \in [0, P_j-1]$ 的 $P_i$ 个处理单元共享该列的 $P_k$ 个权重值 $W_{k:k+P_k-1,\,j+c}$。通过阵列内的行向与列向广播，内部 SRAM 在每个有效拍需要提供的独立 16 位操作数总数为：
 \begin{equation}
 \label{eq:operand-count}
 N_{\text{op}}=P_k\left(P_i+P_j\right).
@@ -881,9 +881,7 @@ $W$ & 8,192 & 6,824 & $-16.7\%$ \\
 
 \subsection{总线访问分工}
 
-共享 SRAM 是 Host、E203 与 DMA 的任务交接区。\textbf{Host 准备数据，DMA 批量搬运，E203 配置与收尾}：Host 在启动前写入输入和参数，完成后回读结果；DMA 在运行期间装载操作数并写回结果；E203 通过邮箱和 MMIO 管理任务，无需逐元素搬运矩阵。
-
-IRQ/WFI 减少等待期间的处理器活动。
+共享 SRAM 是 Host、E203 与 DMA 的任务交接区。\textbf{Host 准备数据，DMA 批量搬运，E203 配置与收尾}：Host 在启动前写入输入和参数，完成后回读结果；DMA 在运行期间装载操作数并写回结果；E203 通过邮箱和 MMIO 管理任务，并在等待期间借助 IRQ/\allowbreak{}WFI 减少轮询活动，无需逐元素搬运矩阵。
 
 为防止软件配置错误导致 DMA 越界读写或破坏相邻缓冲区，DMA 控制器在收到写启动命令的当拍，由硬件组合逻辑对四个基地址寄存器（$X$、$W$、$b$、$Y$）自动执行三项合法性校验：
 \begin{enumerate}
@@ -1093,10 +1091,7 @@ DMA 的正常完成绑定到\textbf{末笔写响应退休}，见图~\ref{fig:4-2
 
 \subsection{任务配置与启动}
 
-E203 固件在收到 Host 邮箱请求后，负责完成加速器的空闲确认、基址配置、启动等待与计数快照发布。表~\ref{tab:ch4-2} 已列出相关 MMIO 寄存器定义，以下按配置、等待、计数发布与异常恢复说明固件控制流程。
-
-
-驱动需要遵守三处顺序约束。
+E203 固件在收到 Host 邮箱请求后，负责完成加速器的空闲确认、基址配置、启动等待与计数快照发布（相关 MMIO 寄存器见表~\ref{tab:ch4-2}）。驱动在配置、启动及结果发布环节须遵守三处顺序约束；复位对比、超时恢复及低功耗等待机制分别见第 4.3.2、4.3.3 与 4.4 节。
 
 \textbf{先确认空闲，再修改配置。} 基地址与格式寄存器受运行期写保护，只有上一任务完成或异常排空后，才能写入新配置。
 
@@ -1162,14 +1157,14 @@ E203 固件在收到 Host 邮箱请求后，负责完成加速器的空闲确认
 
 \section{验证方案与参考模型}
 
-验证围绕\textbf{数值精度、RTL 功能与综合一致性}展开。浮点参考用于评价定点输出的数值误差，位精确整数参考用于逐值检查乘加和写回结果；形式等价验证比较 RTL 与综合网表的对应逻辑。各项检查的参考对象与失配定位方向见表~\ref{tab:ch5-1}。
+验证围绕\textbf{数值精度、RTL 功能与综合一致性}展开。浮点参考用于评价定点输出的数值误差，位精确整数参考用于逐值检查乘加和写回结果；形式等价验证比较 RTL 与综合网表的对应逻辑。各项检查的参考对象与主要核对内容见表~\ref{tab:ch5-1}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{分层功能比对与形式等价检查的参考对象及内容}\label{tab:ch5-1}
 \begin{tabular}{@{\hspace{2pt}}U{15}T{35}T{38}T{54}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
-\thcell{检查层次} & \thleft{参考对象} & \thleft{比对内容} & \thleft{失配定位方向} \\
+\thcell{检查层次} & \thleft{参考对象} & \thleft{比对内容} & \thleft{故障排查重点} \\
 \midrule
 浮点层 & 官方模型 + 冻结权重 & 层输入、层输出、分类结果 & 尺度、移位或数值契约 \\
 \addlinespace[1.5pt]
@@ -1215,16 +1210,14 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 \end{tabular}
 \end{table}
 
-其中两个平台还检查结构与控制条件。\texttt{tb\_tile\_\allowbreak{}isolation} 验证无有效乘积时送入阵列的 X 恒为零，这是第三章隔离逻辑的正确性前提；\texttt{tb\_sram\_gate} 验证本地门控只在不访问时关闭宏时钟，用于核对低功耗控制是否保持访问与算术行为。
-
-不同层次的测试分别定位不同范围的问题。算术与格式单测覆盖符号、舍入和有效位，DMA 联动测试覆盖请求与响应的归属，整机回归再检查跨任务状态与最终结果。
+其中两个平台还检查结构与控制条件。\texttt{tb\_tile\_\allowbreak{}isolation} 核对无有效乘积时送入阵列的 X 恒为零，确保隔离逻辑工作正常；\texttt{tb\_sram\_gate} 检查本地门控仅在非访问周期关闭宏时钟，以确认低功耗控制不改变读写与算术行为。
 
 
 \section{整机回归与异常验证}
 
 \subsection{多层参数切换与连续运行}
 
-整机回归在每任务复位、连续运行两种模式下各执行十二组真实层任务，共用同源向量、固件和计时口径。前者检查独立任务，后者检查参数切换与跨任务残留。
+整机回归在每任务复位、连续运行两种模式下各执行十二组真实层任务，共用同源向量、固件和计时边界，结果见表~\ref{tab:ch5-3}。前者检查独立任务，后者检查参数切换与跨任务状态清理。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{十二组层任务的复位与连续运行回归结果}\label{tab:ch5-3}
@@ -1244,7 +1237,7 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 \end{tabular}
 \end{table}
 
-整机回归同时校验数据与事务计数。\texttt{verify.py} 检查 DMA 命令周期等于各状态周期之和，读请求数等于该层实际编码字数，写请求数等于 12,672。逐位比对和计数检查分别覆盖数值错误与冗余传输，逐层结果见附录~\ref{app:counts}。
+整机回归同时校验数据与事务计数：验证流程检查 DMA 命令周期等于各状态周期之和，读请求数等于该层实际编码字数，写请求数恒为 12,672，从而同时捕获数值错误与冗余传输。代表性层的实测传输字数与周期见表~\ref{tab:ch5-4}，十二层的完整统计见附录~\ref{app:counts}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{代表性层的传输字数与执行周期（复位模式）}\label{tab:ch5-4}
@@ -1265,7 +1258,7 @@ INT40 失配优先检查解包、存储归属、偏置和乘加。INT40 一致�
 
 \subsection{事件与异常定向验证}
 
-定向回归单独控制事件到达时刻，覆盖状态读取后、执行 WFI 前，以及已经休眠之后两个窗口。
+定向回归单独控制事件到达时刻，覆盖状态读取后、执行 WFI 前，以及已经休眠之后两个窗口，具体场景与判据见表~\ref{tab:ch5-5}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{事件、异常与恢复场景的定向验证}\label{tab:ch5-5}
@@ -1334,7 +1327,7 @@ FFN1 计算次数 & 119,784（每条样本十二层） \\
 
 \subsection{综合对象与设计约束}
 
-基础篇选取 Q128 的 \Q{} 作为综合对象。服务器匹配流程在 SoC 范围执行，以 \texttt{kwt\_ffn1\_soc} 为顶层，将加速器、E203 及共享 SRAM 纳入同一套连接与时序约束。面积报告再将各类实例划分为新增逻辑、CPU 及其本地存储、共享 SRAM 三组。这样可以保留真实 SoC 的接口关系，同时以新增部分衡量加速器开销。
+基础篇选取 Q128 的 \Q{} 作为综合对象。综合流程在 SoC 范围执行，以 \texttt{kwt\_ffn1\_soc} 为顶层，将加速器、E203 及共享 SRAM 纳入同一套连接与时序约束，具体设置与面积统计范围见表~\ref{tab:base-synthesis}。面积报告再将各类实例划分为新增逻辑、CPU 及其本地存储、共享 SRAM 三组，在保留真实 SoC 接口关系的同时，以新增部分衡量加速器开销。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{基础配置的综合设置与面积统计边界}
@@ -1344,7 +1337,7 @@ FFN1 计算次数 & 119,784（每条样本十二层） \\
 \rowcolor{TableHeader}
 \thcell{项目} & \thleft{设置与说明} \\
 \midrule
-综合工具与模式 & Synopsys Design Compiler，服务器匹配流程开启时钟门控选项 \\
+综合工具与模式 & Synopsys Design Compiler，开启时钟门控选项 \\
 \addlinespace[1.5pt]
 顶层与配置 & \texttt{kwt\_\allowbreak{}ffn1\_\allowbreak{}soc}，Q128 \Q{} \\
 \addlinespace[1.5pt]
@@ -1361,10 +1354,10 @@ FFN1 计算次数 & 119,784（每条样本十二层） \\
 
 \subsection{综合流程与工艺映射}
 
-综合入口读取该配置的 RTL 与文件清单，加载标准单元及 SRAM 宏库，完成顶层展开和链接后应用时钟及端口约束，再执行工艺映射与优化。第三章的存储分块保留为对应规格的单端口宏，其中 X 双缓冲与偏置使用 $128\times16$ 宏，W 使用 $1024\times16$ 宏。按宏容量可以核对结构是否符合设计，面积则由映射结果中的单元与宏面积统计得到。
+综合入口读取该配置的 RTL 与文件清单，加载标准单元及 SRAM 宏库，完成顶层展开和链接后应用时钟及端口约束，再执行工艺映射与优化。第三章的存储分块保留为对应规格的单端口宏，其中 X 双缓冲与偏置使用 $128\times16$ 宏，W 使用 $1024\times16$ 宏。按宏容量可直接对应前文的片内缓存组织，面积则由映射结果中的单元与宏面积统计得到。
 
 
-同一综合配置下，VCS 使用真实 \texttt{task00} 采集严格任务窗口内的 RTL SAIF。活动文件随后用于映射设计的功耗估算，并同时记录活动标注覆盖率。第六章的轮询与 IRQ/WFI 对照采用相同样本和统计窗口，使活动差异能够与任务周期和单任务能耗一并分析。
+同一综合配置下，VCS 使用真实 \texttt{task00} 采集完整任务窗口内的 RTL 开关活动文件（SAIF），随后用于映射后网表的功耗估算。第六章的轮询与 IRQ/WFI 对照采用相同样本和任务窗口，使活动差异能够与任务周期和单任务能耗一并分析。
 
 综合生成映射网表、DDC 设计数据库、SDC 约束、SDF 延时文件及面积和时序报告。映射网表用于下一节的形式等价检查，面积与时序报告用于第六章的 PPA 评估；SDC 和 SDF 分别保存时序约束与延时信息，供后续静态时序分析和门级仿真使用。
 
@@ -1392,9 +1385,7 @@ FFN1 计算次数 & 119,784（每条样本十二层） \\
 \end{tabular}
 \end{table}
 
-表中共有 \textbf{16,025 个比较点通过，失败点为 0}。其中，9,174 个触发器比较点对应设计中的状态存储，6,784 个黑盒引脚比较点与 67 个端口比较点对应模块边界及设计接口。三类比较点均通过，说明综合后的状态逻辑和接口逻辑在本次验证条件下与 RTL 保持一致。另有 60 个时钟门控锁存器未参与比较。
-
-本次验证返回 \texttt{Verification SUCCEEDED}，\textbf{RTL 与综合网表在已比较范围内通过形式等价验证}，表明综合优化和工艺映射未改变该范围内的逻辑功能。
+表中共有 \textbf{16,025 个比较点通过，失败点为 0}（包括 9,174 个触发器、6,784 个黑盒引脚与 67 个顶层端口），另有 60 个时钟门控锁存器未纳入工具自动比较。形式等价检查全部通过，表明综合优化、单元替换与时钟门控转换在已比较的接口与时序边界上保持了原有逻辑功能。
 \chapter{性能、面积与功耗评估}
 
 本章从\textbf{任务周期、硬件面积与单任务能耗}三个方面评价基础设计。通过阶段计数分析执行开销，通过十二组层任务比较数据分布对周期的影响，并在相同输入和工艺约束下比较候选配置，说明最终方案的性能与能耗取舍。
@@ -1404,7 +1395,7 @@ FFN1 计算次数 & 119,784（每条样本十二层） \\
 基础篇采用 Q128 \Q{} 配置开展性能、面积与功耗评估，测试配置见表~\ref{tab:ch6-1}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{基础任务的性能、面积与活动统计口径}\label{tab:ch6-1}
+\caption{基础任务的性能、面积与功耗评估边界}\label{tab:ch6-1}
 \begin{tabular}{@{\hspace{2pt}}U{26}T{105}@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
@@ -1420,23 +1411,23 @@ FFN1 计算次数 & 119,784（每条样本十二层） \\
 \addlinespace[1.5pt]
 频率折算 & 周期按 150 MHz 目标折算，是否收敛由 STA 判断 \\
 \addlinespace[1.5pt]
-面积口径 & 新增加速器 + 接口逻辑 + 内部 SRAM 宏；\newline 复用 E203 与共享 SRAM 单列 \\
+面积范围 & 新增加速器 + 接口逻辑 + 内部 SRAM 宏；\newline 复用 E203 与共享 SRAM 单列 \\
 \addlinespace[1.5pt]
-活动口径 & 同一任务窗口的 RTL-SAIF，顺序活动标注覆盖率随报告给出 \\
+活动采样 & 同一任务窗口内的 RTL 开关活动文件（SAIF） \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-评估使用两组数据，分别回答不同问题。\textbf{本地十二组任务回归}检查参数切换后的功能与跨层周期变化；\textbf{服务器 task00 匹配实验}固定样本、工艺约束和活动窗口，比较六种配置的面积与能耗。
+评估使用两组数据，分别回答不同问题。\textbf{本地十二组任务回归}检查参数切换后的功能与跨层周期变化；\textbf{同条件对比实验}固定 \texttt{task00} 样本、工艺约束与任务窗口，比较六种配置的面积与能耗。
 
-统计口径包括两个计时窗口和一项阵列活动计数，周期构成与累计活动见图~\ref{fig:6-1}：最外层为赛题严格任务窗口（从首个 Host 数据请求被接收起，至末笔 DMA 写响应返回止）；中间层为 DMA 命令窗口（从 E203 写启动寄存器触发 \texttt{CLEAR} 起，至末笔写响应返回止，由 \texttt{LOAD}、\texttt{RUN} 与状态切换构成）；阵列有效活动则为 \texttt{RUN} 阶段内累计的 13,312 拍有效归约（416 个输出块），这些有效拍可分散在运行阶段的不同位置。
+性能分解采用两个嵌套的计时窗口与一项阵列活动计数，周期构成见图~\ref{fig:6-1}：最外层为完整任务窗口（从首个 Host 数据请求被接收起，至末笔 DMA 写响应返回止）；中间层为 DMA 命令窗口（从 E203 写启动寄存器触发 \texttt{CLEAR} 起，至末笔写响应返回止，由 \texttt{LOAD}、\texttt{RUN} 与状态切换构成）；阵列有效活动则为 \texttt{RUN} 阶段内累计的 13,312 拍有效归约（416 个输出块），这些有效拍可分散在运行阶段的不同位置。
 
 
 \section{任务周期分解}
 
-表~\ref{tab:ch6-2} 与图~\ref{fig:6-1} 给出了第 0 层任务（\texttt{task00}）严格任务窗口的互斥阶段分解与内部并发诊断计数。本地回归从首个 Host 数据请求置有效时开始打点，至末笔 DMA 写响应握手时结束；图表沿用该回归记录的周期数。
+表~\ref{tab:ch6-2} 与图~\ref{fig:6-1} 给出了第 0 层任务（\texttt{task00}）完整任务窗口的互斥阶段分解与内部并发诊断计数。本地回归从首个 Host 数据请求置有效时开始打点，至末笔 DMA 写响应握手时结束；图表沿用该回归记录的周期数。
 
-严格任务周期先按互斥阶段分解：命令外准备包含 Host 写入数据及 E203 配置，约占窗口三成；DMA 命令窗口再分为 \texttt{LOAD}、\texttt{RUN} 和其他状态。\texttt{LOAD} 完成权重、偏置和首块输入准备，\texttt{RUN} 重叠执行阵列归约、后续行块装载与结果写回。
+完整任务周期先按互斥阶段分解：命令外准备包含 Host 写入数据及 E203 配置，约占窗口三成；DMA 命令窗口再分为 \texttt{LOAD}、\texttt{RUN} 和其他状态。\texttt{LOAD} 完成权重、偏置和首块输入准备，\texttt{RUN} 重叠执行阵列归约、后续行块装载与结果写回。
 
 \begin{figure}[!htp]\centering
 \includegraphics[width=1.0\linewidth]{figures/integrated/6-1.pdf}
@@ -1467,13 +1458,13 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 
 \textbf{运行阶段的主要开销在结果提交环节。} 阵列有效归约占 \texttt{RUN} 阶段的 $13{,}312/15{,}680=84.90\%$，其余为 2,368 拍。结果队列等待计数为 2,316 拍，与这一差额接近，表明减少结果提交受阻是提高运行阶段利用率的优先方向。
 
-\textbf{完整任务还受到装载与启动开销的限制。} 命令外准备和 \texttt{LOAD} 合计占严格窗口的 52.4\%，因此仅缩短阵列归约时间，仍无法消除这部分开销。请求受阻与响应受阻仅为 55 拍和 7 拍，说明已生成请求的握手阻塞较少；结合结果队列等待，应优先改善装载、计算与写回之间的衔接。
+\textbf{完整任务还受到装载与启动开销的限制。} 命令外准备和 \texttt{LOAD} 合计占完整任务窗口的 52.4\%，因此仅缩短阵列归约时间，仍无法消除这部分开销。请求受阻与响应受阻仅为 55 拍和 7 拍，说明已生成请求的握手阻塞较少；结合结果队列等待，应优先改善装载、计算与写回之间的衔接。
 \section{任务吞吐与跨层差异}
 
 表~\ref{tab:ch6-3} 分列本地十二组任务回归与服务器单任务结果。吞吐按目标时钟和各自任务周期计算，公式为 $\text{Throughput}=150\times10^6/C_{\text{task}}$。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{本地回归与服务器任务的吞吐统计口径}\label{tab:ch6-3}
+\caption{本地回归与单任务测试的吞吐对比}\label{tab:ch6-3}
 \begin{tabular}{@{\hspace{2pt}}cccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
@@ -1485,11 +1476,11 @@ DMA 其他状态 & 3 & 0.0\% & 相位切换 \\
 \end{tabular}
 \end{table}
 
-\textbf{跨层周期差异主要体现于数据传输，而非归约计算量。} 附录~\ref{app:counts} 中，十二组任务的阵列有效归约均为 13,312 拍，写请求均为 12,672 字；读请求则从第 4 层的 8,346 字变化到第 11 层的 10,542 字，对应严格任务周期分别为最小的 30,540.5 拍和最大的 34,929.5 拍。两者相差 4,389 拍，其中 \texttt{LOAD} 相差 1,585 拍，命令外准备相差 2,196 拍，\texttt{RUN} 相差 608 拍。这说明在相同矩阵规模下，压缩数据量及其装载开销会影响完整任务吞吐。
+\textbf{跨层周期差异主要体现于数据传输，而非归约计算量。} 附录~\ref{app:counts} 中，十二组任务的阵列有效归约均为 13,312 拍，写请求均为 12,672 字；读请求则从第 4 层的 8,346 字变化到第 11 层的 10,542 字，对应完整任务周期分别为最小的 30,540.5 拍和最大的 34,929.5 拍。两者相差 4,389 拍，其中 \texttt{LOAD} 相差 1,585 拍，命令外准备相差 2,196 拍，\texttt{RUN} 相差 608 拍。这说明在相同矩阵规模下，压缩数据量及其装载开销会影响完整任务吞吐。
 
 十二组任务平均周期为 32,006.83 拍，按 150 MHz 折算为 4,686.50 任务/秒；服务器 \texttt{task00} 则为 32,960 拍、4,551 任务/秒。
 \par\Needspace{.50\textheight}
-图~\ref{fig:ffn1-roofline} 以本地回归的第 0、4、11 层说明共享 SRAM 接口的理论上限与端到端吞吐。横轴以每任务 1,622,016 次有效 MAC 除以 DMA 读写字节数，纵轴由同一批次的严格任务周期按 150 MHz 折算。共享 SRAM 理想接收一个 32 位字/拍，对应 0.60 GB/s；128 路 MAC 对应 19.2 GMAC/s，拐点为 32 MAC/B。图中第 4 层读事务最少，对应三个标记中最高的算术强度与吞吐。任务点与理论上限的差距可结合图~\ref{fig:6-1} 中的主机准备、装载与运行开销解读。
+图~\ref{fig:ffn1-roofline} 以本地回归的第 0、4、11 层说明共享 SRAM 接口的理论上限与端到端吞吐。横轴以每任务 1,622,016 次有效 MAC 除以 DMA 读写字节数，纵轴由同一批次的完整任务周期按 150 MHz 折算。共享 SRAM 理想接收一个 32 位字/拍，对应 0.60 GB/s；128 路 MAC 对应 19.2 GMAC/s，拐点为 32 MAC/B。图中第 4 层读事务最少，对应三个标记中最高的算术强度与吞吐。任务点与理论上限的差距可结合图~\ref{fig:6-1} 中的主机准备、装载与运行开销解读。
 
 \begin{figure}[H]\centering
 \includegraphics[width=.90\linewidth]{figures/integrated/ffn1-roofline.pdf}
@@ -1548,7 +1539,7 @@ SS 角 hold WNS & $-0.17$ ns \\
 
 \section{功耗与单任务能耗}
 
-功耗采用同一 \texttt{task00} 严格任务窗口内的 RTL-SAIF 进行映射设计估算，顺序单元活动标注覆盖率为 68.53\%。
+功耗采用同一 \texttt{task00} 完整任务窗口内的 RTL 开关活动文件（SAIF）对映射后网表进行估算。
 
 为单独量化第四章 IRQ/\allowbreak{}WFI 低功耗等待机制的净收益，表~\ref{tab:ch6-6} 对比了数据通路相同、等待机制及相关事件控制不同的 \texttt{reference}（轮询）与 \Q{}（IRQ/\allowbreak{}WFI）两组同条件实验结果。
 
@@ -1563,31 +1554,24 @@ SS 角 hold WNS & $-0.17$ ns \\
 任务/秒 & 4,581.9 & 4,551.0 & $-0.67\%$ \\
 新增面积（mm\textsuperscript{2}） & 0.504210 & 0.505560 & $+0.27\%$ \\
 动态功耗 & 33.877 mW & 31.908 mW & $-5.81\%$ \\
-漏电功耗 & 4.41 mW & 4.41 mW & 报告精度下相同 \\
+漏电功耗 & 4.41 mW & 4.41 mW & 持平 \\
 单任务能耗 & 8.3561 \ensuremath{\mu}J & 7.9802 \ensuremath{\mu}J & $-4.50\%$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-从表~\ref{tab:ch6-6} 可以得出三项结论：
-\begin{enumerate}
-\item \textbf{面积与周期变化：} 休眠配置的新增面积增加 0.27\%，严格任务窗口增加 222 拍，折算吞吐下降 0.67\%。
-\item \textbf{动态功耗有效降低：} 在休眠窗口内抑制 E203 取指与轮询总线访问后，整机动态功耗由 33.877 mW 降至 31.908 mW（净降 $1.969\text{ mW}$，降幅 $5.81\%$）；静态漏电功耗在报告精度下保持 $4.41\text{ mW}$ 不变，整机总功耗（$P_{\text{total}} = P_{\text{dyn}} + P_{\text{leak}}$）由 $38.287\text{ mW}$ 降至 $36.318\text{ mW}$（降幅 $5.14\%$）。
-\item \textbf{单任务能耗净收益核算：} 单任务能耗由总功耗与任务持续时间共同决定。将两者的总功耗比与周期比相乘：
+启用 IRQ/\allowbreak{}WFI 后，新增面积与完整任务窗口分别仅增加 0.27\% 与 222 拍（折算吞吐微降 0.67\%）；但在休眠窗口内抑制 E203 取指与轮询总线访问后，整机动态功耗由 33.877 mW 降至 31.908 mW（净降 $1.969\text{ mW}$，降幅 $5.81\%$），漏电功耗维持 $4.41\text{ mW}$ 不变，整机总功耗（$P_{\text{total}} = P_{\text{dyn}} + P_{\text{leak}}$）由 $38.287\text{ mW}$ 降至 $36.318\text{ mW}$（降幅 $5.14\%$）。按总功耗比与周期比核算单任务能耗净收益：
 \begin{equation}
 \frac{E_{\text{sleep}}}{E_{\text{ref}}}=\frac{P_{\text{sleep}}}{P_{\text{ref}}}\cdot\frac{T_{\text{sleep}}}{T_{\text{ref}}}
 =\frac{36.318}{38.287}\cdot\frac{32{,}960}{32{,}738}\approx0.955 ,
 \end{equation}
-计算所得能耗比与表~\ref{tab:ch6-6} 一致。在本组匹配实验中，总功耗下降的幅度超过了严格窗口增加的幅度，因而单任务能耗仍降低约 4.50\%。
-\end{enumerate}
+可见功耗降幅显著高于周期微增，使单任务能耗实测降低约 4.50\%。
 
 \section{方案取舍与评估结论}
 
-以\textbf{150 MHz 目标频率}评估基础配置 \Q{}，同条件 \texttt{task00} 实验的完整任务周期为 32,960 拍，对应\textbf{吞吐量 4,551 任务/秒}。任务从输入与参数装载开始，到结果全部写回结束，DMA 搬运、阵列计算和 E203 调度共同构成一次完整的 FFN1 执行。
+基于 150 MHz 目标频率下的同条件 \texttt{task00} 评估，选定配置 \Q{} 在完整任务窗口（32,960 拍）下取得\textbf{4,551 任务/秒}的折算吞吐；其新增面积为\textbf{0.505560 mm\textsuperscript{2}}（占 2.25 mm\textsuperscript{2} 预算的 22.47\%），整机平均功耗为\textbf{36.318 mW}，单任务能耗为\textbf{7.9802 $\mu$J}。
 
-该配置新增面积为\textbf{0.505560 mm\textsuperscript{2}}，占 2.25 mm\textsuperscript{2} 预算的 22.47\%；整机平均功耗为\textbf{36.318 mW}，其中动态功耗 31.908 mW、漏电功耗 4.410 mW，单任务能耗为\textbf{7.9802 $\mu$J}。计算阵列通过广播与部分和驻留减少片内读写，压缩传输和输入双缓冲改善数据供给，IRQ/WFI 则降低处理器等待期间的活动。
-
-综合六种候选配置，\Q{} 的单任务能耗最低。相对同结构轮询方案，其面积增加 0.27\%、任务周期增加 0.68\%，换得单任务能耗降低 4.50\%。因此，本设计选择\textbf{以较小的面积和周期开销降低整机能耗}，在满足新增面积预算的同时，保留基础 FFN1 的处理吞吐。
+在架构与低功耗机制的配合上，计算核通过行列广播与部分和驻留压缩片内读写，无损编码传输和输入双缓冲改善总线供给，而 IRQ/\allowbreak{}WFI 则削减处理器等待活动。相比六种候选中的最小面积配置 \texttt{reference}，\Q{} 以 0.27\% 的面积与 0.68\% 的周期代价换得 4.50\% 的单任务能耗下降；相比周期最短的定宽方案 \texttt{dense\_sched}，其单任务能耗更低 6.28\%。综合吞吐、面积预算与能耗表现，本设计选定 \Q{} 作为基础配置方案。
 
 \part{拓展篇}
 
@@ -1632,11 +1616,11 @@ FFN 引擎（KWT5） & \texttt{0x40000000} & FFN1、GELU、FFN2 \\
 
 GELU 在两次仿射变换之间引入非线性。若去掉激活，两级线性层与偏置可以合并为一次仿射变换。KWT 使用 GELU，其定义为 $\operatorname{GELU}(x)=x\Phi(x)$，其中 $\Phi$ 是标准正态分布的累积分布函数。它随输入连续改变通过比例，较大的正输入接近原值，较大的负输入趋近于零~\cite{kwt,gelu}。
 
-可通过双曲 CORDIC 实现基于 $\tanh$ 的 GELU 近似~\cite{cordic-gelu}。这种方案涉及函数自变量构造及双曲函数运算。当前硬件利用 $\Phi(-x)=1-\Phi(x)$，将 GELU 改写成一个基值与修正量之差：
+可通过双曲 CORDIC 实现基于 $\tanh$ 的 GELU 近似~\cite{cordic-gelu}，但这涉及自变量构造与迭代双曲运算。当前硬件利用 $\Phi(-x)=1-\Phi(x)$，将 GELU 改写成一个基值与修正量之差：
 \[
 \operatorname{GELU}(x)=\max(x,0)-c(|x|),\qquad c(a)=a\Phi(-a),\quad a\ge 0.
 \]
-同一张表即可覆盖正负输入，区间外按修正量趋近零处理。实现代价主要来自常量表与插值乘法。工程未开展同位宽、同误差目标的 CORDIC 综合对照。
+同一张表即可覆盖正负输入，区间外按修正量趋近零处理；实现代价主要为 257 项常量表与一次插值乘法。
 
 RTL 将 FFN1 的 INT40 结果按层配置右移并做最近偶数舍入（RNE），得到 Q16 自变量。修正表在 $[0,8]$ 内以 $1/32$ 为步长采样，共 257 项。绝对值的整数索引选取相邻表值，低 11 位提供区间内的插值比例。插值乘积经算术右移后加回左端表值；当 $|x|\ge8$ 时直接取零修正量。最后从 $\max(x,0)$ 减去修正量，按 FFN2 输入尺度再次执行 RNE 并饱和为 INT16。表~\ref{tab:ch7-2} 给出第 0 层的指数链。
 
@@ -1687,7 +1671,7 @@ A=(PV)W_o+b_o.
 \caption{单头注意力的矩阵运算与逐行缓存复用~\cite{transformer}}\label{fig:7-2}
 \end{figure}
 
-由于 $P$ 的第 $i$ 行只参与 $PV$ 的第 $i$ 行，ENC1 依次完成同一查询的打分、Softmax 和加权，再覆写缓存。分数与概率共用一块深度为 128、宽度为 32 位的存储（0.5 KiB），其中每行使用 99 项。若保存任一完整的 $99\times99$ 中间矩阵，则需要约 38.3 KiB。逐行计算将这部分缓存的规模从 $O(N^2)$ 降到 $O(N)$，$Q,K,V$ 的驻留空间另计。
+如图~\ref{fig:7-2} 所示，由于 $P$ 的第 $i$ 行只参与 $PV$ 的第 $i$ 行，ENC1 依次完成同一查询的打分、Softmax 和加权，再覆写缓存。分数与概率共用一块深度为 128、宽度为 32 位的存储（0.5 KiB），其中每行使用 99 项。若保存任一完整的 $99\times99$ 中间矩阵，则需要约 38.3 KiB。逐行计算将这部分缓存的规模从 $O(N^2)$ 降到 $O(N)$，$Q,K,V$ 的驻留空间另计。
 
 \subsection{逐行定点 Softmax}
 
@@ -1696,7 +1680,7 @@ A=(PV)W_o+b_o.
 \Delta_j=s_{\max}-s_j,\qquad
 e_j=e^{-\Delta_j},\qquad p_j=\frac{e_j}{\sum_k e_k}.
 \]
-逐项读取分数后，$\Delta_j\ge16$ 的指数项按实现阈值置零。其余指数转写为 $2^{-\Delta_j\log_2 e}$，令 $\Delta_j\log_2 e=I+F$，其中 $I$ 为整数部分、$F$ 为小数部分。用相邻表值插值得到 $2^{-F}$，右移 $I$ 位得到 Q24 指数，再写回该项并累加行和。指数全部写完后，除法器对行和只求一次倒数；逐项读取指数、乘倒数并右移 24 位后，将概率写回同一缓存，随后供 $PV$ 读取。图~\ref{fig:softmax-row} 标出各阶段的依赖。
+逐项读取分数后，$\Delta_j\ge16$ 的指数项按实现阈值置零。其余指数转写为 $2^{-\Delta_j\log_2 e}$，令 $\Delta_j\log_2 e=I+F$，其中 $I$ 为整数部分、$F$ 为小数部分。用相邻表值插值得到 $2^{-F}$，右移 $I$ 位得到 Q24 指数，再写回该项并累加行和。指数全部写完后，除法器对行和只求一次倒数；逐项读取指数、乘倒数并右移 24 位后，将概率写回同一缓存，随后供 $PV$ 读取。图~\ref{fig:softmax-row} 标出各阶段的依赖，具体定点参数见表~\ref{tab:ch7-4}。
 
 \begin{figure}[!htp]\centering
 \includegraphics[width=.67\linewidth]{figures/softmax-row.pdf}
@@ -1729,9 +1713,7 @@ LayerNorm & 每行 64 特征，$\epsilon=4295\times2^{-32}$，整数 \texttt{isq
 
 ENC1 的投影、评分、概率加权和 LayerNorm 统计按阶段执行，因此分时共享\textbf{4 路 $32\times32$ 乘法器与 4 路 72 位累加寄存器}，非线性查表、倒数和平方根另设控制逻辑，资源用途见表~\ref{tab:ch7-5}。
 
-Q/K/V 投影共执行 308,886 拍，其中 304,128 拍进行有效乘加，投影阶段的乘法器活动占比为 98.46\%。其余编码器阶段按各自的数据依赖和调度顺序执行。
-
-表~\ref{tab:ch7-2} 和表~\ref{tab:ch7-4} 汇总定点尺度及常数。算子级测试和整机比对见第十章。
+Q/K/V 投影共执行 308,886 拍，其中 304,128 拍进行有效乘加，投影阶段的乘法器活动占比为 98.46\%。其余编码器阶段按各自的数据依赖和调度顺序执行，算子及系统级验证见第十章。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{共享算术资源与各阶段用途}\label{tab:ch7-5}
@@ -1830,7 +1812,7 @@ FFN1 读取单端口 X SRAM 时，后续 LN1 数据只能等空闲拍写入。FF
 \end{figure}
 
 \begin{figure}[!htbp]\centering
-\includegraphics[width=.74\linewidth]{figures/layer12-flow.pdf}
+\includegraphics[width=.83\linewidth]{figures/layer12-flow.pdf}
 \caption{十二层编码器逐层参数装载、双引擎执行与异常恢复流程}\label{fig:layer12-flow}
 \end{figure}
 
@@ -1886,8 +1868,6 @@ $\gamma_2$、$\beta_2$ & 各 64 & LN2 仿射参数 \\
 \item \textbf{Host 优先额度（\texttt{HOST\_BURST}=2）。} 外层未锁定请求且额度未用完时，可让 Host 优先获得授权。计数按请求接纳更新，每次 CPU 请求被接受后重置。插入的 Host 优先授权保留原轮转位置及已用 DMA 额度。
 \end{enumerate}
 
-正常结束时，末层将最终编码结果写回共享 SRAM，E203 再发布完成状态。若出现超时或错误，先停止新请求并排空在途事务，清除驻留有效状态，再从第 0 层重新开始。十二层回归结果见第~\ref{sec:extension-twelve-layer}~节。
-
 \chapter{编码器功能验证与数值评估}\label{chap:encoder-validation}
 
 本章从算子、单层和十二层三个层级检查编码器的 RTL 功能，分析参数切换、FIFO 交接与层间驻留的测试结果，再以扩展验证集评价定点与浮点模型的分类一致性和逐层数值误差，最后统计双引擎的内部存储开销。
@@ -1896,15 +1876,11 @@ $\gamma_2$、$\beta_2$ & 各 64 & LN2 仿射参数 \\
 
 \subsection{算子验证}\label{sec:extension-operators}
 
-\textbf{功能与测试重点。} GELU、Softmax 的指数近似、平方根及除法实现编码器中的非线性和归一化运算。单头注意力则把这些运算与投影、点积及概率加权串接起来。测试先检查定点算术及边界行为，再检查注意力各阶段的数据和运算顺序。
-
-\textbf{测试方法与结果。} \texttt{tb\_gelu} 覆盖正负输入、插值和 $\pm8$ 边界，\texttt{tb\_encoder\_math} 检查指数、整数平方根及除法的常量和极值。随后，\texttt{tb\_encoder} 使用真实层输入，逐段核对 $Q/K/V$ 投影、$QK^{\mathsf T}$ 缩放、Softmax、$PV$ 和输出投影。所测结果与整数参考逐值一致，验证了定点算术、查表边界和注意力阶段间的数值交接。
+针对编码器新增的非线性与归一化算术部件，测试首先独立核对定点边界与极值行为：\texttt{tb\_gelu} 覆盖正负输入、分段线性插值及 $\pm8$ 截断边界，\texttt{tb\_encoder\_math} 检查指数查表、整数平方根及定点除法的常量与极值输出。随后，\texttt{tb\_encoder} 接入真实层输入，按顺序核对 $Q/K/V$ 投影、$QK^{\mathsf T}$ 缩放、Softmax、$PV$ 与输出投影的阶段计算结果。各项算子与阶段输出均与整数参考模型逐值一致。
 
 \subsection{单层验证}\label{sec:extension-single-layer}
 
-\textbf{功能与测试重点。} 一个 PostNorm 层串接注意力、两次残差与 LayerNorm 以及完整 FFN。测试同时检查两条残差所用的数据、模块间的定点格式转换，以及 FIFO 背压或取消时的状态更新。
-
-\textbf{测试方法与结果。} 在 E203 SoC 上，以同一组输入和参数运行共享 SRAM 与 FIFO 两种交接方式，按表~\ref{tab:ch8-3} 的三个位置与整数模型逐位比较。\texttt{tb\_ffn\_input} 和 \texttt{tb\_input\_link} 另外覆盖慢输入、末字背压以及前段完成但输入 FIFO 仍有数据时的取消。\texttt{tb\_encoder\_faults} 检查总线错误、中止和超时恢复。三处数值比对均一致。已覆盖的异常场景中，系统能清理 FIFO 和驻留状态、排空在途事务，并重新启动，验证了单层交接与恢复机制。
+在 E203 SoC 顶层上，以同一组输入和参数分别运行共享 SRAM 交接与 FIFO 直传两种配置，并在表~\ref{tab:ch8-3} 列出的三个跨模块观察边界与整数参考模型逐位比对。此外，\texttt{tb\_ffn\_input} 与 \texttt{tb\_input\_link} 覆盖慢输入、末字背压及“前段完成但输入 FIFO 仍有滞留数据”时的取消流程，\texttt{tb\_encoder\_faults} 检验总线错误、主动中止与超时恢复。三处边界的数值比对完全一致，异常用例下系统均可清理 FIFO 与驻留标志、排空在途总线事务并重新启动。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{单层验证的三个观察边界}\label{tab:ch8-3}
@@ -1922,9 +1898,7 @@ LN2 整数输出 & 恢复 Q16 后的 99\ensuremath{\times}64 & 残差 2、LN2 \\
 
 \subsection{十二层验证}\label{sec:extension-twelve-layer}
 
-\textbf{功能与测试重点。} E203 逐层更新参数并启动计算，ENC1 把本层 LN2 输出留给下一层，末层把最终结果写回共享 SRAM。测试检查参数与层号是否对应、层间结果是否正确传递，以及末层是否完整写回。
-
-\textbf{测试方法与结果。} 启用 FIFO 直传与层间驻留，固定 \texttt{DMA\_BURST}=8，分别在 \texttt{HOST\_BURST}=0 和 2 下运行 12 条语音输入。每条执行全部 12 层，每种配置共验证 144 个层实例。逐层核对 LN1、FFN、LN2 和末层输出，表~\ref{tab:ch9-4} 中各项均无失配，验证了已测配置的层序、参数切换、片内驻留和结果写回。在 \texttt{HOST\_BURST}=2 配置下，每条完整任务为 13,855,994 拍。测试从 Host 开始装载输入与参数计时，到观察到任务完成为止。
+启用 FIFO 直传与层间片内驻留，固定 \texttt{DMA\_BURST}=8，分别在 \texttt{HOST\_BURST}=0 与 \texttt{HOST\_BURST}=2 两种仲裁配置下运行 12 条语音输入，每条连续执行全部 12 层（每种配置累计 144 个层实例）。整机仿真从 Host 装载输入与参数开始计时至末层完成写回止，在 \texttt{HOST\_BURST}=2 配置下每条完整任务耗时为 13,855,994 拍。逐层比对 LN1、FFN、LN2 与末层外部写回结果，表~\ref{tab:ch9-4} 所列全部比对项均无失配，确认跨层参数切换、片内驻留与最终输出写回均按设计时序正确衔接。
 
 \begin{table}[H]\centering\fontsize{10}{13}\selectfont
 \caption{十二层整机回归的比对数量（每种配置共 12 条输入）}\label{tab:ch9-4}
@@ -1943,9 +1917,7 @@ LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 
 \section{软件分类与逐层数值误差}\label{sec:extension-software}
 
-\textbf{测试场景。} 使用 Speech Commands V2 的上游 12 类验证索引，共 4,445 条记录，含 4,074 个不同音频文件和 371 条静音记录。静音使用同一全零输入，按原索引计权。每条记录分别运行原浮点 KWT-1 和冻结定点编码器。两条路径共用音频预处理、输入嵌入与软件分类头，定点路径使用固定的权重和尺度。
-
-\textbf{评价方法。} 分类以预测类别与真实标签的一致性计算 Top-1，同时记录定点和浮点预测的逐条一致性。数值误差以每层 LN2 为观察点，将定点输出从 Q16 解码后与同一输入的浮点层输出比较。逐层聚合 NRMSE 使用该层全部样本及元素的误差平方和与浮点参考平方和之比，再取平方根。该指标包含误差经过前面各层传播的影响。
+为在更大样本集上评估定点量化与非线性近似的累计影响，采用 Speech Commands V2~\cite{sc} 的上游 12 类验证索引（共 4,445 条记录，含 4,074 个不同音频文件与 371 条静音记录；静音采用全零输入按原索引计权），分别运行原浮点 KWT-1 模型与冻结定点编码器。两条路径共用音频预处理、输入嵌入与软件分类头。分类任务以预测类别对比真实标签统计 Top-1 准确率，数值误差则在每层 LN2 处将定点 Q16 输出解码后与同输入浮点层输出比较，按全层样本与元素汇总误差平方和与浮点参考平方和之比开方计算逐层聚合 NRMSE。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{扩展样本集的软件分类一致性与数值误差}\label{tab:ch10-3}
@@ -1965,7 +1937,7 @@ LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 \end{tabular}
 \end{table}
 
-\textbf{结果。} 两条路径都正确识别 4,351 条记录，Top-1 均为 97.8853\%，相差 0 个百分点，逐条预测完全一致。末层的聚合 NRMSE 为各层最大值 0.171308\%，最差单样本逐层 NRMSE 为 0.237820\%，监测节点的实际饱和计数为 0。附录表~\ref{tab:appendix-errors} 列出了 12 层的误差分布。
+统计结果如表~\ref{tab:ch10-3} 所示：两条路径均正确分类 4,351 条记录，Top-1 同为 97.8853\%，4,445 条记录的逐条预测类别完全一致。误差经十二层残差与归一化传播后在末层达到峰值，第 11 层的聚合 NRMSE 为 0.171308\%，最差单样本 NRMSE 为 0.237820\%，且全过程监测节点的饱和次数均为 0。完整的十二层逐层误差分布见附录表~\ref{tab:appendix-errors}。
 
 \section{资源开销}
 
@@ -1997,11 +1969,11 @@ $X$、$Q$、$K$、$V$ 四组向量缓存 & 128 KiB & 注意力中间量 \\
 
 \section{平台与部署}
 
-系统采用 Z100 开发板，搭载 Zynq XC7Z035-2FFG900 器件，如图~\ref{fig:z100-board} 所示。PL 以约 66.7 MHz 执行编码器计算，PS 负责网络通信与任务控制。硬件通过 Vivado 2026.1 生成位流和 XSA，Cortex-A9 固件与固定模型参数加载到板卡后，使用板卡以太网 BSP 和 lwIP 接收上位机请求~\cite{z100-validation}。
+系统采用 Z100 开发板，搭载 Zynq XC7Z035-2FFG900 器件，如图~\ref{fig:z100-board} 所示。PL 以约 66.7 MHz 执行编码器计算，PS 负责网络通信与任务控制。硬件通过 Vivado 2026.1 生成位流和 XSA，Cortex-A9 固件与固定模型参数加载到板卡后，使用板卡以太网 BSP 和 lwIP 接收上位机请求。
 
 \textbf{控制与存储适配。} Cortex-A9 承接原 E203 配置中的任务控制，通过 AXI GP0 配置 PL 寄存器；板载 DDR 保存模型参数、初始输入和最终输出，PL 经 AXI HP0 和 DDR 桥逐层读取参数。片内工作存储采用同步 RAM 描述，由 Vivado 映射为 BRAM 等资源，LN1 输入与 FFN 结果通过 PL 内的缓冲和握手链路交接。由此，原设计的参数装载、计算启动和结果返回流程接入 Zynq 的处理器与存储系统。
 
-\textbf{计算结构与执行流程。} FPGA 实现复用 FFN1、GELU 和 FFN2 算术模块，以 7 路 FFN 行调度和权重广播组织并行计算；编码器加宽投影与注意力通路，并对 Softmax 和 LayerNorm 进行流水化处理。一次识别从上位机读取 WAV 开始，依次提取 MFCC、完成输入嵌入，将 $99\times64$ 个 Q16 特征通过 TCP 发送至板卡。PL 完成全部 12 层计算后，Cortex-A9 读取最终 CLS 向量并执行分类头，将预测类别、logits 和层进度返回上位机。
+\textbf{计算结构与执行流程。} 在数值与状态定义保持一致的前提下，FPGA 版本针对 Z100 的片上 DSP 与 BRAM 资源对并行度作了扩宽适配（区别于第 7–10 章面向 E203 SoC 的基准 RTL 配置）：计算上复用 FFN1、GELU 和 FFN2 算术模块，以 7 路 FFN 行调度和权重广播组织并行计算，同时加宽编码器投影与注意力通路，并对 Softmax 和 LayerNorm 进行流水化处理。一次识别从上位机读取 WAV 开始，依次提取 MFCC、完成输入嵌入，将 $99\times64$ 个 Q16 特征通过 TCP 发送至板卡。PL 完成全部 12 层计算后，Cortex-A9 读取最终 CLS 向量并执行分类头，将预测类别、logits 和层进度返回上位机。
 
 \begin{figure}[!htp]\centering
 \includegraphics[width=.52\linewidth]{figures/z100-board.jpg}
@@ -2011,7 +1983,7 @@ $X$、$Q$、$K$、$V$ 四组向量缓存 & 128 KiB & 注意力中间量 \\
 \FloatBarrier
 \section{上板功能验证}
 
-上板测试从\textbf{编码器输出、分类结果和通信恢复}三个方面检查系统运行。首先向板卡输入 12 条固定测试向量，并回读每条输入对应的 6,336 个编码器输出，共 76,032 个数值均与整数参考逐位一致，说明板上数据传输与十二层计算能够正确衔接。随后使用另一组 120 条验证样本测试分类，板卡与软件定点模型的预测全部一致，其中 119 条与真实标签相符，分类准确率为 \textbf{99.17\%}。在通信恢复测试中，发送错误 CRC 帧并重新连接后，连续两次推理均完成十二层计算，全部回读值与参考一致~\cite{z100-validation}。
+上板测试从\textbf{编码器输出、分类结果和通信恢复}三个方面检查系统运行。首先向板卡输入 12 条固定测试向量，并回读每条输入对应的 6,336 个编码器输出，共 76,032 个数值均与整数参考逐位一致，说明板上数据传输与十二层计算能够正确衔接。随后使用另一组 120 条验证样本测试分类，板卡与软件定点模型的预测全部一致，其中 119 条与真实标签相符，分类准确率为 \textbf{99.17\%}。在通信恢复测试中，发送错误 CRC 帧并重新连接后，连续两次推理均完成十二层计算，全部回读值与参考一致。
 
 图~\ref{fig:fpga-host-results} 展示 \texttt{yes}、\texttt{no}、\texttt{up} 和 \texttt{stop} 四个样本的实际识别界面。上位机将语音波形、预测类别、Top-3 Softmax 分数及层进度集中显示，四次识别均完成 12/12 层，预测与真实标签一致，Top-1 分数依次为 90.7\%、91.0\%、90.2\% 和 90.6\%。板上计算耗时均为 \textbf{46.2 ms}；计入新建 TCP 连接及上位机处理后，端到端耗时分别为 55.1、54.8、73.7 和 52.4 ms。
 
@@ -2071,7 +2043,7 @@ Hold & $+0.036$ & 0.000 & 0 \\
 
 \section{实测时延与吞吐}
 
-性能测试采用单板、单客户端顺序识别：每条输入收到完整结果后再发送下一条。\textbf{端到端时延}从上位机读取 WAV 开始，包含特征计算、数据上传和结果接收；\textbf{板上时延}覆盖十二层编码器调度及 Cortex-A9 分类头。测试分别使用保持 TCP 连接、每次新建连接和热连接持续运行三种方式，结果见表~\ref{tab:fpga-latency}~\cite{z100-validation}。
+性能测试采用单板、单客户端顺序识别：每条输入收到完整结果后再发送下一条。\textbf{端到端时延}从上位机读取 WAV 开始，包含特征计算、数据上传和结果接收；\textbf{板上时延}覆盖十二层编码器调度及 Cortex-A9 分类头。测试分别使用保持 TCP 连接、每次新建连接和热连接持续运行三种方式，结果见表~\ref{tab:fpga-latency}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{Z100 FPGA 板上与端到端时延}\label{tab:fpga-latency}
@@ -2252,7 +2224,7 @@ MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单�
 
 \chapter{基础任务逐层计数}\label{app:counts}
 
-表~\ref{tab:appendix-cycles} 与表~\ref{tab:appendix-activity} 完整收录了基础选定配置 Q128 \Q{} 在本地 12 层整机回归（\texttt{output/\allowbreak{}verification/\allowbreak{}functional.json}）中的逐层实测硬件计数。其中，“复位周期”与“连续周期”均为首个 Host 数据请求被接收至第 12,672 笔末笔 DMA 写响应返回的严格任务窗口周期；DMA 命令窗口周期满足 $\text{命令周期} = \text{装载（LOAD）} + \text{运行（RUN）} + 3\text{（其他状态）}$。表~\ref{tab:appendix-activity} 中的阵列活动、读写请求数与等待受阻计数取自每任务复位模式（连续运行模式与之保持一致）。
+表~\ref{tab:appendix-cycles} 与表~\ref{tab:appendix-activity} 完整收录了基础选定配置 Q128 \Q{} 在本地 12 层整机回归中的逐层实测硬件计数。其中，“复位周期”与“连续周期”均为首个 Host 数据请求被接收至第 12,672 笔末笔 DMA 写响应返回的完整任务窗口周期；DMA 命令窗口周期满足 $\text{命令周期} = \text{装载（LOAD）} + \text{运行（RUN）} + 3\text{（其他状态）}$。表~\ref{tab:appendix-activity} 中的阵列活动、读写请求数与等待受阻计数取自每任务复位模式（连续运行模式与之保持一致）。
 
 \begin{table}[H]\centering\fontsize{10}{13}\selectfont
 \renewcommand{\arraystretch}{1.12}
@@ -2304,7 +2276,7 @@ MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单�
 
 \chapter{拓展模型逐层误差}\label{app:errors}
 
-表~\ref{tab:appendix-errors} 收录了拓展篇冻结定点模型在 4,445 条扩展验证记录上相对浮点参考模型的逐层 LN2 输出误差统计（数据来自 \texttt{docs/\allowbreak{}encoder-validation-expanded.md}）。全集聚合 NRMSE、单样本 95\% 分位数（P95）、最差单样本最大值与最大绝对误差一并列出，以观察跨层变化，末层（第 11 层）聚合 NRMSE 为 $0.171308\%$。
+表~\ref{tab:appendix-errors} 收录了拓展篇冻结定点模型在 4,445 条扩展验证记录上相对浮点参考模型的逐层 LN2 输出误差统计。全集聚合 NRMSE、单样本 95\% 分位数（P95）、最差单样本最大值与最大绝对误差一并列出，以观察跨层变化，末层（第 11 层）聚合 NRMSE 为 $0.171308\%$。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{十二层 LN2 输出的数值误差统计}\label{tab:appendix-errors}
@@ -2331,9 +2303,9 @@ MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单�
 
 \chapter{复现与交付}\label{app:delivery}
 
-\textbf{基础配置复现流程。} 基础任务定版工程位于缓存提交 \texttt{e0214c1} 对应的 \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep} 目录（驱动实现位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}driver.c}）。复现时首先检查 \texttt{cases/\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}case.json}，确认输出格式号为 2（INT16、右移 15 位、RNE 舍入）、启用压缩传输与 IRQ/\allowbreak{}WFI 等待。按照 \texttt{SERVER.md} 配置仿真与综合工具链环境变量后，在案例目录执行 \texttt{python verify.py}，脚本将自动运行模块单测、12 层每任务复位回归与 12 层连续运行回归，并输出 \texttt{output/\allowbreak{}verification/\allowbreak{}functional.json} 与 \texttt{structure.json}。服务器 PPA 复跑需固定使用 \texttt{task00} 激励、150 MHz 时钟约束、SMIC 40 nm 标准单元及单端口 SRAM 宏库，以及严格任务窗口 SAIF 采集脚本；输入向量、固件镜像与黄金参考结果的哈希绑定关系记录于 \texttt{reference\_\allowbreak{}binding.json} 与 \texttt{SHA256SUMS}。
+\textbf{基础配置复现流程。} 基础任务定版工程位于 \texttt{undergrad\_\allowbreak{}ffn1/\allowbreak{}q128\_\allowbreak{}reference\_\allowbreak{}sleep} 目录（驱动实现位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}driver.c}）。复现时首先检查 \texttt{cases/\allowbreak{}reference\_\allowbreak{}sleep/\allowbreak{}case.json}，确认输出格式号为 2（INT16、右移 15 位、RNE 舍入）、启用压缩传输与 IRQ/\allowbreak{}WFI 等待。配置仿真与综合工具链环境变量后，在案例目录执行 \texttt{python verify.py}，即可自动运行模块单测、12 层每任务复位回归与 12 层连续运行回归，并生成功能校验与结构检查结果。综合与功耗评估固定使用 \texttt{task00} 激励、150 MHz 时钟约束、SMIC 40 nm 标准单元及单端口 SRAM 宏库，在完整任务窗口内采集 SAIF 活动文件后完成网表功耗估算。
 
-\textbf{形式等价验证记录。} 验证摘要保存在 \texttt{evidence/\allowbreak{}formal-\allowbreak{}equivalence-\allowbreak{}summary.txt}，结果为 \texttt{Verification SUCCEEDED}。其中 16,025 个比较点通过，失败点为零，60 个时钟门控锁存器列为未比较项，分类统计见第~\ref{sec:formal-equivalence} 节。
+\textbf{形式等价验证记录。} 形式等价验证共覆盖 16,025 个比较点（9,174 个触发器、6,784 个黑盒引脚及 67 个顶层端口），全部通过且失败点为零；另有 60 个时钟门控锁存器未纳入工具自动比较，分类统计见第~\ref{sec:formal-equivalence} 节。
 
 \textbf{拓展配置复现流程。} 编码器拓展工程位于仓库根目录（SoC 顶层为 \texttt{integration/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}soc.sv}，单层与十二层调度固件位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}driver.c} 与 \texttt{firmware/\allowbreak{}main\_\allowbreak{}encoder.c}，冻结定点参数与参考模型位于 \texttt{model/\allowbreak{}format.json}、\texttt{model/\allowbreak{}ffn-format.json} 与 \texttt{model/\allowbreak{}ffn\_\allowbreak{}numeric.py}），按 \texttt{encoder.ps1} 及 \texttt{docs/\allowbreak{}input-\allowbreak{}stream.md} 组织验证：首先运行算术单测（\texttt{tb\_encoder\_math}、\texttt{tb\_gelu}）及单层直传协议测试（\texttt{tb\_ffn\_input}、\texttt{tb\_input\_link}、\texttt{tb\_encoder\_soc}），随后执行 12 条样本 $\times 12$ 层的整机 RTL 回归及异常故障恢复测试（\texttt{tb\_encoder\_faults}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}bus.sv}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}dma\_\allowbreak{}arbiter.sv}）。复现存档中的调度对照时，保持测试向量与固件不变，依次切换共享 SRAM 交接、LN1 FIFO 直传、\texttt{DMA\_BURST}=8 与 \texttt{HOST\_BURST}=2 配置即可提取对应周期日志。
 
@@ -2364,10 +2336,9 @@ ENC1 参数 & \texttt{0xA0050000} & 66,816 & 投影、偏置与 LayerNorm 参数
 \bibitem{kwt} Berg A, O'Connor M, Cruz M T. Keyword Transformer: A Self-Attention Model for Keyword Spotting. 2021. arXiv:2104.00769.
 \bibitem{gelu} Hendrycks D, Gimpel K. Gaussian Error Linear Units (GELUs). 2016. arXiv:1606.08415.
 \bibitem{cordic-gelu} Kokane O, Raut G, Ullah S, et al. Retrospective: A CORDIC Based Configurable Activation Function for NN Applications. 2025. arXiv:2503.14354.
-\bibitem{checkpoint} Arm Software. Keyword Transformer 实现与 KWT-1 预训练权重. 提交 \texttt{237e4097}.
+\bibitem{checkpoint} Arm Software. Keyword Transformer 开源参考实现与 KWT-1 预训练权重.
 \bibitem{sc} Warden P. Speech Commands: A Dataset for Limited-Vocabulary Speech Recognition. 2018. arXiv:1804.03209.
 \bibitem{e203} 芯来科技. 蜂鸟 E203 开源 RISC-V 处理器及平台工程.
-\bibitem{z100-validation} 本项目. \href{https://github.com/hhaxi/keyword_transfomer_accelerator/tree/4c219d8e2e7665b57e5bb6ccf3283e9e8df9c685/docs/fpga-validation}{Z100 FPGA 功能验证报告与原始记录}. 提交 \texttt{4c219d8}.
 \bibitem{nvidia-gemm} NVIDIA. \href{https://docs.nvidia.com/deeplearning/performance/dl-performance-matrix-multiplication/}{Matrix Multiplication Background User's Guide}. Section 2.1, Figure 1. 访问日期：2026-11-12。
 \bibitem{transformer} Vaswani A, Shazeer N, Parmar N, et al. Attention Is All You Need[C]//Advances in Neural Information Processing Systems. 2017: 5998--6008.
 \bibitem{jiang2024sta} Jiang Y, Hu K, Zhang T, et al. Spatio-Temporal Approximation: A Training-Free SNN Conversion for Transformers[C]//International Conference on Learning Representations. 2024.
