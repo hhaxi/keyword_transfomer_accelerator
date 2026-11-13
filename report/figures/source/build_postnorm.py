@@ -7,7 +7,7 @@ base=Path('report/figures')
 src=base/'source/8-1.drawio'
 W,H=440,500;c=canvas.Canvas(str(base/'8-1.pdf'),pagesize=(W,H));c.setTitle('KWT-1 PostNorm encoder - adapted from Berg et al. Figure 2')
 f=E.Element('mxfile',host='app.diagrams.net');d=E.SubElement(f,'diagram',name='KWT-1 PostNorm');m=E.SubElement(d,'mxGraphModel',pageWidth=str(W),pageHeight=str(H));r=E.SubElement(m,'root');E.SubElement(r,'mxCell',id='0');E.SubElement(r,'mxCell',id='1',parent='0');counter=0
-colors={'blue':'#BBD5F1','purple':'#E7A8BC','yellow':'#C4E3BA','green':'#C4E3BA','white':'#FFFFFF'}
+colors={'blue':'#DFEFFE','purple':'#FCCCDA','yellow':'#DEF6D6','green':'#DEF6D6','white':'#FFFFFF'}
 def box(x,y,w,h,text,fill='blue',size=12):
  global counter
  counter+=1;cc=E.SubElement(r,'mxCell',id=str(counter+1),value=text,vertex='1',parent='1',style=f'rounded=1;arcSize=15;fillColor={colors[fill]};strokeColor=#526575;fontFamily=Times New Roman;fontSize={size};');E.SubElement(cc,'mxGeometry',x=str(x),y=str(H-y-h),width=str(w),height=str(h),attrib={'as':'geometry'})

@@ -2,10 +2,10 @@
 \usepackage{amsmath}
 \usetikzlibrary{arrows.meta,calc}
 \definecolor{ink}{HTML}{163A53}
-\definecolor{bluefill}{HTML}{BBD5F1}
-\definecolor{greenfill}{HTML}{C4E3BA}
-\definecolor{yellowfill}{HTML}{D9E9F8}
-\definecolor{pinkfill}{HTML}{E7A8BC}
+\definecolor{bluefill}{HTML}{DFEFFE}
+\definecolor{greenfill}{HTML}{DEF6D6}
+\definecolor{yellowfill}{HTML}{D1F7FF}
+\definecolor{pinkfill}{HTML}{FCCCDA}
 \begin{document}
 \begin{tikzpicture}[font=\small,text=ink,
  arr/.style={-{Latex[length=1.7mm,width=1.2mm]},draw=ink,line width=.65pt},
@@ -15,8 +15,8 @@
 \foreach \y/\name in {4.6/E203,2.8/ENC1,.8/KWT5}{
  \filldraw[fill=bluefill!9,draw=ink!18,rounded corners=3pt] (-.2,\y-.65) rectangle (14.2,\y+.65);
  \node[anchor=east,font=\bfseries] at (-.45,\y) {\name};}
-\fill[bluefill!20] (5,0.12) rectangle (8.3,3.47);
-\fill[greenfill!20] (8.7,0.12) rectangle (12.8,3.47);
+\fill[bluefill!50] (5,0.12) rectangle (8.3,3.47);
+\fill[greenfill!50] (8.7,0.12) rectangle (12.8,3.47);
 \draw[arr] (0,6.6)--(14.2,6.6) node[above left] {Time};
 \draw[guide] (4,1.5)--(4,6.2);
 \draw[guide] (5,.1)--(5,3.45);
@@ -53,9 +53,9 @@
 \draw[arr] (10.6,1.15)--(10.6,2.45);
 \node[font=\scriptsize,anchor=west,align=left] at (10.75,1.8) {40-bit\\result FIFO};
 % Short legend: color bands mark overlap, not measured durations.
-\fill[bluefill!35] (3,-.62) rectangle (3.28,-.38);
+\fill[bluefill!75] (3,-.62) rectangle (3.28,-.38);
 \node[font=\footnotesize,anchor=west] at (3.4,-.5) {Input transfer / FFN overlap};
-\fill[greenfill!35] (8.3,-.62) rectangle (8.58,-.38);
+\fill[greenfill!75] (8.3,-.62) rectangle (8.58,-.38);
 \node[font=\footnotesize,anchor=west] at (8.7,-.5) {FFN / result consumption overlap};
 \end{tikzpicture}
 \end{document}

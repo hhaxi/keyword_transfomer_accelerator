@@ -8,7 +8,7 @@ from reportlab.lib.styles import ParagraphStyle
 p=Path('report/figures')
 W,H=920,480;c=canvas.Canvas(str(p/'ffn-full.pdf'),pagesize=(W,H));c.setTitle('Complete FFN and block-local activation memory')
 f=E.Element('mxfile',host='app.diagrams.net');d=E.SubElement(f,'diagram',name='Complete FFN');m=E.SubElement(d,'mxGraphModel',pageWidth=str(W),pageHeight=str(H));root=E.SubElement(m,'root');E.SubElement(root,'mxCell',id='0');E.SubElement(root,'mxCell',id='1',parent='0');n=1
-cols={'blue':'#BBD5F1','green':'#C4E3BA','yellow':'#D9E9F8','pink':'#E7A8BC','white':'#FFFFFF'}
+cols={'blue':'#DFEFFE','green':'#DEF6D6','yellow':'#D1F7FF','pink':'#FCCCDA','white':'#FFFFFF'}
 def htmltext(text):
  text=re.sub(r'([Qsp])_i',r'\1<sub>i</sub>',text)
  text=text.replace('K^T','K<sup>T</sup>').replace('1 / sqrt(64)','1 / √64').replace(' x ',' × ')

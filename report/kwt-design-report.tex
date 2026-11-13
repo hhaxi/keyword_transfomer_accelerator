@@ -128,9 +128,9 @@
 基础加速器完成 $99\times64$ 输入与 $64\times256$ 权重的矩阵乘加及偏置处理，支持十二组层参数连续切换。计算核采用 $8\times8$ 处理单元组成的\textbf{输出驻留阵列}，每个单元执行双路乘加，共形成\textbf{128 路 MAC}；通过\textbf{行列广播}复用操作数，将部分和保留在处理单元内。\textbf{权重常驻、输入双缓冲与无损压缩传输}共同减少访存和装载等待。\textbf{DMA 独立搬运}数据，E203 通过\textbf{IRQ/WFI 低功耗等待}响应任务完成，使计算、存储与任务控制协同运行。输入和权重采用 INT16、内部采用 INT40 累加，输出经就近取偶舍入和饱和转换写回 INT16。
 
 
-在 150 MHz 目标频率下，基础 FFN1 的十二组层任务平均吞吐为\textbf{4,687 任务/秒}，新增面积为\textbf{0.506 mm\textsuperscript{2}}，占 2.25 mm\textsuperscript{2} 预算的 22.47\%；第 4 层任务的整机平均功耗为\textbf{37.3 mW}，单任务能耗为\textbf{7.60 $\mu$J}。十二组层参数下的 RTL 输出均与整数模型逐位一致，相对浮点参考的十二层最大汇总 \textbf{NRMSE} 为\textbf{0.022\%}。
+针对基础任务，在 150 MHz 目标频率下，基础 FFN1 的十二组层任务平均吞吐为\textbf{4,687 任务/秒}，新增面积为\textbf{0.506 mm\textsuperscript{2}}，占 2.25 mm\textsuperscript{2} 预算的 22.47\%；第 4 层任务的整机平均功耗为\textbf{37.3 mW}，单任务能耗为\textbf{7.60 $\mu$J}。十二组层参数下的 RTL 输出均与整数模型逐位一致，相对浮点参考的十二层最大汇总 \textbf{NRMSE} 为\textbf{0.022\%}。
 
-编码器拓展采用\textbf{双引擎协同}，将完整 FFN、单头注意力、残差和 LayerNorm 组织为\textbf{十二层 PostNorm 编码器}。层内 FIFO 直传衔接算子，层间结果驻留复用中间特征，并结合突发传输减少共享 SRAM 搬运。十二层硬件输出与整数模型逐位一致；在 4,445 条本地验证样本上，定点模型的 Top-1 准确率为\textbf{97.89\%}，与浮点模型逐条预测一致，最大逐层聚合 \textbf{NRMSE} 为\textbf{0.171\%}。
+针对拓展任务了，编码器采用\textbf{双引擎协同}，将完整 FFN、单头注意力、残差和 LayerNorm 组织为\textbf{十二层 PostNorm 编码器}。层内 FIFO 直传衔接算子，层间结果驻留复用中间特征，并结合突发传输减少共享 SRAM 搬运。十二层硬件输出与整数模型逐位一致；在 4,445 条本地验证样本上，定点模型的 Top-1 准确率为\textbf{97.89\%}，与浮点模型逐条预测一致，最大逐层聚合 \textbf{NRMSE} 为\textbf{0.171\%}。
 
 在 Z100 FPGA 上构建完整语音识别系统，贯通上位机音频处理与传输、板上十二层推理、软件分类及结果展示。40 MHz PL 配置的板上平均时延为\textbf{145.8 ms}，按 150 MHz 折算吞吐为\textbf{25.7 任务/秒}，端到端实测吞吐为\textbf{6.62 条输入/秒}。120 条分类样本的准确率为 99.17\%，板卡与定点软件参考的预测逐条一致。
 
@@ -1544,7 +1544,7 @@ E203（含 ITCM、DTCM） & 0.246 & 0.759 & 1.005 \\
 
 \section{拓展任务范围与总体架构}
 
-图~\ref{fig:7-1} 给出 E203、共享 SRAM 和两个计算模块的连接。E203 配置任务并读取状态。参数由 DMA 从共享 SRAM 装入模块内部。在直传配置下，LN1 打包结果经 32 位输入 FIFO 送入 KWT5，FFN2 的 INT40 结果经 40 位结果 FIFO 返回 ENC1。共享 SRAM 交接可作为对照配置。十二层复用同一套硬件并逐层更新参数。
+图~\ref{fig:7-1} 给出拓展 SoC 的系统互连。Host 通过 ICB 总线装载共享 SRAM 并回读结果，E203 经 MMIO 配置 ENC1 和 KWT5 并读取状态。两个引擎的 DMA 请求由内层仲裁器汇入系统总线。在直传配置下，LN1 打包结果经 32 位输入 FIFO 送入 KWT5，FFN2 的 INT40 结果经 40 位结果 FIFO 返回 ENC1。共享 SRAM 交接可作为对照配置。十二层复用同一套硬件并逐层更新参数。
 
 \begin{figure}[!htbp]\centering
 \includegraphics[width=.94\linewidth]{figures/7-1.pdf}
@@ -1817,11 +1817,12 @@ $\gamma_2$、$\beta_2$ & 各 64 & LN2 仿射参数 \\
 
 驻留有效位必须随任务生命周期管理。新样本启动、中止、总线错误或复位时清除该标志，异常后从第 0 层初始输入重新执行。\textbf{层间可复用，跨样本不可误复用}，否则新任务会从旧样本的中间激活开始。
 
+\Needspace{.57\textheight}
 \section{共享 SRAM 访问与两级仲裁}
 
 图~\ref{fig:9-2} 区分两个仲裁层级。内层 \texttt{kwt\_dma\_arbiter} 将 KWT5 和 ENC1 的 DMA 请求汇成一路，按已接受请求的归属回送响应。两路同时请求时，内层轮转；遇到背压则保持当前请求。外层 \texttt{kwt\_bus\_fabric} 在 E203、Host 和汇总后的 DMA 端口之间授权，目标是单端口共享 SRAM。
 
-\begin{figure}[!htbp]\centering
+\begin{figure}[H]\centering
 \includegraphics[width=.88\linewidth]{figures/9-2.pdf}
 \caption{拓展系统的两级仲裁与外层有界授权}\label{fig:9-2}
 \end{figure}
