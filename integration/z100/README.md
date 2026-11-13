@@ -1,5 +1,7 @@
 # Z100 XC7Z035 上板验证
 
+当前 40 MHz、512 KiB 共享 SRAM 与 E203 调度版本见 [Z100 赛题 SRAM 版验收报告](../../docs/fpga-validation/contest-20-task.md)。
+
 Windows 上位机从 Speech Commands V2 验证集读取 WAV，或从默认麦克风录制一秒语音。上位机运行冻结 KWT‑1 的 MFCC 和嵌入，PL 在 25 MHz 执行 12 层定点编码器，ARM 执行分类头。PL 的 FFN1 来自本科生工程，GELU 和 FFN2 保持主工程的定点计算。
 
 ## 下载与演示

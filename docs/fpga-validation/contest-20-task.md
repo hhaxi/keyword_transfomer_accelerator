@@ -2,6 +2,22 @@
 
 目标是每个任务最多 7,500,000 个 PL 周期，按 150 MHz 折合 50 ms。板上周期从测试加载器开始将输入写入共享 SRAM 到 E203 确认最终结果写回，包含全部 12 层参数装载、E203 调度和 SRAM 仲裁，扣除 TCP 进度帧发送。WAV 到结果另计，包含主机预处理、TCP、板上推理和分类头。
 
+## 上位机实拍
+
+在本版 40 MHz 位流运行时，从桌面工作台通过以太网逐个选择 Speech Commands V2 验证样本。四次识别均完成 12/12 层，预测与真值一致。每张图是一次独立的桌面请求，端到端耗时包含新建 TCP 连接。
+
+| 验证样本 | 预测 | Top‑1 Softmax | 板上时延 | 端到端时延 |
+| --- | --- | ---: | ---: | ---: |
+| `yes/c4cfbe43_nohash_1.wav` | yes | 90.7% | 145.7 ms | 181.3 ms |
+| `no/171b56dc_nohash_1.wav` | no | 91.0% | 145.8 ms | 153.7 ms |
+| `up/099d52ad_nohash_4.wav` | up | 90.2% | 145.8 ms | 167.1 ms |
+| `stop/ab1299bb_nohash_0.wav` | stop | 90.6% | 145.7 ms | 168.3 ms |
+
+| yes | no |
+| --- | --- |
+| [![yes 识别结果](contest-20-task-screenshots/yes.jpg)](contest-20-task-screenshots/yes.jpg) | [![no 识别结果](contest-20-task-screenshots/no.jpg)](contest-20-task-screenshots/no.jpg) |
+| [![up 识别结果](contest-20-task-screenshots/up.jpg)](contest-20-task-screenshots/up.jpg) | [![stop 识别结果](contest-20-task-screenshots/stop.jpg)](contest-20-task-screenshots/stop.jpg) |
+
 ## Z100 实测结果
 
 Vivado 2026.1 在 `xc7z035ffg900-2` 上实现。PL 配置为 **40 MHz**。JTAG 实测 PL 寄存器和 512 KiB 共享 SRAM 首尾地址读写通过。
@@ -29,13 +45,14 @@ Vivado 2026.1 在 `xc7z035ffg900-2` 上实现。PL 配置为 **40 MHz**。JTAG �
 | TNS / THS | 0 / 0 ns |
 | 未约束内部端点 / DRC 错误 | 0 / 0 |
 | Slice LUT | 63,591 / 171,900（36.99%） |
+| LUTRAM（计入 Slice LUT） | 21,058 / 70,400（29.91%） |
 | Slice 寄存器 | 26,793 / 343,800（7.79%） |
 | BRAM Tile | 183 / 500（36.60%） |
 | DSP48E1 | 419 / 900（46.56%） |
 
 FPGA 资源覆盖 E203、加速器、512 KiB 共享 SRAM、E203 TCM 和板卡加载桥。DRC 仍报告 DSP 流水及 RAM 异步控制相关警告。
 
-[逐请求周期和端到端数据](contest-20-task-evidence/board-throughput.json) · [冻结向量](contest-20-task-evidence/board-frozen.json) · [固定验证集](contest-20-task-evidence/board-validation.json) · [布线时序](contest-20-task-evidence/timing.rpt) · [FPGA 资源](contest-20-task-evidence/utilization.rpt) · [SRAM 结构](contest-20-task-evidence/sram-audit.json) · [周期分解](contest-20-task-evidence/board-profile.log) · [CRC 恢复](contest-20-task-evidence/board-recovery.log)
+[逐请求周期和端到端数据](contest-20-task-evidence/board-throughput.json) · [冻结向量](contest-20-task-evidence/board-frozen.json) · [固定验证集](contest-20-task-evidence/board-validation.json) · [布线时序](contest-20-task-evidence/timing.rpt) · [FPGA 资源](contest-20-task-evidence/utilization.rpt) · [DRC](contest-20-task-evidence/drc-summary.rpt) · [Methodology](contest-20-task-evidence/methodology-summary.rpt) · [SRAM 结构](contest-20-task-evidence/sram-audit.json) · [周期分解](contest-20-task-evidence/board-profile.log) · [CRC 恢复](contest-20-task-evidence/board-recovery.log)
 
 ## RTL 和存储
 
@@ -52,11 +69,14 @@ FPGA 资源覆盖 E203、加速器、512 KiB 共享 SRAM、E203 TCM 和板卡加
 
 ## 复测
 
-从仓库根目录运行。Vivado、Ross、板卡 BSP、ARM runtime、TCP 源码与原 [512 KiB 赛题配置](contest-sram.md) 相同。按本地安装调整路径，若使用独立构建目录，将该目录传给 `program.ps1 -BuildDir` 并将 `kwt.bin`、`encoder.bin` 和 ARM ELF 放在同目录。
+板上测试的 RTL 与固件源码对应提交 `d76a589`。位流、XSA、ARM ELF、E203 固件及参数包的 [SHA-256](contest-20-task-evidence/SHA256SUMS.txt) 随报告发布。Vivado 工程由 Tcl 从源码生成，输出在 `output/z100/contest-40-*/z100_contest.xpr`。
+
+从仓库根目录运行。按[项目环境说明](../../README.md)准备固定版 E203、冻结检查点和 Speech Commands V2。Vivado、Ross、板卡 BSP、ARM runtime、TCP 源码与原 [512 KiB 赛题配置](contest-sram.md) 相同。按本地安装调整路径，若使用独立构建目录，将该目录传给 `program.ps1 -BuildDir` 并将 `kwt.bin`、`encoder.bin` 和 ARM ELF 放在同目录。
 
 ```powershell
 .\integration\z100\prepare_smoke.ps1 -Ethernet
 python integration/z100/run_ross.py contest --mhz 40 --ethernet --in-process
+.\.venv-model\Scripts\python.exe scripts/export_encoder.py --split validation --sample-list model/validation-samples.json --samples 12 --output output/encoder-vectors
 .\.venv-model\Scripts\python.exe scripts/run_encoder.py soc --contest --input-stream 1 --tasks 12 --jobs 4
 .\.venv-model\Scripts\python.exe scripts/run_encoder.py synth --contest
 Copy-Item output/encoder-design/firmware/encoder.bin output/z100/
@@ -65,5 +85,8 @@ Copy-Item output/encoder-design/firmware/encoder.bin output/z100/
 .\integration\z100\program.ps1 -Image contest-40 -Firmware z100-contest-40-tcp
 .\.venv-model\Scripts\python.exe integration/z100/verify_board.py --port 192.168.1.11:5001 --output output/z100/board-frozen.json
 .\.venv-model\Scripts\python.exe integration/z100/benchmark.py --port 192.168.1.11:5001 --passes 10 --output output/z100/board-throughput.json
+.\.venv-model\Scripts\python.exe scripts/evaluate_encoder.py --sample-list model/validation-samples.json --output output/encoder-validation-expanded-legacy120
 .\.venv-model\Scripts\python.exe integration/z100/verify_board.py --port 192.168.1.11:5001 --validation --output output/z100/board-validation.json
 ```
+
+上位机使用 `uv pip install --python .venv-model/Scripts/python.exe pyserial==3.5 sounddevice==0.4.7 pillow==10.4.0` 安装演示依赖。烧录后运行 `.\.venv-model\Scripts\python.exe integration/z100/demo.py --port 192.168.1.11:5001`，点击左侧快捷样本复现截图。
