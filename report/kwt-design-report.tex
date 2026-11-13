@@ -1599,7 +1599,10 @@ SS 角 hold WNS & $-0.17$ ns \\
 
 图~\ref{fig:7-1} 给出 E203、共享 SRAM 和两个计算模块的连接。E203 配置任务并读取状态。参数由 DMA 从共享 SRAM 装入模块内部。在直传配置下，LN1 打包结果经 32 位输入 FIFO 送入 KWT5，FFN2 的 INT40 结果经 40 位结果 FIFO 返回 ENC1。共享 SRAM 交接可作为对照配置。十二层复用同一套硬件并逐层更新参数。
 
-\ph[52mm]{7-1}{拓展 SoC 的控制、参数装载与激活直传通路}{画出 E203、系统互连、共享 SRAM、KWT5 与 ENC1。区分 MMIO 控制、DMA 参数装载和激活流向。标出 ENC1 到 KWT5 的 32 位 LN1 输入 FIFO，以及 KWT5 到 ENC1 的 40 位 FFN 结果 FIFO。单层算子顺序见图~\ref{fig:8-1}。}
+\begin{figure}[!htbp]\centering
+\includegraphics[width=.94\linewidth]{figures/7-1.pdf}
+\caption{拓展 SoC 的控制、参数装载与激活直传通路}\label{fig:7-1}
+\end{figure}
 
 FFN 的两级线性层对每个 token 执行相同的矩阵乘加，KWT5 复用原线性计算通路并增加 GELU 和中间激活存储。ENC1 按阶段复用乘法资源，执行注意力投影、点积、概率加权和归一化。注意力按查询行归约 99 个分数，LayerNorm 则按 token 归约 64 个特征。模块职责见表~\ref{tab:ch7-1}。第十章给出拓展配置的周期与结构资源统计。
 
@@ -1620,7 +1623,10 @@ FFN 引擎（KWT5） & \texttt{0x40000000} & FFN1、GELU、FFN2 \\
 
 完整 FFN 的数据流为 $64\to256\to64$，见图~\ref{fig:ffn-full}。LN1 提供 $99\times64$ 的紧凑 INT16 输入，第一线性层生成 $99\times256$ 的 INT40 结果；GELU 及尺度转换生成中间激活，存入内部缓冲后供第二线性层执行长度 256 的归约，最终恢复为 $99\times64$ 的输出形状。\textbf{中间激活保存在引擎内部}，不要求两级线性层之间往返共享 SRAM。
 
-\ph[44mm]{ffn-full}{完整 FFN 的计算流程与片内激活存储}{从左到右画 LN1 打包输入（$99\times64$，INT16）、FFN1（权重 $64\times256$、偏置 256 项，输出 INT40）、定点 GELU、片内激活 SRAM、FFN2（权重 $256\times64$、偏置 64 项，输出 INT40）和 40 位结果 FIFO。$99\times256$ 是中间张量的逻辑形状，标注硬件按行块复用激活存储。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=\linewidth]{figures/ffn-full.pdf}
+\caption{完整 FFN 的计算流程与片内激活存储}\label{fig:ffn-full}
+\end{figure}
 
 \subsection{GELU 的作用与定点实现}
 
@@ -1676,7 +1682,10 @@ A=(PV)W_o+b_o.
 \]
 逻辑上的 $S$ 与 $P$ 均为 $99\times99$，$PV$ 和最终输出 $A$ 均为 $99\times64$。缩放因子为 8，RTL 将它与 Q32 转回 Q16 的尺度转换合并为一次右移 19 位并做 RNE。
 
-\ph[49mm]{7-2}{单头注意力的矩阵运算与逐行缓存复用}{上半按经典顺序绘制 Q/K/V 投影、$QK^{\mathsf T}/8$、行 Softmax、$PV$ 和输出投影，标注逻辑矩阵形状。下半放大第 $i$ 个查询，画 $Q_i$ 与全部 99 个键打分、单行分数原地转换为概率、读 $V$ 加权得到 64 维输出，再用同一缓存处理第 $i+1$ 行。区分 Q/K/V 驻留与单行缓存。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=\linewidth]{figures/7-2.pdf}
+\caption{单头注意力的矩阵运算与逐行缓存复用~\cite{transformer}}\label{fig:7-2}
+\end{figure}
 
 由于 $P$ 的第 $i$ 行只参与 $PV$ 的第 $i$ 行，ENC1 依次完成同一查询的打分、Softmax 和加权，再覆写缓存。分数与概率共用一块深度为 128、宽度为 32 位的存储（0.5 KiB），其中每行使用 99 项。若保存任一完整的 $99\times99$ 中间矩阵，则需要约 38.3 KiB。逐行计算将这部分缓存的规模从 $O(N^2)$ 降到 $O(N)$，$Q,K,V$ 的驻留空间另计。
 
@@ -1689,7 +1698,10 @@ e_j=e^{-\Delta_j},\qquad p_j=\frac{e_j}{\sum_k e_k}.
 \]
 逐项读取分数后，$\Delta_j\ge16$ 的指数项按实现阈值置零。其余指数转写为 $2^{-\Delta_j\log_2 e}$，令 $\Delta_j\log_2 e=I+F$，其中 $I$ 为整数部分、$F$ 为小数部分。用相邻表值插值得到 $2^{-F}$，右移 $I$ 位得到 Q24 指数，再写回该项并累加行和。指数全部写完后，除法器对行和只求一次倒数；逐项读取指数、乘倒数并右移 24 位后，将概率写回同一缓存，随后供 $PV$ 读取。图~\ref{fig:softmax-row} 标出各阶段的依赖。
 
-\ph[34mm]{softmax-row}{逐行定点 Softmax 的运算依赖与缓存更新}{标出打分时更新最大值、读分数并写回指数、累计行和、一次倒数、读指数并写回概率、供 $PV$ 读取。画出指数近似的底数转换、整数移位与小数查表插值。将 $\Delta\ge16$ 标为实现截断阈值。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=.67\linewidth]{figures/softmax-row.pdf}
+\caption{逐行定点 Softmax 的运算依赖与缓存更新~\cite{jiang2024sta}}\label{fig:softmax-row}
+\end{figure}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{注意力与 LayerNorm 的定点数值约定}\label{tab:ch7-4}
@@ -1719,6 +1731,8 @@ ENC1 的投影、评分、概率加权和 LayerNorm 统计按阶段执行，因�
 
 Q/K/V 投影共执行 308,886 拍，其中 304,128 拍进行有效乘加，投影阶段的乘法器活动占比为 98.46\%。其余编码器阶段按各自的数据依赖和调度顺序执行。
 
+表~\ref{tab:ch7-2} 和表~\ref{tab:ch7-4} 汇总定点尺度及常数。算子级测试和整机比对见第十章。
+
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{共享算术资源与各阶段用途}\label{tab:ch7-5}
 \begin{tabular}{@{}T{34}U{32}T{70}@{}}
@@ -1733,8 +1747,6 @@ GELU 辅助算术 & 独立 & 激活查表与插值 \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-表~\ref{tab:ch7-2} 和表~\ref{tab:ch7-4} 汇总定点尺度及常数。算子级测试和整机比对见第十章。
 
 \chapter{单层 PostNorm 编码器集成}
 
@@ -1753,23 +1765,35 @@ Y &= \operatorname{LN2}(Z + F).
 \]
 第一条残差保留层输入 $X$，第二条残差保留 LN1 输出 $Z$。$Z$ 同时是 FFN 的输入，因此其原尺度数据需一直保留到第二次残差相加。
 
-\ph[48mm]{8-1}{单层 KWT-1 PostNorm 编码器的数据流与两条残差}{参照 KWT 原论文图 2 左侧绘制。画 $X$、单头注意力、残差加法、LN1、FFN1、GELU、FFN2、残差加法、LN2 和 $Y$；两条旁路从 $X$ 与 $Z$ 引出，标注层输入输出均为 $99\times64$。可用标签标明 ENC1 和 KWT5 的运算归属。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=.52\linewidth]{figures/8-1.pdf}
+\caption{单层 KWT-1 PostNorm 编码器的数据流与两条残差~\cite{kwt}}\label{fig:8-1}
+\end{figure}
 
 \section{残差对齐与定点 LayerNorm}
 
 第一次残差将注意力投影输出与同为 Q16 的 $X$ 对齐相加。第二次残差接收 FFN2 的 INT40 累加结果，依据本层输出指数将其舍入到 Q16，再与 ENC1 保留的 LN1 输出 $Z$ 相加。两处相加都饱和为 INT32，并将结果送入对应的 LayerNorm。
 
 两处层归一化（LayerNorm）均对序列每个位置 $i \in [0,98]$ 的 $D=64$ 个特征通道独立执行标准化与仿射变换。设单行残差相加并饱和至 INT32 后的特征向量为 $z = (z_0, z_1, \ldots, z_{63})$，硬件按图~\ref{fig:layernorm-row} 与表~\ref{tab:ch8-2} 所示的四个依赖步骤完成单行处理：
-\begin{enumerate}
+\begin{enumerate}\linespread{1.15}\selectfont\setlength{\itemsep}{2pt}\setlength{\parsep}{0pt}
 \item \textbf{行均值与中心化：} 对 64 个通道求和并算术右移 6 位得到整数均值 $\mu = \lfloor \sum_{c=0}^{63} z_c / 64\rfloor$，随后逐通道计算中心化差值 $d_c = \operatorname{sat}_{32}(z_c - \mu)$；
 \item \textbf{总体方差计算：} 利用共享的 4 路 $32\times32$ 乘法器与 72 位累加器累加 $\sum_{c=0}^{63} d_c^2$，除以 64 得到总体方差 $\sigma^2$；
 \item \textbf{加 $\epsilon$、整数平方根与倒数：} 将方差加上防零除常数 $\epsilon$，检查 72 位累加结果的高位，取低 64 位送入整数平方根单元（\texttt{kwt\_isqrt64}）求出标准差 $\text{std} = \lfloor\sqrt{\sigma^2+\epsilon}\rfloor$，再通过定点除法算出归一化倒数因子 $\text{inv\_std} = \lfloor 2^{36} / \text{std}\rfloor$；
 \item \textbf{逐通道仿射与饱和：} 对每个通道执行 $(d_c \cdot \text{inv\_std})\cdot\gamma_c + \beta_c$，经 RNE 舍入后饱和至 INT32（Q16 尺度）。
 \end{enumerate}
 
-\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{残差与 LayerNorm 通路的操作及数值处理}\label{tab:ch8-2}
-\begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
+\begin{figure}[!htbp]\centering
+\begin{minipage}[c]{.49\linewidth}\centering
+\captionsetup{font=footnotesize,justification=centering,singlelinecheck=false}
+\includegraphics[width=\linewidth]{figures/layernorm-row.pdf}
+\captionof{figure}{LayerNorm 单行统计量与逐元素输出~\cite{jiang2024sta}}\label{fig:layernorm-row}
+\end{minipage}\hfill
+\begin{minipage}[c]{.47\linewidth}\centering
+\linespread{1.05}\fontsize{8.5}{11}\selectfont
+\setlength{\tabcolsep}{2.5pt}\renewcommand{\arraystretch}{1.15}
+\captionsetup{font=footnotesize}
+\captionof{table}{残差与 LayerNorm 通路的操作及数值处理}\label{tab:ch8-2}
+\begin{tabularx}{\linewidth}{@{}C{.8}C{1.1}C{1.1}@{}}
 \toprule
 \rowcolor{TableHeader}
 \thcell{节点} & \thcell{关键常量 / 操作} & \thcell{位宽与饱和} \\
@@ -1782,18 +1806,21 @@ Y &= \operatorname{LN2}(Z + F).
 仿射 & 乘 $\gamma$ 加 $\beta$ & 最近偶数舍入，饱和到 INT32 \\
 $\epsilon$ & $4295\times2^{-32}$ & 加在方差上，避免零除 \\
 \bottomrule
-\end{tabular}
-\end{table}
-
-\ph[38mm]{layernorm-row}{LayerNorm 单行统计量与逐元素输出}{绘制单行 64 个特征通道的 LayerNorm 四步数据依赖图：输入残差相加后的单行 64 个 INT32 特征 $\to$ 行内归约求均值 $\mu$ 与中心化平方和方差 $\sigma^2$ $\to$ 加上 $\epsilon=4295\times2^{-32}$ 后执行整数平方根 \texttt{isqrt} 及定点倒数 $\lfloor 2^{36}/\text{std}\rfloor$ $\to$ 用共享倒数因子对 64 个通道逐一执行中心化缩放并乘 $\gamma_c$ 加 $\beta_c$ 仿射输出。}
+\end{tabularx}
+\end{minipage}
+\end{figure}
 
 跨引擎交接包含两次尺度转换。\textbf{LN1 到 FFN}：Q16 INT32 按本层输入指数移位、饱和并打包为 INT16。\textbf{FFN 到 LN2}：FFN2 结果按输出指数恢复到 Q16，再与驻留的 LN1 相加。
 
+\FloatBarrier
 \section{LN1 输入与 FFN 输出的 FIFO 交接}
 
-图~\ref{fig:dual-engine-flow} 标出两条 FIFO 的启动条件。E203 可在注意力计算期间启动 FFN 权重预装。ENC1 完成整层 LN1 算术后，才将结果舍入、饱和为 INT16，每两项打包成一个 32 位字。权重就绪后，KWT5 接收输入，首个 8 行块的 256 个字到齐即可起算。其余输入继续发送，最后 3 行按 96 个字判断就绪。整层共发送 3,168 字。
+{\interlinepenalty=10000 图~\ref{fig:dual-engine-flow} 标出两条 FIFO 的启动条件。E203 可在注意力计算期间启动 FFN 权重预装。ENC1 完成整层 LN1 算术后，才将结果舍入、饱和为 INT16，每两项打包成一个 32 位字。权重就绪后，KWT5 接收输入，首个 8 行块的 256 个字到齐即可起算。其余输入继续发送，最后 3 行按 96 个字判断就绪。整层共发送 3,168 字。\par}
 
-\ph[46mm]{dual-engine-flow}{权重预装、LN1 分块发送与 FFN 结果消费时序}{按 E203、ENC1、KWT5 三条泳道绘制：FFN 权重预装与注意力计算、整层 LN1 算术结束、输入 FIFO 分块发送、首块到齐后 FFN 起算、全部输入交给 FIFO 后 E203 启动结果消费、结果 FIFO 交付与 LN2 完成。用阴影标出实际重叠区间，区分 LN1 算完和发送完。}
+\begin{figure}[!htp]\centering
+\includegraphics[width=\linewidth]{figures/dual-engine-flow.pdf}
+\caption{权重预装、LN1 分块发送与 FFN 结果消费时序}\label{fig:dual-engine-flow}
+\end{figure}
 
 FFN1 读取单端口 X SRAM 时，后续 LN1 数据只能等空闲拍写入。FFN2 读取的是独立的 GELU 激活 SRAM，此时 X SRAM 可以接收后续数据。这样即使 FFN2 受结果 FIFO 背压，输入侧仍可在 X 端口空闲时继续交付。尾段启动后从 40 位 FIFO 逐项接收 FFN2 输出，经重缩放后完成第二次残差和 LN2。
 
@@ -1820,9 +1847,15 @@ FFN1 读取单端口 X SRAM 时，后续 LN1 数据只能等空闲拍写入。FF
 
 十二层编码器复用同一套双引擎，通过逐层更新参数完成连续计算。每层按前段、完整 FFN 和尾段的依赖关系执行，两侧状态确认完成后再进入下一层。每层更新 33,408 个 32 位字，其中 ENC1 的投影、偏置和归一化参数占 16,704 字，KWT5 的两层权重与偏置另占 16,704 字。ENC1 参数组成见表~\ref{tab:ch9-1}，逐层调度流程见图~\ref{fig:layer12-flow}。
 
-\ph[44mm]{9-1}{十二层调度中首层、中间层与末层的数据流转示意}{绘制首层（Layer 0）、中间层（Layer 1–10）与末层（Layer 11）的三阶段流转框图：首层从共享 SRAM 装载初始输入 $X^{(0)}$ 与第 0 层参数，算出的 LN2 结果留在片内；中间层（$l=1..10$）仅从共享 SRAM 更新第 $l$ 层参数，直接复用片内驻留的上一层 LN2 输出作为本层输入；末层（$l=11$）更新参数并完成计算后，将最终 $99\times64$ 编码器输出写回共享 SRAM 供软件分类头读取。}
+\begin{figure}[!htbp]\centering
+\includegraphics[width=.93\linewidth]{figures/9-1.pdf}
+\caption{十二层调度中首层、中间层与末层的数据流转示意}\label{fig:9-1}
+\end{figure}
 
-\ph[46mm]{layer12-flow}{十二层编码器逐层参数装载、双引擎执行与异常恢复流程}{绘制十二层连续调度的主循环流程图：初始化层索引 $l=0$ 并清除陈旧驻留标志 $\to$ 校验层序与设备空闲状态，装载本层参数并配置双引擎（$l=0$ 从共享 SRAM 读初始输入，$l>0$ 启用片内输入驻留；$l<11$ 跳过外部写回，$l=11$ 开启末层写回） $\to$ 按依赖关系启动 FFN 权重预装、编码器前段和编码器尾段 $\to$ 检查双引擎完成与错误状态 $\to$ 成功且 $l<11$ 时递增层索引进入下一层，$l=11$ 完成后通过邮箱交付结果；若任一阶段报错或超时则进入双引擎排空与恢复分支并重置期望层序。}
+\begin{figure}[!htbp]\centering
+\includegraphics[width=.74\linewidth]{figures/layer12-flow.pdf}
+\caption{十二层编码器逐层参数装载、双引擎执行与异常恢复流程}\label{fig:layer12-flow}
+\end{figure}
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{ENC1 单层参数区的组成（连续 16,704 个 32 位字）}\label{tab:ch9-1}
@@ -1855,7 +1888,10 @@ $\gamma_2$、$\beta_2$ & 各 64 & LN2 仿射参数 \\
 层间驻留复用 ENC1 的输入缓存，见图~\ref{fig:layer-residency}。前 11 层的尾段将 LN2 结果写入内部 X 缓存并置位 \texttt{resident\_valid}，同时跳过外部写回；下一层前段检查到有效标志后直接使用缓存，只重载本层参数。末层关闭跳过写回，向共享 SRAM 提交最终 6,336 个字。
 
 
-\ph[40mm]{layer-residency}{相邻编码器层之间的 LN2 驻留与读取}{绘制第 $l$ 层 LN2 输出的两条分支流向图：上方中间层分支（$l=0..10$）标出“第 $l$ 层 LN2 输出 $\to$ 直接写入 ENC1 内部 $X$ 缓存驻留（跳过共享 SRAM 写回） $\to$ 直接作为第 $l+1$ 层注意力前段输入”，11 个层间边界共省去 139,392 字总线读写；下方末层分支（$l=11$）标出“第 11 层 LN2 输出 $\to$ 写回总线侧系统共享 SRAM $\to$ Host / 分类头读取最终结果”。}
+\begin{figure}[!htbp]\centering
+\includegraphics[width=.90\linewidth]{figures/layer-residency.pdf}
+\caption{相邻编码器层之间的 LN2 驻留与读取}\label{fig:layer-residency}
+\end{figure}
 
 驻留有效位必须随任务生命周期管理。新样本启动、中止、总线错误或复位时清除该标志，异常后从第 0 层初始输入重新执行。\textbf{层间可复用，跨样本不可误复用}，否则新任务会从旧样本的中间激活开始。
 
@@ -1863,7 +1899,10 @@ $\gamma_2$、$\beta_2$ & 各 64 & LN2 仿射参数 \\
 
 图~\ref{fig:9-2} 区分两个仲裁层级。内层 \texttt{kwt\_dma\_arbiter} 将 KWT5 和 ENC1 的 DMA 请求汇成一路，按已接受请求的归属回送响应。两路同时请求时，内层轮转；遇到背压则保持当前请求。外层 \texttt{kwt\_bus\_fabric} 在 E203、Host 和汇总后的 DMA 端口之间授权，目标是单端口共享 SRAM。
 
-\ph[36mm]{9-2}{拓展系统的两级仲裁与外层有界授权}{画 ENC1 DMA 和 KWT5 DMA 接入内层轮转仲裁器，汇成一路 DMA，与 E203、Host 一同进入外层系统互连，再接共享 SRAM。把 DMA 的 8 笔额度和 Host 的 2 笔优先额度都标在外层。注明响应按请求归属返回。}
+\begin{figure}[!htbp]\centering
+\includegraphics[width=.88\linewidth]{figures/9-2.pdf}
+\caption{拓展系统的两级仲裁与外层有界授权}\label{fig:9-2}
+\end{figure}
 
 \begin{enumerate}
 \item \textbf{DMA 额度（\texttt{DMA\_BURST}=8）。} 外层接纳一笔 DMA 请求后，在额度内保留 DMA 轮转优先位置，一个轮转额度最多计入 8 笔已接受请求；DMA 无请求时，其他主设备仍可获准。内层继续决定由哪个引擎提供具体请求。
@@ -2353,5 +2392,7 @@ ENC1 参数 & \texttt{0xA0050000} & 66,816 & 投影、偏置与 LayerNorm 参数
 \bibitem{e203} 芯来科技. 蜂鸟 E203 开源 RISC-V 处理器及平台工程.
 \bibitem{z100-validation} 本项目. \href{https://github.com/hhaxi/keyword_transfomer_accelerator/tree/4c219d8e2e7665b57e5bb6ccf3283e9e8df9c685/docs/fpga-validation}{Z100 FPGA 功能验证报告与原始记录}. 提交 \texttt{4c219d8}.
 \bibitem{nvidia-gemm} NVIDIA. \href{https://docs.nvidia.com/deeplearning/performance/dl-performance-matrix-multiplication/}{Matrix Multiplication Background User's Guide}. Section 2.1, Figure 1. 访问日期：2026-11-12。
+\bibitem{transformer} Vaswani A, Shazeer N, Parmar N, et al. Attention Is All You Need[C]//Advances in Neural Information Processing Systems. 2017: 5998--6008.
+\bibitem{jiang2024sta} Jiang Y, Hu K, Zhang T, et al. Spatio-Temporal Approximation: A Training-Free SNN Conversion for Transformers[C]//International Conference on Learning Representations. 2024.
 \end{thebibliography}
 \end{document}

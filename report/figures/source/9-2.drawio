@@ -7,31 +7,31 @@
         <mxCell id="canvas" value="" style="shape=rectangle;fillColor=#FFFFFF;strokeColor=none;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="0" y="0" width="1400" height="810" as="geometry" />
         </mxCell>
-        <mxCell id="enc" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#EDF6FB;strokeColor=#4E8EAD;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="enc" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#DFEFFE;strokeColor=#527AA8;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="20" y="330" width="205" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="kwt" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#EDF6FB;strokeColor=#4E8EAD;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="kwt" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#DFEFFE;strokeColor=#527AA8;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="20" y="485" width="205" height="95" as="geometry" />
         </mxCell>
-        <mxCell id="inner" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#EDF7F3;strokeColor=#46917F;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="inner" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#DEF6D6;strokeColor=#4A7250;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="290" y="320" width="270" height="260" as="geometry" />
         </mxCell>
-        <mxCell id="outer" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#FBF6EC;strokeColor=#AF823F;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="outer" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#FCCCDA;strokeColor=#99516C;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="640" y="260" width="430" height="360" as="geometry" />
         </mxCell>
-        <mxCell id="cpu" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#EDF6FB;strokeColor=#4E8EAD;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="cpu" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#DFEFFE;strokeColor=#527AA8;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="660" y="110" width="180" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="host" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#EDF6FB;strokeColor=#4E8EAD;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="host" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#DFEFFE;strokeColor=#527AA8;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="880" y="110" width="180" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="ram" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#EDF7F3;strokeColor=#46917F;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="ram" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#DEF6D6;strokeColor=#4A7250;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="1150" y="390" width="220" height="140" as="geometry" />
         </mxCell>
-        <mxCell id="dma-quota" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#FBF6EC;strokeColor=#AF823F;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="dma-quota" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#FCCCDA;strokeColor=#99516C;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="665" y="332" width="380" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="host-quota" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#FBF6EC;strokeColor=#AF823F;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="host-quota" value="" style="rounded=1;arcSize=24;absoluteArcSize=1;whiteSpace=wrap;html=0;fillColor=#FCCCDA;strokeColor=#99516C;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="665" y="442" width="380" height="90" as="geometry" />
         </mxCell>
         <mxCell id="enc-inner" style="endArrow=block;startArrow=block;endFill=1;startFill=1;endSize=10;startSize=10;strokeColor=#4E7191;strokeWidth=2.2;html=0;rounded=0;" edge="1" parent="1">
@@ -70,67 +70,67 @@
             <mxPoint x="970" y="260" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="title" value="Two-level arbitration" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=36;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="title" value="Two-level arbitration" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=36;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="20" y="18" width="1360" height="55" as="geometry" />
         </mxCell>
-        <mxCell id="enc-label" value="ENC1 DMA" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="enc-label" value="ENC1 DMA" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="30" y="348" width="185" height="58" as="geometry" />
         </mxCell>
-        <mxCell id="kwt-label" value="KWT5 DMA" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="kwt-label" value="KWT5 DMA" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="30" y="503" width="185" height="58" as="geometry" />
         </mxCell>
-        <mxCell id="inner-title" value="Inner arbiter" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=30;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="inner-title" value="Inner arbiter" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=30;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="300" y="336" width="250" height="46" as="geometry" />
         </mxCell>
-        <mxCell id="inner-rr" value="Round robin" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="inner-rr" value="Round robin" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="300" y="402" width="250" height="38" as="geometry" />
         </mxCell>
-        <mxCell id="inner-hold" value="Hold stalled request" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="inner-hold" value="Hold stalled request" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="300" y="457" width="250" height="38" as="geometry" />
         </mxCell>
-        <mxCell id="inner-owner" value="Save engine owner" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="inner-owner" value="Save engine owner" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="300" y="512" width="250" height="38" as="geometry" />
         </mxCell>
-        <mxCell id="dma-link-label" value="DMA" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=24;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="dma-link-label" value="DMA" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=24;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="562" y="410" width="76" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="outer-title" value="Outer interconnect" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=30;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="outer-title" value="Outer interconnect" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=30;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="650" y="275" width="410" height="42" as="geometry" />
         </mxCell>
-        <mxCell id="dma-title" value="DMA quota" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="dma-title" value="DMA quota" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="675" y="340" width="360" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="dma-count" value="Up to 8 accepted requests" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="dma-count" value="Up to 8 accepted requests" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="675" y="379" width="360" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="host-title" value="Host priority quota" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="host-title" value="Host priority quota" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="675" y="450" width="360" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="host-count" value="Up to 2 accepted requests" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="host-count" value="Up to 2 accepted requests" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="675" y="489" width="360" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="reset" value="CPU accept resets Host quota" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="reset" value="CPU accept resets Host quota" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="655" y="556" width="400" height="44" as="geometry" />
         </mxCell>
-        <mxCell id="cpu-label" value="E203" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=30;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="cpu-label" value="E203" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=30;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="670" y="135" width="160" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="host-label" value="Host" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=30;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="host-label" value="Host" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=30;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="890" y="135" width="160" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="ram-title" value="Shared SRAM" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="ram-title" value="Shared SRAM" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=28;fontStyle=3;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="1160" y="407" width="200" height="42" as="geometry" />
         </mxCell>
-        <mxCell id="ram-body" value="Single port" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="ram-body" value="Single port" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="1160" y="471" width="200" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="responses" value="Responses follow the saved request owner at both levels." style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="responses" value="Responses follow the saved request owner at both levels." style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="20" y="655" width="1360" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="preserve" value="Host priority preserves the DMA turn and remaining quota." style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="preserve" value="Host priority preserves the DMA turn and remaining quota." style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=26;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="20" y="700" width="1360" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="config" value="Shown configuration    DMA_BURST = 8, HOST_BURST = 2" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=25;fontStyle=0;fontColor=#2B4963;" vertex="1" parent="1">
+        <mxCell id="config" value="Shown configuration    DMA_BURST = 8, HOST_BURST = 2" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontFamily=Times New Roman;fontSize=25;fontStyle=0;fontColor=#234675;" vertex="1" parent="1">
           <mxGeometry x="20" y="751" width="1360" height="36" as="geometry" />
         </mxCell>
       </root>
