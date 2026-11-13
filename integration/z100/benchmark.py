@@ -48,6 +48,7 @@ def main():
             total = finished - start
             row = dict(file=name, preprocess_ms=(encoded - start) * 1000,
                        transport_and_board_ms=result.elapsed * 1000,
+                       board_cycles=result.cycles, board_frequency_hz=result.frequency,
                        board_ms=result.cycles * 1000 / result.frequency,
                        end_to_end_ms=total * 1000, prediction=result.label, label=label)
             rows.append(row)

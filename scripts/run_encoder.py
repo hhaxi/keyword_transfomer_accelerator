@@ -99,7 +99,7 @@ def synthesize(contest=False):
     boundaries='rtl/kwt_sram16.sv integration/kwt_shared_sram.sv integration/e203_ram_boundary.v'
     if contest:
         # The pinned E203 uses simulation-only #1 assignments in its DFF cells.
-        frontend=['read_slang --ignore-timing --allow-use-before-declare --top kwt_encoder_soc -G PROJECTION_K4=1 -D KWT_SRAM_BLACKBOX -D DISABLE_SV_ASSERTION -I'+include+' '+boundaries+' '+' '.join(files)]
+        frontend=['read_slang --ignore-timing --allow-use-before-declare --top kwt_encoder_soc -G PROJECTION_K4=1 -G WIDE_MACRO=1 -D KWT_SRAM_BLACKBOX -D DISABLE_SV_ASSERTION -I'+include+' '+boundaries+' '+' '.join(files)]
     else:
         frontend=['read_verilog -sv -D KWT_SRAM_BLACKBOX '+boundaries,
                   'read_verilog -sv -I'+include+' '+' '.join(files)]
@@ -144,7 +144,7 @@ def main():
     p.add_argument('--layers',type=int,choices=[1,12],default=12)
     p.add_argument('--input-stream',type=int,choices=[0,1],default=0)
     p.add_argument('--baseline',type=int,choices=[0,1],default=0)
-    p.add_argument('--contest',action='store_true',help='Use the macro-backed four-input projection configuration')
+    p.add_argument('--contest',action='store_true',help='Use the macro-backed parallel encoder configuration')
     a=p.parse_args();DEST.mkdir(exist_ok=True)
     if a.jobs<1 or a.jobs>a.tasks or (a.jobs>1 and (a.task!='soc' or a.baseline)):
         p.error('--jobs must be 1..tasks, and sharding is supported for optimized RTL soc only')

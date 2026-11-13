@@ -47,7 +47,7 @@ module tb_encoder_soc;
     longint cycles=0,start_cycle,task_cycles,total_cycles=0;
     string folder;
 `ifdef KWT_CONTEST_PROJECTION
-    kwt_encoder_soc #(.PROJECTION_K4(1)) dut(.*);
+    kwt_encoder_soc #(.PROJECTION_K4(1),.WIDE_MACRO(1)) dut(.*);
 `elsif HOST_BURST2
 `ifdef BUS_BURST8
     kwt_encoder_soc #(.DMA_BURST(8),.HOST_BURST(2)) dut(.*);

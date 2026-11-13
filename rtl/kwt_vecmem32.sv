@@ -15,6 +15,16 @@ module kwt_vecmem32 #(parameter AW=11)(
                         .we(we),.addr(addr[9:0]),.din(din[l*32+h*16+:16]),.dout(q[b]));
                 end
                 assign dout[l*32+h*16+:16]=q[bank];
+            end else if(AW==8 || AW==9) begin: small_pages
+                localparam PAGES=1<<(AW-7);
+                wire [15:0] q[0:PAGES-1];
+                reg [AW-8:0] page;
+                always @(posedge clk) if(cs && !we && mask[l]) page<=addr[AW-1:7];
+                for(b=0;b<PAGES;b=b+1) begin: block_
+                    kwt_sram16 #(.AW(7)) macro_(.clk(clk),.cs(cs && mask[l] && addr[AW-1:7]==b),
+                        .we(we),.addr(addr[6:0]),.din(din[l*32+h*16+:16]),.dout(q[b]));
+                end
+                assign dout[l*32+h*16+:16]=q[page];
             end else begin: single
                 kwt_sram16 #(.AW(AW)) macro_(.clk(clk),.cs(cs && mask[l]),.we(we),.addr(addr),
                     .din(din[l*32+h*16+:16]),.dout(dout[l*32+h*16+:16]));

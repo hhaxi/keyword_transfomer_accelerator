@@ -16,6 +16,10 @@
 #define CONTEST_CONTROL (*(volatile uint32_t *)(DATA_WINDOW + 0x80000u))
 #define CONTEST_ID (*(volatile uint32_t *)(DATA_WINDOW + 0x80004u))
 #define CONTEST_PC (*(volatile uint32_t *)(DATA_WINDOW + 0x80008u))
+#define LOAD_SOURCE (*(volatile uint32_t *)(DATA_WINDOW + 0x80010u))
+#define LOAD_DESTINATION (*(volatile uint32_t *)(DATA_WINDOW + 0x80014u))
+#define LOAD_TRANSFER (*(volatile uint32_t *)(DATA_WINDOW + 0x80018u))
+static volatile uint32_t *const contest_profile = (volatile uint32_t *)0x11400000u;
 #else
 #define DATA_WINDOW 0x10000000u
 #endif
@@ -86,7 +90,21 @@ static int validate_model(void)
     return model_valid;
 }
 
-#ifndef Z100_DIRECT_MODEL
+#ifdef Z100_CONTEST
+static int store_words(unsigned offset, const uint32_t *source, unsigned count)
+{
+    LOAD_SOURCE = (uint32_t)(uintptr_t)source;
+    LOAD_DESTINATION = offset;
+    barrier();
+    LOAD_TRANSFER = count;
+    barrier();
+    uint32_t status;
+    do {
+        status = LOAD_TRANSFER;
+    } while (status & 1u);
+    return (status & 2u) == 0;
+}
+#elif !defined(Z100_DIRECT_MODEL)
 static void store_words(unsigned offset, const uint32_t *source, unsigned count)
 {
     volatile uint32_t *dst = (volatile uint32_t *)(DATA_WINDOW + offset);
@@ -171,9 +189,19 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
     mail[1] = 0;
     CONTEST_CONTROL = 2;
     barrier();
+    static uint32_t input_staging[KWT_FEATURE_BYTES / 4] __attribute__((aligned(64)));
+    for (unsigned i = 0; i < KWT_FEATURE_BYTES; i += 4) {
+        input_staging[i / 4] = packet[i] | ((uint32_t)packet[i+1] << 8) |
+            ((uint32_t)packet[i+2] << 16) | ((uint32_t)packet[i+3] << 24);
+    }
+    Xil_DCacheFlushRange((uintptr_t)input_staging, sizeof(input_staging));
     uint32_t started = PL_CYCLES;
     uint32_t progress_cycles = 0;
-#endif
+    if (!store_words(0x10000, input_staging, KWT_FEATURE_BYTES / 4))
+        return fail(packet, 1, 4, LOAD_TRANSFER);
+    const uint32_t input_cycles = PL_CYCLES - started;
+    uint32_t weight_cycles = 0;
+#else
     volatile uint32_t *input = (volatile uint32_t *)(DATA_WINDOW + 0x10000);
     for (unsigned i = 0; i < KWT_FEATURE_BYTES; i += 4) {
         input[i / 4] = packet[i] | ((uint32_t)packet[i+1] << 8) |
@@ -182,14 +210,17 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
 #if defined(Z100_ARM_CACHE) && !defined(Z100_CONTEST)
     Xil_DCacheFlushRange((uintptr_t)input, KWT_FEATURE_BYTES);
 #endif
+#endif
 #ifdef Z100_CONTEST
     for (unsigned layer = 0; layer < LAYERS; ++layer) {
         const uint32_t *p = model + 4 + layer * LAYER_WORDS;
-        store_words(0x50000, p, 16704); p += 16704;
-        store_words(0x20000, p, 8192); p += 8192;
-        store_words(0x28000, p, 256); p += 256;
-        store_words(0x40000, p, 8192); p += 8192;
-        store_words(0x48000, p, 64); p += 64;
+        const uint32_t load_start = PL_CYCLES;
+        if (!store_words(0x50000, p, 16704) ||
+            !store_words(0x20000, p + 16704, 8448) ||
+            !store_words(0x40000, p + 25152, 8256))
+            return fail(packet, layer + 1, 4, LOAD_TRANSFER);
+        weight_cycles += PL_CYCLES - load_start;
+        p += LAYER_WORDS - 2;
         mail[2] = p[0];
         mail[3] = p[1] | 24u | (layer != 0 ? 1u : 0u) | (layer != LAYERS - 1 ? 2u : 0u);
         mail[4] = layer;
@@ -213,6 +244,11 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
         progress(layer + 1, context);
         progress_cycles += PL_CYCLES - layer_done;
     }
+    contest_profile[0] = elapsed;
+    contest_profile[1] = input_cycles;
+    contest_profile[2] = weight_cycles;
+    contest_profile[3] = elapsed - input_cycles - weight_cycles;
+    Xil_DCacheFlushRange((uintptr_t)contest_profile, 4 * sizeof(uint32_t));
 #else
     ENC[0] = 4;
     ENC[0x20/4] = 0xa0010000u;

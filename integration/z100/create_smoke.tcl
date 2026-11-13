@@ -39,7 +39,8 @@ if {$contest} {
         kwt_exp_negative kwt_result_fifo kwt_accel kwt_dma} {
         add_files -norecurse [file join $repo rtl $name.sv]
     }
-    add_files -norecurse [list [file join $source_dir z100_axi_mmio.sv] [file join $source_dir z100_contest.v]]
+    add_files -norecurse [list [file join $source_dir z100_axi_mmio.sv] [file join $source_dir z100_contest.v] \
+        [file join $source_dir z100_contest_loader.v]]
 } elseif {$full} {
     foreach name {z100_axi_mmio.sv z100_axi_ddr.sv z100_kwt.v z100_ffn.sv z100_ffn2.sv z100_ffn_rows.sv} {
         add_files -norecurse [file join $source_dir $name]
@@ -59,7 +60,7 @@ set ps [create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 ps]
 set_property -dict $z100_ps_config $ps
 set_property -dict [list CONFIG.PCW_USE_M_AXI_GP0 {1} CONFIG.PCW_EN_CLK0_PORT {1} \
     CONFIG.PCW_EN_RST0_PORT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ $frequency] $ps
-if {$full && !$contest} {
+if {$full} {
     set_property -dict [list CONFIG.PCW_USE_S_AXI_HP0 {1} CONFIG.PCW_S_AXI_HP0_DATA_WIDTH {32}] $ps
 }
 make_bd_intf_pins_external [get_bd_intf_pins ps/DDR]
@@ -85,9 +86,16 @@ assign_bd_address -offset 0x43C00000 -range 4K -target_address_space [get_bd_add
 if {$contest} {
     set_property CONFIG.NUM_MI {2} $bus
     create_bd_cell -type module -reference z100_contest contest
-    connect_bd_net [get_bd_pins ps/FCLK_CLK0] [get_bd_pins contest/aclk]
-    connect_bd_net [get_bd_pins reset/peripheral_aresetn] [get_bd_pins contest/aresetn]
+    set hp [create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 axi_loader]
+    set_property -dict [list CONFIG.NUM_SI {1} CONFIG.NUM_MI {1}] $hp
+    connect_bd_net [get_bd_pins ps/FCLK_CLK0] [get_bd_pins contest/aclk] \
+        [get_bd_pins ps/S_AXI_HP0_ACLK] [get_bd_pins axi_loader/aclk]
+    connect_bd_net [get_bd_pins reset/peripheral_aresetn] [get_bd_pins contest/aresetn] [get_bd_pins axi_loader/aresetn]
     connect_bd_intf_net [get_bd_intf_pins axi_ctrl/M01_AXI] [get_bd_intf_pins contest/s_axi]
+    connect_bd_intf_net [get_bd_intf_pins contest/m_axi] [get_bd_intf_pins axi_loader/S00_AXI]
+    connect_bd_intf_net [get_bd_intf_pins axi_loader/M00_AXI] [get_bd_intf_pins ps/S_AXI_HP0]
+    assign_bd_address [get_bd_addr_segs ps/S_AXI_HP0/HP0_DDR_LOWOCM] \
+        -target_address_space [get_bd_addr_spaces contest/m_axi]
     assign_bd_address -offset 0x43D00000 -range 1M -target_address_space [get_bd_addr_spaces ps/Data] \
         [get_bd_addr_segs -of_objects [get_bd_intf_pins contest/s_axi]]
 } elseif {$full} {
