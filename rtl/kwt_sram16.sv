@@ -11,6 +11,11 @@ module kwt_sram16 #(parameter AW=12)(
     output wire [15:0] dout
 );
 `ifndef KWT_SRAM_BLACKBOX
+`ifdef KWT_FPGA_BANKED_SHARED
+    // Keep each ASIC macro boundary. On 7-series, shallow banks use LUTRAM
+    // so one 128-word macro does not consume an entire RAMB18.
+    (* ram_style = (AW == 7 ? "distributed" : "block") *)
+`endif
     reg [15:0] mem [0:(1<<AW)-1];
     reg [15:0] q;
     assign dout = q;

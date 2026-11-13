@@ -11,7 +11,18 @@
 #define Z100_FCLK_HZ 25000000u
 #endif
 
-#define DDR 0x10000000u
+#ifdef Z100_CONTEST
+#define DATA_WINDOW 0x43d00000u
+#define CONTEST_CONTROL (*(volatile uint32_t *)(DATA_WINDOW + 0x80000u))
+#define CONTEST_ID (*(volatile uint32_t *)(DATA_WINDOW + 0x80004u))
+#define CONTEST_PC (*(volatile uint32_t *)(DATA_WINDOW + 0x80008u))
+#define LOAD_SOURCE (*(volatile uint32_t *)(DATA_WINDOW + 0x80010u))
+#define LOAD_DESTINATION (*(volatile uint32_t *)(DATA_WINDOW + 0x80014u))
+#define LOAD_TRANSFER (*(volatile uint32_t *)(DATA_WINDOW + 0x80018u))
+static volatile uint32_t *const contest_profile = (volatile uint32_t *)0x11400000u;
+#else
+#define DATA_WINDOW 0x10000000u
+#endif
 #define MODEL 0x11000000u
 #define TIMER_LO (*(volatile uint32_t *)0xf8f00200u)
 #define PL_CYCLES (*(volatile uint32_t *)0x43c0000cu)
@@ -79,18 +90,33 @@ static int validate_model(void)
     return model_valid;
 }
 
-#ifndef Z100_DIRECT_MODEL
+#ifdef Z100_CONTEST
+static int store_words(unsigned offset, const uint32_t *source, unsigned count)
+{
+    LOAD_SOURCE = (uint32_t)(uintptr_t)source;
+    LOAD_DESTINATION = offset;
+    barrier();
+    LOAD_TRANSFER = count;
+    barrier();
+    uint32_t status;
+    do {
+        status = LOAD_TRANSFER;
+    } while (status & 1u);
+    return (status & 2u) == 0;
+}
+#elif !defined(Z100_DIRECT_MODEL)
 static void store_words(unsigned offset, const uint32_t *source, unsigned count)
 {
-    volatile uint32_t *dst = (volatile uint32_t *)(DDR + offset);
+    volatile uint32_t *dst = (volatile uint32_t *)(DATA_WINDOW + offset);
     for (unsigned i = 0; i < count; ++i)
         dst[i] = source[i];
-#ifdef Z100_ARM_CACHE
+#if defined(Z100_ARM_CACHE) && !defined(Z100_CONTEST)
     Xil_DCacheFlushRange((uintptr_t)dst, count * sizeof(uint32_t));
 #endif
 }
 #endif
 
+#ifndef Z100_CONTEST
 static unsigned wait_status(volatile uint32_t *registers)
 {
     uint32_t started = TIMER_LO;
@@ -119,15 +145,23 @@ static void start_ffn(void)
     barrier();
 }
 #endif
+#endif
 
 static unsigned fail(uint8_t *packet, unsigned layer, unsigned stage, unsigned status)
 {
     if (stage != 0) {
+#ifdef Z100_CONTEST
+        CONTEST_CONTROL = 1;
+        barrier();
+        CONTEST_CONTROL = 3;
+        barrier();
+#else
         ENC[0] = 2;
         FFN[0] = 2;
         barrier();
         wait_status(ENC);
         wait_status(FFN);
+#endif
     }
     packet[0] = 2;
     packet[1] = layer;
@@ -141,14 +175,81 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
     if (!validate_model())
         return fail(packet, 0, 0, 1);
     uint32_t elapsed = 0;
-    volatile uint32_t *input = (volatile uint32_t *)(DDR + 0x10000);
+#ifdef Z100_CONTEST
+    if (CONTEST_ID != 0x4b575443u)
+        return fail(packet, 0, 0, 2);
+    volatile uint32_t *const mail = (volatile uint32_t *)(DATA_WINDOW + 0xf000u);
+    // Reset control state between tasks. Every valid SRAM payload is overwritten
+    // by the loader or its owning engine before use.
+    CONTEST_CONTROL = 1;
+    barrier();
+    CONTEST_CONTROL = 3;
+    barrier();
+    mail[0] = 0;
+    mail[1] = 0;
+    CONTEST_CONTROL = 2;
+    barrier();
+    static uint32_t input_staging[KWT_FEATURE_BYTES / 4] __attribute__((aligned(64)));
+    for (unsigned i = 0; i < KWT_FEATURE_BYTES; i += 4) {
+        input_staging[i / 4] = packet[i] | ((uint32_t)packet[i+1] << 8) |
+            ((uint32_t)packet[i+2] << 16) | ((uint32_t)packet[i+3] << 24);
+    }
+    Xil_DCacheFlushRange((uintptr_t)input_staging, sizeof(input_staging));
+    uint32_t started = PL_CYCLES;
+    uint32_t progress_cycles = 0;
+    if (!store_words(0x10000, input_staging, KWT_FEATURE_BYTES / 4))
+        return fail(packet, 1, 4, LOAD_TRANSFER);
+    const uint32_t input_cycles = PL_CYCLES - started;
+    uint32_t weight_cycles = 0;
+#else
+    volatile uint32_t *input = (volatile uint32_t *)(DATA_WINDOW + 0x10000);
     for (unsigned i = 0; i < KWT_FEATURE_BYTES; i += 4) {
         input[i / 4] = packet[i] | ((uint32_t)packet[i+1] << 8) |
             ((uint32_t)packet[i+2] << 16) | ((uint32_t)packet[i+3] << 24);
     }
-#ifdef Z100_ARM_CACHE
+#if defined(Z100_ARM_CACHE) && !defined(Z100_CONTEST)
     Xil_DCacheFlushRange((uintptr_t)input, KWT_FEATURE_BYTES);
 #endif
+#endif
+#ifdef Z100_CONTEST
+    for (unsigned layer = 0; layer < LAYERS; ++layer) {
+        const uint32_t *p = model + 4 + layer * LAYER_WORDS;
+        const uint32_t load_start = PL_CYCLES;
+        if (!store_words(0x50000, p, 16704) ||
+            !store_words(0x20000, p + 16704, 8448) ||
+            !store_words(0x40000, p + 25152, 8256))
+            return fail(packet, layer + 1, 4, LOAD_TRANSFER);
+        weight_cycles += PL_CYCLES - load_start;
+        p += LAYER_WORDS - 2;
+        mail[2] = p[0];
+        mail[3] = p[1] | 24u | (layer != 0 ? 1u : 0u) | (layer != LAYERS - 1 ? 2u : 0u);
+        mail[4] = layer;
+        barrier();
+        mail[0] = 11;
+        barrier();
+        uint32_t deadline = TIMER_LO;
+        uint32_t status;
+        do {
+            status = mail[0];
+            if (TIMER_LO - deadline > 1000000000u)
+                return fail(packet, layer + 1, 3, 0xffffffffu);
+        } while (status != 2 && status != 0xdeadu && status != 0xbadu);
+        if (status == 0xbadu)
+            return fail(packet, layer + 1, 3, CONTEST_PC);
+        if (status != 2 || mail[1] != 0)
+            return fail(packet, layer + 1, 3, mail[1]);
+        const uint32_t layer_done = PL_CYCLES;
+        if (layer + 1 == LAYERS)
+            elapsed = layer_done - started - progress_cycles;
+        progress(layer + 1, context);
+        progress_cycles += PL_CYCLES - layer_done;
+    }
+    contest_profile[0] = elapsed;
+    contest_profile[1] = input_cycles;
+    contest_profile[2] = weight_cycles;
+    contest_profile[3] = elapsed - input_cycles - weight_cycles;
+    Xil_DCacheFlushRange((uintptr_t)contest_profile, 4 * sizeof(uint32_t));
+#else
     ENC[0] = 4;
     ENC[0x20/4] = 0xa0010000u;
     ENC[0x24/4] = 0xa0050000u;
@@ -219,19 +320,25 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
 #if defined(Z100_PROFILE) && defined(Z100_ARM_CACHE)
     Xil_DCacheFlushRange((uintptr_t)profile, LAYERS * PROFILE_WORDS * sizeof(uint32_t));
 #endif
+#endif
+#ifndef Z100_CONTEST
     uint32_t started = PL_CYCLES;
+#endif
     const float *weights = (const float *)(model + 4 + LAYERS * LAYER_WORDS);
     const float *bias = weights + DIM * CLASSES;
-    volatile const int32_t *output = (volatile const int32_t *)(DDR + 0x64000);
-#ifdef Z100_ARM_CACHE
+    volatile const int32_t *output = (volatile const int32_t *)(DATA_WINDOW + 0x64000);
+#if defined(Z100_ARM_CACHE) && !defined(Z100_CONTEST)
     Xil_DCacheInvalidateRange((uintptr_t)output, KWT_FEATURE_BYTES);
 #endif
     unsigned best = 0;
     float best_score = 0;
+    int32_t cls[DIM];
+    for (unsigned i = 0; i < DIM; ++i)
+        cls[i] = output[i];
     for (unsigned label = 0; label < CLASSES; ++label) {
         float score = 0;
         for (unsigned i = 0; i < DIM; ++i)
-            score += ((float)output[i] * (1.0f / 65536.0f)) * weights[i * CLASSES + label];
+            score += ((float)cls[i] * (1.0f / 65536.0f)) * weights[i * CLASSES + label];
         score += bias[label];
         if (label == 0 || score > best_score) {
             best = label;
@@ -240,7 +347,9 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
         union { float f; uint32_t u; } result = { .f = score };
         put_word(packet + 10 + label * 4, result.u);
     }
+#ifndef Z100_CONTEST
     elapsed += PL_CYCLES - started;
+#endif
     packet[0] = 0;
     packet[1] = best;
     put_word(packet + 2, Z100_FCLK_HZ);

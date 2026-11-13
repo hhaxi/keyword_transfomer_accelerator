@@ -7,10 +7,11 @@ if {[info exists ::env(Z100_BUILD)]} {
 set in_process [expr {[info exists ::env(Z100_IN_PROCESS)] && $::env(Z100_IN_PROCESS) eq "1"}]
 if {!$in_process} {open_run impl_1}
 set variant smoke
-if {[get_property NAME [current_project]] eq "z100_kwt"} {
+set project_name [get_property NAME [current_project]]
+if {$project_name in {z100_kwt z100_contest}} {
     set frequency 25
     if {[info exists ::env(Z100_FCLK_MHZ)]} {set frequency $::env(Z100_FCLK_MHZ)}
-    set variant kwt-$frequency
+    set variant [string range $project_name 5 end]-$frequency
 }
 report_timing_summary -report_unconstrained -file [file join $build_dir $variant-timing.rpt]
 report_drc -file [file join $build_dir $variant-drc.rpt]

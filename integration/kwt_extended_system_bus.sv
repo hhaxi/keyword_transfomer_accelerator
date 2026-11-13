@@ -1,6 +1,6 @@
 // Same E203/host/shared-SRAM fabric, with an additional encoder register window
 // at 0x40080000 and a fair arbiter for the two hardware DMA masters.
-module kwt_extended_system_bus #(parameter integer DMA_BURST=1, HOST_BURST=0)(
+module kwt_extended_system_bus #(parameter integer DMA_BURST=1, HOST_BURST=0, PROJECTION_K4=0, WIDE_MACRO=0)(
     input wire clk,rst_n,
     input wire c_valid,output wire c_ready,input wire [31:0] c_addr,c_wdata,
     input wire c_read,input wire [3:0] c_mask,
@@ -47,7 +47,8 @@ module kwt_extended_system_bus #(parameter integer DMA_BURST=1, HOST_BURST=0)(
         .rsp_valid(fa_rsp_valid),.rsp_ready(a_rsp_ready && !register_owner),.rsp_rdata(fa_rdata),.rsp_err(fa_err),
         .m_valid(f_valid),.m_ready(f_ready),.m_addr(f_addr),.m_wdata(f_wdata),.m_read(f_read),.m_mask(f_mask),
         .m_rsp_valid(f_rsp_valid),.m_rsp_ready(f_rsp_ready),.m_rdata(f_rdata),.m_err(f_err));
-    kwt_encoder #(.STREAM_ENABLE(1)) encoder(.preload_permit(preload_permit),.input_valid(input_valid),.input_ready(input_ready),.input_data(input_data),.result_valid(tail_valid),.result_ready(tail_ready),.result_data(tail_data),
+    kwt_encoder #(.STREAM_ENABLE(1),.PROJECTION_K4(WIDE_MACRO ? 2 : PROJECTION_K4),
+        .ATTENTION_K16(WIDE_MACRO ? 2 : 0),.MACRO_WIDE(WIDE_MACRO)) encoder(.preload_permit(preload_permit),.input_valid(input_valid),.input_ready(input_ready),.input_data(input_data),.result_valid(tail_valid),.result_ready(tail_ready),.result_data(tail_data),
         .link_abort_in(ffn_abort),.link_abort_out(enc_abort),.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid && a_addr[19]),.cmd_ready(ea_ready),
         .cmd_addr({1'b0,a_addr[18:0]}),.cmd_read(a_read),.cmd_wdata(a_wdata),.cmd_wmask(a_mask),
         .rsp_valid(ea_rsp_valid),.rsp_ready(a_rsp_ready && register_owner),.rsp_rdata(ea_rdata),.rsp_err(ea_err),

@@ -2,7 +2,8 @@
 // Command 0: Q/K/V -> row Softmax -> PV -> O -> residual -> LN1 -> packed FFN input.
 // Command 1: FFN result -> residual -> LN2 -> resident next-layer input / final DMA.
 // E203 supplies commands/addresses only; all encoder arithmetic is hardware.
-module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, parameter ATTENTION_K16=0)(
+module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, parameter ATTENTION_K16=0,
+    parameter MACRO_WIDE=0)(
     input wire clk,rst_n,
     input wire cmd_valid,output wire cmd_ready,input wire [19:0] cmd_addr,
     input wire cmd_read,input wire [31:0] cmd_wdata,input wire [3:0] cmd_wmask,
@@ -206,6 +207,25 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         localparam BANKS=4*PROJECTION_K, BITS=$clog2(BANKS);
         wire [11-BITS:0] weight_address = wwe ? load_index[11:BITS] : wa[9:BITS-2];
         for (weight_bank=0; weight_bank<BANKS; weight_bank=weight_bank+1) begin: banks
+          if (!WIDE_PROJECTION) begin: macro_banks
+            wire [31:0] words [0:1];
+            reg read_bank;
+            always @(posedge clk) if(wcs && !wwe) read_bank<=weight_address[7];
+            for(genvar page=0;page<2;page=page+1) begin: pages
+                wire select=wcs && weight_address[7]==page && (!wwe || load_index[3:0]==weight_bank);
+                for(genvar half=0;half<2;half=half+1) begin: halves
+                    kwt_sram16 #(.AW(7)) macro_(.clk(clk),.cs(select),.we(wwe),
+                        .addr(weight_address[6:0]),.din(m_rdata[16*half+:16]),.dout(words[page][16*half+:16]));
+                end
+            end
+            assign wide_weights[weight_bank*32+:32]=words[read_bank];
+          end else if(MACRO_WIDE!=0) begin: wide_macro_bank
+            for(genvar half=0;half<2;half=half+1) begin: halves
+                kwt_sram16 #(.AW(7)) macro_(.clk(clk),.cs(wcs && (!wwe || load_index[BITS-1:0]==weight_bank)),
+                    .we(wwe),.addr({1'b0,weight_address}),.din(m_rdata[16*half+:16]),
+                    .dout(wide_weights[32*weight_bank+16*half+:16]));
+            end
+          end else begin: fpga_wide
             (* ram_style = "block" *) reg [31:0] weights [0:(4096/BANKS)-1];
             reg [31:0] read_data;
             always @(posedge clk) if (wcs) begin
@@ -214,6 +234,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
                     weights[weight_address] <= m_rdata;
             end
             assign wide_weights[weight_bank*32+:32] = read_data;
+          end
         end
         assign wd=wide_weights[127:0];
     end else begin: scalar_projection
@@ -221,7 +242,23 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         assign wide_weights=0;
     end endgenerate
     kwt_vecmem32 #(.AW(7)) pm_(clk,pcs,pwe,pm,pa,pi,pd);
-    if(PIPELINED_SCORE) begin: dual_port_score
+    if(PIPELINED_SCORE && MACRO_WIDE!=0) begin: score_ping_pong
+        // Exponentials stream from scores to the second bank; normalization
+        // streams back to the first bank, which PV reads.
+        wire exp_phase=state==EREAD || state==ECALC;
+        wire prob_phase=state==NREAD || state==NCALC;
+        wire soft_read=soft_fetch && !stopping;
+        wire [31:0] score_data, exp_data;
+        wire score_cs=(scs && !exp_phase) || (soft_read && exp_phase);
+        wire exp_cs=(scs && exp_phase) || (soft_read && prob_phase);
+        wire [6:0] score_addr=soft_read && exp_phase ? soft_issue : sa;
+        wire [6:0] exp_addr=soft_read && prob_phase ? soft_issue : sa;
+        for(genvar h=0;h<2;h=h+1) begin: halves
+            kwt_sram16 #(.AW(7)) score_mem(clk,score_cs,swe && !exp_phase,score_addr,si[h*16+:16],score_data[h*16+:16]);
+            kwt_sram16 #(.AW(7)) exp_mem(clk,exp_cs,swe && exp_phase,exp_addr,si[h*16+:16],exp_data[h*16+:16]);
+        end
+        assign sd=prob_phase ? exp_data : score_data;
+    end else if(PIPELINED_SCORE) begin: dual_port_score
         reg [31:0] scores[0:127];
         reg [31:0] data;
         always @(posedge clk) begin
@@ -275,15 +312,16 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         assign product[l]=lhs[l]*rhs[l];
         assign centered[l]=clip32(sx32($signed(xd[l*32+:32]))-{{32{mean[39]}},mean});
         assign projected[l]=rne(acc[l],6'd16);
-        assign affine_value[l]=PIPELINED_SCORE ? affine_stage[l] :
-            rne(sx64(product[l]),6'd16)+sx32($signed(pd[l*32+:32]));
         if(PIPELINED_SCORE) begin: norm_pipeline
+            assign affine_value[l]=affine_stage[l];
             always @(posedge clk) begin
                 if(state==VARMAC || state==ANORM) norm_centered[l]<=centered[l];
                 if(state==VARMAC || state==VARFLUSH || state==AFFINE) norm_product[l]<=product[l];
                 if(state==AFFINE_ROUND) affine_stage[l]<=
                     rne(sx64(norm_product[l]),6'd16)+sx32($signed(pd[l*32+:32]));
             end
+        end else begin: norm_combinational
+            assign affine_value[l]=rne(sx64(product[l]),6'd16)+sx32($signed(pd[l*32+:32]));
         end
         if (WIDE_PROJECTION) begin: pipeline_projection
             reg signed [63:0] term[0:15];
@@ -404,7 +442,8 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
                 SMAC:begin lhs[u]=$signed(qd[u*32+:32]);rhs[u]=$signed(kd[u*32+:32]);end
                 VMAC:begin lhs[u]=$signed(sd);rhs[u]=$signed(vd[u*32+:32]);end
                 VARMAC,VARFLUSH:begin
-                    lhs[u]=PIPELINED_SCORE ? norm_centered[u] : centered[u];rhs[u]=lhs[u];
+                    lhs[u]=PIPELINED_SCORE ? norm_centered[u] : centered[u];
+                    rhs[u]=PIPELINED_SCORE ? norm_centered[u] : centered[u];
                 end
                 ANORM,ANORM_MUL:begin
                     lhs[u]=PIPELINED_SCORE ? norm_centered[u] : centered[u];rhs[u]=$signed(reciprocal);

@@ -1,0 +1,2 @@
+ENC_SOC_TASK_PASS task=0 cycles=10617875 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_PASS tasks=1 total_cycles=10617875 baseline=0

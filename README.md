@@ -8,7 +8,8 @@
 | --- | --- |
 | 完整编码器及独立 FFN 模式 | 根目录的 `encoder.ps1`、`design.ps1`，详见下文 |
 | 本科 FFN1 独立工程 | [16 路 MAC、四项优化与 16 组合复现](undergrad_ffn1/README.md) |
-| Z100 XC7Z035 上板验证 | [66.7 MHz 实测报告、识别截图和复现步骤](docs/fpga-validation/README.md) |
+| Z100 XC7Z035 上板验证 | [赛题 SRAM 版实测报告、识别截图和复现步骤](docs/fpga-validation/contest-20-task.md) |
+| ASIC Design Compiler | [12 层 KWT 综合入口与验证说明](integration/asic_dc/README.md) |
 | 本科 FFN1 候选方案 | [候选索引](undergrad_ffn1/candidates/README.md) · [Q128 IRQ/WFI 实测 PPA](undergrad_ffn1/candidates/q128_reference_sleep/reports/RESULTS.md) |
 
 面向本科生组芯片设计赛题，基于 **E203 蜂鸟 SoC** 实现第一线性层、完整 FFN 和 **12 层 PostNorm Transformer 编码器**。工程包含可综合 RTL、冻结整数模型、参数转换、RISC-V 固件、SoC 集成及自动化验证。

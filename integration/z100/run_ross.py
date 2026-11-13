@@ -64,7 +64,7 @@ class Ross:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=["smoke", "kwt", "sim"])
+    parser.add_argument("mode", choices=["smoke", "kwt", "contest", "sim"])
     parser.add_argument("--mhz", type=int, choices=range(20, 101), metavar="{20..100}", default=25)
     parser.add_argument("--ethernet", action="store_true", help="Use the XC7Z035 Ethernet PS preset")
     parser.add_argument("--parallel-projection", action="store_true")
@@ -81,13 +81,20 @@ def main():
     parser.add_argument("--mcp", type=Path,
                         default=Path("D:/.codex/tools/amd-ross/vivado-mcp-server-windows-amd64-2026.10.1.exe"))
     args = parser.parse_args()
+    if args.mode == "contest" and not args.ethernet:
+        parser.error("contest uses the Z100 Ethernet loader; add --ethernet")
+    if args.mode == "contest" and any((args.parallel_projection, args.parallel_attention,
+                                       args.wide_encoder, args.parallel_ffn, args.stream_handoff,
+                                       args.held_gelu)):
+        parser.error("contest has a fixed SRAM-backed RTL configuration")
     if (args.stream_handoff or args.held_gelu) and not args.parallel_ffn:
         parser.error("--stream-handoff and --held-gelu require --parallel-ffn")
     build = args.build.resolve()
     build.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
     env.update(VIVADO_PATH=str(args.vivado), Z100_BUILD=build.as_posix(),
-               Z100_KWT="1" if args.mode == "kwt" else "0", Z100_FCLK_MHZ=str(args.mhz),
+               Z100_KWT="1" if args.mode in ("kwt", "contest") else "0", Z100_FCLK_MHZ=str(args.mhz),
+               Z100_CONTEST="1" if args.mode == "contest" else "0",
                Z100_ETHERNET="1" if args.ethernet else "0",
                Z100_FAST_ATTENTION="1" if args.parallel_attention else "0",
                Z100_WIDE_ENCODER="1" if args.wide_encoder else "0",
@@ -100,7 +107,7 @@ def main():
     script = HERE / ("sim_ffn.tcl" if args.mode == "sim" else "run_smoke.tcl")
     suffix = "bit" if args.bit_only else "xsa"
     artifact = (build / "sim-ffn" / "xsim.log" if args.mode == "sim" else
-                build / (f"z100-smoke.{suffix}" if args.mode == "smoke" else f"z100-kwt-{args.mhz}.{suffix}"))
+                build / (f"z100-smoke.{suffix}" if args.mode == "smoke" else f"z100-{args.mode}-{args.mhz}.{suffix}"))
     previous = artifact.stat().st_mtime_ns if artifact.exists() else 0
     with (build / f"ross-{args.mode}-{args.mhz}.log").open("w", encoding="utf-8") as log:
         ross = Ross(args.mcp, log, build, env)

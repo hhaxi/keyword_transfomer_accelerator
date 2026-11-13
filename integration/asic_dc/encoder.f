@@ -1,0 +1,13 @@
+rtl/kwt_gelu.sv
+rtl/kwt_mac40.sv
+rtl/kwt_accel.sv
+rtl/kwt_dma.sv
+rtl/kwt_vecmem32.sv
+rtl/kwt_udiv64.sv
+rtl/kwt_isqrt64.sv
+rtl/kwt_exp_negative.sv
+rtl/kwt_result_fifo.sv
+rtl/kwt_encoder.sv
+integration/kwt_bus_fabric.sv
+integration/kwt_dma_arbiter.sv
+integration/kwt_extended_system_bus.sv

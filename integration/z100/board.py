@@ -95,7 +95,7 @@ class Board:
                 status = int.from_bytes(reply[3:], "little")
                 if reply[2] == 0:
                     raise RuntimeError("板上模型参数缺失或校验失败")
-                stage = {1: "Attention/LN1", 2: "FFN", 3: "LN2"}.get(reply[2], str(reply[2]))
+                stage = {1: "Attention/LN1", 2: "FFN", 3: "LN2/E203", 4: "参数或输入装载"}.get(reply[2], str(reply[2]))
                 raise RuntimeError(f"第 {reply[1]} 层 {stage} 失败，状态 0x{status:08X}")
             elif len(reply) == size and reply[0] == 0:
                 return decode_result(reply, time.perf_counter() - started, verify)

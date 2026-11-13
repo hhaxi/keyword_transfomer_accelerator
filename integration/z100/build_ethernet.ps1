@@ -8,7 +8,8 @@ param(
     [string] $LwipTcpSource,
     [switch] $DirectModel,
     [switch] $StreamHandoff,
-    [switch] $Profile
+    [switch] $Profile,
+    [switch] $Contest
 )
 $ErrorActionPreference = 'Stop'
 $example = (Resolve-Path -LiteralPath $VendorExample).Path
@@ -26,6 +27,12 @@ if ($StreamHandoff) {
     $defines += '-DZ100_STREAM_HANDOFF=1'
 }
 if ($Profile) { $defines += '-DZ100_PROFILE=1' }
+if ($Contest) {
+    if ($DirectModel -or $StreamHandoff -or $Profile) {
+        throw 'Contest uses the E203 shared SRAM loader and its mailbox statistics'
+    }
+    $defines += '-DZ100_CONTEST=1'
+}
 $sources = @((Join-Path $PSScriptRoot 'ethernet.c'), (Join-Path $PSScriptRoot 'kwt_infer.c'),
              (Join-Path $vendorSource 'platform_zynq.c'))
 $compile = @('--target=arm-none-eabi', '-mcpu=cortex-a9', '-marm', '-mfpu=vfpv3', '-mfloat-abi=hard',

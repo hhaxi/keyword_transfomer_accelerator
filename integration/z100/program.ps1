@@ -1,5 +1,5 @@
 param(
-    [ValidatePattern('^(smoke|kwt-([2-9][0-9]|100))$')] [string] $Image = 'smoke',
+    [ValidatePattern('^(smoke|(kwt|contest)-([2-9][0-9]|100))$')] [string] $Image = 'smoke',
     [string] $Firmware,
     [ValidateSet('jtag','sd')] [string] $ModelSource = 'jtag',
     [string] $VivadoRoot = 'D:\AMDDesignTools\2026.1\Vivado',

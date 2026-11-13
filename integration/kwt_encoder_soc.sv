@@ -1,5 +1,5 @@
 // Integration of the unmodified pinned E203 CPU top with our System Bus.
-module kwt_encoder_soc #(parameter integer DMA_BURST=1, HOST_BURST=0)(
+module kwt_encoder_soc #(parameter integer DMA_BURST=1, HOST_BURST=0, PROJECTION_K4=0, WIDE_MACRO=0)(
  input wire clk,rst_n,boot_hold,
  input wire h_valid,output wire h_ready,input wire [31:0] h_addr,h_wdata,
  input wire h_read,input wire [3:0] h_mask,
@@ -8,7 +8,7 @@ module kwt_encoder_soc #(parameter integer DMA_BURST=1, HOST_BURST=0)(
 );
  wire c_valid,c_ready,c_read,c_rsp_valid,c_rsp_ready,c_err;
  wire [31:0] c_addr,c_wdata,c_rdata;wire [3:0] c_mask;
- kwt_extended_system_bus #(.DMA_BURST(DMA_BURST),.HOST_BURST(HOST_BURST)) bus(.*);
+ kwt_extended_system_bus #(.DMA_BURST(DMA_BURST),.HOST_BURST(HOST_BURST),.PROJECTION_K4(PROJECTION_K4),.WIDE_MACRO(WIDE_MACRO)) bus(.*);
  e203_cpu_top cpu(
   .inspect_pc(inspect_pc),
   .inspect_dbg_irq(),
