@@ -63,7 +63,7 @@ $vendorLib = Join-Path $bsp 'bsplib/lib'
 $newlib = Join-Path $runtime 'lib/arm-none-eabi/newlib/thumb/v7-a+fp/hard'
 $gcc = Get-ChildItem -Path (Join-Path $runtime 'lib/gcc/arm-none-eabi') -Directory | Sort-Object Name | Select-Object -Last 1
 $libs = @((Join-Path $vendorLib 'liblwip4.a'), (Join-Path $vendorLib 'libxil.a'),
-          (Join-Path $newlib 'libc.a'), (Join-Path $newlib 'libnosys.a'),
+          (Join-Path $newlib 'libm.a'), (Join-Path $newlib 'libc.a'), (Join-Path $newlib 'libnosys.a'),
           (Join-Path $gcc.FullName 'thumb/v7-a+fp/hard/libgcc.a'))
 function Convert-ToWsl([string] $Path) {
     $converted = & wsl.exe -d Ubuntu -- wslpath -a ($Path.Replace('\','/'))

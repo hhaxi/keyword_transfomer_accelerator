@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "board": "192.168.1.11:5001",
+  "uart": "COM10",
+  "uart_baud": 115200,
+  "windows": 93,
+  "hits": 5,
+  "elapsed_s": 18.610000000000582,
+  "gaps": 0,
+  "events": [
+    {
+      "line": "KWT 2026-11-18T18:17:47.001 yes",
+      "port": "COM10",
+      "label": "yes",
+      "timestamp": "2026-11-18T18:17:47.001",
+      "offset_s": 7.4
+    },
+    {
+      "line": "KWT 2026-11-18T18:17:48.801 no",
+      "port": "COM10",
+      "label": "no",
+      "timestamp": "2026-11-18T18:17:48.801",
+      "offset_s": 9.2
+    },
+    {
+      "line": "KWT 2026-11-18T18:17:51.201 stop",
+      "port": "COM10",
+      "label": "stop",
+      "timestamp": "2026-11-18T18:17:51.201",
+      "offset_s": 11.6
+    },
+    {
+      "line": "KWT 2026-11-18T18:17:53.201 go",
+      "port": "COM10",
+      "label": "go",
+      "timestamp": "2026-11-18T18:17:53.201",
+      "offset_s": 13.6
+    },
+    {
+      "line": "KWT 2026-11-18T18:17:55.801 yes",
+      "port": "COM10",
+      "label": "yes",
+      "timestamp": "2026-11-18T18:17:55.801",
+      "offset_s": 16.2
+    }
+  ],
+  "segments": [
+    {
+      "source": "silence",
+      "start_s": 0.0,
+      "end_s": 1.13
+    },
+    {
+      "source": "_background_noise_/doing_the_dishes.wav",
+      "start_s": 1.13,
+      "end_s": 3.13
+    },
+    {
+      "source": "silence",
+      "start_s": 3.13,
+      "end_s": 4.33
+    },
+    {
+      "source": "three/8910e5ef_nohash_2.wav",
+      "start_s": 4.33,
+      "end_s": 5.33
+    },
+    {
+      "source": "silence",
+      "start_s": 5.33,
+      "end_s": 6.53
+    },
+    {
+      "source": "yes/c4cfbe43_nohash_1.wav",
+      "start_s": 6.53,
+      "end_s": 7.53
+    },
+    {
+      "source": "silence",
+      "start_s": 7.53,
+      "end_s": 8.73
+    },
+    {
+      "source": "no/171b56dc_nohash_1.wav",
+      "start_s": 8.73,
+      "end_s": 9.73
+    },
+    {
+      "source": "silence",
+      "start_s": 9.73,
+      "end_s": 10.93
+    },
+    {
+      "source": "stop/ab1299bb_nohash_0.wav",
+      "start_s": 10.93,
+      "end_s": 11.93
+    },
+    {
+      "source": "silence",
+      "start_s": 11.93,
+      "end_s": 13.129999999999999
+    },
+    {
+      "source": "go/45692b02_nohash_2.wav",
+      "start_s": 13.13,
+      "end_s": 14.13
+    },
+    {
+      "source": "silence",
+      "start_s": 14.13,
+      "end_s": 15.33
+    },
+    {
+      "source": "yes/c4cfbe43_nohash_1.wav",
+      "start_s": 15.33,
+      "end_s": 16.33
+    },
+    {
+      "source": "silence",
+      "start_s": 16.33,
+      "end_s": 17.529999999999998
+    }
+  ]
+}

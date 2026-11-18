@@ -78,13 +78,23 @@ class Board:
         self.stream.close()
 
     def infer(self, features, *, verify=False, progress=lambda _: None):
+        result, _ = self._request(features, verify, progress, None)
+        return result
+
+    def monitor(self, features, timestamp, active, reset=False):
+        meta = bytes([int(active) | (int(reset) << 1)]) + timestamp.encode("ascii")
+        if len(meta) != 24:
+            raise ValueError("Expected a local millisecond ISO timestamp")
+        return self._request(features, False, lambda _: None, meta)
+
+    def _request(self, features, verify, progress, meta):
         if len(features) != FEATURE_BYTES:
             raise ValueError("Expected 99×64 Q16 values")
         self.request = (self.request + 1) & 0xFFFFFFFF
-        command = 4 if verify else 3
-        size = RESULT.size + (FEATURE_BYTES if verify else 0)
+        command = 5 if meta is not None else (4 if verify else 3)
+        size = RESULT.size + (FEATURE_BYTES if verify else 0) + int(meta is not None)
         started = time.perf_counter()
-        self.stream.write(encode(command, self.request, features))
+        self.stream.write(encode(command, self.request, features + (meta or b"")))
         while True:
             reply = receive_frame(self.stream, command, self.request, size)
             if len(reply) == 2 and reply[0] == 0x80 and 1 <= reply[1] <= 12:
@@ -96,7 +106,12 @@ class Board:
                 stage = {1: "Attention/LN1", 2: "FFN", 3: "LN2/E203", 4: "参数或输入装载"}.get(reply[2], str(reply[2]))
                 raise RuntimeError(f"第 {reply[1]} 层 {stage} 失败，状态 0x{status:08X}")
             elif len(reply) == size and reply[0] == 0:
-                return decode_result(reply, time.perf_counter() - started, verify)
+                event = False
+                if meta is not None:
+                    if reply[-1] not in (0, 1):
+                        raise ValueError("Invalid monitor event flag")
+                    event, reply = bool(reply[-1]), reply[:-1]
+                return decode_result(reply, time.perf_counter() - started, verify), event
             else:
                 raise ValueError(f"板卡响应无效，状态 {reply[0]}，长度 {len(reply)}")
 

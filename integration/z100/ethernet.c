@@ -1,5 +1,7 @@
 /* KWT framed stream over the Z100 PS Ethernet BSP (lwIP raw API). */
 #include <stdint.h>
+#include <math.h>
+#include "xuartps.h"
 #include <string.h>
 #include "kwt_infer.h"
 #include "lwip/init.h"
@@ -13,8 +15,8 @@
 #define Z100_IP_LAST 11
 #endif
 
-enum { PREFIX = 12, CRC_SIZE = 4, PORT = 5001, PAYLOAD = KWT_FEATURE_BYTES };
-static uint8_t request[PREFIX + PAYLOAD + CRC_SIZE];
+enum { PREFIX = 12, CRC_SIZE = 4, PORT = 5001, PAYLOAD = KWT_FEATURE_BYTES, STAMP = 23, MONITOR = 5, META = 1 + STAMP };
+static uint8_t request[PREFIX + PAYLOAD + META + CRC_SIZE];
 static uint8_t response[PREFIX + KWT_REPLY_BYTES + PAYLOAD + CRC_SIZE];
 static unsigned received, expected, tx_length, tx_sent;
 static struct tcp_pcb *client;
@@ -55,10 +57,70 @@ static uint32_t crc32(const uint8_t *data, unsigned size)
     return ~crc;
 }
 
+/* A label is published once per utterance. Two rejected hops re-arm it. */
+static unsigned pending_label, streak, latched_label, rejected;
+static const char *const keywords[] = {
+    "", "", "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"
+};
+
+static void reset_detector(void)
+{
+    pending_label = streak = latched_label = rejected = 0;
+}
+
+static int monitor_event(const uint8_t *meta, const uint8_t *result)
+{
+    if (meta[0] & 2)
+        reset_detector();
+    unsigned label = result[1];
+    float logits[12];
+    memcpy(logits, result + 10, sizeof(logits));
+    float denominator = 0.0f;
+    if ((meta[0] & 1) && label >= 2 && label < 12) {
+        for (unsigned i = 0; i < 12; ++i)
+            denominator += expf(logits[i] - logits[label]);
+    }
+    if (!(denominator >= 1.0f && denominator <= 1.0f / 0.75f)) {
+        pending_label = streak = 0;
+        if (rejected < 2 && ++rejected == 2)
+            latched_label = 0;
+        return 0;
+    }
+    rejected = 0;
+    if (pending_label != label) {
+        pending_label = label;
+        streak = 0;
+    }
+    if (streak < 2)
+        ++streak;
+    if (streak < 2 || latched_label == label)
+        return 0;
+    latched_label = label;
+    char stamp[STAMP + 1];
+    memcpy(stamp, meta + 1, STAMP);
+    stamp[STAMP] = 0;
+    xil_printf("KWT %s %s\r\n", stamp, keywords[label]);
+    return 1;
+}
+
+static int valid_meta(const uint8_t *meta)
+{
+    const char format[] = "0000-00-00T00:00:00.000";
+    if (meta[0] > 3)
+        return 0;
+    for (unsigned i = 0; i < STAMP; ++i) {
+        int c = meta[i+1];
+        if (format[i] == '0' ? (c < '0' || c > '9') : c != format[i])
+            return 0;
+    }
+    return 1;
+}
+
 static void reset_connection(void *arg, err_t reason)
 {
     (void)arg;
     (void)reason;
+    reset_detector();
     client = NULL;
     received = expected = tx_length = tx_sent = 0;
 }
@@ -88,9 +150,10 @@ static err_t receive(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t reaso
     tcp_recved(pcb, count);
     if (received >= PREFIX) {
         uint32_t payload_length = get_word(request + 8);
-        if (payload_length != PAYLOAD || received > sizeof(request) ||
+        if (payload_length != (request[3] == MONITOR ? PAYLOAD + META : PAYLOAD) ||
+            received > PREFIX + payload_length + CRC_SIZE ||
             request[0] != 'K' || request[1] != 'W' || request[2] != 1 ||
-            (request[3] != 3 && request[3] != 4)) {
+            (request[3] != 3 && request[3] != 4 && request[3] != MONITOR)) {
             tcp_abort(pcb);
             return ERR_ABRT;
         }
@@ -135,9 +198,16 @@ static void infer(void)
         tcp_abort(client);
         return;
     }
+    const uint8_t *meta = request + PREFIX + PAYLOAD;
+    if (request[3] == MONITOR && !valid_meta(meta)) {
+        tcp_abort(client);
+        return;
+    }
     memcpy(response, request, PREFIX);
     memcpy(response + PREFIX, request + PREFIX, PAYLOAD);
     unsigned size = kwt_infer(response + PREFIX, request[3] == 4, progress, NULL);
+    if (request[3] == MONITOR && size == KWT_REPLY_BYTES && response[PREFIX] == 0)
+        response[PREFIX + size++] = monitor_event(meta, response + PREFIX);
     response[3] |= 0x80;
     put_word(response + 8, size);
     put_word(response + PREFIX + size, crc32(response + 2, PREFIX + size - 2));
@@ -163,6 +233,11 @@ static void send_result(void)
 int main(void)
 {
     init_platform();
+    XUartPs uart;
+    XUartPs_Config *config = XUartPs_LookupConfig(XPAR_PS7_UART_0_DEVICE_ID);
+    if (!config || XUartPs_CfgInitialize(&uart, config, config->BaseAddress) != XST_SUCCESS ||
+            XUartPs_SetBaudRate(&uart, 115200) != XST_SUCCESS)
+        return 4;
     *(volatile uint32_t *)0xf8f00208u = 1;
     lwip_init();
     ip_addr_t address, mask, gateway;

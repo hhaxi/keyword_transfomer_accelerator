@@ -12,6 +12,7 @@ from datetime import datetime
 from tkinter import filedialog, ttk
 from pathlib import Path
 
+from monitor_panel import MonitorPanel
 from board import DEMO_BAUD, DEMO_TCP, connect_for_audio
 from workbench_theme import BG, BLUE, CARD, FONT, GREEN, INK, LINE, MUTED, PANEL, RED, SIDEBAR, Surface, WorkbenchTheme
 
@@ -54,7 +55,15 @@ class Demo:
         self.build()
         self.worker.submit(self.load)
         self.poll()
+        root.protocol("WM_DELETE_WINDOW", self.close)
         root.bind("<Control-o>", lambda _: self.select_wav())
+
+    def close(self):
+        if self.monitor.stop is not None:
+            self.monitor.stop.set()
+        self.stop_playback()
+        self.worker.shutdown(wait=False)
+        self.root.destroy()
 
     def text(self, parent, value=None, *, variable=None, size=11, color=INK, background=PANEL, weight="normal"):
         return tk.Label(parent, text=value, textvariable=variable, font=(FONT, size, weight),
@@ -96,7 +105,11 @@ class Demo:
         self.overview = tk.Frame(self.tabs, bg=PANEL)
         history = tk.Frame(self.tabs, bg=PANEL)
         self.tabs.add(self.overview, text="识别概览")
+        monitor = tk.Frame(self.tabs, bg=PANEL)
+        self.monitor_tab = monitor
+        self.tabs.add(monitor, text="实时监测")
         self.tabs.add(history, text="历史记录")
+        self.monitor = MonitorPanel(self, monitor)
         self.tabs.enable_traversal()
         self.build_overview(self.overview)
         self.build_history(history)
@@ -440,6 +453,7 @@ class Demo:
         self.quick_list.state(["!disabled" if active else "disabled"])
         self.endpoint.configure(state="disabled" if busy else "normal")
         self.export.configure(state="normal" if not busy and self.history else "disabled")
+        self.monitor.available(active)
         self.update_rate()
 
     def set_progress(self, layer):
@@ -514,7 +528,10 @@ class Demo:
                 event, value = self.events.get_nowait()
             except queue.Empty:
                 break
-            if event == "ready":
+            if event == "monitor":
+                self.monitor.handle(*value)
+            elif event == "ready":
+                self.monitor.status.set("等待开始监听")
                 self.ready = True
                 self.sample_menu.configure(values=value)
                 self.sample.set(next((name for name in value if name.startswith("yes/")), value[0]))
@@ -551,9 +568,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", default=DEMO_TCP)
     parser.add_argument("--baud", type=int, choices=[115200, 921600], default=DEMO_BAUD)
+    parser.add_argument("--monitor", action="store_true", help="Open the realtime monitor tab")
     args = parser.parse_args()
     root = tk.Tk()
-    Demo(root, args.port, args.baud)
+    app = Demo(root, args.port, args.baud)
+    if args.monitor:
+        app.tabs.select(app.monitor_tab)
     root.mainloop()
 
 
