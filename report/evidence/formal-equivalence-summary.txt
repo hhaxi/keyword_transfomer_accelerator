@@ -1,0 +1,23 @@
+****************************************************************************************
+
+
+********************************* Verification Results *********************************
+Verification SUCCEEDED
+   ATTENTION: synopsys_auto_setup mode was enabled.
+              See Synopsys Auto Setup Summary for details.
+   ATTENTION: RTL interpretation messages were produced during link
+              of reference design.
+              Verification results may disagree with a logic simulator.
+-----------------------------------------------------------------------
+ Reference design: r:/WORK/kwt_ffn1_soc_DMA_BURST1_HOST_BURST0
+ Implementation design: i:/WORK/kwt_ffn1_soc
+ 16025 Passing compare points
+----------------------------------------------------------------------------------------
+Matched Compare Points     BBPin    Loop   BBNet     Cut    Port     DFF     LAT   TOTAL
+----------------------------------------------------------------------------------------
+Passing (equivalent)        6784       0       0       0      67    9174       0   16025
+Failing (not equivalent)       0       0       0       0       0       0       0       0
+Not Compared
+  Clock-gate LAT                                                              60      60
+****************************************************************************************
+1

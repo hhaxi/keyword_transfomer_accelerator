@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="G16" name="G16">
+    <mxGraphModel dx="1200" dy="514" grid="0" page="0" pageWidth="1200" pageHeight="514" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="canvas" value="" style="rounded=0;html=0;fillColor=#FFFFFF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1200" height="514" />
+        </mxCell>
+        <mxCell id="title" value="Layer 0 FFN1 task cycle breakdown" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=left;fontFamily=Times New Roman;fontSize=37;fontColor=#172332;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="10" width="775" height="43" />
+        </mxCell>
+        <mxCell id="context" value="Q128 reference_sleep · local task00" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=right;fontFamily=Times New Roman;fontSize=22;fontColor=#293545;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="785" y="16" width="383" height="38" />
+        </mxCell>
+        <mxCell id="rule-top" value="" style="rounded=0;html=0;fillColor=#BED8F6;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="62" width="1136" height="1.4" />
+        </mxCell>
+        <mxCell id="window-title" value="(a) Strict task window" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=left;fontFamily=Times New Roman;fontSize=29;fontColor=#172332;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="72" width="550" height="38" />
+        </mxCell>
+        <mxCell id="window-total" value="32,959.5 cycles total" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=right;fontFamily=Times New Roman;fontSize=26;fontColor=#234675;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="815" y="73" width="353" height="36" />
+        </mxCell>
+        <mxCell id="dma-label" value="DMA command window · 22,895 cycles" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=25;fontColor=#234675;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="378.88851" y="115" width="789.11149" height="28" />
+        </mxCell>
+        <mxCell id="dma-transitions" value="Includes 3 cycles in other DMA states" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=22;fontColor=#293545;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="378.88851" y="141" width="789.11149" height="26" />
+        </mxCell>
+        <mxCell id="dma-span" value="" style="rounded=0;html=0;fillColor=#234675;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="378.88851" y="171" width="789.11149" height="1.8" />
+        </mxCell>
+        <mxCell id="dma-span-start" value="" style="rounded=0;html=0;fillColor=#234675;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="378.88851" y="165" width="1.8" height="14" />
+        </mxCell>
+        <mxCell id="dma-span-end" value="" style="rounded=0;html=0;fillColor=#234675;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1166.2" y="165" width="1.8" height="14" />
+        </mxCell>
+        <mxCell id="prep" value="" style="rounded=0;html=0;fillColor=#FEEDDD;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="184" width="346.88851" height="72" />
+        </mxCell>
+        <mxCell id="prep-name" value="Pre-command preparation" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=26;fontColor=#704725;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="190" width="346.88851" height="31" />
+        </mxCell>
+        <mxCell id="prep-metric" value="10,064.5 cycles · 30.5%" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=23;fontColor=#704725;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="222" width="346.88851" height="27" />
+        </mxCell>
+        <mxCell id="load" value="" style="rounded=0;html=0;fillColor=#D1F7FF;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="378.88851" y="184" width="248.5727" height="72" />
+        </mxCell>
+        <mxCell id="load-name" value="LOAD" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=26;fontColor=#234675;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="378.88851" y="190" width="248.5727" height="31" />
+        </mxCell>
+        <mxCell id="load-metric" value="7,212 cycles · 21.9%" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=23;fontColor=#234675;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="378.88851" y="222" width="248.5727" height="27" />
+        </mxCell>
+        <mxCell id="run" value="" style="rounded=0;html=0;fillColor=#DFEFFE;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="627.46122" y="184" width="540.43538" height="72" />
+        </mxCell>
+        <mxCell id="run-name" value="RUN" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=26;fontColor=#234675;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="627.46122" y="190" width="540.43538" height="31" />
+        </mxCell>
+        <mxCell id="run-metric" value="15,680 cycles · 47.6%" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=23;fontColor=#234675;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="627.46122" y="222" width="540.43538" height="27" />
+        </mxCell>
+        <mxCell id="event-host" value="First Host data request" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=left;fontFamily=Times New Roman;fontSize=22;fontColor=#293545;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="258" width="279" height="30" />
+        </mxCell>
+        <mxCell id="event-dma" value="DMA command starts" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=22;fontColor=#293545;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="255.88851" y="258" width="246" height="30" />
+        </mxCell>
+        <mxCell id="event-end" value="Final DMA write response accepted" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=right;fontFamily=Times New Roman;fontSize=22;fontColor=#293545;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="815" y="258" width="353" height="30" />
+        </mxCell>
+        <mxCell id="rule-middle" value="" style="rounded=0;html=0;fillColor=#BED8F6;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="304" width="1136" height="1.4" />
+        </mxCell>
+        <mxCell id="run-title" value="(b) RUN activity mix" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=left;fontFamily=Times New Roman;fontSize=29;fontColor=#172332;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="315" width="560" height="40" />
+        </mxCell>
+        <mxCell id="run-note" value="Share of RUN cycles · accumulated counts" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=right;fontFamily=Times New Roman;fontSize=22;fontColor=#293545;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="580" y="318" width="588" height="33" />
+        </mxCell>
+        <mxCell id="active" value="" style="rounded=0;html=0;fillColor=#DEF6D6;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="364" width="964.44082" height="72" />
+        </mxCell>
+        <mxCell id="active-name" value="Effective reduction" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=26;fontColor=#355843;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="370" width="964.44082" height="31" />
+        </mxCell>
+        <mxCell id="active-metric" value="13,312 cycles · 84.90%" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=23;fontColor=#355843;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="402" width="964.44082" height="27" />
+        </mxCell>
+        <mxCell id="other" value="" style="rounded=0;html=0;fillColor=#E2E5EA;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="996.44082" y="364" width="171.55918" height="72" />
+        </mxCell>
+        <mxCell id="other-name" value="Other RUN" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=24;fontColor=#293545;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="996.44082" y="370" width="171.55918" height="31" />
+        </mxCell>
+        <mxCell id="other-metric" value="2,368 · 15.10%" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=22;fontColor=#293545;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="996.44082" y="402" width="171.55918" height="27" />
+        </mxCell>
+        <mxCell id="rule-bottom" value="" style="rounded=0;html=0;fillColor=#BED8F6;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="451" width="1136" height="1.4" />
+        </mxCell>
+        <mxCell id="diagnostics" value="Diagnostic cycles may overlap" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=left;fontFamily=Times New Roman;fontSize=22;fontColor=#293545;fontStyle=3;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="32" y="458" width="354" height="44" />
+        </mxCell>
+        <mxCell id="wait-label" value="Result queue wait 2,316" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=22;fontColor=#172332;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="389" y="458" width="254" height="44" />
+        </mxCell>
+        <mxCell id="request-label" value="Request blocked 55" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=22;fontColor=#172332;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="644" y="458" width="263" height="44" />
+        </mxCell>
+        <mxCell id="response-label" value="Response blocked 7" style="text;html=0;strokeColor=none;fillColor=none;verticalAlign=middle;align=center;fontFamily=Times New Roman;fontSize=22;fontColor=#172332;fontStyle=0;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="909" y="458" width="259" height="44" />
+        </mxCell>
+        <mxCell id="diagnostic-separator-1" value="" style="rounded=0;html=0;fillColor=#A9ACB1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="644" y="470" width="1.2" height="20" />
+        </mxCell>
+        <mxCell id="diagnostic-separator-2" value="" style="rounded=0;html=0;fillColor=#A9ACB1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="908" y="470" width="1.2" height="20" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

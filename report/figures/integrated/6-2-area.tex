@@ -1,0 +1,21 @@
+\documentclass[tikz,border=5pt]{standalone}
+\definecolor{addedfill}{HTML}{FCCCDA}
+\definecolor{cpufill}{HTML}{DEF6D6}
+\definecolor{memoryfill}{HTML}{DFEFFE}
+\definecolor{chartink}{HTML}{234675}
+\begin{document}
+\begin{tikzpicture}[x=.135cm,y=.9cm,font=\small,text=chartink]
+\fill[addedfill] (0,.28) rectangle (18.463,1);
+\fill[cpufill] (18.463,.28) rectangle (35.637,1);
+\fill[memoryfill] (35.637,.28) rectangle (100,1);
+\node at (9.232,.64) {Added 18.46\%};
+\node at (27.05,.64) {E203 17.17\%};
+\node at (67.819,.64) {Shared SRAM 64.36\%};
+\draw[black!60] (0,.10) -- (100,.10);
+\foreach \x in {0,20,40,60,80,100}{
+  \draw[black!60] (\x,.10) -- (\x,.03);
+  \node[below] at (\x,.02) {\x};
+}
+\node at (50,-.84) {Share of total cell area (\%)};
+\end{tikzpicture}
+\end{document}

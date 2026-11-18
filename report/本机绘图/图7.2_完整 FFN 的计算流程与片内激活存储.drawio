@@ -1,0 +1,103 @@
+<mxfile host="app.diagrams.net" version="26.0.0">
+  <diagram id="ffn-full" name="Complete FFN">
+    <mxGraphModel dx="1400" dy="760" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="760" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="canvas" value="" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=none;strokeWidth=2;fontFamily=Times New Roman;fontSize=28;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1400" height="760" />
+        </mxCell>
+        <mxCell id="title" value="Complete FFN and on-chip activation storage" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=none;strokeWidth=2;fontFamily=Times New Roman;fontSize=38;fontColor=#2B4963;fontStyle=3;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="15" width="1360" height="58" />
+        </mxCell>
+        <mxCell id="w1" value="W1  64 × 256&#10;b1  256 values" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EDF7F3;strokeColor=#46917F;strokeWidth=2;fontFamily=Times New Roman;fontSize=28;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="235" y="100" width="230" height="85" />
+        </mxCell>
+        <mxCell id="w2" value="W2  256 × 64&#10;b2  64 values" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EDF7F3;strokeColor=#46917F;strokeWidth=2;fontFamily=Times New Roman;fontSize=28;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="935" y="100" width="230" height="85" />
+        </mxCell>
+        <mxCell id="w1-load" style="edgeStyle=none;rounded=0;html=0;strokeColor=#AF823F;strokeWidth=2.4;endArrow=block;endFill=1;endSize=9;fontFamily=Times New Roman;fontStyle=0;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="350" y="185" />
+            <mxPoint as="targetPoint" x="350" y="220" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="w2-load" style="edgeStyle=none;rounded=0;html=0;strokeColor=#AF823F;strokeWidth=2.4;endArrow=block;endFill=1;endSize=9;fontFamily=Times New Roman;fontStyle=0;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1050" y="185" />
+            <mxPoint as="targetPoint" x="1050" y="220" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="input" value="LN1 input&#10;99 × 64&#10;INT16" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EDF6FB;strokeColor=#4E8EAD;strokeWidth=2;fontFamily=Times New Roman;fontSize=29;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="220" width="210" height="170" />
+        </mxCell>
+        <mxCell id="ffn1" value="FFN1&#10;INT40" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FBF6EC;strokeColor=#AF823F;strokeWidth=2;fontFamily=Times New Roman;fontSize=30;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="260" y="220" width="180" height="170" />
+        </mxCell>
+        <mxCell id="gelu" value="GELU&#10;RNE + saturation&#10;INT16" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EDF7F3;strokeColor=#46917F;strokeWidth=2;fontFamily=Times New Roman;fontSize=28;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="480" y="220" width="200" height="170" />
+        </mxCell>
+        <mxCell id="activation" value="Activation SRAM&#10;8-row block&#10;INT16" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EDF6FB;strokeColor=#4E8EAD;strokeWidth=2;fontFamily=Times New Roman;fontSize=28;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="710" y="220" width="210" height="170" />
+        </mxCell>
+        <mxCell id="ffn2" value="FFN2&#10;99 × 64&#10;INT40" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FBF6EC;strokeColor=#AF823F;strokeWidth=2;fontFamily=Times New Roman;fontSize=29;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="950" y="220" width="200" height="170" />
+        </mxCell>
+        <mxCell id="fifo" value="Result FIFO&#10;40-bit&#10;To ENC1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EDF7F3;strokeColor=#46917F;strokeWidth=2;fontFamily=Times New Roman;fontSize=29;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1180" y="220" width="200" height="170" />
+        </mxCell>
+        <mxCell id="input-ffn1" style="edgeStyle=none;rounded=0;html=0;strokeColor=#4E7191;strokeWidth=2.4;endArrow=block;endFill=1;endSize=9;fontFamily=Times New Roman;fontStyle=0;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="230" y="305" />
+            <mxPoint as="targetPoint" x="260" y="305" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ffn1-gelu" style="edgeStyle=none;rounded=0;html=0;strokeColor=#4E7191;strokeWidth=2.4;endArrow=block;endFill=1;endSize=9;fontFamily=Times New Roman;fontStyle=0;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="440" y="305" />
+            <mxPoint as="targetPoint" x="480" y="305" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gelu-activation" style="edgeStyle=none;rounded=0;html=0;strokeColor=#4E7191;strokeWidth=2.4;endArrow=block;endFill=1;endSize=9;fontFamily=Times New Roman;fontStyle=0;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="680" y="305" />
+            <mxPoint as="targetPoint" x="710" y="305" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="activation-ffn2" style="edgeStyle=none;rounded=0;html=0;strokeColor=#4E7191;strokeWidth=2.4;endArrow=block;endFill=1;endSize=9;fontFamily=Times New Roman;fontStyle=0;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="920" y="305" />
+            <mxPoint as="targetPoint" x="950" y="305" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ffn2-fifo" style="edgeStyle=none;rounded=0;html=0;strokeColor=#4E7191;strokeWidth=2.4;endArrow=block;endFill=1;endSize=9;fontFamily=Times New Roman;fontStyle=0;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="1150" y="305" />
+            <mxPoint as="targetPoint" x="1180" y="305" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="storage-panel" value="" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FAFCFD;strokeColor=#CAD9E3;strokeWidth=2;fontFamily=Times New Roman;fontSize=28;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="440" width="1240" height="300" />
+        </mxCell>
+        <mxCell id="storage-title" value="KWT5 · intermediate activation storage" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FAFCFD;strokeColor=none;strokeWidth=2;fontFamily=Times New Roman;fontSize=32;fontColor=#2B4963;fontStyle=3;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="100" y="451" width="1200" height="46" />
+        </mxCell>
+        <mxCell id="logical" value="Logical tensor&#10;99 × 256 INT16" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EDF6FB;strokeColor=#4E8EAD;strokeWidth=2;fontFamily=Times New Roman;fontSize=30;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="110" y="520" width="340" height="110" />
+        </mxCell>
+        <mxCell id="even-bank" value="Even bank&#10;1,024 × 16 bits" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EDF7F3;strokeColor=#46917F;strokeWidth=2;fontFamily=Times New Roman;fontSize=29;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="500" y="520" width="330" height="85" />
+        </mxCell>
+        <mxCell id="odd-bank" value="Odd bank&#10;1,024 × 16 bits" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EDF7F3;strokeColor=#46917F;strokeWidth=2;fontFamily=Times New Roman;fontSize=29;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="860" y="520" width="330" height="85" />
+        </mxCell>
+        <mxCell id="physical" value="Physical capacity 8 × 256 INT16 = 4 KiB" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FAFCFD;strokeColor=none;strokeWidth=2;fontFamily=Times New Roman;fontSize=28;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="475" y="625" width="740" height="44" />
+        </mxCell>
+        <mxCell id="reuse" value="Reuse the same banks after FFN2 consumes each row block" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FAFCFD;strokeColor=none;strokeWidth=2;fontFamily=Times New Roman;fontSize=28;fontColor=#2B4963;fontStyle=0;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="110" y="682" width="1180" height="40" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
