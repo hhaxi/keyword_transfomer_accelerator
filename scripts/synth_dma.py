@@ -1,6 +1,6 @@
 """Synthesize the complete DMA+compute engine and the bus, then test both netlists."""
 import shlex
-from run_design import OUT,CONFIG,linux,sim
+from run_design import OUT,CONFIG,BUS_RTL,linux,sim
 
 
 def main():
@@ -11,7 +11,7 @@ def main():
         'synth -top kwt_dma -flatten', 'check -assert',
         'tee -o output/design/dma-synthesis-stat.json stat -json',
         'write_verilog -noattr output/design/kwt_dma_netlist.v',
-        'design -reset', 'read_verilog -sv integration/kwt_bus_fabric.sv',
+        'design -reset', 'read_verilog -sv -D DISABLE_SV_ASSERTION '+' '.join(BUS_RTL),
         'synth -top kwt_bus_fabric -flatten', 'check -assert',
         'tee -o output/design/bus-synthesis-stat.json stat -json',
         'write_verilog -noattr output/design/kwt_bus_netlist.v',

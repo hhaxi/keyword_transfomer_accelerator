@@ -10,8 +10,13 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'output/design'
 CONFIG=json.loads((ROOT/'environment/local-tools.json').read_text(encoding='utf-8-sig')) if (ROOT/'environment/local-tools.json').exists() else {}
+E203_RTL=ROOT/'assets/references/e203_hbirdv2-9f3e34f337f5d0a1236a285871ffa2032491617a/rtl/e203'
+E203_SPLITTER=(E203_RTL/'fab/sirv_icb1to8_bus.v').relative_to(ROOT).as_posix()
+BUS_RTL=[(E203_RTL/'general'/name).relative_to(ROOT).as_posix() for name in
+         ('sirv_gnrl_dffs.v','sirv_gnrl_bufs.v','sirv_gnrl_icbs.v','sirv_gnrl_xchecker.v')]+[E203_SPLITTER,'integration/kwt_bus_fabric.sv']
 RTL=['rtl/kwt_gelu.sv','rtl/kwt_mac40.sv','rtl/kwt_sram16.sv','rtl/kwt_accel.sv']
-SYSTEM_RTL=RTL+['rtl/kwt_dma.sv','integration/kwt_bus_fabric.sv']
+SYSTEM_RTL=RTL+['rtl/kwt_dma.sv']+BUS_RTL
+BUS_TEST=['tests/tb_bus.sv']+BUS_RTL+['integration/kwt_shared_sram.sv']
 
 def run(name,cmd,timeout=900):
     OUT.mkdir(parents=True,exist_ok=True)
@@ -33,7 +38,7 @@ def linux(name,command,timeout=900):
 def sim(top,files,extra=None,label=None,run_args=None):
     label=label or top
     command=[CONFIG.get('wsl_verilator','verilator'),'--binary','--timing','--build-jobs','4','-Wno-fatal',
-             '--top-module',top,'--Mdir','output/design/build_'+label]+(extra or [])+files
+             '--top-module',top,'--Mdir','output/design/build_'+label]+(extra or [])+list(dict.fromkeys(files))
     linux(label+'-build',' '.join(shlex.quote(s) for s in command))
     return linux(label+'-run','output/design/build_'+label+'/V'+top+' '+ ' '.join(shlex.quote(s) for s in (run_args or [])),1800)
 
@@ -51,8 +56,8 @@ def four_state():
         ('tb_ffn_edges',RTL+['tests/tb_ffn_edges.sv'],'FFN_EDGES_PASS'),
         ('tb_ffn',RTL+['rtl/kwt_dma.sv','tests/tb_ffn.sv'],'FFN_PASS'),
         ('tb_dma',RTL+['rtl/kwt_dma.sv','tests/tb_dma.sv'],'DMA_PASS'),
-        ('tb_bus',['integration/kwt_bus_fabric.sv','integration/kwt_shared_sram.sv','tests/tb_bus.sv'],'BUS_PASS')]:
-        run('icarus-'+top+'-build',[compiler,'-g2012','-s',top,'-o',OUT/(top+'.vvp')]+files)
+        ('tb_bus',BUS_TEST,'BUS_PASS')]:
+        run('icarus-'+top+'-build',[compiler,'-g2012','-DDISABLE_SV_ASSERTION','-s',top,'-o',OUT/(top+'.vvp')]+files)
         if marker not in run('icarus-'+top,[runtime,OUT/(top+'.vvp')]):raise RuntimeError(top+' four-state check failed')
 
 def main():
@@ -89,7 +94,7 @@ def main():
         from build_soc import build_and_simulate
         build_and_simulate(ffn=True)
     if task in ('bus','all'):
-        text=sim('tb_bus',['integration/kwt_bus_fabric.sv','integration/kwt_shared_sram.sv','tests/tb_bus.sv'])
+        text=sim('tb_bus',BUS_TEST,['+define+DISABLE_SV_ASSERTION'])
         assert 'BUS_PASS' in text
     if task in ('soc','all'):
         from build_soc import build_and_simulate

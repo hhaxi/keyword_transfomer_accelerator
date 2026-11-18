@@ -1,7 +1,7 @@
 """Build real RV32 firmware and simulate the pinned E203 CPU plus our System Bus."""
 import json
 from pathlib import Path
-from run_design import ROOT,OUT,SYSTEM_RTL,run,sim,linux
+from run_design import ROOT,OUT,SYSTEM_RTL,E203_SPLITTER,run,sim,linux
 
 SOC=ROOT/'assets/references/e203_hbirdv2-9f3e34f337f5d0a1236a285871ffa2032491617a'
 
@@ -10,6 +10,7 @@ def source_files():
     for sub in ('core','general'):
         files.extend(str(p.relative_to(ROOT)).replace('\\','/') for p in sorted((SOC/'rtl/e203'/sub).glob('*.v')))
     files.append(str((SOC/'rtl/e203/subsys/e203_subsys_nice_core.v').relative_to(ROOT)).replace('\\','/'))
+    files.append(E203_SPLITTER)
     return files
 
 def firmware():

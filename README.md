@@ -8,6 +8,8 @@
 
 [设计与接口](docs/full-encoder.md) · [输入直传与最新性能](docs/input-stream.md) · [验证记录](docs/input-stream-validation.json) · [赛题指南](芯片设计赛题指南.pdf) · [第三方来源](NOTICE.md)
 
+**E203 ICB 总线版本。** 整机使用固定版本的 HBirdv2 `sirv_icb1to8_bus` 做地址分发，CPU、Host 和 DMA 仍由 KWT 仲裁。`scripts/download_competition_assets.py` 提供所需的上游 RTL。下文已有的周期和 PPA 数据来自总线替换前的版本。独立 Q128 FFN1 版本和对应验证说明见 [Q128 FFN1](undergrad_ffn1/q128_reference_sleep/README.md)。
+
 **最新主机装载优化（基于 `d9dc461`）：**精确拆分输入、参数、控制写和完成邮箱轮询后，增加可关闭的有界主机授权。固定 `DMA_BURST=8`，将 `HOST_BURST` 从0切到2，Linear / FFN 完整周期降至 **153,301 / 281,587（减少7.0920% / 6.5761%）**；十二层降至 **13,855,994（减少2.8564%）**。新旧配置的两种独立模式各12项、**12条输入×十二层**均逐位通过，公平性、背压和取消恢复通过。收益来自主机串行装载，编码器硬件运行周期未变；独立模式CPU最长等待可由8增至9拍。**生产默认仍为 `DMA_BURST=1, HOST_BURST=0`，保留下文基线性能**。详见 [主机装载分析与完整对照](docs/host-study.md) 和 [验证记录](docs/host-study-validation.json)。未进行PPA测量。
 
 前一轮 [总线归因与对照](docs/bus-study.md) 基于 `c0724ce`：可选 `DMA_BURST=8` 使 Linear / FFN 为 **165,003 / 301,408 拍**，十二层为 **14,263,416 拍**；该配置是本轮主机优化的同条件对照。

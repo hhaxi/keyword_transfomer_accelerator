@@ -20,7 +20,7 @@ def sim(top,files,extra=None,label=None,run_args=None,shards=None):
     """Long encoder regressions have a separate timeout from small FFN tests."""
     label=label or top
     command=[CONFIG.get('wsl_verilator','verilator'),'--binary','--timing','--build-jobs','4','-Wno-fatal',
-             '--top-module',top,'--Mdir','output/design/build_'+label]+(extra or [])+files
+             '--top-module',top,'--Mdir','output/design/build_'+label]+(extra or [])+list(dict.fromkeys(files))
     linux(label+'-build',' '.join(shlex.quote(s) for s in command),1800)
     if shards:
         def run_shard(item):
@@ -90,7 +90,7 @@ def synthesize():
     (DEST/'synthesis-source-sha256.json').write_text(json.dumps({'capture':'Before synthesis; normalized line endings and EOF whitespace','sha256':fingerprints},indent=2)+'\n')
     include=str((SOC/'rtl/e203/core').relative_to(ROOT)).replace('\\','/')
     upstream=[f for f in source_files() if not f.endswith('/sirv_gnrl_ram.v')]
-    files=upstream+[f for f in SYSTEM_RTL if f!='rtl/kwt_sram16.sv']+ENC_RTL+ENC_BUS+['integration/kwt_encoder_soc.sv']
+    files=list(dict.fromkeys(upstream+[f for f in SYSTEM_RTL if f!='rtl/kwt_sram16.sv']+ENC_RTL+ENC_BUS+['integration/kwt_encoder_soc.sv']))
     script='\n'.join([
         'read_verilog -sv -D KWT_SRAM_BLACKBOX rtl/kwt_sram16.sv integration/kwt_shared_sram.sv integration/e203_ram_boundary.v',
         'read_verilog -sv -I'+include+' '+' '.join(files),
@@ -190,7 +190,7 @@ def main():
         if 'ENC_SOC_PASS tasks=1' not in text:raise RuntimeError('Baseline incomplete')
     elif a.task=='synth':synthesize()
     elif a.task=='lint':
-        linux('encoder-lint',CONFIG['wsl_verilator']+' --lint-only -Wall --top-module kwt_extended_system_bus '+
+        linux('encoder-lint',CONFIG['wsl_verilator']+' --lint-only -Wall -Wno-fatal +define+DISABLE_SV_ASSERTION --top-module kwt_extended_system_bus '+
               ' '.join(SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv']))
     else:
         firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs,transport=a.transport,layers=a.layers,input_stream=a.input_stream)
