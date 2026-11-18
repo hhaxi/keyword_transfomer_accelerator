@@ -2,12 +2,13 @@
 
 import argparse
 import json
+import math
 import statistics
 import time
-from contextlib import ExitStack
+from contextlib import ExitStack, nullcontext
 from pathlib import Path
 
-from board import Board
+from board import Board, connect_for_audio
 from model_data import Model
 
 
@@ -17,13 +18,18 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--new-connection", action="store_true", help="Connect for each WAV, like the desktop app")
     parser.add_argument("--passes", type=int, default=1, help="Number of passes through the fixed WAV list")
+    parser.add_argument("--all-validation", action="store_true", help="Measure every fixed validation entry, including silence")
+    parser.add_argument("--max-end-to-end-ms", type=float, help="Fail after saving evidence if any measured request exceeds this limit")
     args = parser.parse_args()
+    if args.max_end_to_end_ms is not None and (not math.isfinite(args.max_end_to_end_ms) or args.max_end_to_end_ms <= 0):
+        parser.error("--max-end-to-end-ms must be a finite positive latency")
     if args.passes < 1:
         parser.error("--passes must be positive")
 
     root = Path(__file__).resolve().parents[2]
     names = json.loads((root / "model/validation-samples.json").read_text(encoding="utf-8"))
-    names = [name for name in names if name != "silence"][:12]
+    if not args.all_validation:
+        names = [name for name in names if name != "silence"][:12]
     model = Model()
     model.validation()
     rows = []
@@ -36,14 +42,12 @@ def main():
         run_start = time.perf_counter()
         for name in names * args.passes:
             start = time.perf_counter()
-            audio, label = model.validation_audio(name)
-            features = model.encode(audio)
-            encoded = time.perf_counter()
-            if args.new_connection:
-                with Board(args.port) as connection:
-                    result = connection.infer(features)
-            else:
-                result = board.infer(features)
+            connection = connect_for_audio(args.port) if args.new_connection else nullcontext(lambda: board)
+            with connection as acquire:
+                audio, label = model.validation_audio(name)
+                features = model.encode(audio)
+                encoded = time.perf_counter()
+                result = acquire().infer(features)
             finished = time.perf_counter()
             total = finished - start
             row = dict(file=name, preprocess_ms=(encoded - start) * 1000,
@@ -59,10 +63,21 @@ def main():
     median = {key: statistics.median(row[key] for row in rows) for key in metrics}
     throughput = dict(requests=len(rows), passes=args.passes, wall_seconds=wall_seconds,
                       end_to_end_per_second=len(rows) / wall_seconds)
-    args.output.write_text(json.dumps(dict(median=median, throughput=throughput, samples=rows),
+    elapsed = sorted(row["end_to_end_ms"] for row in rows)
+    limit = args.max_end_to_end_ms
+    latency = dict(count=len(rows), mean_ms=statistics.mean(elapsed),
+                   p95_ms=elapsed[math.ceil(.95 * len(elapsed))-1], max_ms=elapsed[-1],
+                   max_board_ms=max(row["board_ms"] for row in rows))
+    if limit is not None:
+        latency.update(limit_ms=limit, over_limit=sum(ms > limit for ms in elapsed))
+    args.output.write_text(json.dumps(dict(median=median, throughput=throughput, latency=latency,
+                                           new_connection=args.new_connection, samples=rows),
                                       indent=2) + "\n", encoding="utf-8")
     print(median)
     print(throughput)
+    print(latency)
+    if limit is not None and latency["over_limit"]:
+        raise SystemExit(f"{latency['over_limit']} requests exceeded {limit} ms")
 
 
 if __name__ == "__main__":

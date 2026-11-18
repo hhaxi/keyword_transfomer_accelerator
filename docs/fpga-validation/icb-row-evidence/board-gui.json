@@ -1,0 +1,90 @@
+[
+  {
+    "file": "yes/c4cfbe43_nohash_1.wav",
+    "prediction": "yes",
+    "frequency": 55555557,
+    "cycles": 3225247,
+    "preprocess_ms": 5.102199999999613,
+    "end_to_end_ms": 66.23520000000127,
+    "layers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  {
+    "file": "no/171b56dc_nohash_1.wav",
+    "prediction": "no",
+    "frequency": 55555557,
+    "cycles": 3224934,
+    "preprocess_ms": 2.6508999999990124,
+    "end_to_end_ms": 62.48300000000029,
+    "layers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  {
+    "file": "stop/ab1299bb_nohash_0.wav",
+    "prediction": "stop",
+    "frequency": 55555557,
+    "cycles": 3225105,
+    "preprocess_ms": 2.3160999999980447,
+    "end_to_end_ms": 62.83859999999919,
+    "layers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  {
+    "file": "go/45692b02_nohash_2.wav",
+    "prediction": "go",
+    "frequency": 55555557,
+    "cycles": 3224884,
+    "preprocess_ms": 2.7417000000014013,
+    "end_to_end_ms": 77.16629999999824,
+    "layers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  }
+]

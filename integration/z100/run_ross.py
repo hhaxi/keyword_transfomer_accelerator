@@ -70,6 +70,7 @@ def main():
     parser.add_argument("--parallel-projection", action="store_true")
     parser.add_argument("--parallel-attention", action="store_true")
     parser.add_argument("--wide-encoder", action="store_true")
+    parser.add_argument("--contest-row-ffn", action="store_true", help="Schedule seven unmodified undergraduate FFN1 cores through the contest ICB bus")
     parser.add_argument("--parallel-ffn", action="store_true")
     parser.add_argument("--stream-handoff", action="store_true")
     parser.add_argument("--held-gelu", action="store_true")
@@ -81,6 +82,8 @@ def main():
     parser.add_argument("--mcp", type=Path,
                         default=Path("D:/.codex/tools/amd-ross/vivado-mcp-server-windows-amd64-2026.10.1.exe"))
     args = parser.parse_args()
+    if args.contest_row_ffn and args.mode != "contest":
+        parser.error("--contest-row-ffn requires contest mode")
     if args.mode == "contest" and not args.ethernet:
         parser.error("contest uses the Z100 Ethernet loader; add --ethernet")
     if args.mode == "contest" and any((args.parallel_projection, args.parallel_attention,
@@ -94,6 +97,7 @@ def main():
     env = os.environ.copy()
     env.update(VIVADO_PATH=str(args.vivado), Z100_BUILD=build.as_posix(),
                Z100_KWT="1" if args.mode in ("kwt", "contest") else "0", Z100_FCLK_MHZ=str(args.mhz),
+               Z100_CONTEST_ROW_FFN="1" if args.contest_row_ffn else "0",
                Z100_CONTEST="1" if args.mode == "contest" else "0",
                Z100_ETHERNET="1" if args.ethernet else "0",
                Z100_FAST_ATTENTION="1" if args.parallel_attention else "0",

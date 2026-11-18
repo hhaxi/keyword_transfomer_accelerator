@@ -33,6 +33,15 @@ if {$contest} {
     add_files -norecurse [file join $cpu subsys e203_subsys_nice_core.v]
     set_property include_dirs [list [file join $cpu core]] [current_fileset]
     set_property verilog_define {DISABLE_SV_ASSERTION FPGA_SOURCE KWT_FPGA_BANKED_SHARED} [current_fileset]
+    if {[info exists ::env(Z100_CONTEST_ROW_FFN)] && $::env(Z100_CONTEST_ROW_FFN) eq "1"} {
+        set ffn_dir [file join $repo undergrad_ffn1 rtl]
+        set_property include_dirs [list [file join $cpu core] $ffn_dir] [current_fileset]
+        set_property verilog_define {DISABLE_SV_ASSERTION FPGA_SOURCE KWT_FPGA_BANKED_SHARED KWT_CONTEST_ROW_FFN} [current_fileset]
+        add_files -norecurse [list [file join $ffn_dir kwt_ffn1_core.sv] [file join $ffn_dir kwt_options.vh] [file join $source_dir z100_ffn_rows.sv] [file join $source_dir z100_ffn2.sv]]
+        set gelu_xdc [file join $source_dir held_gelu.xdc]
+        add_files -fileset constrs_1 -norecurse $gelu_xdc
+        set_property USED_IN_SYNTHESIS false [get_files $gelu_xdc]
+    }
     foreach name {kwt_encoder_soc kwt_extended_system_bus kwt_bus_fabric kwt_shared_sram kwt_dma_arbiter} {
         add_files -norecurse [file join $repo integration $name.sv]
     }

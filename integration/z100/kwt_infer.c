@@ -104,6 +104,15 @@ static int store_words(unsigned offset, const uint32_t *source, unsigned count)
     } while (status & 1u);
     return (status & 2u) == 0;
 }
+static int load_layer_weights(const uint32_t *p, uint32_t *weight_cycles)
+{
+    uint32_t started = PL_CYCLES;
+    int ok = store_words(0x50000, p, 16704) &&
+             store_words(0x20000, p + 16704, 8448) &&
+             store_words(0x40000, p + 25152, 8256);
+    *weight_cycles += PL_CYCLES - started;
+    return ok;
+}
 #elif !defined(Z100_DIRECT_MODEL)
 static void store_words(unsigned offset, const uint32_t *source, unsigned count)
 {
@@ -187,6 +196,7 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
     barrier();
     mail[0] = 0;
     mail[1] = 0;
+    mail[5] = 0; /* Invalidate release tokens from the previous task. */
     CONTEST_CONTROL = 2;
     barrier();
     static uint32_t input_staging[KWT_FEATURE_BYTES / 4] __attribute__((aligned(64)));
@@ -200,7 +210,8 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
     if (!store_words(0x10000, input_staging, KWT_FEATURE_BYTES / 4))
         return fail(packet, 1, 4, LOAD_TRANSFER);
     const uint32_t input_cycles = PL_CYCLES - started;
-    uint32_t weight_cycles = 0;
+    uint32_t weight_cycles = 0, prefetch_cycles = 0;
+    unsigned loaded_layers = 0, prefetched_layers = 0;
 #else
     volatile uint32_t *input = (volatile uint32_t *)(DATA_WINDOW + 0x10000);
     for (unsigned i = 0; i < KWT_FEATURE_BYTES; i += 4) {
@@ -214,12 +225,11 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
 #ifdef Z100_CONTEST
     for (unsigned layer = 0; layer < LAYERS; ++layer) {
         const uint32_t *p = model + 4 + layer * LAYER_WORDS;
-        const uint32_t load_start = PL_CYCLES;
-        if (!store_words(0x50000, p, 16704) ||
-            !store_words(0x20000, p + 16704, 8448) ||
-            !store_words(0x40000, p + 25152, 8256))
-            return fail(packet, layer + 1, 4, LOAD_TRANSFER);
-        weight_cycles += PL_CYCLES - load_start;
+        if (loaded_layers == layer) {
+            if (!load_layer_weights(p, &weight_cycles))
+                return fail(packet, layer + 1, 4, LOAD_TRANSFER);
+            ++loaded_layers;
+        }
         p += LAYER_WORDS - 2;
         mail[2] = p[0];
         mail[3] = p[1] | 24u | (layer != 0 ? 1u : 0u) | (layer != LAYERS - 1 ? 2u : 0u);
@@ -231,6 +241,17 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
         uint32_t status;
         do {
             status = mail[0];
+            if (status == 11 && loaded_layers == layer + 1 && loaded_layers < LAYERS &&
+                    mail[5] == layer + 1) {
+                /* E203 released all three weight windows. Input, output and
+                   mailbox occupy separate addresses in the shared SRAM. */
+                uint32_t before = weight_cycles;
+                if (!load_layer_weights(model + 4 + loaded_layers * LAYER_WORDS, &weight_cycles))
+                    return fail(packet, loaded_layers + 1, 4, LOAD_TRANSFER);
+                prefetch_cycles += weight_cycles - before;
+                ++loaded_layers;
+                ++prefetched_layers;
+            }
             if (TIMER_LO - deadline > 1000000000u)
                 return fail(packet, layer + 1, 3, 0xffffffffu);
         } while (status != 2 && status != 0xdeadu && status != 0xbadu);
@@ -248,7 +269,9 @@ unsigned kwt_infer(uint8_t *packet, int verify, kwt_progress progress, void *con
     contest_profile[1] = input_cycles;
     contest_profile[2] = weight_cycles;
     contest_profile[3] = elapsed - input_cycles - weight_cycles;
-    Xil_DCacheFlushRange((uintptr_t)contest_profile, 4 * sizeof(uint32_t));
+    contest_profile[4] = prefetch_cycles;
+    contest_profile[5] = prefetched_layers;
+    Xil_DCacheFlushRange((uintptr_t)contest_profile, 6 * sizeof(uint32_t));
 #else
     ENC[0] = 4;
     ENC[0x20/4] = 0xa0010000u;

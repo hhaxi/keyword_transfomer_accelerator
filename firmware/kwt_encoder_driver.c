@@ -25,11 +25,15 @@ static int stop_ffn(void) {
     return -4;
 }
 static int start_ffn(uint32_t mode,uint32_t gelu) {
-    if(ffn[3]!=0x4b575435u) return -3;
+    uint32_t id=ffn[3];
+    if(id!=0x4b575435u && !(id==0x46464e5au && mode==4u)) return -3;
     int rc=stop_ffn();if(rc) return rc;
-    ffn[0x20/4]=0xa0018000u;ffn[0x24/4]=0xa0020000u;ffn[0x28/4]=0xa0028000u;
-    ffn[0x2c/4]=0xa0030000u;ffn[0x30/4]=0xa0040000u;ffn[0x34/4]=0xa0048000u;
-    ffn[0x38/4]=mode;ffn[0x3c/4]=gelu;fence();ffn[0]=1;return 0;
+    if(id==0x4b575435u) {
+        ffn[0x20/4]=0xa0018000u;ffn[0x24/4]=0xa0020000u;ffn[0x28/4]=0xa0028000u;
+        ffn[0x2c/4]=0xa0030000u;ffn[0x30/4]=0xa0040000u;ffn[0x34/4]=0xa0048000u;
+        ffn[0x38/4]=mode;
+    }
+    ffn[0x3c/4]=gelu;fence();ffn[0]=1;return 0;
 }
 static int wait_ffn(void) {
     for(uint32_t n=0;n<1000000;n++) {
@@ -53,6 +57,12 @@ int kwt_encoder_layer(uint32_t layer,uint32_t gelu_config,uint32_t encoder_confi
     int rc=0;
     if(encoder_config&16u) { rc=start_ffn(4u,gelu_config);if(rc) return rc; }
     rc=execute(0);if(rc) { if(encoder_config&16u) stop_ffn();return rc; }
+    /* In the row engine, accepting LN1 implies that all FFN weights have
+       retired. After Front completes, Tail uses only local parameters. */
+    if((encoder_config&24u)==24u && ffn[3]==0x46464e5au) {
+        volatile uint32_t *const released=(volatile uint32_t *)0xa000f014u;
+        fence(); *released=layer+1u; fence();
+    }
     statistics[0]=enc[0x40/4];
     for(uint32_t n=0;n<5;n++) statistics[3+n]=enc[0x48/4+n];
     if(encoder_config&12u) {

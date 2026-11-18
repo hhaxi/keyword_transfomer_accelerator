@@ -8,7 +8,7 @@ module z100_ffn_rows #(parameter STREAM=0, parameter GELU_CYCLES=1)(
     output reg rsp_valid, input wire rsp_ready, output reg [31:0] rsp_rdata, output reg rsp_err,
     output reg m_valid, input wire m_ready, output reg [31:0] m_addr, m_wdata, output reg m_read,
     input wire m_rsp_valid, input wire [31:0] m_rdata, input wire m_err,
-    input wire preload_permit,
+    input wire preload_permit, external_abort,
     input wire input_valid, output wire input_ready, input wire [31:0] input_data,
     output reg result_valid, input wire result_ready, output wire [39:0] result_data,
     output wire link_error
@@ -23,7 +23,7 @@ module z100_ffn_rows #(parameter STREAM=0, parameter GELU_CYCLES=1)(
     wire busy=state!=IDLE;
     wire accept=cmd_valid && cmd_ready;
     wire write=accept && !cmd_read && cmd_wmask==15 && cmd_addr[1:0]==0;
-    wire abort_request=write && cmd_addr==0 && cmd_wdata==2;
+    wire abort_request=external_abort || (write && cmd_addr==0 && cmd_wdata==2);
     wire bus_idle=!pending && !m_valid;
     wire retire=pending && m_rsp_valid;
     wire receive=retire && !m_err && !abort_request;

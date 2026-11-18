@@ -1,0 +1,25 @@
+WAV_AND_Q16_EXACT 120 760320
+ENC_SOC_TASK_PASS task=0 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=1 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=2 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=3 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=4 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=5 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=6 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=7 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=8 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=9 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=10 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=11 cycles=3691542 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ROW_WEIGHT_PREFETCH task=0 layers=11
+ROW_WEIGHT_PREFETCH task=1 layers=11
+ROW_WEIGHT_PREFETCH task=2 layers=11
+ROW_WEIGHT_PREFETCH task=3 layers=11
+ROW_WEIGHT_PREFETCH task=4 layers=11
+ROW_WEIGHT_PREFETCH task=5 layers=11
+ROW_WEIGHT_PREFETCH task=6 layers=11
+ROW_WEIGHT_PREFETCH task=7 layers=11
+ROW_WEIGHT_PREFETCH task=8 layers=11
+ROW_WEIGHT_PREFETCH task=9 layers=11
+ROW_WEIGHT_PREFETCH task=10 layers=11
+ROW_WEIGHT_PREFETCH task=11 layers=11

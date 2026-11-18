@@ -29,9 +29,9 @@ module tb_z100_ffn;
     wire result_ready = test_output && clock_count != 3;
     wire input_valid = test_input && input_count < 3168;
     wire [31:0] input_data = mem['h6000+input_count];
-    z100_ffn_rows #(.STREAM(1),.GELU_CYCLES(2)) dut(
+    z100_ffn_rows #(.STREAM(1),.GELU_CYCLES(2)) dut( .external_abort(1'b0),
 `elsif Z100_TEST_FFN_ROWS
-    z100_ffn_rows dut(
+    z100_ffn_rows dut( .external_abort(1'b0),
 `else
     z100_ffn dut(
 `endif

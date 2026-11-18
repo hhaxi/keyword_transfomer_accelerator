@@ -41,12 +41,30 @@ module kwt_extended_system_bus #(parameter integer DMA_BURST=1, HOST_BURST=0, PR
     kwt_result_fifo result_fifo(.clk(clk),.rst_n(rst_n),.clear(ffn_abort || enc_abort),
         .in_valid(result_valid),.in_ready(result_ready),.in_data(result_data),
         .out_valid(tail_valid),.out_ready(tail_ready),.out_data(tail_data));
+`ifdef KWT_CONTEST_ROW_FFN
+    assign f_rsp_ready=1'b1;
+    assign f_mask=4'hf;
+    // Unmapped offsets must still return a register error through ICB.
+    wire [11:0] row_cmd_addr=(|a_addr[18:12]) ? 12'hfff : a_addr[11:0];
+    if (1) begin: parallel_ffn
+        z100_ffn_rows #(.STREAM(1),.GELU_CYCLES(2)) ffn(
+            .clk(clk),.rst_n(rst_n),.external_abort(enc_abort),
+            .cmd_valid(a_valid && !a_addr[19]),.cmd_ready(fa_ready),.cmd_addr(row_cmd_addr),
+            .cmd_read(a_read),.cmd_wdata(a_wdata),.cmd_wmask(a_mask),
+            .rsp_valid(fa_rsp_valid),.rsp_ready(a_rsp_ready && !register_owner),.rsp_rdata(fa_rdata),.rsp_err(fa_err),
+            .m_valid(f_valid),.m_ready(f_ready),.m_addr(f_addr),.m_wdata(f_wdata),.m_read(f_read),
+            .m_rsp_valid(f_rsp_valid),.m_rdata(f_rdata),.m_err(f_err),.preload_permit(preload_permit),
+            .input_valid(feed_valid),.input_ready(feed_ready),.input_data(feed_data),
+            .result_valid(result_valid),.result_ready(result_ready),.result_data(result_data),.link_error(ffn_abort));
+    end
+`else
     kwt_dma #(.STREAM_ENABLE(1)) accelerator(.preload_permit(preload_permit),.input_valid(feed_valid),.input_ready(feed_ready),.input_data(feed_data),.result_valid(result_valid),.result_ready(result_ready),.result_data(result_data),
         .link_abort_in(enc_abort),.link_abort_out(ffn_abort),.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid && !a_addr[19]),.cmd_ready(fa_ready),
         .cmd_addr(a_addr),.cmd_read(a_read),.cmd_wdata(a_wdata),.cmd_wmask(a_mask),
         .rsp_valid(fa_rsp_valid),.rsp_ready(a_rsp_ready && !register_owner),.rsp_rdata(fa_rdata),.rsp_err(fa_err),
         .m_valid(f_valid),.m_ready(f_ready),.m_addr(f_addr),.m_wdata(f_wdata),.m_read(f_read),.m_mask(f_mask),
         .m_rsp_valid(f_rsp_valid),.m_rsp_ready(f_rsp_ready),.m_rdata(f_rdata),.m_err(f_err));
+`endif
     kwt_encoder #(.STREAM_ENABLE(1),.PROJECTION_K4(WIDE_MACRO ? 2 : PROJECTION_K4),
         .ATTENTION_K16(WIDE_MACRO ? 2 : 0),.MACRO_WIDE(WIDE_MACRO)) encoder(.preload_permit(preload_permit),.input_valid(input_valid),.input_ready(input_ready),.input_data(input_data),.result_valid(tail_valid),.result_ready(tail_ready),.result_data(tail_data),
         .link_abort_in(ffn_abort),.link_abort_out(enc_abort),.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid && a_addr[19]),.cmd_ready(ea_ready),

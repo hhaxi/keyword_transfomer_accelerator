@@ -12,18 +12,22 @@ module tb_encoder_soc;
     integer in_words=0,out_values=0,in_stall=0,in_empty=0,in_peak=0,tile_wait=0,x_overlap=0;
     reg input_epoch=0,ffn_was_active=0,input_held=0;reg [31:0] input_held_data;
     always @(posedge clk) if(rst_n) begin
-        if(dut.bus.accelerator.start) begin
+        if(dut.bus.a_valid && dut.bus.a_ready && !dut.bus.a_read && dut.bus.a_mask==15 && dut.bus.a_addr==0 && dut.bus.a_wdata==1) begin
             in_words=0;out_values=0;in_stall=0;in_empty=0;in_peak=0;tile_wait=0;x_overlap=0;input_epoch=0;
         end
+`ifndef KWT_CONTEST_ROW_FFN
         if(dut.bus.accelerator.core.xwrite && dut.bus.accelerator.core.read_operands && !dut.bus.accelerator.core.second_stage) $fatal(1,"X single-port collision");
+`endif
         if(dut.bus.input_valid) input_epoch=1;
         if(input_epoch && in_words<3168) begin
             if(dut.bus.input_valid && !dut.bus.input_ready) in_stall++;
             if(dut.bus.feed_ready && !dut.bus.feed_valid) in_empty++;
         end
         if(integer'(dut.bus.input_fifo.count)>in_peak) in_peak=integer'(dut.bus.input_fifo.count);
+`ifndef KWT_CONTEST_ROW_FFN
         if(dut.bus.accelerator.core.state==10) tile_wait++;
         if(dut.bus.accelerator.core.xwrite && dut.bus.accelerator.core.second_stage) x_overlap++;
+`endif
         if(input_held && (!dut.bus.input_valid || dut.bus.input_data!==input_held_data)) $fatal(1,"LN1 stalled offer changed");
         input_held=dut.bus.input_valid && !dut.bus.input_ready;input_held_data=dut.bus.input_data;
         if(dut.bus.feed_valid && dut.bus.feed_ready) begin
@@ -35,6 +39,7 @@ module tb_encoder_soc;
             out_values++;
         end
     end
+`ifndef KWT_CONTEST_ROW_FFN
     always @(negedge clk) begin
         if(rst_n && ffn_was_active && !dut.bus.accelerator.active && dut.bus.accelerator.done) begin
             if(transport==2 && out_values!=6336) $fatal(1,"FFN stream count");
@@ -43,6 +48,7 @@ module tb_encoder_soc;
         end
         ffn_was_active=rst_n && dut.bus.accelerator.active;
     end
+`endif
     integer taskid,li,j,n,num_tasks=12,first_task=0,baseline=0,transport=2,num_layers=12,input_stream=0;
     longint cycles=0,start_cycle,task_cycles,total_cycles=0;
     string folder;
@@ -114,6 +120,27 @@ module tb_encoder_soc;
 `endif
         end
     endtask
+
+    task automatic load_shared_weights(input integer layer_index);
+        string parameter_folder;
+        integer slot;
+        reg [31:0] reply;
+        begin
+            parameter_folder=$sformatf("output/encoder-vectors/layer_%02d",layer_index);
+            $readmemh({parameter_folder,"/params.hex"},params);$readmemh({parameter_folder,"/w1.hex"},w1);$readmemh({parameter_folder,"/w2.hex"},w2);
+            $readmemh({parameter_folder,"/b1.hex"},b1);$readmemh({parameter_folder,"/b2.hex"},b2);
+            for(slot=0;slot<16704;slot++) host(0,32'ha0050000+32'(4*slot),params[slot],reply);
+            for(slot=0;slot<8192;slot++) host(0,32'ha0020000+32'(4*slot),w1[slot],reply);
+            for(slot=0;slot<256;slot++) host(0,32'ha0028000+32'(4*slot),b1[slot],reply);
+            for(slot=0;slot<8192;slot++) host(0,32'ha0040000+32'(4*slot),w2[slot],reply);
+            for(slot=0;slot<64;slot++) host(0,32'ha0048000+32'(4*slot),b2[slot],reply);
+        end
+    endtask
+`ifdef KWT_CONTEST_ROW_FFN
+    integer preloaded_layer,early_loads;
+    reg [31:0] release_token;
+`endif
+
     initial begin
         if($value$plusargs("tasks=%d",num_tasks)) begin end
         if($value$plusargs("first=%d",first_task)) begin end
@@ -135,6 +162,9 @@ module tb_encoder_soc;
             if(num_layers==1) $readmemh({folder,"/layer_00/expected.hex"},expected);
             @(negedge clk);rst_n=0;boot_hold=1;repeat(5) @(negedge clk);rst_n=1;
             host(0,32'ha000f000,0,rd);host(0,32'ha000f004,0,rd);
+`ifdef KWT_CONTEST_ROW_FFN
+            preloaded_layer=-1;early_loads=0;host(0,32'ha000f014,0,rd);
+`endif
             for(j=0;j<6336;j++) host(0,32'ha0064000+32'(4*j),32'hdeadbeef,rd);
             boot_hold=0;repeat(500) @(negedge clk);start_cycle=cycles;
 `ifdef BUS_STUDY
@@ -148,25 +178,39 @@ module tb_encoder_soc;
             for(j=0;j<6336;j++) host(0,32'ha0010000+32'(4*j),input_x[j],rd);
             for(li=0;li<num_layers;li++) begin
                 folder=$sformatf("output/encoder-vectors/layer_%02d",li);
-                $readmemh({folder,"/params.hex"},params);$readmemh({folder,"/w1.hex"},w1);$readmemh({folder,"/w2.hex"},w2);
-                $readmemh({folder,"/b1.hex"},b1);$readmemh({folder,"/b2.hex"},b2);$readmemh({folder,"/config.hex"},cfg);
+                $readmemh({folder,"/config.hex"},cfg);
                 $readmemh($sformatf("output/encoder-vectors/task_%02d/layer_%02d/ffn_input.hex",taskid,li),packed_x);
                 $readmemh($sformatf("output/encoder-vectors/task_%02d/layer_%02d/ffn.hex",taskid,li),ffn_expected);
-                for(j=0;j<16704;j++) host(0,32'ha0050000+32'(4*j),params[j],rd);
-                for(j=0;j<8192;j++) host(0,32'ha0020000+32'(4*j),w1[j],rd);
-                for(j=0;j<256;j++) host(0,32'ha0028000+32'(4*j),b1[j],rd);
-                for(j=0;j<8192;j++) host(0,32'ha0040000+32'(4*j),w2[j],rd);
-                for(j=0;j<64;j++) host(0,32'ha0048000+32'(4*j),b2[j],rd);
+`ifdef KWT_CONTEST_ROW_FFN
+                if(preloaded_layer!=li)
+`endif
+                    load_shared_weights(li);
                 configuration=cfg[1] | (input_stream ? 32'd16 : 32'd0) | (transport==2 ? 32'd8 : transport==1 ? 32'd4 : 32'd0);
                 if(!baseline) begin if(li!=0) configuration|=1;if(li!=num_layers-1) configuration|=2;end
                 host(0,32'ha000f008,cfg[0],rd);host(0,32'ha000f00c,configuration,rd);host(0,32'ha000f010,32'(li),rd);
                 host(0,32'ha000f000,11,rd);rd=0;n=0;
                 while(rd!=2) begin
                     repeat(1024) @(negedge clk);host(1,32'ha000f000,0,rd);n++;
+`ifdef KWT_CONTEST_ROW_FFN
+                    if(rd==11 && preloaded_layer!=li+1 && li+1<num_layers) begin
+                        host(1,32'ha000f014,0,release_token);
+                        if(release_token==li+1) begin
+                            load_shared_weights(li+1);
+                            preloaded_layer=li+1;early_loads++;
+                        end
+                    end
+`endif
                     if(rd==32'hdead || n>20000) $fatal(1,"Firmware encoder failure task=%0d layer=%0d pc=%h",taskid,li,inspect_pc);
                 end
+`ifdef KWT_CONTEST_ROW_FFN
+                if(in_words!=3168 || out_values!=6336) $fatal(1,"Incomplete streamed layer");
+`endif
                 $display("ENC_LAYER_DONE task=%0d layer=%0d cycle=%0d",taskid,li,cycles);$fflush();
             end
+`ifdef KWT_CONTEST_ROW_FFN
+            if(early_loads!=num_layers-1) $fatal(1,"Missing parameter prefetch");
+            $display("ROW_WEIGHT_PREFETCH task=%0d layers=%0d",taskid,early_loads);
+`endif
             task_cycles=cycles-start_cycle;total_cycles+=task_cycles;
 `ifdef BUS_STUDY
             bus_end();

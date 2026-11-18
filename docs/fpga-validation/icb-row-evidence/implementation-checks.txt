@@ -1,0 +1,2 @@
+50 MHz request: XSA bitstream and PS init match programmed files; original parameter pack SHA256 4b402688144a2c5b54b3071e9ea9b9b345cae72ea428227773429cb9c9468c14
+55 MHz request: XSA bitstream and PS init match programmed files; original parameter pack SHA256 4b402688144a2c5b54b3071e9ea9b9b345cae72ea428227773429cb9c9468c14

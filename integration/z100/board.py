@@ -7,6 +7,8 @@ import struct
 import subprocess
 import tempfile
 import time
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -36,21 +38,17 @@ class TcpStream:
         self.port = endpoint
         self.socket = socket.create_connection((host, int(port)), timeout=15)
         self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        self.reader = self.socket.makefile("rb")
 
     def read(self, count):
-        buffer = bytearray()
-        while len(buffer) < count:
-            block = self.socket.recv(count - len(buffer))
-            if not block:
-                break
-            buffer.extend(block)
-        return bytes(buffer)
+        return self.reader.read(count)
 
     def write(self, data):
         self.socket.sendall(data)
         return len(data)
 
     def close(self):
+        self.reader.close()
         self.socket.close()
 
 
@@ -137,3 +135,20 @@ class JtagBoard:
                                    if "timeout" in line.lower() or "error" in line.lower()), "")
                     raise RuntimeError(f"JTAG 推理失败。{detail}")
             return decode_result(reply.read_bytes(), time.perf_counter() - started, verify)
+
+
+@contextmanager
+def connect_for_audio(port, baud=DEMO_BAUD):
+    """Start the TCP handshake while the caller reads and encodes the WAV."""
+    with ExitStack() as connections:
+        if ":" in port:
+            # Join the opener before unwinding connections, including when
+            # decoding fails before the caller obtains the board.
+            with ThreadPoolExecutor(max_workers=1) as opener:
+                pending = opener.submit(lambda: connections.enter_context(Board(port, baud)))
+                yield pending.result
+        else:
+            def open_device():
+                device = JtagBoard() if port.upper() == "JTAG" else Board(port, baud)
+                return connections.enter_context(device)
+            yield open_device

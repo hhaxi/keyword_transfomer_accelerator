@@ -12,7 +12,7 @@ from datetime import datetime
 from tkinter import filedialog, ttk
 from pathlib import Path
 
-from board import Board, DEMO_BAUD, DEMO_TCP, JtagBoard
+from board import DEMO_BAUD, DEMO_TCP, connect_for_audio
 from workbench_theme import BG, BLUE, CARD, FONT, GREEN, INK, LINE, MUTED, PANEL, RED, SIDEBAR, Surface, WorkbenchTheme
 
 SAMPLE_RATE = 16000
@@ -404,29 +404,28 @@ class Demo:
         start = time.perf_counter()
         stage = "音频处理"
         try:
-            if source is not None:
-                audio, title, truth = source
-            elif name is None:
-                stage = "麦克风录音"
-                import sounddevice as sd
-                audio = sd.rec(SAMPLE_RATE, samplerate=SAMPLE_RATE, channels=1, dtype="float32", blocking=True)[:, 0]
-                title, truth = "麦克风录音 · 1.00 秒", None
-            elif isinstance(name, Path):
-                audio, title, truth = self.file_audio(name)
-            else:
-                audio, truth = self.model.validation_audio(name)
-                title = name
-            self.events.put(("audio", (audio, title, truth)))
-            stage = "特征提取"
-            features = self.model.encode(audio)
-            prepared = time.perf_counter()
-            self.events.put(("upload", None))
-            stage = f"板卡通信 ({port})"
-            transport = JtagBoard() if port.upper() == "JTAG" else Board(port, baud)
-            with transport as board:
-                result = board.infer(features, progress=lambda layer: self.events.put(("progress", layer)))
-            self.events.put(("result", (result, (prepared - start) * 1000,
-                                        (time.perf_counter() - start) * 1000, port)))
+            with connect_for_audio(port, baud) as acquire:
+                if source is not None:
+                    audio, title, truth = source
+                elif name is None:
+                    stage = "麦克风录音"
+                    import sounddevice as sd
+                    audio = sd.rec(SAMPLE_RATE, samplerate=SAMPLE_RATE, channels=1, dtype="float32", blocking=True)[:, 0]
+                    title, truth = "麦克风录音 · 1.00 秒", None
+                elif isinstance(name, Path):
+                    audio, title, truth = self.file_audio(name)
+                else:
+                    audio, truth = self.model.validation_audio(name)
+                    title = name
+                self.events.put(("audio", (audio, title, truth)))
+                stage = "特征提取"
+                features = self.model.encode(audio)
+                prepared = time.perf_counter()
+                self.events.put(("upload", None))
+                stage = f"板卡通信 ({port})"
+                result = acquire().infer(features, progress=lambda layer: self.events.put(("progress", layer)))
+                self.events.put(("result", (result, (prepared - start) * 1000,
+                                            (time.perf_counter() - start) * 1000, port)))
         except Exception as exc:
             self.events.put(("error", f"{stage}失败 · {exc}"))
 
@@ -545,7 +544,7 @@ class Demo:
                 self.set_status("FPGA 正在执行 12 层编码器")
             elif event == "result":
                 self.show_result(*value)
-        self.root.after(40, self.poll)
+        self.root.after(8 if self.busy and self.ready else 40, self.poll)
 
 
 def main():

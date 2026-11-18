@@ -127,7 +127,7 @@ module z100_kwt #(parameter FAST_PROJECTION = 0, parameter FAST_ATTENTION = 0, p
         .rsp_ready(rsp_ready && response_target == 1), .rsp_rdata(f_rsp_data), .rsp_err(f_rsp_error),
         .m_valid(f_valid), .m_ready(f_ready), .m_addr(f_addr), .m_wdata(f_data),
         .m_read(f_read), .m_rsp_valid(f_ddr_valid), .m_rdata(f_ddr_data), .m_err(f_error),
-        .preload_permit(preload_permit), .input_valid(input_valid), .input_ready(input_ready), .input_data(input_data),
+        .external_abort(1'b0), .preload_permit(preload_permit), .input_valid(input_valid), .input_ready(input_ready), .input_data(input_data),
         .result_valid(result_valid), .result_ready(result_ready), .result_data(result_data), .link_error(link_error)
     );
     end else begin: serial_ffn

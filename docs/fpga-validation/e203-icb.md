@@ -1,5 +1,7 @@
 # E203 ICB 地址分发器版本的 Z100 验证
 
+采用本科生 FFN1 的后续板测见 [50 MHz 与 55.56 MHz 的延迟验证](icb-row-latency.md)。
+
 2026-11-18 在 `xc7z035ffg900-2` 上验证。以 `fpga@8a5dcac` 为基线，采用 `codex/e203-icb-bus@2fbf799` 的完整 `integration/kwt_bus_fabric.sv`。CPU、Host 与 DMA 经 KWT 仲裁后，送入固定 HBirdv2 版本的 `sirv_icb1to8_bus`，由其分发至 32 位共享 SRAM、控制寄存器和错误响应端点。此接法使用上游分发器，仍保留项目自己的主设备仲裁、共享 SRAM 控制和 E203 CPU 顶层，正式平台集成按组委会要求另行核验。
 
 Vivado 2026.1 综合入口为 `z100_wrapper`。板卡加载器通过原 Host 口逐层装入权重。512 KiB 共享 SRAM、12 层 KWT 的注意力和 FFN 配置、模型参数和板级协议沿用对照版。用于实测的 ARM ELF 和 E203 固件均与对照版逐字节一致。

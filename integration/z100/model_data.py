@@ -6,7 +6,10 @@ import json
 import struct
 import sys
 import zlib
+import wave
 from pathlib import Path
+
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -55,6 +58,23 @@ class Model:
             lookup[name] = len(items)
             items.append({"file": str(path), "label": path.parent.name})
         index = lookup[name]
+        sample = self.processor.data_index["validation"][index]
+        label = self.processor.word_to_index[sample["label"]]
+        count = self.flags.desired_samples
+        if sample["label"] == "_silence_":
+            return np.zeros(count, dtype=np.float32), label
+        # Validation has unit gain and no augmentation. Decode the PCM once,
+        # preserving decode_wav's zero padding and first-second truncation.
+        try:
+            with wave.open(sample["file"], "rb") as wav:
+                if (wav.getsampwidth() == 2 and wav.getnchannels() == 1 and
+                        wav.getframerate() == self.flags.sample_rate and wav.getcomptype() == "NONE"):
+                    pcm = np.frombuffer(wav.readframes(count), dtype="<i2")
+                    audio = np.zeros(count, dtype=np.float32)
+                    np.multiply(pcm, 1.0 / 32768, out=audio[:pcm.size])
+                    return audio, label
+        except wave.Error:
+            pass
         audio, label = self.processor.get_data(1, index, self.flags, 0., 0., 0.,
                                                "validation", 0., 0., sess=self.session)
         return audio[0], int(label[0])
