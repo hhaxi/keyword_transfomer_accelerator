@@ -5,5 +5,5 @@
     "RAMSP1024X16": 16,
     "RAMSP4096X16": 0
   },
-  "generic_register_bits": 7712
+  "generic_register_bits": 7728
 }

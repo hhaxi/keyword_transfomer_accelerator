@@ -9,6 +9,10 @@ rtl/kwt_ffn1_core.sv
 rtl/kwt_weight_unpack.sv
 rtl/kwt_ffn1_dma.sv
 rtl/kwt_bus_fabric.sv
+vendor/e203/rtl/e203/general/sirv_gnrl_bufs.v
+vendor/e203/rtl/e203/general/sirv_gnrl_dffs.v
+vendor/e203/rtl/e203/general/sirv_gnrl_icbs.v
+vendor/e203/rtl/e203/fab/sirv_icb1to8_bus.v
 rtl/kwt_ffn1_top.sv
 rtl/kwt_output_sequence.sv
 rtl/kwt_group_queue.sv

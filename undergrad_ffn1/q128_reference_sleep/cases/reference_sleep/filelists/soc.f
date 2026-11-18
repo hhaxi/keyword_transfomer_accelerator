@@ -62,6 +62,7 @@ vendor/e203/rtl/e203/general/sirv_gnrl_dffs.v
 vendor/e203/rtl/e203/general/sirv_gnrl_icbs.v
 vendor/e203/rtl/e203/general/sirv_gnrl_xchecker.v
 vendor/e203/rtl/e203/general/sirv_sram_icb_ctrl.v
+vendor/e203/rtl/e203/fab/sirv_icb1to8_bus.v
 vendor/e203/rtl/e203/subsys/e203_subsys_nice_core.v
 rtl/kwt_output_sequence.sv
 rtl/kwt_group_queue.sv

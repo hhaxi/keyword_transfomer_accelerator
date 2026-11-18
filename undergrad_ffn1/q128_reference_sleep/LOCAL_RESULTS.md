@@ -1,4 +1,19 @@
-# Local comparison with the polling reference
+# Q128 FFN1 local verification
+
+## Upstream E203 ICB splitter
+
+The SoC uses `sirv_icb1to8_bus` from E203 HBirdv2 revision `9f3e34f337f5d0a1236a285871ffa2032491617a`. The KWT arbiter still selects the requesting CPU, Host or DMA master and tracks response ownership. The same firmware, twelve layer parameter sets and strict task windows were used for both builds.
+
+| Bus | Mean cycles/task | Tasks/s at 150 MHz |
+|---|---:|---:|
+| Custom bus baseline | 32,006.83 | 4,686.50 |
+| E203 ICB splitter | 32,012.83 | 4,685.62 |
+
+Each layer took six additional cycles in both the reset-per-task and continuous runs. Each mode passed the comparison of 304,128 output values. Yosys verified 128 MACs and the local inventory of 36 RAMSP128X16 and 16 RAMSP1024X16 macros. The new bus has local RTL verification. The linked server PPA results describe the custom-bus baseline.
+
+The E203 buffer counter declarations now use `OUTS_CNT_W` for both signals. Icarus reproduced the two port-width warnings before this fix and compiled the bus without diagnostics afterward. A fresh Verilator build passed all twelve tasks in both reset modes, with the same output comparisons and an identical `functional.json`. The SpyGlass setup loads one lint waiver for the intentional low-phase `enb` latch in `e203_clkgate`. Tcl setup and waiver arguments were checked locally; rerun SpyGlass on the server to confirm its lint report.
+
+## Original custom-bus comparison with the polling reference
 
 | Mode | Polling cycles/task | IRQ/WFI cycles/task | IRQ/WFI task/s at 150 MHz |
 |---|---:|---:|---:|

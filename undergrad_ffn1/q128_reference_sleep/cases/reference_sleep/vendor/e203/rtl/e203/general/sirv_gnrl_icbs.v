@@ -485,8 +485,9 @@ module sirv_gnrl_icb_buffer # (
      // If meanwhile no or have set and clear, then no changes
   wire outs_cnt_ena = outs_cnt_inc ^ outs_cnt_dec;
      // If only inc or only dec
-  wire outs_cnt_r;
-  wire outs_cnt_nxt = outs_cnt_inc ? (outs_cnt_r + 1'b1) : (outs_cnt_r - 1'b1);
+   // KWT integration: match the counter signals to the DFF width parameter.
+   wire [OUTS_CNT_W-1:0] outs_cnt_r;
+   wire [OUTS_CNT_W-1:0] outs_cnt_nxt = outs_cnt_inc ? (outs_cnt_r + 1'b1) : (outs_cnt_r - 1'b1);
   sirv_gnrl_dfflr #(OUTS_CNT_W) outs_cnt_dfflr (outs_cnt_ena, outs_cnt_nxt, outs_cnt_r, clk, rst_n);
 
   assign icb_buffer_active = i_icb_cmd_valid | (~(outs_cnt_r == {OUTS_CNT_W{1'b0}}));

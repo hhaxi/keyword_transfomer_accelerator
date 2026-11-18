@@ -39,6 +39,9 @@ module tb_soc;
     `include "cg_monitor.svh"
     `include "cycle_breakdown.svh"
     `include "single_port_monitor.svh"
+`ifdef KWT_COVERAGE
+    `include "verification_coverage.svh"
+`endif
 `ifdef KWT_GATE_LEVEL_POWER
     // Probe the DMA interface, whose port names survive hierarchy-preserving DC.
     integer dma_responses=0;
@@ -325,6 +328,10 @@ module tb_soc;
             $display("SOC_TASK_PASS task=%0d cycles=%0d outputs=25344",taskid,task_cycles);
             $fflush();
         end
+`ifdef KWT_COVERAGE
+        coverage_protocol();
+        coverage_report();
+`endif
         $display("SOC_PASS tasks=%0d total_cycles=%0d nominal_tasks_per_second=%f",num_tasks,total_cycles,real'(num_tasks)*150000000.0/real'(total_cycles));
         $finish;
     end

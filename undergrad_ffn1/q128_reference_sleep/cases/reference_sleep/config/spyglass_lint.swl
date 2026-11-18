@@ -1,0 +1,2 @@
+# The low-phase enable latch in the E203 clock gate holds EN while CLK is high.
+waive -du e203_clkgate -rule InferLatch -msg "Latch inferred for signal 'enb' in module 'e203_clkgate'" -comment "Intentional low-phase latch in the E203 clock gate"

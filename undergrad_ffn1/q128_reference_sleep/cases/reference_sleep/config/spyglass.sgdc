@@ -1,0 +1,2 @@
+current_design kwt_ffn1_soc
+clock -name clk -period 6.666667
