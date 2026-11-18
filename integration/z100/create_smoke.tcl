@@ -29,6 +29,7 @@ if {$contest} {
     foreach dir {core general} {
         add_files -norecurse [glob -directory [file join $cpu $dir] *.v]
     }
+    add_files -norecurse [file join $cpu fab sirv_icb1to8_bus.v]
     add_files -norecurse [file join $cpu subsys e203_subsys_nice_core.v]
     set_property include_dirs [list [file join $cpu core]] [current_fileset]
     set_property verilog_define {DISABLE_SV_ASSERTION FPGA_SOURCE KWT_FPGA_BANKED_SHARED} [current_fileset]

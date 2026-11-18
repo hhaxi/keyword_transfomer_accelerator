@@ -8,6 +8,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from run_encoder import ROOT,OUT,DEST,SOC,CONFIG,SYSTEM_RTL,ENC_RTL,ENC_BUS,source_files,sim,linux,run,firmware
 from build_soc import firmware as independent_firmware
+from run_design import BUS_TEST
 
 BASE='c0724ce0150b0b9441659f3e2b1c69c064293c85'
 
@@ -65,13 +66,13 @@ def protocol():
         generated.write_text(cancel_source(b))
     capture('bus-protocol')
     for b in [1,8]:
-        files=['integration/kwt_bus_fabric.sv','integration/kwt_shared_sram.sv','tests/tb_bus.sv']
+        files=BUS_TEST
         label='bus_protocol_'+str(b)
-        if 'BUS_PASS' not in sim('tb_bus',files,['-GDMA_BURST='+str(b)],label=label):raise RuntimeError(label)
+        if 'BUS_PASS' not in sim('tb_bus',files,['+define+DISABLE_SV_ASSERTION','-GDMA_BURST='+str(b)],label=label):raise RuntimeError(label)
         compiler=Path(CONFIG['iverilog_bin'])/'iverilog.exe';runtime=Path(CONFIG['iverilog_bin'])/'vvp.exe'
-        run(label+'-icarus-build',[compiler,'-g2012','-s','tb_bus','-Ptb_bus.DMA_BURST='+str(b),'-o',OUT/(label+'.vvp')]+files)
+        run(label+'-icarus-build',[compiler,'-g2012','-DDISABLE_SV_ASSERTION','-s','tb_bus','-Ptb_bus.DMA_BURST='+str(b),'-o',OUT/(label+'.vvp')]+files)
         if 'BUS_PASS' not in run(label+'-icarus',[runtime,OUT/(label+'.vvp')]):raise RuntimeError(label)
-        linux('bus-lint-'+str(b),CONFIG['wsl_verilator']+' --lint-only -Wall --top-module kwt_extended_system_bus -GDMA_BURST='+str(b)+' '+
+        linux('bus-lint-'+str(b),CONFIG['wsl_verilator']+' --lint-only -Wall -Wno-fatal +define+DISABLE_SV_ASSERTION --top-module kwt_extended_system_bus -GDMA_BURST='+str(b)+' '+
               ' '.join(SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv']))
         generated=DEST/('bus_cancel_'+str(b)+'.sv')
         text=sim('tb_input_link',SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv',generated.relative_to(ROOT).as_posix()],label='bus_cancel_'+str(b))

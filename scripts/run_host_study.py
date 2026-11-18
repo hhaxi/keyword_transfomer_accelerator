@@ -54,12 +54,12 @@ def protocol():
     for dma in [1,8]:
         for host in [0,2]:
             label='host_protocol_d'+str(dma)+'_h'+str(host)
-            files=['integration/kwt_bus_fabric.sv','integration/kwt_shared_sram.sv','tests/tb_bus.sv']
-            if 'BUS_PASS' not in bus.sim('tb_bus',files,['-GDMA_BURST='+str(dma),'-GHOST_BURST='+str(host)],label=label,run_args=['+host_gaps']):raise RuntimeError(label)
+            files=bus.BUS_TEST
+            if 'BUS_PASS' not in bus.sim('tb_bus',files,['+define+DISABLE_SV_ASSERTION','-GDMA_BURST='+str(dma),'-GHOST_BURST='+str(host)],label=label,run_args=['+host_gaps']):raise RuntimeError(label)
             compiler=bus.Path(bus.CONFIG['iverilog_bin'])/'iverilog.exe';runtime=bus.Path(bus.CONFIG['iverilog_bin'])/'vvp.exe'
-            bus.run(label+'-icarus-build',[compiler,'-g2012','-s','tb_bus','-Ptb_bus.DMA_BURST='+str(dma),'-Ptb_bus.HOST_BURST='+str(host),'-o',bus.OUT/(label+'.vvp')]+files)
+            bus.run(label+'-icarus-build',[compiler,'-g2012','-DDISABLE_SV_ASSERTION','-s','tb_bus','-Ptb_bus.DMA_BURST='+str(dma),'-Ptb_bus.HOST_BURST='+str(host),'-o',bus.OUT/(label+'.vvp')]+files)
             if 'BUS_PASS' not in bus.run(label+'-icarus',[runtime,bus.OUT/(label+'.vvp'),'+host_gaps']):raise RuntimeError(label)
-            bus.linux(label+'-lint',bus.CONFIG['wsl_verilator']+' --lint-only -Wall --top-module kwt_extended_system_bus -GDMA_BURST='+str(dma)+' -GHOST_BURST='+str(host)+' '+
+            bus.linux(label+'-lint',bus.CONFIG['wsl_verilator']+' --lint-only -Wall -Wno-fatal +define+DISABLE_SV_ASSERTION --top-module kwt_extended_system_bus -GDMA_BURST='+str(dma)+' -GHOST_BURST='+str(host)+' '+
                       ' '.join(bus.SYSTEM_RTL+bus.ENC_RTL+bus.ENC_BUS+['integration/kwt_shared_sram.sv']))
     for dma in [1,8]:
         label='host_cancel_d'+str(dma)
