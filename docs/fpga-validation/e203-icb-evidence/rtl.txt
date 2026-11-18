@@ -1,0 +1,12 @@
+ENC_SOC_TASK_PASS task=0 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=1 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=2 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=3 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=4 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=5 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=6 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=7 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=8 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=9 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=10 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1
+ENC_SOC_TASK_PASS task=11 cycles=6353387 baseline=0 outputs=6336 transport=2 layers=12 input_stream=1

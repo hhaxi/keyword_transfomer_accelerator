@@ -1,0 +1,12 @@
+{
+  "tasks": 120,
+  "mean_board_cycles": 5845235.7,
+  "worst_board_cycles": 5850036,
+  "mean_board_ms": 146.13089250000002,
+  "board_tasks_per_sec": 6.843179993580071,
+  "equivalent_tasks_per_sec_150mhz": 25.661924975925263,
+  "e2e_p50_ms": 149.8644499999955,
+  "e2e_p95_ms": 155.52528500000005,
+  "e2e_max_ms": 156.9086000000013,
+  "e2e_tasks_per_sec": 6.645513553990081
+}

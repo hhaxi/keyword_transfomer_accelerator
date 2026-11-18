@@ -1,0 +1,7 @@
+BUS_FAIR_PASS burst=1 host_burst=0 patterned=0 gap=0 master=0 max_bypasses=2 max_wait=2
+BUS_FAIR_PASS burst=1 host_burst=0 patterned=0 gap=0 master=1 max_bypasses=2 max_wait=2
+BUS_FAIR_PASS burst=1 host_burst=0 patterned=0 gap=0 master=2 max_bypasses=2 max_wait=2
+BUS_FAIR_PASS burst=1 host_burst=0 patterned=1 gap=0 master=0 max_bypasses=2 max_wait=16
+BUS_FAIR_PASS burst=1 host_burst=0 patterned=1 gap=0 master=1 max_bypasses=2 max_wait=12
+BUS_FAIR_PASS burst=1 host_burst=0 patterned=1 gap=0 master=2 max_bypasses=2 max_wait=16
+BUS_PASS continuous transfers, fair arbitration, response stalls, locked grants, address protection, reset
