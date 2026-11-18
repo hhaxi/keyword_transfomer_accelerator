@@ -334,8 +334,8 @@
 ## 核对资料
 
 - 仓库根目录《芯片设计赛题指南》：本科第 1–3 项、决赛评分与指标统计口径。
-- [Q128 本地结果](../optional_lab/q128_candidates/LOCAL_RESULTS.md) · [周期明细](../optional_lab/q128_candidates/analysis/cycle_breakdown.json) · [共享 SRAM 边界](../optional_lab/q128_candidates/SHARED_SRAM_AUDIT.md)
-- [双列 W 装载](../optional_lab/q128_dual_column/LOCAL_RESULTS.md) · [X 差分与并行恢复](../optional_lab/q128_xdelta_tail/LOCAL_RESULTS.md) · [历史精度比较](../../docs/ffn-precision-decision.md)
-- [DMA RTL](../optional_lab/q128_candidates/cases/dense_sched/rtl/kwt_ffn1_dma.sv) · [互连 RTL](../optional_lab/q128_candidates/cases/dense_sched/rtl/kwt_bus_fabric.sv) · [Y 写回 RTL](../optional_lab/q128_candidates/cases/dense_sched/rtl/kwt_int16_result_queue.sv) · [SoC 验证入口](../optional_lab/q128_candidates/cases/dense_sched/verify.py)
-- [DC 库与约束配置](../optional_lab/q128_candidates/cases/dense_sched/config/library_config.tcl) · [Formality 脚本](../optional_lab/mp/run_formality.tcl)
-- [Transformer 扩展及性能](../../README.md) · [完整编码器设计](../../docs/full-encoder.md)
+- [Q128 本地结果](../undergrad_ffn1/optional_lab/q128_candidates/LOCAL_RESULTS.md) · [周期明细](../undergrad_ffn1/optional_lab/q128_candidates/analysis/cycle_breakdown.json) · [共享 SRAM 边界](../undergrad_ffn1/optional_lab/q128_candidates/SHARED_SRAM_AUDIT.md)
+- [双列 W 装载](../undergrad_ffn1/optional_lab/q128_dual_column/LOCAL_RESULTS.md) · [X 差分与并行恢复](../undergrad_ffn1/optional_lab/q128_xdelta_tail/LOCAL_RESULTS.md) · [历史精度比较](../docs/ffn-precision-decision.md)
+- [DMA RTL](../undergrad_ffn1/optional_lab/q128_candidates/cases/dense_sched/rtl/kwt_ffn1_dma.sv) · [互连 RTL](../undergrad_ffn1/optional_lab/q128_candidates/cases/dense_sched/rtl/kwt_bus_fabric.sv) · [Y 写回 RTL](../undergrad_ffn1/optional_lab/q128_candidates/cases/dense_sched/rtl/kwt_int16_result_queue.sv) · [SoC 验证入口](../undergrad_ffn1/optional_lab/q128_candidates/cases/dense_sched/verify.py)
+- [DC 库与约束配置](../undergrad_ffn1/optional_lab/q128_candidates/cases/dense_sched/config/library_config.tcl) · [Formality 脚本](../undergrad_ffn1/optional_lab/mp/run_formality.tcl)
+- [Transformer 扩展及性能](../README.md) · [完整编码器设计](../docs/full-encoder.md)
