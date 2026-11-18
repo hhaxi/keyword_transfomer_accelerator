@@ -1,7 +1,8 @@
 // Row scheduling around the existing FFN1, GELU and FFN2 modules.
-// Six lanes handle 16 rows each. The seventh pads its three rows to the
-// eight-row FFN2 tile size and commits only the three real rows.
-module z100_ffn_rows #(parameter STREAM=0, parameter GELU_CYCLES=1)(
+// COMPACT=0 buffers the results of seven lanes. In streamed compact mode
+// one lane processes all rows, or two lanes take even and odd rows. Two
+// single-port row slots per lane feed the original row-major result stream.
+module z100_ffn_rows #(parameter STREAM=0, parameter GELU_CYCLES=1, parameter COMPACT=0)(
     input wire clk, rst_n,
     input wire cmd_valid, output wire cmd_ready, input wire [11:0] cmd_addr,
     input wire cmd_read, input wire [31:0] cmd_wdata, input wire [3:0] cmd_wmask,
@@ -35,30 +36,35 @@ module z100_ffn_rows #(parameter STREAM=0, parameter GELU_CYCLES=1)(
         state==W2 ? 32'ha0040000 : state==B2 ? 32'ha0048000 : 32'ha0018000;
     wire [12:0] read_last=(state==W1 || state==W2) ? 13'd8191 :
         state==B1 ? 13'd255 : state==B2 ? 13'd63 : 13'd3167;
-    wire [6:0] lanes_done, lanes_fault;
-    wire [63:0] lane_output[0:6];
+    localparam LANES=COMPACT ? COMPACT : 7;
+    wire [LANES-1:0] lanes_done, lanes_fault, row_available;
+    wire [63:0] lane_output[0:LANES-1];
     wire [31:0] first_lane_cycles;
-    wire [2:0] output_lane=index[12:10];
+    wire [2:0] output_lane=COMPACT==1 ? 3'd0 : COMPACT ? {2'b0,index[6]} : index[12:10];
     wire [63:0] output_value=lane_output[output_lane];
     reg [12:0] stream_index;
     reg [2:0] stream_lane;
-    wire stream_fetch=STREAM!=0 && done && stream_index<6336 && (!result_valid || result_ready);
+    wire [2:0] fetch_lane=COMPACT==1 ? 3'd0 : COMPACT ? {2'b0,stream_index[6]} : stream_index[12:10];
+    wire stream_source=COMPACT ? state==COMPUTE && row_available[fetch_lane] : done;
+    wire stream_fetch=STREAM!=0 && stream_source && stream_index<6336 && (!result_valid || result_ready);
     assign result_data=lane_output[stream_lane][39:0];
     assign cmd_ready=!rsp_valid || rsp_ready;
 
     genvar lane;
-    generate for(lane=0;lane<7;lane=lane+1) begin: rows
+    generate for(lane=0;lane<LANES;lane=lane+1) begin: rows
         wire [31:0] lane_cycles;
         if(lane==0) assign first_lane_cycles=lane_cycles;
-        z100_ffn_row_lane #(.ROWS(lane==6 ? 3 : 16),.GELU_CYCLES(GELU_CYCLES)) engine(
+        localparam LANE_ROWS=COMPACT==1 ? 99 : COMPACT ? (lane==0 ? 50 : 49) : (lane==6 ? 3 : 16);
+        wire select_x=COMPACT==1 ? 1'b1 : COMPACT ? index[5]==lane : index[11:9]==lane;
+        z100_ffn_row_lane #(.ROWS(LANE_ROWS),.GELU_CYCLES(GELU_CYCLES),.COMPACT(COMPACT)) engine(
             .clk(clk),.rst_n(rst_n),.clear(state==CLEAR || (state==DRAIN && bus_idle)),
             .launch(state==LAUNCH),.done(lanes_done[lane]),.fault(lanes_fault[lane]),.cycles(lane_cycles),
             .load_w1(receive && state==W1),.load_b1(receive && state==B1),
             .load_w2(receive && state==W2),.load_b2(receive && state==B2),
-            .load_x((direct_input ? input_fire : receive && state==LOAD_X) && index[11:9]==lane),
+            .load_x((direct_input ? input_fire : receive && state==LOAD_X) && select_x),
             .load_index(index),.load_data(direct_input ? input_data : m_rdata),.shift_in(shift_in),.shift_out(shift_out),
-            .fetch(STREAM!=0 ? stream_fetch && stream_index[12:10]==lane : state==FETCH_Y && output_lane==lane),
-            .fetch_index(STREAM!=0 ? stream_index[9:0] : index[9:0]),.output_data(lane_output[lane])
+            .fetch(STREAM!=0 ? stream_fetch && fetch_lane==lane : state==FETCH_Y && output_lane==lane),
+            .fetch_index(STREAM!=0 ? stream_index[9:0] : index[9:0]),.row_available(row_available[lane]),.output_data(lane_output[lane])
         );
     end endgenerate
 
@@ -77,7 +83,7 @@ module z100_ffn_rows #(parameter STREAM=0, parameter GELU_CYCLES=1)(
             if(result_ready) result_valid<=0;
             if(stream_fetch) begin
                 result_valid<=1;
-                stream_lane<=stream_index[12:10];
+                stream_lane<=fetch_lane;
                 stream_index<=stream_index+1'b1;
             end
             case(state)
@@ -92,7 +98,7 @@ module z100_ffn_rows #(parameter STREAM=0, parameter GELU_CYCLES=1)(
                     end
                 end
                 LAUNCH:state<=COMPUTE;
-                COMPUTE:if(&lanes_done) begin
+                COMPUTE:if(COMPACT ? stream_index==6336 && result_valid && result_ready : &lanes_done) begin
                     if(STREAM!=0) begin state<=IDLE;done<=1;end
                     else state<=FETCH_Y;
                 end
@@ -137,32 +143,31 @@ module z100_ffn_rows #(parameter STREAM=0, parameter GELU_CYCLES=1)(
             end
             if(busy && state!=DRAIN &&
                (abort_request || (state!=CLEAR && ((retire && m_err) || |lanes_fault)))) begin
-                state<=DRAIN;done<=0;fault<=!abort_request;aborted<=abort_request;
+                state<=DRAIN;done<=0;result_valid<=0;fault<=!abort_request;aborted<=abort_request;
             end
             if(STREAM!=0 && abort_request && !busy) begin done<=0;result_valid<=0;end
         end
     end
 endmodule
 
-module z100_ffn_row_lane #(parameter ROWS=16, parameter GELU_CYCLES=1)(
+module z100_ffn_row_lane #(parameter ROWS=16, parameter GELU_CYCLES=1, parameter COMPACT=0)(
     input wire clk, rst_n, clear, launch,
     output wire done, fault, output wire [31:0] cycles,
     input wire load_w1, load_b1, load_w2, load_b2, load_x,
     input wire [12:0] load_index, input wire [31:0] load_data,
     input wire [4:0] shift_in, shift_out,
     input wire fetch, input wire [9:0] fetch_index,
-    output reg [63:0] output_data
+    output wire row_available, output wire [63:0] output_data
 );
     localparam IDLE=0, FIRST_ROW=1, START=2, RUN=3, DONE=4;
-    localparam [9:0] REAL_WORDS=ROWS*32, TILE_WORDS=((ROWS+7)/8)*256;
-    localparam [10:0] REAL_OUTPUTS=ROWS*64;
+    localparam integer REAL_WORDS=ROWS*32, TILE_WORDS=ROWS==99 ? REAL_WORDS : ((ROWS+7)/8)*256;
+    localparam integer REAL_OUTPUTS=ROWS*64;
     reg [2:0] state;
-    reg [9:0] input_index;
-    reg [10:0] output_index;
+    reg [$clog2(TILE_WORDS+1)-1:0] input_index;
+    reg [$clog2(REAL_OUTPUTS+1)-1:0] output_index;
     reg input_pending;
     reg [31:0] input_word;
-    (* ram_style="block" *) reg [31:0] inputs[0:REAL_WORDS-1];
-    (* ram_style="block" *) reg [63:0] outputs[0:REAL_OUTPUTS-1];
+    wire output_space;
     wire [1:0] free_banks;
     wire l1_ready,l1_valid,l1_fault,l2_ready,l2_valid;
     wire [63:0] l1_output,l2_output;
@@ -190,17 +195,74 @@ module z100_ffn_row_lane #(parameter ROWS=16, parameter GELU_CYCLES=1)(
     wire feeding=state==FIRST_ROW || state==RUN;
     wire fetch_input=feeding && !input_pending && input_index<TILE_WORDS && free_banks[input_index[5]];
     wire feed_input=feeding && input_pending;
-    wire pop_output=state==RUN && l2_valid;
+    wire pop_output=state==RUN && l2_valid && output_space;
     wire [19:0] address=load_w1 ? 20'h20000+{4'd0,load_index,3'd0} :
         load_b1 ? 20'h30000+{5'd0,load_index,2'd0} : 20'h10000+{7'd0,input_index,3'd0};
     assign done=state==DONE;
     assign fault=l1_fault;
 
-    always @(posedge clk) begin
-        if(load_x) inputs[load_index[8:0]]<=load_data;
-        if(fetch_input) input_word<=input_index<REAL_WORDS ? inputs[input_index[8:0]] : 32'd0;
-        if(pop_output) outputs[output_index[9:0]]<=l2_output;
-        if(fetch) output_data<=outputs[fetch_index];
+    if(COMPACT) begin: row_storage
+        // The two-lane configuration strips the parity bit from the row index.
+        if(COMPACT==1) begin: all_rows
+            wire [31:0] input_q;
+            assign input_word=input_q;
+            for(genvar h=0;h<2;h=h+1) begin: halves
+                kwt_sram16 #(.AW(12)) mem(.clk(clk),.cs(load_x || fetch_input),.we(load_x),
+                    .addr(load_x ? load_index[11:0] : 12'(input_index)),.din(load_data[h*16+:16]),.dout(input_q[h*16+:16]));
+            end
+        end else begin: striped_rows
+            wire [10:0] input_addr=load_x ? {load_index[11:6],load_index[4:0]} : 11'(input_index);
+            wire [31:0] input_q[0:1];
+            reg in_page,in_range;
+            always @(posedge clk) if(fetch_input) begin
+                in_page<=input_addr[10];in_range<=input_index<REAL_WORDS;
+            end
+            always @* input_word=in_range ? input_q[in_page] : 0;
+            for(genvar page=0;page<2;page=page+1) begin: input_pages
+                for(genvar h=0;h<2;h=h+1) begin: halves
+                    kwt_sram16 #(.AW(10)) mem(.clk(clk),.cs((load_x || fetch_input) && input_addr[10]==page),
+                        .we(load_x),.addr(input_addr[9:0]),.din(load_data[16*h+:16]),.dout(input_q[page][16*h+:16]));
+                end
+            end
+        end
+        // Two single-port row slots separate the arithmetic from the ordered
+        // output stream. The last word is registered before releasing a slot.
+        reg [1:0] full;
+        reg read_slot;
+        wire [47:0] row_q[0:1];
+        wire write_slot=output_index[6];
+        wire fetch_slot=COMPACT==1 ? fetch_index[6] : fetch_index[7];
+        assign output_space=!full[write_slot];
+        assign row_available=full[fetch_slot];
+        assign output_data={{24{row_q[read_slot][39]}},row_q[read_slot][39:0]};
+        always @(posedge clk) if(fetch) read_slot<=fetch_slot;
+        for(genvar page=0;page<2;page=page+1) begin: output_pages
+            wire write_row=pop_output && write_slot==page;
+            wire read_row=fetch && fetch_slot==page;
+            always @(posedge clk) begin
+                if(!rst_n || clear) full[page]<=0;
+                else if(write_row && &output_index[5:0]) full[page]<=1;
+                else if(read_row && &fetch_index[5:0]) full[page]<=0;
+            end
+            for(genvar h=0;h<3;h=h+1) begin: halves
+                kwt_sram16 #(.AW(7)) mem(.clk(clk),.cs(write_row || read_row),.we(write_row),
+                    .addr({1'b0,write_row ? output_index[5:0] : fetch_index[5:0]}),
+                    .din(l2_output[16*h+:16]),.dout(row_q[page][16*h+:16]));
+            end
+        end
+    end else begin: buffered_results
+        (* ram_style="block" *) reg [31:0] inputs[0:REAL_WORDS-1];
+        (* ram_style="block" *) reg [63:0] outputs[0:REAL_OUTPUTS-1];
+        reg [63:0] out;
+        assign output_data=out;
+        assign row_available=1'b1;
+        assign output_space=1'b1;
+        always @(posedge clk) begin
+            if(load_x) inputs[load_index[8:0]]<=load_data;
+            if(fetch_input) input_word<=input_index<REAL_WORDS ? inputs[input_index[8:0]] : 32'd0;
+            if(pop_output) outputs[output_index[9:0]]<=l2_output;
+            if(fetch) out<=outputs[fetch_index];
+        end
     end
 
     kwt_ffn1_core ffn1(
@@ -210,13 +272,13 @@ module z100_ffn_row_lane #(parameter ROWS=16, parameter GELU_CYCLES=1)(
         .dma_out_valid(l1_valid),.dma_out_data(l1_output),.dma_out_ready(gelu_accept),
         .dma_done(),.dma_fault(l1_fault),.perf_cycles(cycles),.perf_mac_cycles(),.perf_fifo_wait()
     );
-    z100_ffn2 ffn2(
+    z100_ffn2 #(.OVERLAP(COMPACT)) ffn2(
         .clk(clk),.rst_n(rst_n),.clear(clear),
         .weight_write(load_w2),.weight_index(load_index),.weight_data(load_data),
         .bias_write(load_b2),.bias_index(load_index[5:0]),.bias_data(load_data),
         .gelu_input_shift(shift_in),.gelu_output_shift(shift_out),
         .input_valid(gelu_valid && state==RUN),.input_ready(l2_ready),.input_data(gelu_input),
-        .output_valid(l2_valid),.output_ready(state==RUN),.output_data(l2_output)
+        .output_valid(l2_valid),.output_ready(state==RUN && output_space),.output_data(l2_output)
     );
 
     always @(posedge clk or negedge rst_n) begin

@@ -53,8 +53,9 @@ def firmware():
     (dest/'encoder_size.vh').write_text('`define ENC_FW_WORDS %d\n'%(len(data)//4))
 
 
-def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1,transport=2,fifo_metrics=False,extra_flags=None,layers=12,input_stream=0,contest=False,row_ffn=False):
+def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activity=False,jobs=1,transport=2,fifo_metrics=False,extra_flags=None,layers=12,input_stream=0,contest=False,row_ffn=False,compact=False):
     includes=['+incdir+output/encoder-design/firmware']
+    row_ffn=row_ffn or compact
     if row_ffn and (netlist or not contest or not input_stream or transport!=2):
         raise ValueError("row FFN requires contest RTL and streamed input/output")
     if netlist:
@@ -68,6 +69,9 @@ def soc(netlist=False,tasks=12,baseline=0,first=0,label=None,metrics=False,activ
         files+=['undergrad_ffn1/rtl/kwt_ffn1_core.sv','integration/z100/z100_ffn2.sv','integration/z100/z100_ffn_rows.sv']
         includes+=['+incdir+undergrad_ffn1/rtl','+define+KWT_CONTEST_ROW_FFN']
         label='tb_encoder_soc_contest_rows'
+        if compact:
+            label+='_compact'+str(compact)
+            includes+=['+define+KWT_COMPACT='+str(compact)]
     label=label or ('tb_encoder_soc' + ('_contest' if contest else '') + ('_netlist' if netlist else ''))
     if not netlist:
         includes+=['+define+ENCODER_PHASE_METRICS']
@@ -150,9 +154,12 @@ def main():
     p.add_argument('--layers',type=int,choices=[1,12],default=12)
     p.add_argument('--input-stream',type=int,choices=[0,1],default=0)
     p.add_argument('--baseline',type=int,choices=[0,1],default=0)
+    p.add_argument('--compact',nargs='?',const=1,default=0,type=int,choices=(1,2))
     p.add_argument('--contest-row-ffn',action='store_true')
     p.add_argument('--contest',action='store_true',help='Use the macro-backed parallel encoder configuration')
     a=p.parse_args();DEST.mkdir(exist_ok=True)
+    if a.compact and a.task != 'soc':
+        p.error('--compact selects the RTL SoC regression; use run_ross.py for the FPGA build')
     if a.jobs<1 or a.jobs>a.tasks or (a.jobs>1 and (a.task!='soc' or a.baseline)):
         p.error('--jobs must be 1..tasks, and sharding is supported for optimized RTL soc only')
     if a.task=='transfer-profile':
@@ -212,7 +219,7 @@ def main():
         linux('encoder-lint',CONFIG['wsl_verilator']+' --lint-only -Wall -Wno-fatal +define+DISABLE_SV_ASSERTION --top-module kwt_extended_system_bus '+
               ' '.join(SYSTEM_RTL+ENC_RTL+ENC_BUS+['integration/kwt_shared_sram.sv']))
     else:
-        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs,transport=a.transport,layers=a.layers,input_stream=a.input_stream,contest=a.contest,row_ffn=a.contest_row_ffn)
+        firmware();soc(a.task=='netlist',a.tasks,a.baseline,a.first,jobs=a.jobs,transport=a.transport,layers=a.layers,input_stream=a.input_stream,contest=a.contest,row_ffn=a.contest_row_ffn,compact=a.compact)
 
 
 if __name__=='__main__':main()

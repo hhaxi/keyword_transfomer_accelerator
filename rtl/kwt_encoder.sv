@@ -3,7 +3,7 @@
 // Command 1: FFN result -> residual -> LN2 -> resident next-layer input / final DMA.
 // E203 supplies commands/addresses only; all encoder arithmetic is hardware.
 module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, parameter ATTENTION_K16=0,
-    parameter MACRO_WIDE=0)(
+    parameter MACRO_WIDE=0, parameter COMPACT=0)(
     input wire clk,rst_n,
     input wire cmd_valid,output wire cmd_ready,input wire [19:0] cmd_addr,
     input wire cmd_read,input wire [31:0] cmd_wdata,input wire [3:0] cmd_wmask,
@@ -23,9 +23,9 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         SQSTART=28,SQWAIT=29,NDIV=30,NDWAIT=31,APRIME=32,ANORM=33,AFFINE=34,
         DREAD=35,DCAP=36,WREQ=37,WWAIT=38,TGROUP=39,TREQ=40,TWAIT=41,TSTORE=42,TUNPACK=43,TSTREAM=44,
         PFLUSH=45,SFLUSH=46,SDRAIN=47,VFLUSH=48,PFLUSH2=49,PFLUSH3=50,
-        SUMFLUSH=51,VARFLUSH=52,ANORM_MUL=53,AFFINE_ROUND=54,AFFINE_WRITE=55;
+        SUMFLUSH=51,VARFLUSH=52,ANORM_MUL=53,AFFINE_ROUND=54,AFFINE_WRITE=55,QCACHE_HI=56,QCACHE_DONE=57,PCACHE_LO=58,PCACHE_HI=59,PCACHE_DONE=60;
     localparam WIDE_PROJECTION=PROJECTION_K4>1;
-    localparam PROJECTION_K=WIDE_PROJECTION ? 16 : PROJECTION_K4!=0 ? 4 : 1;
+    localparam PROJECTION_K=COMPACT ? 8 : WIDE_PROJECTION ? 16 : PROJECTION_K4!=0 ? 4 : 1;
     localparam ATTENTION_LANES=ATTENTION_K16>1 ? 32 : 16;
     localparam ATTENTION_GROUPS=ATTENTION_LANES/4;
     localparam PIPELINED_SCORE=ATTENTION_K16>1;
@@ -177,12 +177,6 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         ((state==PSAVE || state==RSAVE) && (group_!=15 || row!=98));
     wire x_wide=WIDE_PROJECTION && projection_read && projection!=3 && !xwe;
     wire [511:0] wide_x;
-    if(WIDE_PROJECTION) begin: projection_input_mem
-        kwt_attention_mem xm_(clk,xcs,xwe,x_wide,xm,xa,xi,512'd0,xd,wide_x);
-    end else begin: narrow_input_mem
-        kwt_vecmem32 #(.AW(11)) xm_(clk,xcs,xwe,xm,xa,xi,xd);
-        assign wide_x=0;
-    end
     wire [32*ATTENTION_LANES-1:0] wide_q,wide_k,wide_v,context_words;
     wire [ATTENTION_LANES-1:0] context_overflows;
     wire score_read=state==SPRIME || state==SMAC || state==SSAVE;
@@ -191,19 +185,73 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         (WIDE_PROJECTION && projection_read && projection==3));
     wire k_wide=ATTENTION_K16!=0 && score_read;
     wire v_wide=ATTENTION_K16!=0 && value_read;
-    generate if(ATTENTION_K16!=0) begin: wide_attention_mem
-        kwt_attention_mem #(.BANKS(ATTENTION_GROUPS)) qm_(clk,qcs,qwe,q_wide,qm,qa,qi,context_words,qd,wide_q);
-        kwt_attention_mem #(.BANKS(ATTENTION_GROUPS)) km_(clk,kcs,kwe,k_wide,km,ka,ki,{32*ATTENTION_LANES{1'b0}},kd,wide_k);
-        kwt_attention_mem #(.BANKS(ATTENTION_GROUPS)) vm_(clk,vcs,vwe,v_wide,vm,va,vi,{32*ATTENTION_LANES{1'b0}},vd,wide_v);
-    end else begin: narrow_attention_mem
-        kwt_vecmem32 #(.AW(11)) qm_(clk,qcs,qwe,qm,qa,qi,qd);
-        kwt_vecmem32 #(.AW(11)) km_(clk,kcs,kwe,km,ka,ki,kd);
-        kwt_vecmem32 #(.AW(11)) vm_(clk,vcs,vwe,vm,va,vi,vd);
-        assign wide_q=0;assign wide_k=0;assign wide_v=0;
-    end endgenerate
+    wire [1023:0] tensor_data;
+    wire [2047:0] cached_row;
+    if(COMPACT) begin: packed_tensors
+        // Four 256-word regions in each bank. X, Q, K and V keep disjoint
+        // addresses; the FSM serializes access and holds the current query.
+        wire [1:0] tensor=xcs ? 2'd0 : qcs ? 2'd1 : kcs ? 2'd2 : 2'd3;
+        wire [10:0] addr=xcs ? xa : qcs ? qa : kcs ? ka : va;
+        wire cs=xcs || qcs || kcs || vcs || wcs;
+        // Words 0..197 in each quarter hold activations; the last 32
+        // are one quarter of the 128-beat projection weight tile.
+        wire [6:0] weight_beat=wwe ? load_index[11:5] : wa[9:3];
+        wire [9:0] physical_addr=wcs ? {weight_beat[6:5],3'b111,weight_beat[4:0]} : {tensor,addr[10:3]};
+        wire [2:0] bank_index=wwe ? load_index[4:2] : addr[2:0];
+        wire we=xwe || qwe || kwe || vwe || wwe;
+        wire wide=(wcs && !wwe) || state==PCACHE_LO || state==PCACHE_HI ||
+                  (qcs && (state==SINIT || state==QCACHE_HI || state==VSAVE)) || k_wide || v_wide;
+        wire [3:0] mask=wwe ? 4'b1<<load_index[1:0] : xcs ? xm : qcs ? qm : kcs ? km : vm;
+        wire [127:0] data=wwe ? {4{m_rdata}} : xcs ? xi : qcs ? qi : kcs ? ki : vi;
+        reg [2:0] narrow_bank;
+        reg [1023:0] query_lo,query_hi;
+        reg query_half;
+        always @(posedge clk) begin
+            if(cs && !we) narrow_bank<=addr[2:0];
+            if(state==QCACHE_HI || state==PCACHE_HI) query_lo<=tensor_data;
+            if(state==QCACHE_DONE || state==PCACHE_DONE) query_hi<=tensor_data;
+            if(score_fetch) query_half<=score_issue[0];
+        end
+        for(genvar bank=0;bank<8;bank=bank+1) begin: banks
+            kwt_vecmem32 #(.AW(10)) memory(.clk(clk),.cs(cs && (wide || bank_index==bank)),
+                .we(we),.mask(mask),.addr(physical_addr),
+                .din(state==VSAVE ? context_words[128*bank+:128] : data),
+                .dout(tensor_data[128*bank+:128]));
+        end
+        assign xd=tensor_data[128*narrow_bank+:128];
+        assign qd=xd;assign kd=xd;assign vd=xd;
+        assign wide_q=query_half ? query_hi : query_lo;
+        assign wide_k=tensor_data;assign wide_v=tensor_data;
+        assign cached_row={query_hi,query_lo};
+        assign wide_x=0;
+`ifndef SYNTHESIS
+        always @(posedge clk) if(rst_n && !$onehot0({xcs,qcs,kcs,vcs,wcs}))
+            $fatal(1,"Conflicting compact tensor SRAM accesses");
+`endif
+    end else begin: separate_tensors
+        if(WIDE_PROJECTION) begin: projection_input_mem
+            kwt_attention_mem xm_(clk,xcs,xwe,x_wide,xm,xa,xi,512'd0,xd,wide_x);
+        end else begin: narrow_input_mem
+            kwt_vecmem32 #(.AW(11)) xm_(clk,xcs,xwe,xm,xa,xi,xd);
+            assign wide_x=0;
+        end
+        if(ATTENTION_K16!=0) begin: wide_attention_mem
+            kwt_attention_mem #(.BANKS(ATTENTION_GROUPS)) qm_(clk,qcs,qwe,q_wide,qm,qa,qi,context_words,qd,wide_q);
+            kwt_attention_mem #(.BANKS(ATTENTION_GROUPS)) km_(clk,kcs,kwe,k_wide,km,ka,ki,{32*ATTENTION_LANES{1'b0}},kd,wide_k);
+            kwt_attention_mem #(.BANKS(ATTENTION_GROUPS)) vm_(clk,vcs,vwe,v_wide,vm,va,vi,{32*ATTENTION_LANES{1'b0}},vd,wide_v);
+        end else begin: narrow_attention_mem
+            kwt_vecmem32 #(.AW(11)) qm_(clk,qcs,qwe,qm,qa,qi,qd);
+            kwt_vecmem32 #(.AW(11)) km_(clk,kcs,kwe,km,ka,ki,kd);
+            kwt_vecmem32 #(.AW(11)) vm_(clk,vcs,vwe,vm,va,vi,vd);
+            assign wide_q=0;assign wide_k=0;assign wide_v=0;
+        end
+    end
     wire [128*PROJECTION_K-1:0] wide_weights;
     genvar weight_bank;
-    generate if (PROJECTION_K4 != 0) begin: wide_projection
+    generate if(COMPACT) begin: packed_weights
+        assign wide_weights=tensor_data;
+        assign wd=tensor_data[127:0];
+    end else if (PROJECTION_K4 != 0) begin: wide_projection
         localparam BANKS=4*PROJECTION_K, BITS=$clog2(BANKS);
         wire [11-BITS:0] weight_address = wwe ? load_index[11:BITS] : wa[9:BITS-2];
         for (weight_bank=0; weight_bank<BANKS; weight_bank=weight_bank+1) begin: banks
@@ -222,7 +270,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
           end else if(MACRO_WIDE!=0) begin: wide_macro_bank
             for(genvar half=0;half<2;half=half+1) begin: halves
                 kwt_sram16 #(.AW(7)) macro_(.clk(clk),.cs(wcs && (!wwe || load_index[BITS-1:0]==weight_bank)),
-                    .we(wwe),.addr({1'b0,weight_address}),.din(m_rdata[16*half+:16]),
+                    .we(wwe),.addr(7'(weight_address)),.din(m_rdata[16*half+:16]),
                     .dout(wide_weights[32*weight_bank+16*half+:16]));
             end
           end else begin: fpga_wide
@@ -291,7 +339,9 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
     if(ATTENTION_LANES==32)
         assign projection_context=k[4] ? wide_q[1023:512] : wide_q[511:0];
     else assign projection_context=wide_q;
-    wire [511:0] wide_projection_input=projection==3 ? projection_context : wide_x;
+    wire [511:0] wide_projection_input=COMPACT ? {256'b0,cached_row[k[5:3]*256+:256]} :
+        projection==3 ? projection_context : wide_x;
+    wire signed [63:0] shared_products[0:31];
     wire signed [31:0] scalar_input=PROJECTION_K4 != 0 ?
         projection_input[31:0] : projection_input[k[1:0]*32+:32];
     wire signed [32:0] delta=$signed({row_max[31],row_max})-$signed({sd[31],sd});
@@ -324,18 +374,23 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
             assign affine_value[l]=rne(sx64(product[l]),6'd16)+sx32($signed(pd[l*32+:32]));
         end
         if (WIDE_PROJECTION) begin: pipeline_projection
-            reg signed [63:0] term[0:15];
-            reg signed [65:0] quarter[0:3];
+            wire signed [63:0] term[0:PROJECTION_K-1];
+            reg signed [65:0] quarter[0:PROJECTION_K/4-1];
             reg signed [67:0] partial;
-            for(genvar p=0;p<16;p=p+1) begin: products
-                always @(posedge clk) if(state==PMAC)
-                    term[p]<=$signed(wide_projection_input[32*p+:32])*$signed(wide_weights[32*(4*p+l)+:32]);
+            for(genvar p=0;p<PROJECTION_K;p=p+1) begin: products
+                if(COMPACT) assign term[p]=shared_products[4*p+l];
+                else begin: dedicated
+                    reg signed [63:0] product_q;
+                    assign term[p]=product_q;
+                    always @(posedge clk) if(state==PMAC) product_q<=$signed(wide_projection_input[32*p+:32])*$signed(wide_weights[32*(4*p+l)+:32]);
+                end
             end
-            for(genvar p=0;p<4;p=p+1) begin: quarters
+            for(genvar p=0;p<PROJECTION_K/4;p=p+1) begin: quarters
                 always @(posedge clk)
                     quarter[p]<=(66'(term[4*p])+66'(term[4*p+1]))+(66'(term[4*p+2])+66'(term[4*p+3]));
             end
-            always @(posedge clk)
+            if(COMPACT) always @(posedge clk) partial<=68'(quarter[0])+68'(quarter[1]);
+            else always @(posedge clk)
                 partial<=(68'(quarter[0])+68'(quarter[1]))+(68'(quarter[2])+68'(quarter[3]));
             assign projection_partial[l]={{4{partial[67]}},partial};
         end else if (PROJECTION_K4 != 0) begin: reduce_projection
@@ -359,14 +414,17 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         reg signed [71:0] value_acc[0:ATTENTION_LANES-1];
         reg signed [65:0] score_quarters[0:ATTENTION_LANES/4-1];
         for(attention_lane=0;attention_lane<ATTENTION_LANES;attention_lane=attention_lane+1) begin: lanes
-            wire signed [31:0] a=state==SMAC ? $signed(wide_q[32*attention_lane+:32]) : $signed(sd);
-            wire signed [31:0] b=state==SMAC ? $signed(wide_k[32*attention_lane+:32]) :
+            wire signed [31:0] a=COMPACT && state==PMAC ? $signed(wide_projection_input[32*(attention_lane/4)+:32]) :
+                state==SMAC ? $signed(wide_q[32*attention_lane+:32]) : $signed(sd);
+            wire signed [31:0] b=COMPACT && state==PMAC ? $signed(wide_weights[32*attention_lane+:32]) :
+                state==SMAC ? $signed(wide_k[32*attention_lane+:32]) :
                 $signed(wide_v[32*attention_lane+:32]);
+            if(COMPACT) assign shared_products[attention_lane]=products[attention_lane];
             wire signed [71:0] rounded=rne(value_acc[attention_lane],6'd24);
             assign context_words[32*attention_lane+:32]=clip32(rounded);
             assign context_overflows[attention_lane]=overflow32(rounded);
             always @(posedge clk) begin
-                if(state==SMAC || state==VMAC) products[attention_lane]<=a*b;
+                if(state==SMAC || state==VMAC || (COMPACT && state==PMAC)) products[attention_lane]<=a*b;
                 if(state==VPRIME || state==VSAVE) value_acc[attention_lane]<=0;
                 else if((state==VMAC && k!=0) || state==VFLUSH)
                     value_acc[attention_lane]<=value_acc[attention_lane]+sx64(products[attention_lane]);
@@ -467,10 +525,10 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         if(state==PINIT && projection==3) begin pcs=1;pa={3'd0,group_};end
         if(state==PPRIME || (state==PMAC && k<PROJECTION_LAST_K)) begin
             wcs=1;wa={group_,projection_read_k};
-            if(projection==3) begin
+            if(!COMPACT && projection==3) begin
                 qcs=1;qa={row,projection_read_k[5:2]};
                 qm=PROJECTION_K4 != 0 ? 4'hf : 4'b1<<projection_read_k[1:0];
-            end else begin
+            end else if(!COMPACT) begin
                 xcs=1;xa={row,projection_read_k[5:2]};
                 xm=PROJECTION_K4 != 0 ? 4'hf : 4'b1<<projection_read_k[1:0];
             end
@@ -491,19 +549,19 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
         // SRAM ports. Accumulator reset occurs only after its result is saved.
         if(state==PSAVE && another_group) begin
             if(projection==3) begin pcs=1;pa={3'd0,following_group};end
-            else begin
+            else if(!COMPACT) begin
                 wcs=1;wa={following_group,6'd0};
                 xcs=1;xa={following_row,4'd0};xm=PROJECTION_K4 != 0 ? 4'hf : 4'h1;
             end
         end
-        if(state==RSAVE && another_group) begin
+        if(!COMPACT && state==RSAVE && another_group) begin
             wcs=1;wa={following_group,6'd0};
             qcs=1;qa={following_row,4'd0};qm=PROJECTION_K4 != 0 ? 4'hf : 4'h1;
         end
         if(!PIPELINED_SCORE && state==SSAVE && keyrow!=98) begin
             qcs=1;kcs=1;qa={row,4'd0};ka={7'(keyrow+1'b1),4'd0};
         end
-        if(state==VSAVE && group_!=VALUE_LAST_GROUP) begin
+        if(!COMPACT && state==VSAVE && group_!=VALUE_LAST_GROUP) begin
             scs=1;sa=0;vcs=1;va={7'd0,following_value_group};
         end
         if(state==RSAVE) begin
@@ -514,8 +572,15 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
                 if(overflow32(sx32(clip32(projected[u]))+sx32($signed(xd[u*32+:32])))) sat_events=sat_events+1'b1;
             end
         end
+        if(COMPACT && (state==PCACHE_LO || state==PCACHE_HI)) begin
+            if(projection==3) begin qcs=1;qa={row,state==PCACHE_HI,3'd0};end
+            else begin xcs=1;xa={row,state==PCACHE_HI,3'd0};end
+        end
+        if(COMPACT && (state==SINIT || state==QCACHE_HI)) begin
+            qcs=1;qa={row,state==QCACHE_HI,3'd0};
+        end
         if(score_fetch) begin
-            qcs=1;kcs=1;qa={row,score_issue[0],3'd0};ka={score_issue[7:1],score_issue[0],3'd0};
+            qcs=!COMPACT;kcs=1;qa={row,score_issue[0],3'd0};ka={score_issue[7:1],score_issue[0],3'd0};
         end
         if(!PIPELINED_SCORE && (state==SPRIME || (state==SMAC && k<SCORE_LAST_K))) begin
             qcs=1;kcs=1;qa={row,score_read_k};ka={keyrow,score_read_k};
@@ -663,13 +728,16 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
                         else begin row<=0;group_<=0;k<=0;state<=PINIT;end
                     end else load_index<=load_index+1'b1;
                 end
-                PINIT:state<=PPRIME;
+                PINIT:state<=COMPACT ? PCACHE_LO : PPRIME;
+                PCACHE_LO:state<=PCACHE_HI;
+                PCACHE_HI:state<=PCACHE_DONE;
+                PCACHE_DONE:state<=PPRIME;
                 PPRIME:begin
                     k<=0;state<=PMAC;
                     for(i=0;i<4;i=i+1) acc[i]<=projection==3 ? sx32($signed(pd[i*32+:32]))<<<16 : 72'sd0;
                 end
                 PMAC:begin
-                    if(PROJECTION_K4 == 0 || (WIDE_PROJECTION ? k>=48 : k!=0))
+                    if(PROJECTION_K4 == 0 || (WIDE_PROJECTION ? k>=3*PROJECTION_K : k!=0))
                         for(i=0;i<4;i=i+1) acc[i]<=acc[i]+projection_partial[i];
                     if(k==PROJECTION_LAST_K) state<=PROJECTION_K4 != 0 ? PFLUSH : PSAVE;
                     else k<=k+7'(PROJECTION_K);
@@ -685,7 +753,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
                 PSAVE:begin
                     if(projection==3) state<=RSAVE;
                     else if(another_group) begin
-                        row<=following_row;group_<=following_group;k<=0;state<=PMAC;
+                        row<=following_row;group_<=following_group;k<=0;state<=COMPACT ? (group_==15 ? PCACHE_LO : PPRIME) : PMAC;
                         for(i=0;i<4;i=i+1) acc[i]<=0;
                     end
                     else if(projection!=2) begin projection<=projection+1'b1;load_index<=0;issue_index<=0;state<=LREQ;end
@@ -693,12 +761,14 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
                 end
                 RSAVE:begin
                     if(another_group) begin
-                        row<=following_row;group_<=following_group;k<=0;state<=PMAC;
+                        row<=following_row;group_<=following_group;k<=0;state<=COMPACT ? (group_==15 ? PCACHE_LO : PPRIME) : PMAC;
                         for(i=0;i<4;i=i+1) acc[i]<=sx32($signed(pd[i*32+:32]))<<<16;
                     end
                     else begin row<=0;norm_second<=0;state<=SUMINIT;end
                 end
-                SINIT:begin acc[0]<=0;k<=0;state<=SPRIME;end
+                SINIT:begin acc[0]<=0;k<=0;state<=COMPACT ? QCACHE_HI : SPRIME;end
+                QCACHE_HI:state<=QCACHE_DONE;
+                QCACHE_DONE:state<=SPRIME;
                 SPRIME:state<=SMAC;
                 SMAC:begin
                     if(PIPELINED_SCORE) begin
@@ -747,7 +817,7 @@ module kwt_encoder #(parameter STREAM_ENABLE=0, parameter PROJECTION_K4=0, param
                 VFLUSH:state<=VSAVE;
                 VSAVE:begin
                     if(group_!=VALUE_LAST_GROUP) begin
-                        group_<=following_value_group;k<=0;state<=VMAC;
+                        group_<=following_value_group;k<=0;state<=COMPACT ? VPRIME : VMAC;
                         for(i=0;i<4;i=i+1) acc[i]<=0;
                     end
                     else if(row!=98) begin row<=row+1'b1;keyrow<=0;row_max<=32'sh80000000;state<=SINIT;end

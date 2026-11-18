@@ -9,6 +9,11 @@ module kwt_extended_system_bus #(parameter integer DMA_BURST=1, HOST_BURST=0, PR
     input wire h_read,input wire [3:0] h_mask,
     output wire h_rsp_valid,input wire h_rsp_ready,output wire [31:0] h_rdata,output wire h_err
 );
+`ifdef KWT_COMPACT
+    localparam COMPACT=`KWT_COMPACT;
+`else
+    localparam COMPACT=0;
+`endif
     wire d_valid,d_ready,d_read,d_rsp_valid,d_rsp_ready,d_err;
     wire [31:0] d_addr,d_wdata,d_rdata;wire [3:0] d_mask;
     wire a_valid,a_ready,a_read,a_rsp_valid,a_rsp_ready,a_err;
@@ -47,7 +52,7 @@ module kwt_extended_system_bus #(parameter integer DMA_BURST=1, HOST_BURST=0, PR
     // Unmapped offsets must still return a register error through ICB.
     wire [11:0] row_cmd_addr=(|a_addr[18:12]) ? 12'hfff : a_addr[11:0];
     if (1) begin: parallel_ffn
-        z100_ffn_rows #(.STREAM(1),.GELU_CYCLES(2)) ffn(
+        z100_ffn_rows #(.STREAM(1),.GELU_CYCLES(2),.COMPACT(COMPACT)) ffn(
             .clk(clk),.rst_n(rst_n),.external_abort(enc_abort),
             .cmd_valid(a_valid && !a_addr[19]),.cmd_ready(fa_ready),.cmd_addr(row_cmd_addr),
             .cmd_read(a_read),.cmd_wdata(a_wdata),.cmd_wmask(a_mask),
@@ -65,8 +70,8 @@ module kwt_extended_system_bus #(parameter integer DMA_BURST=1, HOST_BURST=0, PR
         .m_valid(f_valid),.m_ready(f_ready),.m_addr(f_addr),.m_wdata(f_wdata),.m_read(f_read),.m_mask(f_mask),
         .m_rsp_valid(f_rsp_valid),.m_rsp_ready(f_rsp_ready),.m_rdata(f_rdata),.m_err(f_err));
 `endif
-    kwt_encoder #(.STREAM_ENABLE(1),.PROJECTION_K4(WIDE_MACRO ? 2 : PROJECTION_K4),
-        .ATTENTION_K16(WIDE_MACRO ? 2 : 0),.MACRO_WIDE(WIDE_MACRO)) encoder(.preload_permit(preload_permit),.input_valid(input_valid),.input_ready(input_ready),.input_data(input_data),.result_valid(tail_valid),.result_ready(tail_ready),.result_data(tail_data),
+    kwt_encoder #(.STREAM_ENABLE(1),.PROJECTION_K4((COMPACT || WIDE_MACRO) ? 2 : PROJECTION_K4),
+        .ATTENTION_K16((COMPACT || WIDE_MACRO) ? 2 : 0),.MACRO_WIDE(COMPACT || WIDE_MACRO),.COMPACT(COMPACT)) encoder(.preload_permit(preload_permit),.input_valid(input_valid),.input_ready(input_ready),.input_data(input_data),.result_valid(tail_valid),.result_ready(tail_ready),.result_data(tail_data),
         .link_abort_in(ffn_abort),.link_abort_out(enc_abort),.clk(clk),.rst_n(rst_n),.cmd_valid(a_valid && a_addr[19]),.cmd_ready(ea_ready),
         .cmd_addr({1'b0,a_addr[18:0]}),.cmd_read(a_read),.cmd_wdata(a_wdata),.cmd_wmask(a_mask),
         .rsp_valid(ea_rsp_valid),.rsp_ready(a_rsp_ready && register_owner),.rsp_rdata(ea_rdata),.rsp_err(ea_err),

@@ -1,5 +1,5 @@
 // Tiled GELU and second linear layer for the Z100 FFN1 stream.
-module z100_ffn2 (
+module z100_ffn2 #(parameter OVERLAP=0) (
     input wire clk, rst_n, clear,
     input wire weight_write,
     input wire [12:0] weight_index,
@@ -33,7 +33,12 @@ module z100_ffn2 (
     wire [9:0] activation_address = fill ?
         {fill_row, fill_feature[7:1]} : {compute_row, k_pair};
 
-    assign input_ready = state == FILL;
+    reg fill_page,compute_page;
+    reg [1:0] tile_full;
+    wire tile_end=fill && fill_feature==255 && (fill_row==7 || rows_seen==98);
+    wire tile_consumed=state==SEND && output_ready && output_lane==7 &&
+                       group_index==7 && compute_row==tile_last_row;
+    assign input_ready = OVERLAP ? !tile_full[fill_page] && rows_seen<99 : state == FILL;
     assign output_valid = state == SEND;
     assign output_data = {{24{sums[output_lane][39]}}, sums[output_lane]};
 
@@ -44,8 +49,20 @@ module z100_ffn2 (
     generate
         for (parity = 0; parity < 2; parity = parity + 1) begin: activation_banks
             wire store = fill && fill_feature[0] == (parity == 1);
-            kwt_sram16 #(.AW(10)) memory(.clk(clk), .cs(store || operands_read),
-                .we(store), .addr(activation_address), .din(gelu), .dout(activation[parity]));
+            if(OVERLAP) begin: ping_pong
+                wire [15:0] page_q[0:1];
+                assign activation[parity]=page_q[compute_page];
+                for(genvar page=0;page<2;page=page+1) begin: pages
+                    wire writing=store && fill_page==page;
+                    kwt_sram16 #(.AW(10)) memory(.clk(clk),
+                        .cs(writing || (operands_read && compute_page==page)),.we(writing),
+                        .addr(writing ? {fill_row,fill_feature[7:1]} : {compute_row,k_pair}),
+                        .din(gelu),.dout(page_q[page]));
+                end
+            end else begin: single_page
+                kwt_sram16 #(.AW(10)) memory(.clk(clk), .cs(store || operands_read),
+                    .we(store), .addr(activation_address), .din(gelu), .dout(activation[parity]));
+            end
         end
         for (lane = 0; lane < 8; lane = lane + 1) begin: columns
             reg [31:0] biases [0:7];
@@ -71,6 +88,16 @@ module z100_ffn2 (
         end
     endgenerate
 
+    if(OVERLAP) begin: page_control
+        always @(posedge clk) begin
+            if(!rst_n || clear) begin
+                fill_page<=0;compute_page<=0;tile_full<=0;
+            end else begin
+                if(tile_end) begin tile_full[fill_page]<=1;fill_page<=!fill_page;end
+                if(tile_consumed) begin tile_full[compute_page]<=0;compute_page<=!compute_page;end
+            end
+        end
+    end
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state <= FILL;
@@ -92,18 +119,20 @@ module z100_ffn2 (
             group_index <= 0;
             k_pair <= 0;
             output_lane <= 0;
-        end else case (state)
-            FILL: if (fill) begin
-                fill_feature <= fill_feature + 1'b1;
-                if (fill_feature == 255) begin
-                    rows_seen <= rows_seen + 1'b1;
-                    fill_row <= fill_row + 1'b1;
-                    if (fill_row == 7 || rows_seen == 98) begin
-                        tile_last_row <= fill_row;
-                        final_tile <= rows_seen == 98;
-                        state <= PRIME;
-                    end
+        end else begin
+            if(fill) begin
+                fill_feature<=fill_feature+1'b1;
+                if(fill_feature==255) begin
+                    rows_seen<=rows_seen+1'b1;
+                    fill_row<=fill_row+1'b1;
                 end
+            end
+            case(state)
+            FILL: if(OVERLAP ? tile_full[compute_page] : tile_end) begin
+                tile_last_row<=OVERLAP ? ((rows_seen==99 && fill_page!=compute_page) ? 3'd2 : 3'd7) : fill_row;
+                final_tile<=OVERLAP ? rows_seen==99 && fill_page!=compute_page : rows_seen==98;
+                compute_row<=0;
+                state<=PRIME;
             end
             PRIME: begin
                 k_pair <= 1;
@@ -135,5 +164,6 @@ module z100_ffn2 (
             end
             default: state <= COMPLETE;
         endcase
+        end
     end
 endmodule
