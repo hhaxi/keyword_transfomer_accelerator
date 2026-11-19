@@ -1,0 +1,225 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (win64) Build 6511674 Tue Jun 16 11:02:23 MDT 2026
+| Date         : Thu Nov 19 09:38:13 2026
+| Host         : YeXuanzhe running 64-bit major release  (build 9200)
+| Command      : report_timing -from [get_cells -hier -filter {REF_NAME =~ FD* && NAME =~ */gelu_input_reg*}] -to [get_pins -of_objects [get_cells -hier -filter {REF_NAME =~ RAMB* && NAME =~ */ffn2/activation_banks*}] -filter {REF_PIN_NAME =~ DI*}] -max_paths 1 -file D:/Project/Transformer-icb/output/z100/compact2-final/held-gelu.rpt
+| Design       : z100_wrapper
+| Device       : 7z035-ffg900
+| Speed File   : -2  PRODUCTION 1.12 2019-11-22
+| Design State : Physopt postRoute
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (MET) :             8.713ns  (required time - arrival time)
+  Source:                 z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/gelu_input_reg[0]/C
+                            (rising edge-triggered cell FDRE clocked by clk_fpga_0  {rise@0.000ns fall@9.000ns period=18.000ns})
+  Destination:            z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[0].memory/mem_reg/DIADI[4]
+                            (rising edge-triggered cell RAMB18E1 clocked by clk_fpga_0  {rise@0.000ns fall@9.000ns period=18.000ns})
+  Path Group:             clk_fpga_0
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            36.000ns  (clk_fpga_0 rise@36.000ns - clk_fpga_0 rise@0.000ns)
+  Data Path Delay:        26.359ns  (logic 9.758ns (37.020%)  route 16.601ns (62.980%))
+  Logic Levels:           60  (CARRY4=34 DSP48E1=1 LUT1=2 LUT3=2 LUT4=2 LUT5=12 LUT6=7)
+  Clock Path Skew:        -0.113ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.455ns = ( 20.455 - 18.000 ) 
+    Source Clock Delay      (SCD):    2.689ns
+    Clock Pessimism Removal (CPR):    0.121ns
+  Clock Uncertainty:      0.272ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.540ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Timing Exception:       MultiCycle Path   Setup -end   2
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk_fpga_0 rise edge)
+                                                      0.000     0.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000     0.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           1.339     1.339    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.093     1.432 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=23085, routed)       1.257     2.689    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/aclk
+    SLICE_X38Y111        FDRE                                         r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/gelu_input_reg[0]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y111        FDRE (Prop_fdre_C_Q)         0.259     2.948 f  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/gelu_input_reg[0]/Q
+                         net (fo=5, routed)           2.003     4.951    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/product_3[0]
+    SLICE_X104Y133       LUT1 (Prop_lut1_I0_O)        0.043     4.994 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___182_i_24/O
+                         net (fo=1, routed)           0.201     5.196    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/gelu_unit/p_0_in[0]
+    SLICE_X105Y131       CARRY4 (Prop_carry4_CYINIT_CO[3])
+                                                      0.287     5.483 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___182_i_15/CO[3]
+                         net (fo=1, routed)           0.000     5.483    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___182_i_15_n_0
+    SLICE_X105Y132       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053     5.536 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___182_i_13/CO[3]
+                         net (fo=1, routed)           0.000     5.536    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___182_i_13_n_0
+    SLICE_X105Y133       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053     5.589 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___182_i_14/CO[3]
+                         net (fo=1, routed)           0.000     5.589    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___182_i_14_n_0
+    SLICE_X105Y134       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053     5.642 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___42_i_7/CO[3]
+                         net (fo=1, routed)           0.000     5.642    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___105_i_14[0]
+    SLICE_X105Y135       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053     5.695 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___42_i_2/CO[3]
+                         net (fo=1, routed)           0.000     5.695    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___184_i_7[0]
+    SLICE_X105Y136       CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.166     5.861 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[1].memory/i___42_i_1/O[1]
+                         net (fo=5, routed)           0.540     6.401    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/q6[17]
+    SLICE_X108Y135       LUT3 (Prop_lut3_I0_O)        0.132     6.533 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___186_i_4/O
+                         net (fo=1, routed)           0.647     7.180    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/q52_in[22]
+    SLICE_X111Y134       LUT5 (Prop_lut5_I2_O)        0.144     7.324 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___186_i_2/O
+                         net (fo=2, routed)           0.397     7.720    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit_n_133
+    SLICE_X112Y136       LUT5 (Prop_lut5_I2_O)        0.136     7.856 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/i___187/O
+                         net (fo=6, routed)           0.538     8.394    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___183_i_1_1
+    SLICE_X114Y139       LUT3 (Prop_lut3_I0_O)        0.043     8.437 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___183_i_3/O
+                         net (fo=1, routed)           0.000     8.437    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___183_i_3_n_0
+    SLICE_X114Y139       CARRY4 (Prop_carry4_S[0]_O[3])
+                                                      0.292     8.729 f  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___183_i_1/O[3]
+                         net (fo=2, routed)           0.448     9.177    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/q0[8]
+    SLICE_X113Y139       LUT5 (Prop_lut5_I3_O)        0.120     9.297 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/i___984/O
+                         net (fo=1, routed)           0.000     9.297    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_5[3]
+    SLICE_X113Y139       CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.193     9.490 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___123_i_1/CO[3]
+                         net (fo=1, routed)           0.000     9.490    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___123_i_1_n_0
+    SLICE_X113Y140       CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.111     9.601 f  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___139_i_1/O[2]
+                         net (fo=3, routed)           0.353     9.953    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/round_even_return0[11]
+    SLICE_X112Y140       LUT5 (Prop_lut5_I0_O)        0.122    10.075 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/i___921/O
+                         net (fo=1, routed)           0.000    10.075    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_9[2]
+    SLICE_X112Y140       CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.195    10.270 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___140_i_1/CO[3]
+                         net (fo=1, routed)           0.000    10.270    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___140_i_1_n_0
+    SLICE_X112Y141       CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.166    10.436 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___1_i_7/O[1]
+                         net (fo=1, routed)           0.525    10.961    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/magnitude0[14]
+    SLICE_X116Y141       LUT6 (Prop_lut6_I0_O)        0.123    11.084 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___1_i_2__0/O
+                         net (fo=62, routed)          0.942    12.026    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/gelu_input_reg[39][3]
+    SLICE_X107Y130       LUT6 (Prop_lut6_I2_O)        0.043    12.069 f  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___105_i_23/O
+                         net (fo=3, routed)           0.533    12.602    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___105_i_23_n_0
+    SLICE_X105Y130       LUT6 (Prop_lut6_I0_O)        0.043    12.645 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_39/O
+                         net (fo=1, routed)           0.277    12.922    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_39_n_0
+    SLICE_X102Y130       CARRY4 (Prop_carry4_CYINIT_CO[3])
+                                                      0.297    13.219 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_14/CO[3]
+                         net (fo=1, routed)           0.000    13.219    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_14_n_0
+    SLICE_X102Y131       CARRY4 (Prop_carry4_CI_O[0])
+                                                      0.108    13.327 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_9/O[0]
+                         net (fo=2, routed)           0.416    13.743    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_9_n_7
+    SLICE_X101Y129       LUT5 (Prop_lut5_I4_O)        0.123    13.866 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_17/O
+                         net (fo=1, routed)           0.000    13.866    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_17_n_0
+    SLICE_X101Y129       CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.267    14.133 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_3/CO[3]
+                         net (fo=1, routed)           0.000    14.133    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_3_n_0
+    SLICE_X101Y130       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    14.186 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_2/CO[3]
+                         net (fo=1, routed)           0.000    14.186    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_2_n_0
+    SLICE_X101Y131       CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.111    14.297 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_i_1/O[2]
+                         net (fo=16, routed)          0.678    14.975    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/delta0_out[14]
+    DSP48_X4Y49          DSP48E1 (Prop_dsp48e1_A[27]_P[23])
+                                                      2.816    17.791 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product/P[23]
+                         net (fo=2, routed)           1.039    18.830    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/product_n_82
+    SLICE_X103Y133       LUT4 (Prop_lut4_I3_O)        0.043    18.873 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___148_i_4/O
+                         net (fo=1, routed)           0.000    18.873    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___148_i_4_n_0
+    SLICE_X103Y133       CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.259    19.132 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___148_i_2/CO[3]
+                         net (fo=1, routed)           0.000    19.132    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___148_i_2_n_0
+    SLICE_X103Y134       CARRY4 (Prop_carry4_CI_CO[0])
+                                                      0.139    19.271 f  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___17_i_1/CO[0]
+                         net (fo=2, routed)           0.465    19.736    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit_n_232
+    SLICE_X110Y144       LUT6 (Prop_lut6_I0_O)        0.131    19.867 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/i___17/O
+                         net (fo=23, routed)          0.397    20.264    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/i___17_n_0
+    SLICE_X111Y142       LUT5 (Prop_lut5_I4_O)        0.043    20.307 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/i___155/O
+                         net (fo=1, routed)           0.000    20.307    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___955_i_75_1[1]
+    SLICE_X111Y142       CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.267    20.574 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___204_i_12/CO[3]
+                         net (fo=1, routed)           0.000    20.574    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___204_i_12_n_0
+    SLICE_X111Y143       CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.166    20.740 f  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___0_i_24/O[1]
+                         net (fo=4, routed)           0.571    21.311    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/activated[21]
+    SLICE_X106Y150       LUT1 (Prop_lut1_I0_O)        0.123    21.434 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___219_i_9/O
+                         net (fo=1, routed)           0.000    21.434    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___219_i_9_n_0
+    SLICE_X106Y150       CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.246    21.680 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___219_i_4/CO[3]
+                         net (fo=1, routed)           0.000    21.680    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___219_i_4_n_0
+    SLICE_X106Y151       CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.054    21.734 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___0_i_15/CO[3]
+                         net (fo=1, routed)           0.000    21.734    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___0_i_15_n_0
+    SLICE_X106Y152       CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.112    21.846 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___0_i_3__0/O[2]
+                         net (fo=4, routed)           0.370    22.216    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___0_i_3__0_n_5
+    SLICE_X104Y151       LUT6 (Prop_lut6_I0_O)        0.127    22.343 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___211_i_4/O
+                         net (fo=2, routed)           0.195    22.538    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___211_i_4_n_0
+    SLICE_X104Y150       LUT5 (Prop_lut5_I0_O)        0.043    22.581 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___211_i_2/O
+                         net (fo=3, routed)           0.461    23.042    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/shift_out_reg[3]_rep_1
+    SLICE_X104Y148       LUT5 (Prop_lut5_I0_O)        0.043    23.085 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___206_i_3/O
+                         net (fo=2, routed)           0.231    23.317    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/shift_out_reg[2]_rep_0
+    SLICE_X103Y148       LUT5 (Prop_lut5_I0_O)        0.043    23.360 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___200_i_1/O
+                         net (fo=4, routed)           0.290    23.649    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/shift_out_reg[1]_rep
+    SLICE_X104Y148       LUT5 (Prop_lut5_I0_O)        0.043    23.692 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___955_i_3/O
+                         net (fo=5, routed)           0.690    24.382    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/shift_out_reg[0]_rep_0
+    SLICE_X101Y156       LUT4 (Prop_lut4_I2_O)        0.043    24.425 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___174_i_3/O
+                         net (fo=80, routed)          0.780    25.205    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/q1
+    SLICE_X99Y147        LUT5 (Prop_lut5_I4_O)        0.043    25.248 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/i___992/O
+                         net (fo=1, routed)           0.000    25.248    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/mem_reg_20[3]
+    SLICE_X99Y147        CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.193    25.441 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/mem_reg_i_29/CO[3]
+                         net (fo=1, routed)           0.000    25.441    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/mem_reg_i_29_n_0
+    SLICE_X99Y148        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    25.494 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/mem_reg_i_28/CO[3]
+                         net (fo=1, routed)           0.000    25.494    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/mem_reg_i_28_n_0
+    SLICE_X99Y149        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    25.547 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/mem_reg_i_27/CO[3]
+                         net (fo=1, routed)           0.001    25.548    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/mem_reg_i_27_n_0
+    SLICE_X99Y150        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    25.601 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___18_i_1/CO[3]
+                         net (fo=1, routed)           0.000    25.601    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___18_i_1_n_0
+    SLICE_X99Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    25.654 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___20_i_1/CO[3]
+                         net (fo=1, routed)           0.000    25.654    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___20_i_1_n_0
+    SLICE_X99Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    25.707 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___24_i_1/CO[3]
+                         net (fo=1, routed)           0.000    25.707    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___24_i_1_n_0
+    SLICE_X99Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    25.760 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___28_i_1/CO[3]
+                         net (fo=1, routed)           0.000    25.760    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___28_i_1_n_0
+    SLICE_X99Y154        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    25.813 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___32_i_1/CO[3]
+                         net (fo=1, routed)           0.000    25.813    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___32_i_1_n_0
+    SLICE_X99Y155        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.053    25.866 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___36_i_1/CO[3]
+                         net (fo=1, routed)           0.000    25.866    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___36_i_1_n_0
+    SLICE_X99Y156        CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.111    25.977 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___40_i_1/O[2]
+                         net (fo=1, routed)           0.261    26.238    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___40_i_1_n_5
+    SLICE_X101Y156       LUT6 (Prop_lut6_I0_O)        0.122    26.360 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___174_i_4/O
+                         net (fo=4, routed)           0.339    26.698    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit_n_117
+    SLICE_X97Y156        LUT6 (Prop_lut6_I3_O)        0.043    26.741 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/i___176/O
+                         net (fo=1, routed)           0.190    26.931    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/mem_reg_24[0]
+    SLICE_X97Y155        CARRY4 (Prop_carry4_DI[0]_CO[0])
+                                                      0.161    27.092 f  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___957_i_2/CO[0]
+                         net (fo=16, routed)          0.686    27.778    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/i___177[0]
+    SLICE_X101Y147       LUT5 (Prop_lut5_I1_O)        0.131    27.909 r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/gelu_unit/mem_reg_i_22/O
+                         net (fo=4, routed)           1.139    29.048    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[0].memory/DIADI[4]
+    RAMB18_X4Y48         RAMB18E1                                     r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[0].memory/mem_reg/DIADI[4]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk_fpga_0 rise edge)
+                                                     36.000    36.000 r  <hidden>
+    PS7_X0Y0             PS7                          0.000    36.000 r  z100_i/ps/inst/PS7_i/FCLKCLK[0]
+                         net (fo=1, routed)           1.241    37.241    z100_i/ps/inst/FCLK_CLK_unbuffered[0]
+    BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.083    37.324 r  z100_i/ps/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O
+                         net (fo=23085, routed)       1.131    38.455    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[0].memory/aclk
+    RAMB18_X4Y48         RAMB18E1                                     r  z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[0].memory/mem_reg/CLKARDCLK
+                         clock pessimism              0.121    38.576    <hidden>
+                         clock uncertainty           -0.272    38.303    <hidden>
+    RAMB18_X4Y48         RAMB18E1 (Setup_ramb18e1_CLKARDCLK_DIADI[4])
+                                                     -0.543    37.760    z100_i/contest/inst/contest/bus/parallel_ffn.ffn/rows[0].engine/ffn2/activation_banks[1].ping_pong.pages[0].memory/mem_reg
+  -------------------------------------------------------------------
+                         required time                         37.760    <hidden>
+                         arrival time                         -29.048    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  8.713    <hidden>
+
+
+
+

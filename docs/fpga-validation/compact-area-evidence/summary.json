@@ -1,0 +1,112 @@
+{
+  "selected_lanes": 1,
+  "lanes": {
+    "1": {
+      "WNS": 0.182,
+      "TNS": 0.0,
+      "WHS": 0.038,
+      "THS": 0.0,
+      "lut": 33126,
+      "ff": 17584,
+      "bram": 215,
+      "dsp": 179,
+      "median_ms": 80.26114999999834,
+      "board_ms": 75.6151000340074,
+      "mean_cycles": 4200869.7,
+      "max_board_ms": 75.69574003191076,
+      "p95_ms": 82.08899999999986,
+      "max_ms": 82.79950000000014,
+      "over": 0,
+      "continuous_max_ms": 81.13189999999904,
+      "throughput": 12.65569177028945,
+      "reference_matches": 120,
+      "correct_labels": 119
+    },
+    "2": {
+      "WNS": 0.078,
+      "TNS": 0.0,
+      "WHS": 0.057,
+      "THS": 0.0,
+      "lut": 37570,
+      "ff": 20537,
+      "bram": 233,
+      "dsp": 212,
+      "median_ms": 69.7359500000001,
+      "board_ms": 65.487346297329,
+      "mean_cycles": 3638171.875,
+      "max_board_ms": 65.49557229711512,
+      "p95_ms": 78.98820000000129,
+      "max_ms": 83.06340000000034,
+      "over": 0,
+      "continuous_max_ms": 71.11529999999888,
+      "throughput": 14.504600272978998,
+      "reference_matches": 120,
+      "correct_labels": 119
+    }
+  },
+  "macro_inventory": {
+    "seven_rows": {
+      "count_by_depth": {
+        "128": 708,
+        "1024": 238
+      },
+      "scopes": {
+        "encoder": {
+          "128": 652
+        },
+        "ffn": {
+          "128": 56,
+          "1024": 238
+        }
+      },
+      "bytes": 668672,
+      "macro_area_library_units": 4072699.16
+    },
+    "compact_one": {
+      "count_by_depth": {
+        "1024": 100,
+        "128": 26,
+        "4096": 2
+      },
+      "scopes": {
+        "encoder": {
+          "1024": 64,
+          "128": 12
+        },
+        "ffn": {
+          "4096": 2,
+          "128": 14,
+          "1024": 36
+        }
+      },
+      "bytes": 227840,
+      "macro_area_library_units": 1039489.94
+    },
+    "compact_two": {
+      "count_by_depth": {
+        "1024": 144,
+        "128": 40
+      },
+      "scopes": {
+        "encoder": {
+          "1024": 64,
+          "128": 12
+        },
+        "ffn": {
+          "1024": 80,
+          "128": 28
+        }
+      },
+      "bytes": 305152,
+      "macro_area_library_units": 1424468.88
+    }
+  },
+  "seven_lane_routed": {
+    "lut": 86608,
+    "ff": 43650,
+    "bram": 296.5,
+    "dsp": 633
+  },
+  "rtl_commit": "f21921d35f6dc7669366e250553cbdc36196294a",
+  "bit_sha256": "cd63c17171d0795177410a31599f6bbf9e79ac8c5167bd0e40ac917d562655ea"
+}

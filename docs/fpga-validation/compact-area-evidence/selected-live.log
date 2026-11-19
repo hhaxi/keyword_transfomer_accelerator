@@ -1,0 +1,13 @@
+1 silence board=0 reference=0
+2 three/8910e5ef_nohash_2.wav board=1 reference=1
+3 yes/c4cfbe43_nohash_1.wav board=2 reference=2
+4 no/171b56dc_nohash_1.wav board=3 reference=3
+5 up/099d52ad_nohash_4.wav board=4 reference=4
+6 down/3cc595de_nohash_4.wav board=5 reference=5
+7 left/45692b02_nohash_0.wav board=6 reference=6
+8 right/ef77b778_nohash_4.wav board=7 reference=7
+9 on/edc53350_nohash_0.wav board=8 reference=8
+10 off/099d52ad_nohash_1.wav board=9 reference=9
+11 stop/ab1299bb_nohash_0.wav board=10 reference=10
+12 go/45692b02_nohash_2.wav board=11 reference=11
+{'samples': 12, 'reference_matches': 12, 'correct_labels': 12, 'board_median_ms': 75.61567603399243}

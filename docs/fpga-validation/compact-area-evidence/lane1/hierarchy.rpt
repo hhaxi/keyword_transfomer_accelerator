@@ -1,0 +1,142 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (win64) Build 6511674 Tue Jun 16 11:02:23 MDT 2026
+| Date         : Thu Nov 19 09:10:53 2026
+| Host         : YeXuanzhe running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -hierarchical_depth 8 -file D:/Project/Transformer-icb/output/z100/compact1-final/hierarchy.rpt
+| Design       : z100_wrapper
+| Device       : xc7z035ffg900-2
+| Speed File   : -2
+| Design State : Routed
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------------------------------------------------+----------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|                            Instance                           |                    Module                    | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++---------------------------------------------------------------+----------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| z100_wrapper                                                  |                                        (top) |      33126 |      32100 |    1018 |    8 | 17584 |    164 |    102 |        179 |
+|   z100_i                                                      |                                         z100 |      33126 |      32100 |    1018 |    8 | 17584 |    164 |    102 |        179 |
+|     axi_ctrl                                                  |                              z100_axi_ctrl_0 |        399 |        399 |       0 |    0 |   454 |      0 |      0 |          0 |
+|       inst                                                    |                                      bd_5098 |        399 |        399 |       0 |    0 |   454 |      0 |      0 |          0 |
+|         sc_ul                                                 |                              bd_5098_sc_ul_0 |        399 |        399 |       0 |    0 |   454 |      0 |      0 |          0 |
+|           inst                                                |                      sc_ultralite_v1_0_1_top |        399 |        399 |       0 |    0 |   454 |      0 |      0 |          0 |
+|             gen_axi_full_nxm.sasd_inst                        |                sc_ultralite_v1_0_1_sasd_lite |        399 |        399 |       0 |    0 |   452 |      0 |      0 |          0 |
+|               (gen_axi_full_nxm.sasd_inst)                    |                sc_ultralite_v1_0_1_sasd_lite |        159 |        159 |       0 |    0 |   273 |      0 |      0 |          0 |
+|               gen_read.arctrl_mux                             |  sc_ultralite_v1_0_1_mux_hot__parameterized5 |         78 |         78 |       0 |    0 |     8 |      0 |      0 |          0 |
+|     axi_loader                                                |                            z100_axi_loader_0 |        521 |        447 |      72 |    2 |   548 |      0 |      0 |          0 |
+|       inst                                                    |                                      bd_f7f6 |        521 |        447 |      72 |    2 |   548 |      0 |      0 |          0 |
+|         m00_exit_pipeline                                     |                 m00_exit_pipeline_imp_4JVX77 |        187 |        186 |       0 |    1 |   138 |      0 |      0 |          0 |
+|           m00_exit                                            |                               bd_f7f6_m00e_0 |        187 |        186 |       0 |    1 |   138 |      0 |      0 |          0 |
+|             inst                                              |                          sc_exit_v1_0_19_top |        187 |        186 |       0 |    1 |   138 |      0 |      0 |          0 |
+|               splitter_inst                                   |                     sc_exit_v1_0_19_splitter |        173 |        172 |       0 |    1 |   125 |      0 |      0 |          0 |
+|                 gen_axi3.splitter_inst                        |                    sc_exit_v1_0_19_axi3_conv |        172 |        171 |       0 |    1 |   125 |      0 |      0 |          0 |
+|         s00_entry_pipeline                                    |               s00_entry_pipeline_imp_14UWTSG |        164 |        164 |       0 |    0 |   225 |      0 |      0 |          0 |
+|           s00_mmu                                             |                             bd_f7f6_s00mmu_0 |         86 |         86 |       0 |    0 |   108 |      0 |      0 |          0 |
+|             inst                                              |                           sc_mmu_v1_0_16_top |         86 |         86 |       0 |    0 |   108 |      0 |      0 |          0 |
+|               ar_reg_stall                                    | sc_util_v1_0_4_axi_reg_stall__parameterized1 |         46 |         46 |       0 |    0 |    84 |      0 |      0 |          0 |
+|           s00_si_converter                                    |                             bd_f7f6_s00sic_0 |         78 |         78 |       0 |    0 |   117 |      0 |      0 |          0 |
+|             inst                                              |                  sc_si_converter_v1_0_16_top |         78 |         78 |       0 |    0 |   117 |      0 |      0 |          0 |
+|               converter.low_area_converter.low_area_wrap_inst |         sc_si_converter_v1_0_16_reduced_area |         76 |         76 |       0 |    0 |   113 |      0 |      0 |          0 |
+|         s00_nodes                                             |                        s00_nodes_imp_11G6QX6 |        159 |         87 |      72 |    0 |   155 |      0 |      0 |          0 |
+|           s00_ar_node                                         |                               bd_f7f6_sarn_0 |         90 |         42 |      48 |    0 |    91 |      0 |      0 |          0 |
+|             inst                                              |                          sc_node_v1_0_19_top |         90 |         42 |      48 |    0 |    91 |      0 |      0 |          0 |
+|               inst_mi_handler                                 |                   sc_node_v1_0_19_mi_handler |         86 |         38 |      48 |    0 |    86 |      0 |      0 |          0 |
+|                 gen_normal_area.inst_fifo_node_payld          |                         sc_node_v1_0_19_fifo |         86 |         38 |      48 |    0 |    84 |      0 |      0 |          0 |
+|           s00_r_node                                          |                                bd_f7f6_srn_0 |         69 |         45 |      24 |    0 |    64 |      0 |      0 |          0 |
+|             inst                                              |          sc_node_v1_0_19_top__parameterized0 |         69 |         45 |      24 |    0 |    64 |      0 |      0 |          0 |
+|               inst_mi_handler                                 |   sc_node_v1_0_19_mi_handler__parameterized0 |         64 |         40 |      24 |    0 |    59 |      0 |      0 |          0 |
+|                 gen_normal_area.inst_fifo_node_payld          |         sc_node_v1_0_19_fifo__parameterized0 |         64 |         40 |      24 |    0 |    57 |      0 |      0 |          0 |
+|     contest                                                   |                               z100_contest_0 |      32143 |      31192 |     946 |    5 | 16399 |    164 |    102 |        179 |
+|       (contest)                                               |                               z100_contest_0 |        144 |          0 |     144 |    0 |    27 |      0 |      0 |          0 |
+|       inst                                                    |                                 z100_contest |      31999 |      31192 |     802 |    5 | 16372 |    164 |    102 |        179 |
+|         (inst)                                                |                                 z100_contest |          0 |          0 |       0 |    0 |    87 |      0 |      0 |          0 |
+|         axi                                                   |                                z100_axi_mmio |         70 |         70 |       0 |    0 |    81 |      0 |      0 |          0 |
+|         contest                                               |                              kwt_encoder_soc |      31763 |      30956 |     802 |    5 | 16121 |    164 |    102 |        179 |
+|           bus                                                 |                      kwt_extended_system_bus |      27648 |      26841 |     802 |    5 | 13949 |    132 |    102 |        179 |
+|             shared                                            |                              kwt_shared_sram |       1088 |       1088 |       0 |    0 |    25 |    128 |      0 |          0 |
+|             encoder                                           |                                  kwt_encoder |      21513 |      21124 |     384 |    5 | 10758 |      0 |     66 |        146 |
+|               (encoder)                                       |                                  kwt_encoder |      10590 |      10590 |       0 |    0 | 10127 |      0 |      0 |        144 |
+|               divide                                          |                                   kwt_udiv64 |        152 |        152 |       0 |    0 |   201 |      0 |      0 |          0 |
+|               exp_unit                                        |                        kwt_exp_negative_core |        280 |        275 |       0 |    5 |    70 |      0 |      2 |          2 |
+|               packed_tensors.banks[0].memory                  |                                 kwt_vecmem32 |        905 |        905 |       0 |    0 |     0 |      0 |      8 |          0 |
+|                 lane[0].halfword[1].single.macro_             |               kwt_sram16__parameterized1_303 |         84 |         84 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[1].halfword[1].single.macro_             |               kwt_sram16__parameterized1_305 |         85 |         85 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[2].halfword[0].single.macro_             |               kwt_sram16__parameterized1_306 |        119 |        119 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[2].halfword[1].single.macro_             |               kwt_sram16__parameterized1_307 |        164 |        164 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[3].halfword[0].single.macro_             |               kwt_sram16__parameterized1_308 |        125 |        125 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[3].halfword[1].single.macro_             |               kwt_sram16__parameterized1_309 |        252 |        252 |       0 |    0 |     0 |      0 |      1 |          0 |
+|               packed_tensors.banks[1].memory                  |                             kwt_vecmem32_227 |        199 |        199 |       0 |    0 |     0 |      0 |      8 |          0 |
+|               packed_tensors.banks[2].memory                  |                             kwt_vecmem32_228 |        354 |        354 |       0 |    0 |     0 |      0 |      8 |          0 |
+|                 lane[0].halfword[0].single.macro_             |               kwt_sram16__parameterized1_286 |         89 |         89 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[0].halfword[1].single.macro_             |               kwt_sram16__parameterized1_287 |        116 |        116 |       0 |    0 |     0 |      0 |      1 |          0 |
+|               packed_tensors.banks[3].memory                  |                             kwt_vecmem32_229 |       4617 |       4617 |       0 |    0 |     0 |      0 |      8 |          0 |
+|                 lane[0].halfword[0].single.macro_             |               kwt_sram16__parameterized1_278 |        245 |        245 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[0].halfword[1].single.macro_             |               kwt_sram16__parameterized1_279 |        946 |        946 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[1].halfword[0].single.macro_             |               kwt_sram16__parameterized1_280 |        126 |        126 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[1].halfword[1].single.macro_             |               kwt_sram16__parameterized1_281 |        968 |        968 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[2].halfword[0].single.macro_             |               kwt_sram16__parameterized1_282 |        246 |        246 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[2].halfword[1].single.macro_             |               kwt_sram16__parameterized1_283 |       1111 |       1111 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[3].halfword[0].single.macro_             |               kwt_sram16__parameterized1_284 |        128 |        128 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[3].halfword[1].single.macro_             |               kwt_sram16__parameterized1_285 |        879 |        879 |       0 |    0 |     0 |      0 |      1 |          0 |
+|               packed_tensors.banks[4].memory                  |                             kwt_vecmem32_230 |        194 |        194 |       0 |    0 |     0 |      0 |      8 |          0 |
+|               packed_tensors.banks[5].memory                  |                             kwt_vecmem32_231 |        193 |        193 |       0 |    0 |     0 |      0 |      8 |          0 |
+|               packed_tensors.banks[6].memory                  |                             kwt_vecmem32_232 |        195 |        195 |       0 |    0 |     0 |      0 |      8 |          0 |
+|               packed_tensors.banks[7].memory                  |                             kwt_vecmem32_233 |        476 |        476 |       0 |    0 |     0 |      0 |      8 |          0 |
+|                 lane[0].halfword[0].single.macro_             |               kwt_sram16__parameterized1_246 |         63 |         63 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[1].halfword[0].single.macro_             |               kwt_sram16__parameterized1_248 |        102 |        102 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[1].halfword[1].single.macro_             |               kwt_sram16__parameterized1_249 |        132 |        132 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[2].halfword[1].single.macro_             |               kwt_sram16__parameterized1_251 |         58 |         58 |       0 |    0 |     0 |      0 |      1 |          0 |
+|                 lane[3].halfword[0].single.macro_             |               kwt_sram16__parameterized1_252 |         64 |         64 |       0 |    0 |     0 |      0 |      1 |          0 |
+|               pm_                                             |                 kwt_vecmem32__parameterized0 |        725 |        469 |     256 |    0 |   128 |      0 |      0 |          0 |
+|                 lane[0].halfword[0].single.macro_             |               kwt_sram16__parameterized0_238 |         64 |         32 |      32 |    0 |    16 |      0 |      0 |          0 |
+|                 lane[0].halfword[1].single.macro_             |               kwt_sram16__parameterized0_239 |         97 |         65 |      32 |    0 |    16 |      0 |      0 |          0 |
+|                 lane[1].halfword[0].single.macro_             |               kwt_sram16__parameterized0_240 |         64 |         32 |      32 |    0 |    16 |      0 |      0 |          0 |
+|                 lane[1].halfword[1].single.macro_             |               kwt_sram16__parameterized0_241 |         98 |         66 |      32 |    0 |    16 |      0 |      0 |          0 |
+|                 lane[2].halfword[0].single.macro_             |               kwt_sram16__parameterized0_242 |         76 |         44 |      32 |    0 |    16 |      0 |      0 |          0 |
+|                 lane[2].halfword[1].single.macro_             |               kwt_sram16__parameterized0_243 |        108 |         76 |      32 |    0 |    16 |      0 |      0 |          0 |
+|                 lane[3].halfword[0].single.macro_             |               kwt_sram16__parameterized0_244 |         64 |         32 |      32 |    0 |    16 |      0 |      0 |          0 |
+|                 lane[3].halfword[1].single.macro_             |               kwt_sram16__parameterized0_245 |        164 |        132 |      32 |    0 |    16 |      0 |      0 |          0 |
+|               score_ping_pong.halves[0].exp_mem               |               kwt_sram16__parameterized0_234 |       1193 |       1161 |      32 |    0 |    16 |      0 |      0 |          0 |
+|               score_ping_pong.halves[0].score_mem             |               kwt_sram16__parameterized0_235 |         54 |         22 |      32 |    0 |    16 |      0 |      0 |          0 |
+|               score_ping_pong.halves[1].exp_mem               |               kwt_sram16__parameterized0_236 |       1223 |       1191 |      32 |    0 |    16 |      0 |      0 |          0 |
+|               score_ping_pong.halves[1].score_mem             |               kwt_sram16__parameterized0_237 |        106 |         74 |      32 |    0 |    16 |      0 |      0 |          0 |
+|               sqrt_unit                                       |                                  kwt_isqrt64 |        222 |        222 |       0 |    0 |   168 |      0 |      0 |          0 |
+|             fabric                                            |                               kwt_bus_fabric |       1053 |       1053 |       0 |    0 |    27 |      0 |      0 |          0 |
+|               (fabric)                                        |                               kwt_bus_fabric |        109 |        109 |       0 |    0 |    12 |      0 |      0 |          0 |
+|               e203_bus                                        |                             sirv_icb1to8_bus |        945 |        945 |       0 |    0 |    15 |      0 |      0 |          0 |
+|                 u_i_icb_splt                                  |                           sirv_gnrl_icb_splt |        945 |        945 |       0 |    0 |    15 |      0 |      0 |          0 |
+|             parallel_ffn.ffn                                  |                                z100_ffn_rows |       3919 |       3551 |     368 |    0 |  3119 |      4 |     36 |         33 |
+|               (parallel_ffn.ffn)                              |                                z100_ffn_rows |         81 |         81 |       0 |    0 |   165 |      0 |      0 |          0 |
+|               rows[0].engine                                  |                            z100_ffn_row_lane |       3838 |       3470 |     368 |    0 |  2954 |      4 |     36 |         33 |
+|                 (rows[0].engine)                              |                            z100_ffn_row_lane |         29 |         29 |       0 |    0 |    74 |      0 |      0 |          0 |
+|                 ffn1                                          |                                kwt_ffn1_core |       1305 |       1113 |     192 |    0 |  1790 |      0 |     16 |         16 |
+|                 ffn2                                          |                                    z100_ffn2 |       2409 |       2233 |     176 |    0 |  1010 |      0 |     20 |         17 |
+|           cpu                                                 |                                 e203_cpu_top |       4115 |       4115 |       0 |    0 |  2172 |     32 |      0 |          0 |
+|             u_e203_cpu                                        |                                     e203_cpu |       4108 |       4108 |       0 |    0 |  2172 |      0 |      0 |          0 |
+|               u_e203_core                                     |                                    e203_core |       3662 |       3662 |       0 |    0 |  1815 |      0 |      0 |          0 |
+|                 u_e203_biu                                    |                                     e203_biu |         48 |         48 |       0 |    0 |   111 |      0 |      0 |          0 |
+|                 u_e203_exu                                    |                                     e203_exu |       1155 |       1155 |       0 |    0 |  1444 |      0 |      0 |          0 |
+|                 u_e203_ifu                                    |                                     e203_ifu |       2304 |       2304 |       0 |    0 |   181 |      0 |      0 |          0 |
+|                 u_e203_lsu                                    |                                     e203_lsu |        164 |        164 |       0 |    0 |    79 |      0 |      0 |          0 |
+|               u_e203_dtcm_ctrl                                |                               e203_dtcm_ctrl |         51 |         51 |       0 |    0 |    55 |      0 |      0 |          0 |
+|                 u_sram_icb_ctrl                               |           sirv_sram_icb_ctrl__parameterized0 |         51 |         51 |       0 |    0 |    54 |      0 |      0 |          0 |
+|               u_e203_itcm_ctrl                                |                               e203_itcm_ctrl |         84 |         84 |       0 |    0 |    63 |      0 |      0 |          0 |
+|                 u_sram_icb_ctrl                               |                           sirv_sram_icb_ctrl |         82 |         82 |       0 |    0 |    59 |      0 |      0 |          0 |
+|               u_e203_nice_core                                |                        e203_subsys_nice_core |        313 |        313 |       0 |    0 |   237 |      0 |      0 |          0 |
+|                 state_dfflr                                   |                           sirv_gnrl_dfflr_16 |        105 |        105 |       0 |    0 |     2 |      0 |      0 |          0 |
+|                 rowbuf_cnt_d_dfflr                            |                           sirv_gnrl_dfflr_11 |         96 |         96 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         loader                                                |                          z100_contest_loader |        169 |        169 |       0 |    0 |    83 |      0 |      0 |          0 |
+|     regs                                                      |                                  z100_regs_0 |         49 |         49 |       0 |    0 |   150 |      0 |      0 |          0 |
+|       inst                                                    |                                    z100_regs |         49 |         49 |       0 |    0 |   150 |      0 |      0 |          0 |
++---------------------------------------------------------------+----------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+
