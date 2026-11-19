@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="32.7.4">
+  <diagram id="task-window" name="task-window">
+    <mxGraphModel dx="1200" dy="200" grid="0" page="1" pageScale="1" pageWidth="1200" pageHeight="200" background="#FFFFFF" adaptiveColors="auto">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="begin" value="首笔 Host 装载请求" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#2457A6;fontStyle=1;align=left;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="390" height="45" />
+        </mxCell>
+        <mxCell id="end" value="末笔 DMA 写响应" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#167C80;fontStyle=1;align=right;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="820" y="0" width="370" height="45" />
+        </mxCell>
+        <mxCell id="host" value="Host 装载 / E203 配置" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDF4FF;strokeColor=#D0DAE6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="65" width="330" height="70" />
+        </mxCell>
+        <mxCell id="load" value="DMA LOAD" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DDEAF8;strokeColor=#D0DAE6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="340" y="65" width="240" height="70" />
+        </mxCell>
+        <mxCell id="run" value="RUN：计算、预取与写回重叠" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DDEFEA;strokeColor=#D0DAE6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="580" y="65" width="610" height="70" />
+        </mxCell>
+        <mxCell id="time" value="第 4 层完整任务：30,540.5 拍 / 203.603 µs（150 MHz）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=24;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="50" y="150" width="1100" height="45" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

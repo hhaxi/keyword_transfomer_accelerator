@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="page-0" name="Y 写回与流量">
+    <mxGraphModel page="1" pageScale="1" pageWidth="1110" pageHeight="420" grid="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="n2" value="" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;fontColor=#172D49;fontSize=21;fontStyle=0;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1110" height="420" />
+        </mxCell>
+        <mxCell id="n3" value="累加结束后再舍入，每个 32 位字写两个 Y16" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#172D49;fontSize=28;fontStyle=1;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="34" y="17" width="1030" height="47" />
+        </mxCell>
+        <mxCell id="n4" value="ACC40&lt;br&gt;保留 64 项乘积与偏置" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=#F1F6FD;strokeColor=#D5E0EE;fontColor=#245CA6;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="34" y="80" width="214" height="70" />
+        </mxCell>
+        <mxCell id="n5" value="缩放与 RNE&lt;br&gt;÷ 2¹⁵，半值选偶数" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=#F1F6FD;strokeColor=#D5E0EE;fontColor=#245CA6;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="302" y="80" width="214" height="70" />
+        </mxCell>
+        <mxCell id="n6" value="INT16 饱和&lt;br&gt;−32,768 至 32,767" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=#F1F6FD;strokeColor=#D5E0EE;fontColor=#245CA6;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="570" y="80" width="214" height="70" />
+        </mxCell>
+        <mxCell id="n7" value="一字两结果&lt;br&gt;[下一列 | 偶数列]" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=#F1F6FD;strokeColor=#D5E0EE;fontColor=#245CA6;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="838" y="80" width="238" height="70" />
+        </mxCell>
+        <mxCell id="n8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#245CA6;dashed=0;" edge="1" source="n4" target="n5" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="n9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#245CA6;dashed=0;" edge="1" source="n5" target="n6" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeWidth=3;strokeColor=#245CA6;dashed=0;" edge="1" source="n6" target="n7" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="n11" value="半值例：2.5 → 2，3.5 → 4" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#52657D;fontSize=18;fontStyle=0;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="155" width="560" height="31" />
+        </mxCell>
+        <mxCell id="n12" value="Y 写回量（32 位字 / 任务）" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#172D49;fontSize=22;fontStyle=1;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="202" width="800" height="34" />
+        </mxCell>
+        <mxCell id="n13" value="INT40 符号扩展为 64 位" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#52657D;fontSize=19;fontStyle=0;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="248" width="265" height="31" />
+        </mxCell>
+        <mxCell id="n14" value="" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=#E2E9F2;strokeColor=none;fontColor=#172D49;fontSize=21;fontStyle=0;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="305" y="248" width="635" height="31" />
+        </mxCell>
+        <mxCell id="n15" value="50,688" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#52657D;fontSize=19;fontStyle=1;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="951" y="248" width="123" height="31" />
+        </mxCell>
+        <mxCell id="n16" value="INT40 无损紧凑打包" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#172D49;fontSize=19;fontStyle=0;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="295" width="265" height="31" />
+        </mxCell>
+        <mxCell id="n17" value="" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=#C5D9F2;strokeColor=none;fontColor=#172D49;fontSize=21;fontStyle=0;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="305" y="295" width="397" height="31" />
+        </mxCell>
+        <mxCell id="n18" value="31,680" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#172D49;fontSize=19;fontStyle=1;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="713" y="295" width="123" height="31" />
+        </mxCell>
+        <mxCell id="n19" value="INT16 两结果打包" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#0D7680;fontSize=19;fontStyle=1;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="342" width="265" height="31" />
+        </mxCell>
+        <mxCell id="n20" value="" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=#CCE8E3;strokeColor=none;fontColor=#172D49;fontSize=21;fontStyle=0;align=center;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="305" y="342" width="159" height="31" />
+        </mxCell>
+        <mxCell id="n21" value="12,672" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#0D7680;fontSize=19;fontStyle=1;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="475" y="342" width="123" height="31" />
+        </mxCell>
+        <mxCell id="n22" value="同为 25,344 个结果 · 对比 INT40 紧凑打包少写 60%" style="rounded=0;arcSize=9;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;fontColor=#0D7680;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;fontFamily=Microsoft YaHei;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="387" width="1038" height="24" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

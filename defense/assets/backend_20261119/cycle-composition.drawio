@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="32.7.4">
+  <diagram id="cycle-composition" name="cycle-composition">
+    <mxGraphModel dx="1200" dy="220" grid="0" page="1" pageScale="1" pageWidth="1200" pageHeight="220" background="#FFFFFF" adaptiveColors="auto">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="host" value="Host 与启动&lt;br&gt;29.96%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2457A6;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=25;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="10" width="353.528" height="85" />
+        </mxCell>
+        <mxCell id="load" value="DMA LOAD&lt;br&gt;21.22%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#167C80;strokeColor=#167C80;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=25;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="363.528" y="10" width="250.396" height="85" />
+        </mxCell>
+        <mxCell id="run" value="DMA RUN&lt;br&gt;48.81%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#AABCD3;strokeColor=#AABCD3;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=25;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="613.924" y="10" width="575.9580000000001" height="85" />
+        </mxCell>
+        <mxCell id="total" value="平均完整任务 32,006.83 拍" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=31;fontColor=#182942;fontStyle=1;align=left;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="130" width="620" height="60" />
+        </mxCell>
+        <mxCell id="overlap" value="阵列有效归约占 RUN 的 85.21%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=25;fontColor=#167C80;fontStyle=1;align=right;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="660" y="130" width="530" height="60" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

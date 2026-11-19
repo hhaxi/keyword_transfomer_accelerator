@@ -1,0 +1,48 @@
+{
+  "entries": [
+    {
+      "name": "verification-flow",
+      "drawio": "verification-flow.drawio",
+      "png": "verification-flow.png",
+      "audit": "verification-flow.audit.md",
+      "reference": "Design report §5.1 and Table 5.1, PDF p45"
+    },
+    {
+      "name": "synthesis-flow",
+      "drawio": "synthesis-flow.drawio",
+      "png": "synthesis-flow.png",
+      "audit": "synthesis-flow.audit.md",
+      "reference": "Design report §5.5.1–5.5.2, PDF p48–49"
+    },
+    {
+      "name": "area-composition",
+      "drawio": "area-composition.drawio",
+      "png": "area-composition.png",
+      "audit": "area-composition.audit.md",
+      "reference": "Reconstructed from report Figure 6.3 / Table 6.4, PDF p52"
+    },
+    {
+      "name": "task-window",
+      "drawio": "task-window.drawio",
+      "png": "task-window.png",
+      "audit": "task-window.audit.md",
+      "reference": "Design report §6.1 and §6.6, PDF p50,53; task4 activity boundary"
+    },
+    {
+      "name": "formal-flow",
+      "drawio": "formal-flow.drawio",
+      "png": "formal-flow.png",
+      "audit": "formal-flow.audit.md",
+      "reference": "Design report Table 5.8, PDF p49; formal-equivalence-summary.txt"
+    },
+    {
+      "name": "cycle-composition",
+      "drawio": "cycle-composition.drawio",
+      "png": "cycle-composition.png",
+      "audit": "cycle-composition.audit.md",
+      "reference": "Reconstructed from report Figure 6.1 and Table 6.2, PDF p50–51"
+    }
+  ],
+  "export": "Draw.io Desktop CLI 32.7.4",
+  "scope": "backend defense adaptation"
+}

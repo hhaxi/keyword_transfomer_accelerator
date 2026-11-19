@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="32.7.4">
+  <diagram id="synthesis-flow" name="synthesis-flow">
+    <mxGraphModel dx="1200" dy="200" grid="0" page="1" pageScale="1" pageWidth="1200" pageHeight="200" background="#FFFFFF" adaptiveColors="auto">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="rtl" value="冻结 RTL&lt;br&gt;同一编译宏" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDF4FF;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="20" width="220" height="95" />
+        </mxCell>
+        <mxCell id="map" value="DC 工艺映射&lt;br&gt;自动时钟门控" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EAF5F3;strokeColor=#167C80;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="330" y="20" width="220" height="95" />
+        </mxCell>
+        <mxCell id="net" value="综合网表&lt;br&gt;DDC / SDC / SVF" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDF4FF;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="650" y="20" width="220" height="95" />
+        </mxCell>
+        <mxCell id="ppa" value="面积与 STA&lt;br&gt;SAIF 活动功耗" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EAF5F3;strokeColor=#167C80;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="970" y="20" width="220" height="95" />
+        </mxCell>
+        <mxCell id="a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;" edge="1" source="rtl" target="map" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;" edge="1" source="map" target="net" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="c" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;" edge="1" source="net" target="ppa" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="lib" value="SMIC40 RVT SS + 同角 RAMSP 宏库" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#4D607A;fontStyle=0;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="280" y="140" width="640" height="45" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

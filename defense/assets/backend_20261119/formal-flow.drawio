@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="32.7.4">
+  <diagram id="formal-flow" name="formal-flow">
+    <mxGraphModel dx="1200" dy="250" grid="0" page="1" pageScale="1" pageWidth="1200" pageHeight="250" background="#FFFFFF" adaptiveColors="auto">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="rtl" value="RTL 参考设计&lt;br&gt;编译宏与库模型" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDF4FF;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="25" width="300" height="85" />
+        </mxCell>
+        <mxCell id="proof" value="Formality&lt;br&gt;Match / Verify" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EAF5F3;strokeColor=#167C80;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=24;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="450" y="25" width="300" height="85" />
+        </mxCell>
+        <mxCell id="net" value="综合网表 + SVF&lt;br&gt;实现设计" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDF4FF;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="890" y="25" width="300" height="85" />
+        </mxCell>
+        <mxCell id="left" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;" edge="1" source="rtl" target="proof" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="right" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;" edge="1" source="net" target="proof" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="passed" value="16,025 个比较点通过" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=38;fontColor=#167C80;fontStyle=1;align=left;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="30" y="155" width="720" height="65" />
+        </mxCell>
+        <mxCell id="scope" value="0 个失败&lt;br&gt;60 个 Clock-gate LAT 未比较" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#4D607A;fontStyle=0;align=right;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="780" y="150" width="405" height="75" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

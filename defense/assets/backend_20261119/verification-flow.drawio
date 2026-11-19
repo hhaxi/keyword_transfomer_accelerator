@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="32.7.4">
+  <diagram id="verification-flow" name="verification-flow">
+    <mxGraphModel dx="1200" dy="270" grid="0" page="1" pageScale="1" pageWidth="1200" pageHeight="270" background="#FFFFFF" adaptiveColors="auto">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="input" value="同源输入与十二组参数" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDF4FF;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=24;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="92" width="230" height="78" />
+        </mxCell>
+        <mxCell id="float" value="浮点参考模型" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="330" y="20" width="240" height="70" />
+        </mxCell>
+        <mxCell id="integer" value="整数软件模型" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#167C80;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="330" y="115" width="240" height="70" />
+        </mxCell>
+        <mxCell id="rtl" value="真实 E203 + RTL" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=23;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="330" y="210" width="240" height="58" />
+        </mxCell>
+        <mxCell id="nrmse" value="NRMSE&lt;br&gt;解码 Y16 对比浮点" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDF4FF;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="740" y="20" width="420" height="70" />
+        </mxCell>
+        <mxCell id="bitwise" value="逐位一致&lt;br&gt;ACC40 与 SRAM 中 Y16" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EAF5F3;strokeColor=#167C80;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#182942;fontStyle=1;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="740" y="145" width="420" height="90" />
+        </mxCell>
+        <mxCell id="a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.15;entryX=0;entryY=0.5;" edge="1" source="input" target="float" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="input" target="integer" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="c" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.85;entryX=0;entryY=0.5;" edge="1" source="input" target="rtl" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="f" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;" edge="1" source="float" target="nrmse" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="i" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#167C80;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;" edge="1" source="integer" target="bitwise" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="r" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2457A6;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Microsoft YaHei;fontSize=17;fontColor=#4D607A;labelBackgroundColor=#FFFFFF;" edge="1" source="rtl" target="bitwise" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

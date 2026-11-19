@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="32.7.4">
+  <diagram id="area-composition" name="area-composition">
+    <mxGraphModel dx="600" dy="290" grid="0" page="1" pageScale="1" pageWidth="600" pageHeight="290" background="#FFFFFF" adaptiveColors="auto">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="label" value="整机 cell 面积构成" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=24;fontColor=#182942;fontStyle=1;align=left;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="590" height="45" />
+        </mxCell>
+        <mxCell id="added" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2457A6;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#182942;fontStyle=0;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="66" width="105.22200000000001" height="58" />
+        </mxCell>
+        <mxCell id="cpu" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#167C80;strokeColor=#167C80;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#182942;fontStyle=0;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="115.22200000000001" y="66" width="97.86900000000001" height="58" />
+        </mxCell>
+        <mxCell id="shared" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#AABCD3;strokeColor=#AABCD3;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=18;fontColor=#182942;fontStyle=0;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="213.091" y="66" width="366.852" height="58" />
+        </mxCell>
+        <mxCell id="addedkey" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2457A6;strokeColor=#2457A6;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#182942;fontStyle=0;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="150" width="18" height="18" />
+        </mxCell>
+        <mxCell id="addedlabel" value="新增设计" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#182942;fontStyle=0;align=left;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="139" width="340" height="40" />
+        </mxCell>
+        <mxCell id="addedpct" value="18.46%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=24;fontColor=#182942;fontStyle=1;align=right;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="420" y="139" width="165" height="40" />
+        </mxCell>
+        <mxCell id="cpukey" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#167C80;strokeColor=#167C80;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#182942;fontStyle=0;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="195" width="18" height="18" />
+        </mxCell>
+        <mxCell id="cpulabel" value="E203 / TCM" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#182942;fontStyle=0;align=left;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="184" width="340" height="40" />
+        </mxCell>
+        <mxCell id="cpupct" value="17.17%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=24;fontColor=#182942;fontStyle=1;align=right;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="420" y="184" width="165" height="40" />
+        </mxCell>
+        <mxCell id="sharedkey" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#AABCD3;strokeColor=#AABCD3;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#182942;fontStyle=0;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="240" width="18" height="18" />
+        </mxCell>
+        <mxCell id="sharedlabel" value="共享 SRAM" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=22;fontColor=#182942;fontStyle=0;align=left;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="229" width="340" height="40" />
+        </mxCell>
+        <mxCell id="sharedpct" value="64.36%" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;strokeWidth=1.4;fontFamily=Microsoft YaHei;fontSize=24;fontColor=#182942;fontStyle=1;align=right;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="420" y="229" width="165" height="40" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
