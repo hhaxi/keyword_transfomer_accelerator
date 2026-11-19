@@ -149,7 +149,7 @@
 
 针对拓展任务，\textbf{十二层 PostNorm 编码器}集成完整 FFN、单头注意力、残差和 LayerNorm。紧凑单路版采用\textbf{层内 FIFO 直传、层间结果驻留和片内 SRAM 分区复用}。完整十二层任务耗时 4,206,337 拍，按 150 MHz 换算为\textbf{35.66 任务/秒}；新增综合面积为\textbf{1.489 mm\textsuperscript{2}}，整机 RTL-SAIF 平均功耗为\textbf{100.643 mW}，任务能量为\textbf{2.822 mJ}。十二层硬件输出与整数模型逐位一致。4,445 条本地验证记录的定点模型 Top-1 准确率为\textbf{97.89\%}，与浮点模型逐条预测一致，最大逐层聚合 \textbf{NRMSE} 为\textbf{0.171\%}。
 
-在 Z100 FPGA 上构建完整语音识别系统，贯通上位机音频处理与传输、板上十二层推理、软件分类及结果展示。40 MHz PL 配置的板上平均时延为\textbf{145.8 ms}，按 150 MHz 折算吞吐为\textbf{25.7 任务/秒}，端到端实测吞吐为\textbf{6.62 条输入/秒}。120 条分类样本的准确率为 99.17\%，板卡与定点软件参考的预测逐条一致。
+在 Z100 FPGA 上部署\textbf{55.56 MHz 紧凑单路版}。板上十二层推理时延中位数为\textbf{75.62 ms}；每条输入新建 TCP 连接时，端到端时延中位数为\textbf{80.26 ms}，最大为 82.80 ms。复用同一连接连续推理，端到端吞吐为\textbf{12.66 条输入/秒}。120 条分类记录的准确率为 99.17\%，板卡与定点软件参考的预测逐条一致。
 
 \noindent\textbf{关键词}\quad 关键词识别，KWT-1，前馈线性加速器，定点计算，E203，SoC 集成
 
@@ -2010,11 +2010,11 @@ E203（含 TCM） & 44.927 & 0.961 & 45.888 & 0.760 & 46.648 \\
 
 \section{平台与部署}
 
-图~\ref{fig:z100-board} 所示的 Z100 开发板搭载 Zynq XC7Z035-2FFG900。Vivado 2026.1 生成 40 MHz 位流，PL 内的 E203 负责逐层调度，计算引擎执行十二层 KWT-1 编码，PS 的 Cortex-A9 负责网络通信和分类头。上位机读取 WAV，提取 MFCC 并完成嵌入，将 $99\times64$ 个 Q16 特征通过 TCP 发送至板卡。
+图~\ref{fig:z100-board} 所示的 Z100 开发板搭载 Zynq XC7Z035-2FFG900。Vivado 2026.1 生成紧凑单路版位流，PL 时钟为 55.56 MHz。PL 内的 E203 负责逐层调度，计算引擎执行十二层 KWT-1 编码，PS 的 Cortex-A9 负责网络通信和分类头。上位机读取 WAV、提取 MFCC 并完成嵌入，将 $99\times64$ 个 Q16 特征通过 TCP 发送至板卡。
 
 Cortex-A9 启动板卡测试加载器，加载器经 AXI HP0 从板载 DDR 读取测试数据，再通过该 SoC 版本的 Host ICB 写入 512 KiB 单端口共享 SRAM。加载器位于 E203 SoC 顶层之外。每层复用同一共享参数窗口，装载 33,408 个 32 位参数字和 2 个配置字。E203 从共享 SRAM 获取任务配置并调度计算，末层结果写回共享 SRAM，供 Cortex-A9 执行分类并返回预测、logits 和层进度。
 
-此版投影每拍处理 16 个 $K$ 元素，注意力内积每拍处理 32 个元素。Softmax 复用两组单端口存储，依次保存分数、指数和归一化结果。加速器片内存储组织为 692 个 16 位宏，共 251.5 KiB。FPGA 将浅 bank 映射为 LUTRAM、较深 bank 映射为 BRAM。该容量按加速器内部宏统计，512 KiB 共享 SRAM 及 E203 TCM 独立配置。
+紧凑单路版采用一套 FFN 行引擎。ENC1 的投影与注意力共享 32 路乘法器，$X,Q,K,V$ 和投影权重共用一组按地址分区的 SRAM。加速器内部显式存储对应第十章的 128 个逻辑宏，共 222.5 KiB。Vivado 将相应存储映射到 FPGA 的 BRAM 和分布式 RAM，512 KiB 共享 SRAM 及 E203 TCM 独立配置。
 
 \begin{figure}[!htp]\centering
 \includegraphics[width=.52\linewidth]{figures/z100-board.jpg}
@@ -2024,9 +2024,9 @@ Cortex-A9 启动板卡测试加载器，加载器经 AXI HP0 从板载 DDR 读�
 \FloatBarrier
 \section{上板功能验证}
 
-上板测试从\textbf{寄存器读写、编码器输出、分类结果与通信恢复}四个方面检查系统运行。首先通过 JTAG 检查 PL 寄存器及共享 SRAM 首尾地址访问，随后向板卡输入 12 条固定测试向量并回读每条输入对应的 6,336 个编码器输出，共 76,032 个 Q16 数值均与整数参考逐位一致，说明板上数据传输与十二层计算能够正确衔接。在 120 条分类验证样本测试中，板卡与软件定点模型的预测全部一致，其中 119 条与真实标签相符，分类准确率为 \textbf{99.17\%}。在通信恢复测试中，主动注入错误 CRC 帧并重新建立连接后，连续两次推理均顺利完成十二层计算，回读结果与层进度返回均与参考一致。
+向紧凑单路版输入 12 条冻结测试向量，每条均完成 12 层并回读全部 6,336 个编码器输出，共 76,032 个 Q16 数值与整数参考逐位一致。分类验证包含 110 条 WAV 和 10 条静音记录。120 条板上预测与软件定点参考逐条一致，其中 119 条命中真实标签，准确率为 \textbf{99.17\%}。该版也通过坏 CRC 后重连和连续推理测试。
 
-图~\ref{fig:fpga-host-results} 展示 \texttt{yes}、\texttt{no}、\texttt{up} 和 \texttt{stop} 四个样本的实际识别界面。上位机将语音波形、预测类别、Top-3 分数及层进度集中显示，四次识别均完成 12/12 层且预测与真实标签一致；计入新建 TCP 连接及上位机处理后，四次端到端时延分别为 181.3、153.7、167.1 和 168.3 ms。
+图~\ref{fig:fpga-host-results} 保留早期板卡联调时的四个上位机界面，展示语音波形、预测类别、Top-3 分数和层进度。紧凑单路版的实板时延与吞吐见表~\ref{tab:fpga-latency}。
 
 \begin{figure}[!htp]\centering
 \begin{minipage}{.49\linewidth}\centering
@@ -2045,13 +2045,13 @@ Cortex-A9 启动板卡测试加载器，加载器经 AXI HP0 从板载 DDR 读�
 \includegraphics[width=\linewidth]{figures/fpga-host/stop.jpg}\par
 {\small（d）\texttt{stop}}
 \end{minipage}
-\caption{40 MHz Z100 配置的四类语音识别结果}\label{fig:fpga-host-results}
+\caption{早期 Z100 联调的四类语音识别界面}\label{fig:fpga-host-results}
 \end{figure}
 
 \FloatBarrier
 \section{布局布线后资源与时序}
 
-表~\ref{tab:fpga-resource} 覆盖完整 PL 实现，包括 E203、TCM、加速器、512 KiB 共享 SRAM 和板卡加载桥。LUTRAM 使用量计入 Slice LUT。
+表~\ref{tab:fpga-resource} 覆盖紧凑单路版完整 PL 实现，包括 E203、TCM、加速器、512 KiB 共享 SRAM 和板卡加载桥。存储类 LUT 计入 Slice LUT。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{Z100 FPGA 布线后 PL 资源占用}\label{tab:fpga-resource}
@@ -2060,11 +2060,11 @@ Cortex-A9 启动板卡测试加载器，加载器经 AXI HP0 从板载 DDR 读�
 \rowcolor{TableHeader}
 \thleft{资源} & \thcell{已用} & \thcell{可用} & \thcell{使用率} \\
 \midrule
-Slice LUT & 63,591 & 171,900 & 36.99\% \\
-LUTRAM & 21,058 & 70,400 & 29.91\% \\
-Slice 寄存器 & 26,793 & 343,800 & 7.79\% \\
-BRAM（36 Kb 等效） & 183 & 500 & 36.60\% \\
-DSP48E1 & 419 & 900 & 46.56\% \\
+Slice LUT & 33,126 & 171,900 & 19.27\% \\
+存储类 LUT & 1,026 & 70,400 & 1.46\% \\
+Slice 寄存器 & 17,584 & 343,800 & 5.11\% \\
+BRAM（36 Kb 等效） & 215 & 500 & 43.00\% \\
+DSP48E1 & 179 & 900 & 19.89\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2076,19 +2076,19 @@ DSP48E1 & 419 & 900 & 46.56\% \\
 \rowcolor{TableHeader}
 \thleft{检查项} & \thcell{最差裕量（ns）} & \thcell{总负裕量（ns）} & \thcell{失败端点} \\
 \midrule
-Setup & $+0.157$ & 0.000 & 0 \\
-Hold & $+0.060$ & 0.000 & 0 \\
-脉宽 & $+11.732$ & 0.000 & 0 \\
+Setup & $+0.182$ & 0.000 & 0 \\
+Hold & $+0.038$ & 0.000 & 0 \\
+脉宽 & $+8.232$ & 0.000 & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-PL 周期约束为 25.000 ns（40 MHz），布线后时序结果见表~\ref{tab:fpga-timing}。建立时间、保持时间和脉宽均满足约束，未约束内部端点和 DRC 错误计数均为 0。
+PL 的 \texttt{clk\_fpga\_0} 周期约束为 18.000 ns（55.556 MHz）。建立时间、保持时间和脉宽检查均通过，未约束内部端点数为 0。
 
 \FloatBarrier
 \section{实测时延与吞吐}
 
-固定的 12 条 WAV 在同一 TCP 连接上顺序执行 10 轮。板上计时从测试加载器写入输入开始，到 E203 确认末层结果写回为止，覆盖十二层参数装载、SRAM 仲裁、调度和计算。WAV 到结果的端到端计时还包含上位机预处理、TCP 传输和 Cortex-A9 分类。板上计数扣除 TCP 进度帧发送时间，实测时延与吞吐见表~\ref{tab:fpga-latency}。
+板上时延覆盖输入装载、逐层参数装载、十二层计算和末层结果写回。端到端时延从上位机开始处理音频到收到识别结果，覆盖 TCP 传输、板上推理和 Cortex-A9 分类。时延测试使用 120 条分类记录，每条新建 TCP 连接，上位机重叠执行 IPv4 握手与特征计算。连续吞吐测试使用 12 条 WAV，在同一连接上顺序执行 10 轮。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{Z100 FPGA 实测时延与吞吐}\label{tab:fpga-latency}
@@ -2097,17 +2097,16 @@ PL 周期约束为 25.000 ns（40 MHz），布线后时序结果见表~\ref{tab:
 \rowcolor{TableHeader}
 \thleft{指标} & \thcell{结果} \\
 \midrule
-连续测试 & 120 次请求，单 TCP 连接 \\
-板上周期（平均／最大） & 5,830,108.37／5,840,571 拍 \\
-40 MHz 板上平均时延、吞吐 & 145.75 ms，6.86 任务/秒 \\
-150 MHz 等效平均时延、吞吐 & 38.87 ms，25.73 任务/秒 \\
-端到端时延（中位数／P95／最大） & 150.31／154.90／168.81 ms \\
-端到端实测吞吐 & 6.62 条输入/秒（120 次／18.126 s） \\
+板上周期（120 条新建连接任务平均） & 4,200,869.7 拍 \\
+55.56 MHz 板上时延中位数 & 75.62 ms \\
+端到端时延（新建连接，中位数／P95／最大） & 80.26／82.09／82.80 ms \\
+超过 100 ms（新建连接） & 0／120 \\
+端到端连续吞吐（同一连接） & 12.66 条输入/秒（120 次／9.482 s） \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-120 次请求的板上周期均低于 7,500,000 拍。150 MHz 等效吞吐按实测板上平均周期换算，FPGA 布线时序对应 40 MHz 配置。
+板上平均周期按 150 MHz 等效频率折算为 35.707 任务/秒。实际 55.56 MHz 位流的端到端吞吐见表~\ref{tab:fpga-latency}。测试配置与数据来源见 \src{report/evidence/fpga-compact1-summary.md}。
 
 \chapter{赛题要求与验证成果}\label{chap:requirements-results}
 \fancypagestyle{officialfinal}{\officialreportheader}
@@ -2196,7 +2195,7 @@ FPGA 系统实现 & 在 Z100 部署含 E203 与 512 KiB 共享 SRAM 的编码器
 
 定点位宽与非线性近似同时兼顾硬件开销和分类效果。在 4,445 条本地验证记录上，\textbf{定点与浮点模型的 Top-1 均为 97.8853\%，逐条预测一致}；最大逐层聚合 NRMSE 为 0.171308\%。
 
-第十一章记录的 Z100 FPGA 40 MHz 验证配置连续处理 120 次请求，板上平均周期为 5,830,108.37 拍，按 150 MHz 折算为 25.73 任务/秒；包含上位机预处理和分类的端到端实测吞吐为 6.62 条输入/秒。板卡与定点软件参考逐条一致，119/120 条命中真实标签。
+Z100 FPGA 紧凑单路版在 55.56 MHz 下完成验证。120 条新建连接任务的端到端时延中位数为 80.26 ms，最大为 82.80 ms；连续复用连接时实测吞吐为 12.66 条输入/秒。板卡预测与定点软件参考逐条一致，119/120 条命中真实标签。
 
 \clearpage
 
@@ -2389,7 +2388,7 @@ MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单�
 \item \textbf{基础计算与数值精度：} Q128 \Q{} 采用 INT16 输入与权重、INT40 累加以及右移 15 位的 RNE 写回。本地 9,982 条样本共执行 119,784 次 FFN1，十二层最大汇总 NRMSE 为 0.022189\%，单任务最大值为 0.033962\%。
 \item \textbf{基础工艺与效率：} 新增面积 0.505555 mm\textsuperscript{2}，十二组层任务平均吞吐 4,686.50 任务/秒（150 MHz 折算）。第 4 层的 RTL-SAIF 功耗为 37.346 mW，任务能量为 7.6038 $\mu$J。Setup WNS 为 0.00 ns，SS 角 Hold WNS 为 $-0.17$ ns。
 \item \textbf{拓展 ASIC：} 紧凑单路版含 128 个新增内部 SRAM 宏，合计 222.5 KiB。新增综合面积为 1.489217 mm\textsuperscript{2}，150 MHz 等效吞吐为 35.660 任务/秒。单条输入的十二层 RTL-SAIF 估算整机功耗为 100.643 mW，任务能量为 2,822.256 $\mu$J。Setup WNS 为 0.00 ns，SS Hold WNS 为 $-0.17$ ns。
-\item \textbf{拓展数值与 FPGA：} 4,445 条本地记录的定点和浮点 Top-1 均为 97.8853\%。第十一章的 Z100 验证配置采用 40 MHz PL 时钟，板上平均时延为 145.75 ms。
+\item \textbf{拓展数值与 FPGA：} 4,445 条本地记录的定点和浮点 Top-1 均为 97.8853\%。Z100 紧凑单路版采用 55.56 MHz PL 时钟，板上时延中位数为 75.62 ms，连续端到端吞吐为 12.66 条输入/秒。
 \end{enumerate}
 
 \chapter{基础任务逐层计数}\label{app:counts}
