@@ -44,11 +44,9 @@ if {$in_process || $repaired} {
 set bitstream [file join $build_dir z100-$variant.bit]
 write_bitstream -force $bitstream
 if {![info exists ::env(Z100_BIT_ONLY)] || $::env(Z100_BIT_ONLY) ne "1"} {
-    if {$in_process || $repaired} {
-        # The platform exporter looks up the bitstream in the project's run directory.
-        set impl_dir [get_property DIRECTORY [get_runs impl_1]]
-        file mkdir $impl_dir
-        file copy -force $bitstream [file join $impl_dir z100_wrapper.bit]
-    }
+    # Export the exact bitstream just written, including its creation header.
+    set impl_dir [get_property DIRECTORY [get_runs impl_1]]
+    file mkdir $impl_dir
+    file copy -force $bitstream [file join $impl_dir z100_wrapper.bit]
     write_hw_platform -fixed -include_bit -force -file [file join $build_dir z100-$variant.xsa]
 }

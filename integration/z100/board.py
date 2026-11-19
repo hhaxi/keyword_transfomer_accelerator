@@ -1,7 +1,9 @@
 """UART and TCP client for board inference and integer output verification."""
 
+import errno
 import math
 import os
+import select
 import socket
 import struct
 import subprocess
@@ -33,12 +35,47 @@ class Inference:
 
 
 class TcpStream:
-    def __init__(self, endpoint):
+    def __init__(self, endpoint, *, start_ipv4=False):
         host, port = endpoint.rsplit(":", 1)
         self.port = endpoint
-        self.socket = socket.create_connection((host, int(port)), timeout=15)
+        self.connect_deadline = None
+        self.reader = None
+        if start_ipv4:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        else:
+            self.socket = socket.create_connection((host, int(port)), timeout=15)
+        try:
+            if start_ipv4:
+                self.socket.setblocking(False)
+                status = self.socket.connect_ex((host, int(port)))
+                if status:
+                    if status not in (errno.EINPROGRESS, errno.EWOULDBLOCK, errno.EALREADY,
+                                      errno.EINTR, getattr(errno, "WSAEWOULDBLOCK", errno.EWOULDBLOCK)):
+                        raise OSError(status, f"Cannot connect to {endpoint}")
+                    self.connect_deadline = time.monotonic() + 15
+            if self.connect_deadline is None:
+                self._connected()
+        except BaseException:
+            self.socket.close()
+            raise
+
+    def _connected(self):
+        self.socket.settimeout(15)
         self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         self.reader = self.socket.makefile("rb")
+        self.connect_deadline = None
+
+    def wait_connected(self):
+        if self.connect_deadline is None:
+            return
+        remaining = max(0, self.connect_deadline - time.monotonic())
+        _, writable, failed = select.select([], [self.socket], [self.socket], remaining)
+        if not writable and not failed:
+            raise TimeoutError(f"Timed out connecting to {self.port}")
+        status = self.socket.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR)
+        if status:
+            raise OSError(status, f"Cannot connect to {self.port}")
+        self._connected()
 
     def read(self, count):
         return self.reader.read(count)
@@ -48,7 +85,8 @@ class TcpStream:
         return len(data)
 
     def close(self):
-        self.reader.close()
+        if self.reader is not None:
+            self.reader.close()
         self.socket.close()
 
 
@@ -63,9 +101,9 @@ def decode_result(reply, elapsed, verify):
 
 
 class Board:
-    def __init__(self, port, baud=DEMO_BAUD):
+    def __init__(self, port, baud=DEMO_BAUD, *, start_ipv4=False):
         if ":" in port:
-            self.stream = TcpStream(port)
+            self.stream = TcpStream(port, start_ipv4=start_ipv4)
         else:
             self.stream = serial.Serial(port, baud, timeout=15, write_timeout=8)
             self.stream.reset_input_buffer()
@@ -90,6 +128,8 @@ class Board:
     def _request(self, features, verify, progress, meta):
         if len(features) != FEATURE_BYTES:
             raise ValueError("Expected 99×64 Q16 values")
+        if isinstance(self.stream, TcpStream):
+            self.stream.wait_connected()
         self.request = (self.request + 1) & 0xFFFFFFFF
         command = 5 if meta is not None else (4 if verify else 3)
         size = RESULT.size + (FEATURE_BYTES if verify else 0) + int(meta is not None)
@@ -157,6 +197,20 @@ def connect_for_audio(port, baud=DEMO_BAUD):
     """Start the TCP handshake while the caller reads and encodes the WAV."""
     with ExitStack() as connections:
         if ":" in port:
+            host = port.rsplit(":", 1)[0]
+            try:
+                socket.inet_pton(socket.AF_INET, host)
+            except OSError:
+                pass
+            else:
+                # Submit the SYN on the calling thread before decoding. The
+                # first inference waits for connect completion before sending.
+                board = connections.enter_context(Board(port, baud, start_ipv4=True))
+                def acquire():
+                    board.stream.wait_connected()
+                    return board
+                yield acquire
+                return
             # Join the opener before unwinding connections, including when
             # decoding fails before the caller obtains the board.
             with ThreadPoolExecutor(max_workers=1) as opener:
