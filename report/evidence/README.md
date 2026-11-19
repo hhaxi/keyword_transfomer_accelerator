@@ -13,3 +13,7 @@
 ffn1-layer04-ppa.txt 收录 2026-11-13 的 Q128 reference_sleep 服务器报告摘要。活动来自从 0 编号的第 4 层，含整机与分层功耗、时序、面积、宏清单和活动覆盖率。
 
 十二组层任务的平均周期和 DMA 阶段计数来自 undergrad_ffn1/q128_reference_sleep/cases/reference_sleep/output/verification/continuous.log。压缩传输字数来自同一案例的 x_transport.json 和 weight_transport.json。
+
+## 紧凑单路 Transformer 综合
+
+`encoder-compact1-ppa.txt` 整理用户提供的 2026-11-19 最新综合摘要。包含工艺与约束、面积范围、宏清单、带符号的时序裕量、最差路径、层次功耗和 SAIF 覆盖率。功耗窗口对应一条输入执行完整 12 层。新增宏面积由新增宏数量与 DC 报告的单宏面积相乘得到。

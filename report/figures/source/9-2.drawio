@@ -26,7 +26,7 @@
         <mxCell id="kwt-dma" value="" style="rounded=1;absoluteArcSize=1;arcSize=23;fillColor=#DEF6D6;strokeColor=#355843;strokeWidth=2.8;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="28" y="369" width="188" height="81" />
         </mxCell>
-        <mxCell id="kwt-dma-label" value="KWT5 DMA" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=25;fontColor=#355843;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="kwt-dma-label" value="FFN DMA" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=25;fontColor=#355843;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="31" y="376" width="182" height="65" />
         </mxCell>
         <mxCell id="inner" value="" style="rounded=1;absoluteArcSize=1;arcSize=28;fillColor=#DFEFFE;strokeColor=#234675;strokeWidth=2.8;" vertex="1" parent="1">
@@ -80,7 +80,7 @@
         <mxCell id="outer-round-robin" value="" style="rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#D1F7FF;strokeColor=#234675;strokeWidth=1.8;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="662" y="261" width="354" height="47" />
         </mxCell>
-        <mxCell id="outer-round-robin-label" value="Weighted Round Robin" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=23;fontColor=#234675;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="outer-round-robin-label" value="Round Robin and ICB Decode" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=23;fontColor=#234675;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="665" y="261" width="348" height="47" />
         </mxCell>
         <mxCell id="outer-owner" value="" style="rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#F8FBFE;strokeColor=#234675;strokeWidth=1.8;" vertex="1" parent="1">
@@ -92,16 +92,16 @@
         <mxCell id="dma-quota" value="" style="rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FEEDDD;strokeColor=#704725;strokeWidth=1.8;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="662" y="382" width="165" height="49" />
         </mxCell>
-        <mxCell id="dma-quota-label" value="DMA Quota  ·  8" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=20;fontColor=#704725;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="dma-quota-label" value="DMA Quota · 1" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=20;fontColor=#704725;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="665" y="382" width="159" height="49" />
         </mxCell>
         <mxCell id="host-quota" value="" style="rounded=1;absoluteArcSize=1;arcSize=15;fillColor=#FCCCDA;strokeColor=#704055;strokeWidth=1.8;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="840" y="382" width="176" height="49" />
         </mxCell>
-        <mxCell id="host-quota-label" value="Host Priority  ·  2" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=20;fontColor=#704055;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="host-quota-label" value="Host Priority · 0" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=20;fontColor=#704055;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="843" y="382" width="170" height="49" />
         </mxCell>
-        <mxCell id="quota-unit" value="Accepted requests  ·  Evaluated configuration" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=16;fontColor=#172332;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="quota-unit" value="Accepted requests · Compact single lane" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=16;fontColor=#172332;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="650" y="439" width="378" height="23" />
         </mxCell>
         <mxCell id="cpu-to-outer" value="" style="shape=stencil(pZLdDoMgDIWfhssZhDi3a+feA5VNIoIBf7a3H6YsOk00Znc9px/QliKa2JI1HBGsWM0RvSFCipqdss66yNkDePQcYDBKMGIvmW143oLXMyNYJjlkbGt0xQdRtP6IUCU3oh2zNEU0yVhePY3uVAG6YSM5RrXux5JecC68fN9+g+EVInfApVAzfCrV4+F1kydREP3FR+Gxenb4Vbvxdr/44PX4WPkrfmc8eG/6udSWzw0XTF/vxHIvHtrwHy2khOVa3LIEnQXbTdMP);fillColor=#F6FBFF;strokeColor=#234675;strokeWidth=3.2;" vertex="1" parent="1">

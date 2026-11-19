@@ -37,7 +37,7 @@
         <mxCell id="engine-title0" value="Encoder layer" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#234675;fontFamily=Times New Roman;fontSize=29;fontStyle=3;spacing=0;" vertex="1" parent="1">
           <mxGeometry x="72" y="489" width="316" height="36" as="geometry" />
         </mxCell>
-        <mxCell id="engine-body0" value="ENC1 + KWT5" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#234675;fontFamily=Times New Roman;fontSize=28;fontStyle=0;spacing=0;" vertex="1" parent="1">
+        <mxCell id="engine-body0" value="ENC1 + FFN" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#234675;fontFamily=Times New Roman;fontSize=28;fontStyle=0;spacing=0;" vertex="1" parent="1">
           <mxGeometry x="72" y="532" width="316" height="34" as="geometry" />
         </mxCell>
         <mxCell id="output0" value="" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#DFEFFE;strokeColor=#527AA8;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
@@ -95,7 +95,7 @@
         <mxCell id="engine-title1" value="Encoder layer" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#234675;fontFamily=Times New Roman;fontSize=29;fontStyle=3;spacing=0;" vertex="1" parent="1">
           <mxGeometry x="532" y="489" width="316" height="36" as="geometry" />
         </mxCell>
-        <mxCell id="engine-body1" value="ENC1 + KWT5" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#234675;fontFamily=Times New Roman;fontSize=28;fontStyle=0;spacing=0;" vertex="1" parent="1">
+        <mxCell id="engine-body1" value="ENC1 + FFN" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#234675;fontFamily=Times New Roman;fontSize=28;fontStyle=0;spacing=0;" vertex="1" parent="1">
           <mxGeometry x="532" y="532" width="316" height="34" as="geometry" />
         </mxCell>
         <mxCell id="output1" value="" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#DFEFFE;strokeColor=#527AA8;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">
@@ -153,7 +153,7 @@
         <mxCell id="engine-title2" value="Encoder layer" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#234675;fontFamily=Times New Roman;fontSize=29;fontStyle=3;spacing=0;" vertex="1" parent="1">
           <mxGeometry x="992" y="489" width="316" height="36" as="geometry" />
         </mxCell>
-        <mxCell id="engine-body2" value="ENC1 + KWT5" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#234675;fontFamily=Times New Roman;fontSize=28;fontStyle=0;spacing=0;" vertex="1" parent="1">
+        <mxCell id="engine-body2" value="ENC1 + FFN" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#234675;fontFamily=Times New Roman;fontSize=28;fontStyle=0;spacing=0;" vertex="1" parent="1">
           <mxGeometry x="992" y="532" width="316" height="34" as="geometry" />
         </mxCell>
         <mxCell id="output2" value="" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#DFEFFE;strokeColor=#527AA8;strokeWidth=2;fontFamily=Times New Roman;fontStyle=0;" vertex="1" parent="1">

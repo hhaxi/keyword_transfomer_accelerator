@@ -167,7 +167,7 @@
         <mxCell id="kwt-engine" value="" style="rounded=1;absoluteArcSize=1;arcSize=28;fillColor=#DEF6D6;strokeColor=#355843;strokeWidth=2.6;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="884" y="395" width="399" height="204" />
         </mxCell>
-        <mxCell id="kwt-engine-label" value="KWT5  ·  FFN Engine" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=27;fontColor=#355843;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="kwt-engine-label" value="FFN Row Engine" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=27;fontColor=#355843;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="903" y="402" width="361" height="32" />
         </mxCell>
         <mxCell id="kwt-regs" value="" style="rounded=1;absoluteArcSize=1;arcSize=12;fillColor=#D1F7FF;strokeColor=#234675;strokeWidth=1.5;" vertex="1" parent="1">
@@ -185,7 +185,7 @@
         <mxCell id="kwt-submodule-0" value="" style="rounded=1;absoluteArcSize=1;arcSize=14;fillColor=#F8FBFE;strokeColor=#355843;strokeWidth=1.55;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="901" y="486" width="175" height="89" />
         </mxCell>
-        <mxCell id="kwt-submodule-title-0" value="16-lane MAC Core" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=20;fontColor=#355843;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="kwt-submodule-title-0" value="Single FFN1 Core" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=20;fontColor=#355843;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="903" y="494" width="171" height="30" />
         </mxCell>
         <mxCell id="kwt-submodule-detail-0" value="FFN1 / FFN2" style="text;html=0;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontFamily=Times New Roman;fontSize=16;fontColor=#172332;fontStyle=0;" vertex="1" parent="1">

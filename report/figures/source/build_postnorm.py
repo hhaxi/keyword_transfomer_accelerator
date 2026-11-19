@@ -36,6 +36,6 @@ for a,b in [(52,78),(110,129),(155,175),(205,232),(328,351),(377,397),(427,455)]
 arrow([(205,64),(65,64),(65,142),(187,142)])
 arrow([(205,218),(45,218),(45,364),(187,364)])
 # Annotations remain editable drawio text cells.
-for x,y,w,h,text in [(8,160,80,18,'Residual X'),(48,310,55,18,'Residual Z'),(318,83,110,20,'ENC1'),(318,179,110,20,'ENC1'),(318,266,110,20,'KWT5'),(318,402,110,20,'ENC1'),(232,210,70,18,'Z: 99 x 64')]:
+for x,y,w,h,text in [(8,160,80,18,'Residual X'),(48,310,55,18,'Residual Z'),(318,83,110,20,'ENC1'),(318,179,110,20,'ENC1'),(318,266,110,20,'FFN'),(318,402,110,20,'ENC1'),(232,210,70,18,'Z: 99 x 64')]:
  counter+=1;cc=E.SubElement(r,'mxCell',id=str(counter+1),value=text,vertex='1',parent='1',style='text;align=center;fontFamily=Times New Roman;fontSize=11;strokeColor=none;fillColor=none;');E.SubElement(cc,'mxGeometry',x=str(x),y=str(H-y-h),width=str(w),height=str(h),attrib={'as':'geometry'});c.setFont('Times-Italic',11);c.setFillColor(HexColor('#526575'));c.drawCentredString(x+w/2,y+h/2-3,text)
 c.save();E.ElementTree(f).write(src,encoding='utf-8',xml_declaration=True)

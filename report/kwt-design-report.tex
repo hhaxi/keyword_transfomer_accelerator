@@ -147,7 +147,7 @@
 
 针对基础任务，在 150 MHz 目标频率下，基础 FFN1 的十二组层任务平均吞吐为\textbf{4,687 任务/秒}，新增面积为\textbf{0.506 mm\textsuperscript{2}}，占 2.25 mm\textsuperscript{2} 预算的 22.47\%；第 4 层任务的整机平均功耗为\textbf{37.3 mW}，单任务能耗为\textbf{7.60 $\mu$J}。十二组层参数下的 RTL 输出均与整数模型逐位一致，相对浮点参考的十二层最大汇总 \textbf{NRMSE} 为\textbf{0.022\%}。
 
-针对拓展任务，编码器采用\textbf{双引擎协同}，将完整 FFN、单头注意力、残差和 LayerNorm 组织为\textbf{十二层 PostNorm 编码器}。层内 FIFO 直传衔接算子，层间结果驻留复用中间特征，并结合突发传输减少共享 SRAM 搬运。十二层硬件输出与整数模型逐位一致；在 4,445 条本地验证样本上，定点模型的 Top-1 准确率为\textbf{97.89\%}，与浮点模型逐条预测一致，最大逐层聚合 \textbf{NRMSE} 为\textbf{0.171\%}。
+针对拓展任务，\textbf{十二层 PostNorm 编码器}集成完整 FFN、单头注意力、残差和 LayerNorm。紧凑单路版采用\textbf{层内 FIFO 直传、层间结果驻留和片内 SRAM 分区复用}。完整十二层任务耗时 4,206,337 拍，按 150 MHz 换算为\textbf{35.66 任务/秒}；新增综合面积为\textbf{1.489 mm\textsuperscript{2}}，整机 RTL-SAIF 平均功耗为\textbf{100.643 mW}，任务能量为\textbf{2.822 mJ}。十二层硬件输出与整数模型逐位一致。4,445 条本地验证记录的定点模型 Top-1 准确率为\textbf{97.89\%}，与浮点模型逐条预测一致，最大逐层聚合 \textbf{NRMSE} 为\textbf{0.171\%}。
 
 在 Z100 FPGA 上构建完整语音识别系统，贯通上位机音频处理与传输、板上十二层推理、软件分类及结果展示。40 MHz PL 配置的板上平均时延为\textbf{145.8 ms}，按 150 MHz 折算吞吐为\textbf{25.7 任务/秒}，端到端实测吞吐为\textbf{6.62 条输入/秒}。120 条分类样本的准确率为 99.17\%，板卡与定点软件参考的预测逐条一致。
 
@@ -259,7 +259,7 @@ Transformer 将序列间的关联建模与特征变换组织为重复堆叠的�
 
 \textbf{第七至九章展开完整编码器的拓展设计。} 补齐完整 FFN、单头注意力、残差与归一化运算，说明\textbf{双引擎的层内数据交接}与\textbf{十二层参数调度和结果驻留}，并解释共享 SRAM 的仲裁方式。
 
-\textbf{第十章评价编码器的功能与数值精度。} 通过算子、单层和十二层 RTL 比对检查运算及连续调度，再比较定点与浮点模型的分类结果、逐层误差和内部存储开销。
+\textbf{第十章给出编码器的验证与综合结果。} 通过算子、单层和十二层 RTL 比对检查运算及连续调度，以软件验证集评估分类与逐层误差，再给出紧凑单路版的存储、逻辑综合时序和 RTL-SAIF 功耗。
 
 \textbf{第十一章介绍 FPGA 实现与上板验证。} 说明 Z100 平台上的处理器、存储和接口适配，展示上位机识别结果，并给出布局布线后的资源、时序以及端到端实测性能。
 
@@ -1563,14 +1563,14 @@ E203（含 ITCM、DTCM） & 0.246 & 0.759 & 1.005 \\
 
 \section{拓展任务范围与总体架构}
 
-图~\ref{fig:7-1} 给出拓展 SoC 的系统互连。Host 通过 ICB 总线装载共享 SRAM 并回读结果，E203 经 MMIO 配置 ENC1 和 KWT5 并读取状态。两个引擎的 DMA 请求由内层仲裁器汇入系统总线。在直传配置下，LN1 打包结果经 32 位输入 FIFO 送入 KWT5，FFN2 的 INT40 结果经 40 位结果 FIFO 返回 ENC1。共享 SRAM 交接可作为对照配置。十二层复用同一套硬件并逐层更新参数。
+图~\ref{fig:7-1} 给出拓展 SoC 的系统互连。Host 通过 ICB 总线装载共享 SRAM 并回读结果，E203 经 MMIO 配置 ENC1 和 FFN 并读取状态。两个计算模块的 DMA 请求由内层仲裁器汇入系统总线。LN1 打包结果经 32 位输入 FIFO 送入 FFN，FFN2 的 INT40 结果经 40 位结果 FIFO 返回 ENC1。紧凑单路版采用一套 FFN1 行计算通路，配套 GELU、FFN2 和双槽结果缓存。十二层复用同一套硬件并逐层更新参数。
 
 \begin{figure}[!htbp]\centering
 \includegraphics[width=.94\linewidth]{figures/7-1.pdf}
 \caption{拓展 SoC 的控制、参数装载与激活直传通路}\label{fig:7-1}
 \end{figure}
 
-FFN 的两级线性层对每个 token 执行相同的矩阵乘加，KWT5 复用原线性计算通路并增加 GELU 和中间激活存储。ENC1 按阶段复用乘法资源，执行注意力投影、点积、概率加权和归一化。注意力按查询行归约 99 个分数，LayerNorm 则按 token 归约 64 个特征。模块职责见表~\ref{tab:ch7-1}。第十章给出拓展配置的周期与结构资源统计。
+FFN 的两级线性层对每个 token 执行相同的矩阵乘加。ENC1 按阶段复用乘法资源，执行注意力投影、点积、概率加权和归一化。注意力按查询行归约 99 个分数，LayerNorm 则按 token 归约 64 个特征。模块职责见表~\ref{tab:ch7-1}。第十章给出紧凑单路版的周期、存储和 PPA。
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
 \caption{拓展计算模块的职责与控制基址}\label{tab:ch7-1}
@@ -1579,7 +1579,7 @@ FFN 的两级线性层对每个 token 执行相同的矩阵乘加，KWT5 复用�
 \rowcolor{TableHeader}
 \multicolumn{1}{c}{{\sffamily\mdseries 模块}} & \multicolumn{1}{c}{{\sffamily\mdseries 基址}} & \multicolumn{1}{c}{{\sffamily\mdseries 承担运算}} \\
 \midrule
-FFN 引擎（KWT5） & \texttt{0x40000000} & FFN1、GELU、FFN2 \\
+FFN 行引擎 & \texttt{0x40000000} & FFN1、GELU、FFN2 \\
 编码器伴随引擎（ENC1） & \texttt{0x40080000} & 单头自注意力、两次残差相加和两次 LayerNorm \\
 \bottomrule
 \end{tabular}
@@ -1653,7 +1653,7 @@ A=(PV)W_o+b_o.
 \caption{单头注意力的矩阵运算与逐行缓存复用~\cite{transformer}}\label{fig:7-2}
 \end{figure}
 
-如图~\ref{fig:7-2} 所示，由于 $P$ 的第 $i$ 行只参与 $PV$ 的第 $i$ 行，ENC1 依次完成同一查询的打分、Softmax 和加权，再覆写缓存。分数与概率共用一块深度为 128、宽度为 32 位的存储（0.5 KiB），其中每行使用 99 项。若保存任一完整的 $99\times99$ 中间矩阵，则需要约 38.3 KiB。逐行计算将这部分缓存的规模从 $O(N^2)$ 降到 $O(N)$，$Q,K,V$ 的驻留空间另计。
+如图~\ref{fig:7-2} 所示，$P$ 的第 $i$ 行只参与 $PV$ 的第 $i$ 行。ENC1 依次完成一个查询行的打分、Softmax 和加权，再覆写缓存。紧凑配置使用两块 $128\times32$ 位单端口行缓存，共 1 KiB，每块最多使用 99 项。第一块存分数及归一化后的概率，第二块存指数项。若保存任一完整的 $99\times99$ 中间矩阵，则需要约 38.3 KiB。逐行计算使这部分缓存的规模为 $O(N)$。
 
 \subsection{逐行定点 Softmax}
 
@@ -1662,7 +1662,7 @@ A=(PV)W_o+b_o.
 \Delta_j=s_{\max}-s_j,\qquad
 e_j=e^{-\Delta_j},\qquad p_j=\frac{e_j}{\sum_k e_k}.
 \]
-逐项读取分数后，$\Delta_j\ge16$ 的指数项按实现阈值置零。其余指数转写为 $2^{-\Delta_j\log_2 e}$，令 $\Delta_j\log_2 e=I+F$，其中 $I$ 为整数部分、$F$ 为小数部分。用相邻表值插值得到 $2^{-F}$，右移 $I$ 位得到 Q24 指数，再写回该项并累加行和。指数全部写完后，除法器对行和只求一次倒数；逐项读取指数、乘倒数并右移 24 位后，将概率写回同一缓存，随后供 $PV$ 读取。图~\ref{fig:softmax-row} 标出各阶段的依赖，具体定点参数见表~\ref{tab:ch7-4}。
+逐项读取分数后，$\Delta_j\ge16$ 的指数项按实现阈值置零。其余指数转写为 $2^{-\Delta_j\log_2 e}$，令 $\Delta_j\log_2 e=I+F$，其中 $I$ 为整数部分、$F$ 为小数部分。用相邻表值插值得到 $2^{-F}$，右移 $I$ 位得到 Q24 指数。指数流水从分数缓存取数，将结果写到指数缓存并累加行和。除法器对行和求一次倒数，再逐项读取指数、乘倒数并右移 24 位，将概率写回第一块缓存供 $PV$ 读取。图~\ref{fig:softmax-row} 标出各阶段的依赖，具体定点参数见表~\ref{tab:ch7-4}。
 
 \begin{figure}[!htp]\centering
 \includegraphics[width=.67\linewidth]{figures/softmax-row.pdf}
@@ -1693,9 +1693,7 @@ LayerNorm & 每行 64 特征，$\epsilon=4295\times2^{-32}$，整数 \texttt{isq
 \end{tabular}
 \end{table}
 
-ENC1 的投影、评分、概率加权和 LayerNorm 统计按阶段执行，因此分时共享\textbf{4 路 $32\times32$ 乘法器与 4 路 72 位累加寄存器}，非线性查表、倒数和平方根另设控制逻辑，资源用途见表~\ref{tab:ch7-5}。
-
-Q/K/V 投影共执行 308,886 拍，其中 304,128 拍进行有效乘加，投影阶段的乘法器活动占比为 98.46\%。其余编码器阶段按各自的数据依赖和调度顺序执行，算子及系统级验证见第十章。
+紧凑单路版将\textbf{32 路 $32\times32$ 乘法器}分时用于投影、注意力打分和概率加权。投影每次为四列各处理八个 $k$ 元素，打分可并行处理 32 个元素。投影输入行与查询行复用寄存器。$X,Q,K,V$ 按地址分区存于同一组 SRAM，投影权重写入各区的空闲地址。LayerNorm、非线性查表和行倒数按各自的运算依赖执行，资源用途见表~\ref{tab:ch7-5}。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
 \caption{共享算术资源与各阶段用途}\label{tab:ch7-5}
@@ -1704,8 +1702,8 @@ Q/K/V 投影共执行 308,886 拍，其中 304,128 拍进行有效乘加，投�
 \rowcolor{TableHeader}
 \multicolumn{1}{c}{{\sffamily\mdseries 资源}} & \multicolumn{1}{c}{{\sffamily\mdseries 数量}} & \multicolumn{1}{c}{{\sffamily\mdseries 服务的阶段}} \\
 \midrule
-$32\ensuremath{\times}32$ 乘法器 & 4 & Q/K/V 投影、QK、PV、方差、仿射 \\
-累加寄存器 & 4 路，每路 72 位 & 投影和加权分别累加 4 个输出，点积和方差使用一路 \\
+$32\ensuremath{\times}32$ 主乘法阵列 & 32 & Q/K/V/O 投影、QK 和 PV 分时复用 \\
+投影/查询行寄存器 & 两组 1,024 位 & 缓存一行 64 个特征，供投影或打分重用 \\
 指数插值辅助算术 & 独立 & Softmax 的查表插值与归零判断 \\
 GELU 辅助算术 & 独立 & 激活查表与插值 \\
 \bottomrule
@@ -1741,7 +1739,7 @@ Y &= \operatorname{LN2}(Z + F).
 两处层归一化（LayerNorm）均对序列每个位置 $i \in [0,98]$ 的 $D=64$ 个特征通道独立执行标准化与仿射变换。设单行残差相加并饱和至 INT32 后的特征向量为 $z = (z_0, z_1, \ldots, z_{63})$，硬件按图~\ref{fig:layernorm-row} 所示的四个依赖步骤完成单行处理：
 \begin{enumerate}\linespread{1.15}\selectfont\setlength{\itemsep}{2pt}\setlength{\parsep}{0pt}
 \item \textbf{行均值与中心化：} 对 64 个通道求和并算术右移 6 位得到整数均值 $\mu = \lfloor \sum_{c=0}^{63} z_c / 64\rfloor$，随后逐通道计算中心化差值 $d_c = \operatorname{sat}_{32}(z_c - \mu)$；
-\item \textbf{总体方差计算：} 利用共享的 4 路 $32\times32$ 乘法器与 72 位累加器累加 $\sum_{c=0}^{63} d_c^2$，除以 64 得到总体方差 $\sigma^2$；
+\item \textbf{总体方差计算：} 归一化通路按每组四个通道计算平方，用 72 位累加器累加 $\sum_{c=0}^{63} d_c^2$，除以 64 得到总体方差 $\sigma^2$；
 \item \textbf{加 $\epsilon$、整数平方根与倒数：} 将方差加上防零除常数 $\epsilon$，检查 72 位累加结果的高位，取低 64 位送入整数平方根单元（\texttt{kwt\_isqrt64}）求出标准差 $\text{std} = \lfloor\sqrt{\sigma^2+\epsilon}\rfloor$，再通过定点除法算出归一化倒数因子 $\text{inv\_std} = \lfloor 2^{36} / \text{std}\rfloor$；
 \item \textbf{逐通道仿射与饱和：} 对每个通道执行 $(d_c \cdot \text{inv\_std})\cdot\gamma_c + \beta_c$，经 RNE 舍入后饱和至 INT32（Q16 尺度）。
 \end{enumerate}
@@ -1756,16 +1754,16 @@ Y &= \operatorname{LN2}(Z + F).
 \FloatBarrier
 \section{LN1 输入与 FFN 输出的 FIFO 交接}\label{sec:extension-fifo-link}
 
-{\interlinepenalty=10000 图~\ref{fig:dual-engine-flow} 标出两条 FIFO 的启动条件。E203 可在注意力计算期间启动 FFN 权重预装。ENC1 完成整层 LN1 算术后，才将结果舍入、饱和为 INT16，每两项打包成一个 32 位字。权重就绪后，KWT5 接收输入，首个 8 行块的 256 个字到齐即可起算。其余输入继续发送，最后 3 行按 96 个字判断就绪。整层共发送 3,168 字。\par}
+{\interlinepenalty=10000 图~\ref{fig:dual-engine-flow} 标出两条 FIFO 的交接顺序。E203 在注意力计算期间启动 FFN 权重预装。ENC1 完成整层 LN1 后，将结果舍入、饱和为 INT16，每两项打包成一个 32 位字。紧凑单路版将 3,168 字收进本地输入 SRAM，完成该层输入装载后启动行计算。\par}
 
 \begin{figure}[!htp]\centering
 \includegraphics[width=\linewidth]{figures/dual-engine-flow.pdf}
 \caption{权重预装、LN1 分块发送与 FFN 结果消费时序}\label{fig:dual-engine-flow}
 \end{figure}
 
-FFN1 读取单端口 X SRAM 时，后续 LN1 数据只能等空闲拍写入。FFN2 读取的是独立的 GELU 激活 SRAM，此时 X SRAM 可以接收后续数据。这样即使 FFN2 受结果 FIFO 背压，输入侧仍可在 X 端口空闲时继续交付。尾段启动后从 40 位 FIFO 逐项接收 FFN2 输出，经重缩放后完成第二次残差和 LN2。
+行计算阶段，FFN1 从本地 SRAM 取数，GELU 与 FFN2 通过交替的激活页交接，可重叠下一块装填与当前块计算。完成的输出行进入两个交替行槽，结果按原行序送至 40 位 FIFO。尾段从 FIFO 接收 FFN2 输出，经尺度转换后完成第二次残差和 LN2；若行槽和 FIFO 被占满，FFN2 保持待传结果，等待下游接收。
 
-前段与尾段是同一个 ENC1 的两条固件命令。前段完成表示全部输入字已交给 FIFO，FIFO 中仍可能有数据等待 KWT5 接收。E203 随即启动尾段并等待两个模块完成；任一侧报错或取消时停止新请求、清空 FIFO 并排空已发事务。命令边界见表~\ref{tab:ch8-1}，两种交接方式的功能核对见第~\ref{sec:extension-single-layer}~节。
+前段与尾段是同一个 ENC1 的两条固件命令。前段完成表示全部输入字已交给 FIFO，FIFO 中仍可能有数据等待 FFN 接收。E203 随即启动尾段并等待两个模块完成；任一侧报错或取消时停止新请求、清空 FIFO 并排空已发事务。命令边界见表~\ref{tab:ch8-1}，交接方式的功能核对见第~\ref{sec:extension-single-layer}~节。
 
 \begin{table}[!htp]\centering\fontsize{9.5}{12.5}\selectfont
 \caption{ENC1 两条命令的职责与完成条件}\label{tab:ch8-1}
@@ -1786,7 +1784,7 @@ FFN1 读取单端口 X SRAM 时，后续 LN1 数据只能等空闲拍写入。FF
 
 \section{逐层参数装载与 E203 调度}
 
-十二层编码器复用同一套双引擎，通过逐层更新参数完成连续计算。每层按前段、完整 FFN 和尾段的依赖关系执行，两侧状态确认完成后再进入下一层。每层更新 33,408 个 32 位字，其中 ENC1 的投影、偏置和归一化参数占 16,704 字，KWT5 的两层权重与偏置另占 16,704 字。ENC1 参数组成见表~\ref{tab:ch9-1}，逐层调度流程见图~\ref{fig:layer12-flow}。
+十二层编码器复用同一套计算模块，通过逐层更新参数完成连续计算。每层更新 33,408 个 32 位字，其中 ENC1 的投影、偏置和归一化参数占 16,704 字，FFN 的两层权重与偏置另占 16,704 字。当前层参数已进入片内后，E203 发布参数区释放标记，Host 可在当前层尾段执行期间预装下一层参数。ENC1 参数组成见表~\ref{tab:ch9-1}，逐层调度流程见图~\ref{fig:layer12-flow}。
 
 \begin{figure}[!htbp]\centering
 \includegraphics[width=.93\linewidth]{figures/9-1.pdf}
@@ -1839,21 +1837,18 @@ $\gamma_2$、$\beta_2$ & 各 64 & LN2 仿射参数 \\
 \Needspace{.57\textheight}
 \section{共享 SRAM 访问与两级仲裁}
 
-图~\ref{fig:9-2} 区分两个仲裁层级。内层 \texttt{kwt\_dma\_arbiter} 将 KWT5 和 ENC1 的 DMA 请求汇成一路，按已接受请求的归属回送响应。两路同时请求时，内层轮转；遇到背压则保持当前请求。外层 \texttt{kwt\_bus\_fabric} 在 E203、Host 和汇总后的 DMA 端口之间授权，目标是单端口共享 SRAM。
+图~\ref{fig:9-2} 区分两个仲裁层级。内层 \texttt{kwt\_dma\_arbiter} 将 FFN 和 ENC1 的 DMA 请求汇成一路，按已接受请求的归属回送响应。两路同时请求时，内层轮转；遇到背压则保持当前请求。外层 \texttt{kwt\_bus\_fabric} 在 E203、Host 和汇总后的 DMA 端口之间授权，E203 的 \texttt{sirv\_icb1to8\_bus} 再按地址分发请求。紧凑单路版采用 \texttt{DMA\_BURST}=1、\texttt{HOST\_BURST}=0。
 
 \begin{figure}[H]\centering
 \includegraphics[width=.88\linewidth]{figures/9-2.pdf}
-\caption{拓展系统的两级仲裁与外层有界授权}\label{fig:9-2}
+\caption{拓展系统的两级仲裁与 ICB 地址分发}\label{fig:9-2}
 \end{figure}
 
-\begin{enumerate}
-\item \textbf{DMA 额度（\texttt{DMA\_BURST}=8）。} 外层接纳一笔 DMA 请求后，在额度内保留 DMA 轮转优先位置，一个轮转额度最多计入 8 笔已接受请求；DMA 无请求时，其他主设备仍可获准。内层继续决定由哪个引擎提供具体请求。
-\item \textbf{Host 优先额度（\texttt{HOST\_BURST}=2）。} 外层未锁定请求且额度未用完时，可让 Host 优先获得授权。计数按请求接纳更新，每次 CPU 请求被接受后重置。插入的 Host 优先授权保留原轮转位置及已用 DMA 额度。
-\end{enumerate}
+外层锁定未被接纳的请求，并跟踪已接纳事务的响应归属。该配置在一次接纳后轮转，Host 与其他主设备共同竞争共享 SRAM。SRAM 仍按单端口节拍受理访问；层间预装与计算重叠由两侧对本地缓存和共享参数区的分工实现。
 
-\chapter{编码器功能验证与数值评估}\label{chap:encoder-validation}
+\chapter{编码器验证、资源与综合评估}\label{chap:encoder-validation}
 
-本章从算子、单层和十二层三个层级检查编码器的 RTL 功能，分析参数切换、FIFO 交接与层间驻留的测试结果，再以扩展验证集评价定点与浮点模型的分类一致性和逐层数值误差，最后统计双引擎的内部存储开销。
+本章从算子、单层和十二层三个层级核对编码器功能，以扩展验证集评估定点与浮点模型的分类一致性和逐层误差，再给出紧凑单路版的内部 SRAM、ASIC 综合时序和 RTL-SAIF 功耗。
 
 \section{RTL 功能验证}\label{sec:extension-rtl}
 
@@ -1881,10 +1876,10 @@ LN2 整数输出 & 恢复 Q16 后的 99\ensuremath{\times}64 & 残差 2、LN2 \\
 
 \subsection{十二层验证}\label{sec:extension-twelve-layer}
 
-启用 FIFO 直传与层间片内驻留，固定 \texttt{DMA\_BURST}=8，分别在 \texttt{HOST\_BURST}=0 与 \texttt{HOST\_BURST}=2 两种仲裁配置下运行 12 条语音输入，每条连续执行全部 12 层（每种配置累计 144 个层实例）。整机仿真从 Host 装载输入与参数开始计时至末层完成写回止，在 \texttt{HOST\_BURST}=2 配置下每条完整任务耗时为 13,855,994 拍。逐层比对 LN1、FFN、LN2 与末层外部写回结果，表~\ref{tab:ch9-4} 所列全部比对项均无失配，确认跨层参数切换、片内驻留与最终输出写回均按设计时序正确衔接。
+紧凑单路版启用 FIFO 直传、层间片内驻留和下一层参数预装。冻结向量回归运行 12 条输入，每条执行全部 12 层，共 144 个层实例。逐层核对 LN1 直传字和 FFN INT40 结果，再从共享 SRAM 回读末层输出，表~\ref{tab:ch9-4} 的各项比对均通过。综合配套 VCS 仿真采集其中一条完整十二层任务，确认 11 次跨层参数预装及 6,336 个最终输出，测量窗口为 4,206,337 拍。
 
 \begin{table}[H]\centering\fontsize{10}{13}\selectfont
-\caption{十二层整机回归的比对数量（每种配置共 12 条输入）}\label{tab:ch9-4}
+\caption{紧凑单路版十二层整机回归的比对数量（12 条输入）}\label{tab:ch9-4}
 \begin{tabular}{@{\hspace{2pt}}ccc@{\hspace{5pt}}}
 \toprule
 \rowcolor{TableHeader}
@@ -1892,7 +1887,6 @@ LN2 整数输出 & 恢复 Q16 后的 99\ensuremath{\times}64 & 残差 2、LN2 \\
 \midrule
 LN1 打包输出 & 456,192 & $3{,}168\times144$ \\
 FFN INT40 结果 & 912,384 & $6{,}336\times144$ \\
-LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 最终编码器输出 & 76,032 & $6{,}336\times12$ \\
 \bottomrule
 \end{tabular}
@@ -1924,27 +1918,93 @@ LN2 INT32 结果 & 912,384 & $6{,}336\times144$ \\
 
 \section{资源开销}
 
-表~\ref{tab:ch10-4} 统计第七至九章 E203 编码器配置中的片内存储。KWT5 的 88.5 KiB 用于两级线性层的参数及 GELU 中间激活。ENC1 的 146.5 KiB 用于 $X,Q,K,V$、分时复用的投影权重、归一化参数和单行分数及概率缓存。
+表~\ref{tab:ch10-4} 按紧凑单路版展开后的层次统计加速器内部 SRAM。ENC1 的 131 KiB 包含 $X,Q,K,V$ 和投影权重的共用区、偏置与归一化参数及两块 Softmax 行缓存。FFN 行引擎的 91.5 KiB 包含参数、行输入、GELU 激活页和结果行槽。E203 的 128 KiB ITCM/DTCM 与 512 KiB 共享 SRAM 另计。
 
 \begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
-\caption{拓展配置的内部 SRAM 用途与容量}\label{tab:ch10-4}
-\begin{tabular}{@{\hspace{2pt}}ccl@{\hspace{5pt}}}
+\caption{紧凑单路版的内部 SRAM 组织与容量}\label{tab:ch10-4}
+\begin{tabular}{@{}lrrrr@{}}
 \toprule
 \rowcolor{TableHeader}
-\thcell{内容} & \thcell{容量} & \thleft{说明} \\
+\thleft{范围} & \thcell{$128\times16$} & \thcell{$1024\times16$} & \thcell{$4096\times16$} & \thcell{容量} \\
 \midrule
-完整 FFN 数据通路 & 88.5 KiB & 第一、第二线性层与 GELU 缓冲 \\
-$X$、$Q$、$K$、$V$ 四组向量缓存 & 128 KiB & 注意力中间量 \\
-复用的一组投影权重 & 16 KiB & Q/K/V/O 依次复用 \\
-输出偏置与两组 LN 参数 & 2 KiB & 逐层更新 \\
-单行分数/概率缓存 & 0.5 KiB & 逐行复用 \\
+ENC1 & 12 & 64 & 0 & 131 KiB \\
+FFN 行引擎 & 14 & 36 & 2 & 91.5 KiB \\
 \midrule
-合计 & 235 KiB & 240,640 B，122 个 16 位宏 \\
+新增内部合计 & 26 & 100 & 2 & 222.5 KiB \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-片内存储合计 235 KiB，由 122 个 16 位单端口宏组成，其中 $4096\times16$ 宏 2 个、$1024\times16$ 宏 108 个、$128\times16$ 宏 12 个。
+新增内部共 128 个单端口宏。整机共 208 个宏，容量 883,200 B（862.5 KiB）。综合后的宏计数与 RTL 展开一致。
+
+\section{逻辑综合与活动功耗}\label{sec:extension-synthesis}
+
+\subsection{综合设置与结果}
+
+ASIC 顶层为 \texttt{kwt\_encoder\_soc}。RTL 取自 \texttt{fpga} 分支提交 \texttt{d9b7a03} 的紧凑单路配置，采用 \texttt{KWT\_COMPACT=1}、\texttt{DMA\_BURST=1} 和 \texttt{HOST\_BURST=0}，综合包对 E203 ICB 的计数器连线作位宽适配。使用 Synopsys Design Compiler 的 \texttt{compile\_ultra -no\_autoungroup}。目标库为 \texttt{SMIC 40 nm SCC40NLL VHSC40 RVT SS} 与同角的 \texttt{RAMSP} 单端口宏库（0.99 V，125\,\ensuremath{^\circ}C），用于评估慢速、高温条件下的建立时间裕量。
+
+\texttt{core\_clk} 周期为 6.666667 ns，Setup 与 Hold uncertainty 均为 0.100 ns。输入和输出 delay 的 \texttt{-max} 均为 1.000 ns，\texttt{-min} 均为 0.000 ns；输出负载为 0.020 pF。该批次采用库的默认工艺角，面积表按库面积单位换算，互连面积在 DC 报告中记为 \texttt{undefined}。
+
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{紧凑单路 Transformer SoC 的综合面积与时序}\label{tab:extension-dc}
+\begin{tabularx}{\textwidth}{@{}L{1.11}L{0.89}@{}}
+\toprule
+\rowcolor{TableHeader}
+指标 & DC 结果 \\
+\midrule
+整机 / 新增单元面积 & 3.727416 / 1.489217 mm\textsuperscript{2} \\
+E203（含 TCM） / 共享 SRAM & 0.475838 / 1.762360 mm\textsuperscript{2} \\
+整机 / 新增 SRAM 宏面积 & 3.240876 / 1.039490 mm\textsuperscript{2} \\
+新增逻辑面积（扣除 SRAM 宏） & 0.449727 mm\textsuperscript{2} \\
+整机单元数 / 时序单元数 & 239,365 / 19,294 \\
+\texttt{core\_clk} 组关键路径长度 & 6.17 ns \\
+Setup WNS / TNS / 违例路径 & 0.00 ns / 0.00 ns / 0 \\
+SS Hold WNS / TNS / 违例路径 & $-0.17$ ns / $-81.50$ ns / 1,433 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+新增面积计入 ENC1、FFN、内部 SRAM、DMA 和接口，占 2.25 mm\textsuperscript{2} 预算的 66.19\%。其中 SRAM 宏占新增面积的 69.80\%。150 MHz 的 SS 建立时间检查无违例，最差路径位于 Softmax 指数插值流水。SS 最差保持路径从注意力打分流水寄存器到指数缓存宏；1,433 条保持违例中，73 条位于输入路径组，1,360 条位于核心时钟路径组。
+
+\subsection{完整任务吞吐与功耗}
+
+VCS 的活动窗口从 Host 开始写入输入，到 Host 观察到末层完成标志为止，覆盖参数装载、十二层执行和最终 DMA 写回共享 SRAM。Host 回读 6,336 个结果用于随后比对。DC 将该窗口的 RTL SAIF 标注到映射网表，功耗估算基于一条输入的完整任务。
+
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{十二层任务的周期、吞吐与 RTL-SAIF 功耗}\label{tab:extension-power}
+\begin{tabularx}{\textwidth}{@{}L{1.12}L{0.88}@{}}
+\toprule
+\rowcolor{TableHeader}
+指标 & 紧凑单路版 \\
+\midrule
+任务周期 & 4,206,337 拍 \\
+时延 / 吞吐（150 MHz） & 28.042 ms / 35.660 任务/秒 \\
+整机开关 / 内部功耗 & 49.629 / 44.897 mW \\
+整机动态 / 漏电 / 总功耗 & 94.526 / 6.120 / 100.643 mW \\
+单任务能量（整机） & 2,822.256 $\mu$J \\
+端口 / 时序单元 SAIF 覆盖率 & 141/141（100\%）/ 9,044/19,294（46.87\%） \\
+切换活动标注冲突（\texttt{PWR-19}） & 213 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[!htp]\centering\fontsize{10}{13}\selectfont
+\caption{SoC 主要层次的 RTL-SAIF 功耗（mW）}\label{tab:extension-power-hierarchy}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\rowcolor{TableHeader}
+\thleft{层次} & \thcell{开关} & \thcell{内部} & \thcell{动态} & \thcell{漏电} & \thcell{总计} \\
+\midrule
+E203（含 TCM） & 44.927 & 0.961 & 45.888 & 0.760 & 46.648 \\
+\quad TCM & 0.002 & 0.086 & 0.088 & 0.738 & 0.825 \\
+系统总线子系统 & 4.700 & 43.935 & 48.635 & 5.360 & 53.992 \\
+\quad ENC1 & 2.693 & 22.629 & 25.322 & 1.500 & 26.824 \\
+\quad 共享 SRAM & 0.079 & 8.005 & 8.084 & 2.950 & 11.031 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+总功耗采用 DC 顶层报告值，任务能量按总功耗乘以 150 MHz 下的任务时长计算。表~\ref{tab:extension-power-hierarchy} 中 E203 占整机总功耗的 46.35\%。子层次功耗已计入上级，数值对应当前 SAIF 标注覆盖率和活动冲突。原始摘要见 \src{report/evidence/encoder-compact1-ppa.txt}。
 
 \chapter{FPGA 实现与上板验证}\label{sec:fpga-validation}
 
@@ -2125,16 +2185,18 @@ SoC 联调与异常处理 & 驱动完成任务启动与状态管理，支持 IRQ
 \addlinespace[3pt]
 十二层与参数调度 & 逐层更新权重、偏置与归一化参数，层间输出片内驻留，末层结果写回共享 SRAM。 & 第九、十章 \\
 \addlinespace[3pt]
+ASIC 逻辑综合 & 完成紧凑单路版工艺映射、时序检查和整条十二层任务的 RTL-SAIF 功耗估算。 & 第十章 \\
+\addlinespace[3pt]
 FPGA 系统实现 & 在 Z100 部署含 E203 与 512 KiB 共享 SRAM 的编码器 SoC，完成板上推理和 Cortex-A9 分类。 & 第十一章 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-多层执行中，中间结果的搬运会不断累积，因此拓展设计着重打通\textbf{算子之间和相邻层之间的数据通路}。LN1 输出经 FIFO 直送 FFN，LN2 输出留在片内作为下一层输入，减少共享 SRAM 的往返访问。第十章 RTL 配置配合突发传输和总线仲裁，十二层完整任务周期为 13,855,994 拍。
+紧凑单路版通过\textbf{算子直传、层间驻留和参数预装}降低中间特征搬运开销。完整十二层任务为 4,206,337 拍，按 150 MHz 折算为 35.660 任务/秒。DC 统计新增面积为 1.489217 mm\textsuperscript{2}，SS 建立时间无违例，最差保持裕量为 $-0.17$ ns。单条输入的完整任务 RTL-SAIF 估算整机功耗为 100.643 mW，任务能量为 2.822 mJ。详细口径见第~\ref{sec:extension-synthesis}~节。
 
 定点位宽与非线性近似同时兼顾硬件开销和分类效果。在 4,445 条本地验证记录上，\textbf{定点与浮点模型的 Top-1 均为 97.8853\%，逐条预测一致}；最大逐层聚合 NRMSE 为 0.171308\%。
 
-Z100 FPGA 的 40 MHz 配置连续处理 120 次请求，板上平均周期为 5,830,108.37 拍，按 150 MHz 折算为 25.73 任务/秒。包含上位机预处理和分类的端到端实测吞吐为 6.62 条输入/秒。固定分类验证样本中，板卡与定点软件参考逐条一致，119/120 条命中真实标签。
+第十一章记录的 Z100 FPGA 40 MHz 验证配置连续处理 120 次请求，板上平均周期为 5,830,108.37 拍，按 150 MHz 折算为 25.73 任务/秒；包含上位机预处理和分类的端到端实测吞吐为 6.62 条输入/秒。板卡与定点软件参考逐条一致，119/120 条命中真实标签。
 
 \clearpage
 
@@ -2173,6 +2235,10 @@ LN1 输出直接送入 FFN，结合权重预装载减少共享 SRAM 的读写与
 层间结果驻留 &
 将 LN2 输出保留为下一层输入，仅在最终层写回结果。与逐层写回再读取比较传输量。 &
 第~\ref{sec:extension-resident} 节 \\
+\addlinespace[3pt]
+紧凑单路编码器 &
+按地址分区复用 $X,Q,K,V$ 与投影权重 SRAM，投影与注意力共享主乘法器；FFN 采用单路行计算、交替激活页和双结果行槽。以完整任务周期和新增面积评估。 &
+第七、八章，第~\ref{sec:extension-synthesis} 节 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -2250,6 +2316,8 @@ LN1 直传：任务周期 & 14,549,345 & 14,315,119 & 1.61\% \\
 
 DMA 字数按两个加速器访问共享 SRAM 的 32 位传输总量统计。LN1 直传省去编码器侧写入与 FFN 侧读取各 38,016 字，候选实现通过 12 条输入的十二层逐位检查。两轮的基线及调度配置不同，各自以同轮对照计算相对收益。原始数据见 \src{docs/encoder-performance.md} 和 \src{docs/input-stream-validation.json}。
 
+\textbf{完整配置的迭代结果。} 早期拓展整机的十二层任务为 13,855,994 拍。紧凑单路版同时采用计算资源复用、行流水和相邻层参数预装，任务周期降至 4,206,337 拍，减少 69.64\%，150 MHz 折算吞吐从 10.83 提高到 35.66 任务/秒。单路版新增内部 SRAM 为 222.5 KiB，早期配置为 235 KiB。该组数据反映整套架构与调度的共同变化，各项搬运机制的独立收益见表~\ref{tab:innovation-encoder-ab}。
+
 \clearpage
 
 \chapter*{参赛感想}
@@ -2315,12 +2383,13 @@ MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单�
 
 \chapter{实验配置与结果说明}\label{app:scope}
 
-基础配置在 E203 SoC 上开展 RTL 验证和 40 nm 工艺映射评估，拓展配置完成十二层编码器 RTL 回归、软件数值评估与 Z100 FPGA 实现。各类结果的实验配置如下。
+基础与拓展配置分别在 E203 SoC 上开展 RTL 验证和 40 nm 工艺映射评估。拓展验证还包括软件数值评估与 Z100 FPGA 实现。各类结果的实验配置如下。
 
 \begin{enumerate}
 \item \textbf{基础计算与数值精度：} Q128 \Q{} 采用 INT16 输入与权重、INT40 累加以及右移 15 位的 RNE 写回。本地 9,982 条样本共执行 119,784 次 FFN1，十二层最大汇总 NRMSE 为 0.022189\%，单任务最大值为 0.033962\%。
 \item \textbf{基础工艺与效率：} 新增面积 0.505555 mm\textsuperscript{2}，十二组层任务平均吞吐 4,686.50 任务/秒（150 MHz 折算）。第 4 层的 RTL-SAIF 功耗为 37.346 mW，任务能量为 7.6038 $\mu$J。Setup WNS 为 0.00 ns，SS 角 Hold WNS 为 $-0.17$ ns。
-\item \textbf{拓展计算与实现平台：} 第十章的编码器 RTL 配置包含 122 个内部 SRAM 宏，合计 235 KiB。4,445 条本地验证记录的定点和浮点 Top-1 均为 97.8853\%。第十一章的 Z100 版本采用 40 MHz PL 时钟，板上平均时延为 145.75 ms。
+\item \textbf{拓展 ASIC：} 紧凑单路版含 128 个新增内部 SRAM 宏，合计 222.5 KiB。新增综合面积为 1.489217 mm\textsuperscript{2}，150 MHz 等效吞吐为 35.660 任务/秒。单条输入的十二层 RTL-SAIF 估算整机功耗为 100.643 mW，任务能量为 2,822.256 $\mu$J。Setup WNS 为 0.00 ns，SS Hold WNS 为 $-0.17$ ns。
+\item \textbf{拓展数值与 FPGA：} 4,445 条本地记录的定点和浮点 Top-1 均为 97.8853\%。第十一章的 Z100 验证配置采用 40 MHz PL 时钟，板上平均时延为 145.75 ms。
 \end{enumerate}
 
 \chapter{基础任务逐层计数}\label{app:counts}
@@ -2408,9 +2477,13 @@ MAC lane & 并行乘法通路。Q128 有 128 路乘法、64 个 INT40 累加单�
 
 \textbf{形式等价验证记录。} 形式等价验证共覆盖 16,025 个比较点（9,174 个触发器、6,784 个黑盒引脚及 67 个顶层端口），全部通过且失败点为零；另有 60 个时钟门控锁存器未纳入工具自动比较，分类统计见第~\ref{sec:formal-equivalence} 节。
 
-\textbf{拓展配置复现流程。} 编码器拓展工程位于仓库根目录（SoC 顶层为 \texttt{integration/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}soc.sv}，单层与十二层调度固件位于 \texttt{firmware/\allowbreak{}kwt\_\allowbreak{}encoder\_\allowbreak{}driver.c} 与 \texttt{firmware/\allowbreak{}main\_\allowbreak{}encoder.c}，冻结定点参数与参考模型位于 \texttt{model/\allowbreak{}format.json}、\texttt{model/\allowbreak{}ffn-format.json} 与 \texttt{model/\allowbreak{}ffn\_\allowbreak{}numeric.py}），按 \texttt{encoder.ps1} 及 \texttt{docs/\allowbreak{}input-\allowbreak{}stream.md} 组织验证：首先运行算术单测（\texttt{tb\_encoder\_math}、\texttt{tb\_gelu}）及单层直传协议测试（\texttt{tb\_ffn\_input}、\texttt{tb\_input\_link}、\texttt{tb\_encoder\_soc}），随后执行 12 条样本 $\times 12$ 层的整机 RTL 回归及异常故障恢复测试（\texttt{tb\_encoder\_faults}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}bus.sv}、\texttt{tests/\allowbreak{}tb\_\allowbreak{}dma\_\allowbreak{}arbiter.sv}）。复现存档中的调度对照时，保持测试向量与固件不变，依次切换共享 SRAM 交接、LN1 FIFO 直传、\texttt{DMA\_BURST}=8 与 \texttt{HOST\_BURST}=2 配置即可提取对应周期日志。
+\textbf{拓展配置复现流程。} 在 \texttt{fpga} 分支提交 \texttt{d9b7a03} 上运行以下命令，执行紧凑单路版的整机 RTL 回归。固定参数与整数参考由仓库的 \texttt{model/} 和向量导出脚本生成。
+\begin{lstlisting}[style=reportcode,numbers=none,xleftmargin=6pt,basicstyle=\appendixcodefont\fontsize{7.5}{10}\selectfont,literate={-}{{\char45\relax}}1]
+python scripts/run_encoder.py soc --contest --compact 1 --input-stream 1 --tasks 12 --jobs 3
+\end{lstlisting}
+复现综合时解开 \src{encoder_compact1_dc_d9b7a03_linkfix.tar.gz} 并运行 \texttt{bash run\_encoder\_saif.sh}，读取同次运行的面积、时序、标注覆盖率及分层功耗。逐层驻留和 FIFO 直传的单项对照按第十三章引用的历史实验配置复现。
 
-\textbf{工程文件组织。} 基础与拓展工程分别组织 RTL、固件、测试平台、测试向量、数值模型和参数转换脚本。综合与性能资料按设计配置归类，包括 SDC 约束、映射网表、面积与时序报告、活动文件、功耗报告、周期记录和浮点精度统计。
+\textbf{工程文件组织。} 基础与拓展工程分别组织 RTL、固件、测试平台、测试向量、数值模型和参数转换脚本。综合与性能资料按配置归类，包括 SDC、网表、面积与时序、活动与功耗、周期记录和浮点精度统计。附录~\ref{app:representative-code} 中的拓展代码摘录展示两条 FIFO 与 E203 调度接口。
 
 \Needspace{14\baselineskip}
 \section{拓展配置共享 SRAM 地址表}
