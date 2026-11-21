@@ -1,2 +1,0 @@
-MAC_GATED_PASS groups=1000 pairs=32000 checked=44097
-D:\Project\Transformer\undergrad_ffn1\clock_gating\tests\tb_mac_gated.sv:55: $finish called at 440976000 (1ps)

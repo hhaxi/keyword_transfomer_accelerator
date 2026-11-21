@@ -1,3 +1,0 @@
-# Qualification hashes cover exact source bytes on Windows and Linux.
-# Disable checkout/checkin newline conversion within this reproducible snapshot.
-* -text

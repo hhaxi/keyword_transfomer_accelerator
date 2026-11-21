@@ -7,3 +7,6 @@
 *.tcl text eol=lf
 *.ps1 text eol=crlf
 *.pdf binary
+
+# Keep the imported board FFN row sources at their pinned bytes.
+projects/encoder/rtl/ffn1_row/* -text whitespace=cr-at-eol

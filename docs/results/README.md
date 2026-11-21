@@ -18,9 +18,9 @@
 
 新增面积由加速器、接口、DMA 和内部 SRAM 构成。紧凑单路版内部 SRAM 为 128 个宏、222.5 KiB，另有 512 KiB 系统共享 SRAM 和 E203 TCM。紧凑版功耗窗口覆盖逐层参数装载、计算与最终 DMA 写回，随后通过 Host 回读比对 6,336 个结果。两个配置均有 SS 保持时间违例。综合报告的互连面积未定义，能量由该窗口的整机估算功耗乘以 150 MHz 折算任务时长得到。
 
-- 基础 FFN1 的第 4 层数据来自 2026-11-13 的[服务器综合与功耗摘要](../evidence/report/ffn1-layer04-ppa.txt)。源工程见 [Q128 reference_sleep](../../undergrad_ffn1/candidates/q128_reference_sleep/README.md)，12 组层任务的周期见[本地回归](../../undergrad_ffn1/candidates/q128_reference_sleep/LOCAL_RESULTS.md)。
-- 同一 `task00` 的轮询／IRQ/WFI 对照中，整机动态功耗从 33.877 降到 31.908 mW，能量从 8.3561 降到 7.9802 µJ，单任务能量降低 **4.50%**。[同条件对照](../../undergrad_ffn1/candidates/q128_reference_sleep/reports/RESULTS.md)
-- 紧凑单路 RTL 取自 [`fpga@d9b7a03`](https://github.com/hhaxi/keyword_transfomer_accelerator/tree/d9b7a03f08f8aa6ecf319d66eabc7e8e52940e1c)。2026-11-19 的综合包另含 E203 ICB LINK-3 位宽适配，使用 `KWT_COMPACT=1`、`PROJECTION_K4=1`、`WIDE_MACRO=1`。[综合、宏清单和功耗摘要](../evidence/report/encoder-compact1-ppa.txt)
+- 基础 FFN1 的第 4 层数据来自 2026-11-13 的[服务器综合与功耗摘要](../evidence/report/ffn1-layer04-ppa.txt)。源工程见 [Q128 reference_sleep](../../projects/ffn1/README.md)，12 组层任务的周期见[本地回归](../../projects/ffn1/reference_sleep/LOCAL_RESULTS.md)。
+- 同一 `task00` 的轮询／IRQ/WFI 对照中，整机动态功耗从 33.877 降到 31.908 mW，能量从 8.3561 降到 7.9802 µJ，单任务能量降低 **4.50%**。[同条件对照](../../projects/ffn1/reference_sleep/reports/RESULTS.md)
+- [当前紧凑单路工程](../../projects/encoder/README.md)的 RTL 取自 [`fpga@d9b7a03`](https://github.com/hhaxi/keyword_transfomer_accelerator/tree/d9b7a03f08f8aa6ecf319d66eabc7e8e52940e1c)。2026-11-19 的综合包另含 E203 ICB LINK-3 位宽适配，定稿服务器包到位后可补齐精确综合复现入口。服务器使用 `KWT_COMPACT=1`、`PROJECTION_K4=1`、`WIDE_MACRO=1`。[综合、宏清单和功耗摘要](../evidence/report/encoder-compact1-ppa.txt)
 
 ## FPGA 实测
 
@@ -34,7 +34,7 @@
 
 150 MHz 等效吞吐为 35.707 任务/秒，按新建连接测试的板上平均周期折算。
 
-12 条冻结输入共核对 76,032 个编码器输出，全部与定点参考逐位一致。另有 120 条分类记录与定点软件预测逐条一致，119 条命中真实标签。板测 RTL 为 `f21921d`，上位机与硬件导出脚本为 `7483539`。[板卡构建与验证](https://github.com/hhaxi/keyword_transfomer_accelerator/blob/d9b7a03f08f8aa6ecf319d66eabc7e8e52940e1c/docs/fpga-validation/compact-area.md) · [冻结向量](../evidence/report/z100-compact1-board-frozen.json) · [分类记录](../evidence/report/z100-compact1-board-validation.json)
+12 条冻结输入共核对 76,032 个编码器输出，全部与定点参考逐位一致。另有 120 条分类记录与定点软件预测逐条一致，119 条命中真实标签。板测 RTL 为 `f21921d`，上位机与硬件导出脚本为 `7483539`。[板卡构建与验证](../../projects/encoder/integration/z100/README.md) · [冻结向量](../evidence/report/z100-compact1-board-frozen.json) · [分类记录](../evidence/report/z100-compact1-board-validation.json)
 
 ## 报告插图
 

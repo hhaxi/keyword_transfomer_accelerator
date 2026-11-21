@@ -78,8 +78,10 @@ FFN 权重/偏置离线量化裁剪事件：**0**。Softmax 固定截断（分�
 
 ## 复现与证据
 
+以下命令从 [编码器工程](../../projects/encoder/README.md)的根目录运行。
+
 ```powershell
-.venv-model\Scripts\python.exe scripts/evaluate_encoder.py --sample-list docs/evidence/encoder-validation-expanded.samples.json --output output/encoder-validation-replay
+.venv-model\Scripts\python.exe scripts/evaluate_encoder.py --sample-list ../../docs/evidence/encoder-validation-expanded.samples.json --output output/encoder-validation-replay
 python scripts/report_encoder_evaluation.py --evaluation output/encoder-validation-replay --publish output/encoder-validation-replay-summary
 ```
 
