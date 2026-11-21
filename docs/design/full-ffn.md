@@ -1,6 +1,6 @@
 # 第五版：完整 FFN 与第一线性层独立模式
 
-> 本文保留第五版 `aa344f9` 的历史结果与协议说明。当前第八版性能见 [组间调度优化](ffn-group-scheduling.md)。
+> 本文保留第五版 `aa344f9` 的历史结果与协议说明。当前第八版性能见 [组间调度优化](../studies/ffn-group-scheduling.md)。
 
 第五版在同一个 E203/DMA/计算引擎中支持两种运行模式。模式 0 保留本科必做的第一线性层，模式 1 完成 `Linear1 → GELU → Linear2`。完整 FFN 不包含残差、LayerNorm、注意力或分类头，不能称为完整 Transformer 编码器。
 

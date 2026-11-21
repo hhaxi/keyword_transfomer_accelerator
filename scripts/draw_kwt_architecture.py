@@ -152,7 +152,7 @@ text(185, 1710, 'CPU 负责调度', 21, '#526a84')
 text(185, 1745, '算子由引擎执行', 21, '#526a84')
 
 text(65, 1893, '资源口径：内部 SRAM 共 235 KiB（122 个宏）；512 KiB 共享 SRAM 单独统计。推理模式，Dropout 关闭。', 21, '#526a84', 400, 'start')
-text(65, 1925, '依据：docs/full-encoder.md、实际 RTL 与固定 KWT-1 flags.json；音频前处理、嵌入和分类头属于软件参考边界。', 18, '#718398', 400, 'start')
+text(65, 1925, '依据：docs/design/full-encoder.md、实际 RTL 与固定 KWT-1 flags.json；音频前处理、嵌入和分类头属于软件参考边界。', 18, '#718398', 400, 'start')
 parts.append('</g></svg>')
 svg = '\n'.join(parts)
 (OUT / 'keyword-transformer-architecture.svg').write_text(svg, encoding='utf-8')

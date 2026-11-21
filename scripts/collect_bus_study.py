@@ -183,7 +183,7 @@ def package():
     receipt=json.loads((OUT/'bus-full-inputs.json').read_text())
     files.update(ROOT/n for n in receipt['sources'])
     files.update(ROOT/n for n in receipt['firmware'])
-    files.update(ROOT/n for n in ['README.md','docs/bus-study.md','docs/evidence/bus-study-validation.json','scripts/run_bus_study.py','scripts/collect_bus_study.py'])
+    files.update(ROOT/n for n in ['README.md','docs/studies/bus-study.md','docs/evidence/bus-study-validation.json','scripts/run_bus_study.py','scripts/collect_bus_study.py'])
     target=ROOT/'deliverables/bus-study-c0724ce.zip'
     with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED) as z:
         for p in sorted(files):z.write(p,p.relative_to(ROOT).as_posix())

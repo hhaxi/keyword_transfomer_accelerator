@@ -42,7 +42,7 @@ def main():
         z.writestr('submission-manifest.json',json.dumps(manifest,indent=2)+'\n')
         z.writestr('SUBMISSION-STATUS.txt',
             'LOCAL FULL ENCODER EXTENSION; NOT OFFICIAL ACCEPTANCE\n'
-            'See docs/input-stream.md and docs/evidence/input-stream-validation.json. This package contains frontend evidence; historical netlists are excluded.\n'
+            'See docs/studies/input-stream.md and docs/evidence/input-stream-validation.json. This package contains frontend evidence; historical netlists are excluded.\n'
             'Original FFN entry points and v8 reports remain as a separately identified baseline.\n'
             'Official cell/SRAM timing/area/power libraries and official sample/platform evaluation remain pending.\n'
             'Toolchains, audio dataset, caches and credentials are excluded.\n')

@@ -172,7 +172,7 @@ def package(report):
     paths.update(ROOT/n for n in receipt['sources']);paths.update(ROOT/n for n in receipt['vectors']);paths.update(ROOT/n for n in receipt['firmware'])
     paths.update(p for p in OUT.glob('host_*.log') if not p.name.startswith('host_debug'));paths.update(OUT.glob('host-*-inputs.json'))
     paths.update(ROOT/n for n in ['scripts/run_host_study.py','scripts/collect_host_study.py','scripts/collect_bus_study.py',
-                                 'docs/host-study.md','docs/evidence/host-study-validation.json','docs/evidence/qkv-study-validation.json','README.md'])
+                                 'docs/studies/host-study.md','docs/evidence/host-study-validation.json','docs/evidence/qkv-study-validation.json','README.md'])
     paths.update((ROOT/'deliverables/d9dc461-baseline').glob('*'))
     paths.update((ROOT/'deliverables').glob('host-*-sources.zip'))
     paths.update((OUT/'firmware').glob('*'));paths.update((ROOT/'output/encoder-design/firmware').glob('*'))

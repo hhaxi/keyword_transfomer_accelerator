@@ -1,61 +1,34 @@
 # 文档索引
 
-本目录按用途分层，避免源码、证据和历史记录混在一起：
+[项目首页](../README.md) · [主分支复现](reproduce.md) · [赛题指南](芯片设计赛题指南.pdf)
 
-| 位置 | 内容 | 维护方式 |
-| --- | --- | --- |
-| `docs/*.md` | 设计、验收口径与当前各轮性能研究 | 手工维护，入口见 [README](../README.md) |
-| `docs/evidence/` | 机器可读证据：逐轮验证记录、性能对照、样本清单、冻结基线引用 | 由 `scripts/collect_*.py`、`scripts/compare_*.py` 生成 |
-| `docs/history/` | 被后续版本取代的历史性能报告与基线快照 | 只读归档，不再更新 |
-| `docs/figures/` | 文档插图 | `scripts/draw_kwt_architecture.py` 生成架构图 SVG/HTML |
-| `docs/芯片设计赛题指南.pdf` | 本科组赛题指南原文 | 只读 |
+| 目录 | 内容 |
+| --- | --- |
+| [`results/`](results/README.md) | 设计报告口径、配置来源、指标边界和插图出处 |
+| `design/` | 主分支基线的数值契约、接口和存储布局 |
+| `validation/` | 基线验收记录、冻结定点模型的扩展数值评估 |
+| `studies/` | 各轮调度、搬运与总线性能对照 |
+| `evidence/` | 机器可读验证记录、性能对照、样本清单和冻结基线 |
+| `evidence/report/` | 随报告结果归档的 ASIC 服务器摘要与 Z100 紧凑单路实测记录 |
+| `figures/report/` | 从报告定稿导出的框架图，来源见[报告插图索引](results/README.md#报告插图) |
+| `history/` | 早期性能报告与基线快照 |
 
-## 设计与验收
+## 接口与验证
 
-- [完整编码器设计](full-encoder.md)：执行顺序、数值契约、寄存器与内存布局。
-- [完整 FFN 设计](full-ffn.md)：双线性层与 GELU。
-- [基础架构与第一线性层](architecture.md)：早期接口与数据转换说明。
-- [验收口径](acceptance.md)：已复核范围、待完成的正式 PPA/官方样本边界。
+- [完整编码器](design/full-encoder.md) · 执行顺序、数值契约、寄存器与内存布局。
+- [完整 FFN](design/full-ffn.md) · 双线性层与 GELU。
+- [第一线性层与基础架构](design/architecture.md) · 早期接口与数据转换。
+- [基线验收记录](validation/acceptance.md) · 记录所述版本对应的验证范围。
+- [扩展数值验证](validation/encoder-validation-expanded.md) · 4,445 条验证记录的逐层误差与分类一致性。
+- [本科 FFN1 独立工程](../undergrad_ffn1/README.md) · 初始基线、组合对照和后续候选。
 
-## 当前性能研究
+## 性能研究
 
-- [最新输入直传](input-stream.md)：预装载、分块、单端口仲裁、背压与取消恢复。
-- [主机装载优化](host-study.md)：有界主机授权与完整对照。
-- [总线归因](bus-study.md)：DMA/主机/CPU 仲裁占用归因。
-- [QKV 周期研究](qkv-study.md)：每层 MAC 利用率与调度收益上限。
-- [第四版 FIFO 分析](fifo-study.md)：供需判断、尾段分解及单项 RTL 对照。
-- [第三版前端性能](frontend-transfer.md)：16 路独立线性层、连续装载与紧凑打包。
-- [第八版 FFN 调度](ffn-group-scheduling.md)：两种独立模式的当前基线。
-- [第四版必做性能](parallel-packed-performance.md)：紧凑打包与必做基线。
-- [扩展数值验证](encoder-validation-expanded.md)：4,445 条 validation 索引的逐层误差。
+| 对象 | 文档 |
+| --- | --- |
+| 完整编码器 | [输入直传](studies/input-stream.md) · [主机装载](studies/host-study.md) · [总线仲裁归因](studies/bus-study.md) · [QKV 周期](studies/qkv-study.md) |
+| FIFO 与传输 | [FIFO 供需和尾段](studies/fifo-study.md) · [输出 FIFO、16 路线性层及紧凑打包](studies/frontend-transfer.md) |
+| FFN 与第一线性层 | [FFN 组间调度](studies/ffn-group-scheduling.md) · [第一线性层紧凑打包](studies/parallel-packed-performance.md) |
+| 早期迭代 | [跨层驻留对照](history/encoder-performance.md) · [前端传输](history/frontend-performance.md) · [DMA](history/dma-performance.md) · [完整 FFN](history/full-ffn-performance.md) · [FFN 重叠调度](history/ffn-overlap-performance.md) |
 
-## 机器可读证据
-
-`docs/evidence/` 中每一轮报告都对应 README 与上述文档中的引用，包括：
-`design-validation.json`、`encoder-validation.json`、`encoder-validation-expanded.json`、
-`input-stream-validation.json`、`host-study-validation.json`、`bus-study-validation.json`、
-`qkv-study-validation.json`、`fifo-study-validation.json`、`frontend-transfer-validation.json`、
-`ffn-validation.json`、`numeric-validation.json`、`cycle-analysis.json`、
-`performance-comparison.json`、`ffn-performance-comparison.json`、`validation.json`；
-以及冻结基线引用 `encoder-baseline-v8.json`、`fifo-study-baseline.json`、
-`frontend-transfer-baseline.json` 和扩展样本清单 `encoder-validation-expanded.samples.json` +
-`encoder-validation-expanded.samples.jsonl.gz`。
-
-这些 JSON 记录了对应提交、文件 SHA-256、逐任务/逐层计数和日志指纹。重新生成需先完成
-`design.ps1` / `encoder.ps1` 对应阶段，再运行相应的 `collect_*.py`。
-
-## 历史归档
-
-`docs/history/` 保留被取代版本的材料，只用于追溯旧提交、旧口径，不能与当前版本数据混用：
-
-- 性能报告：[第二版编码器](history/encoder-performance.md)、[第二版前端](history/frontend-performance.md)、
-  [第三版 DMA](history/dma-performance.md)、[第六版完整 FFN](history/full-ffn-performance.md)、
-  [第七版 FFN 重叠](history/ffn-overlap-performance.md)。
-- 基线快照：`history/performance-baseline{,-v2..-v7}.json`、`history/encoder-baseline-v1.json`。
-
-## 插图
-
-- `figures/keyword-transformer-overview.png`：README 使用的 KWT-1 模型结构图。
-- `figures/keyword-transformer-architecture.svg` / `.html` / `.png`：本工程模型、编码器与
-  AI 加速器 SoC 的整体映射图。SVG/HTML 由 `scripts/draw_kwt_architecture.py` 生成并可编辑重生成；
-  PNG 为同一 SVG 的栅格导出（脚本不生成 PNG，更新图形后需重新导出）。
+验证脚本按原文件名写入 `evidence/`，可从各研究文档追溯到提交、输入指纹和日志校验值。[本地运行与归档位置](reproduce.md)

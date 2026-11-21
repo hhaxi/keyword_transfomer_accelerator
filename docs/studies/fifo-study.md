@@ -9,7 +9,7 @@
 - `deliverables/encoder-v3-59487c7-source.zip`：Git 源码快照。
 - `deliverables/encoder-v3-59487c7-baseline.zip`：源码、向量、日志、固件和性能报告，共 **1,855 个文件**，逐文件 SHA-256 及 ZIP CRC 已校验。
 - `output/baseline-encoder-v3-59487c7/`：性能报告与已验证日志的独立备份。
-- [基线清单](evidence/fifo-study-baseline.json)：提交、归档校验值和周期/流量基线，随 Git 保存。大型归档保留在本地，不随 Git 上传。
+- [基线清单](../evidence/fifo-study-baseline.json)：提交、归档校验值和周期/流量基线，随 Git 保存。大型归档保留在本地，不随 Git 上传。
 
 观察器为 `tests/encoder_fifo_monitor.svh`，仅在定义 `ENCODER_FIFO_METRICS` 的 RTL 仿真中启用，**不新增综合逻辑或 MMIO 寄存器，不增加 CPU 访问**。计数直接采样时钟上升沿实际 valid/ready 握手，窗口从接受 FFN 启动到编码器 tail 成功结束；每层清零。原始第三版加观察器后仍为 **14,561,648 周期**。
 
@@ -68,7 +68,7 @@ FIFO 接受前累加器保持不变；接受边沿的非阻塞赋值先取旧部
 
 候选每层尾段空等待为 **215,762**，首结果前为 **26,603**、结果间为 **189,159**；满等待仍为零，最大占用仍为 3/4。完整任务 DMA 仍为 **489,600 个32位字**，本轮没有再减少搬运量。150 MHz 目标下折算 **96.996 ms/次**，不代表工艺 Fmax 已验证。
 
-两个独立模式均覆盖 12 个任务。候选编码器覆盖 12 条输入 × 12 层，基线用同一条 task 0 输入完成 12 层 A/B，并核对历史 12 条基线均为相同周期。最终整数输出逐位一致，所有层的饱和计数为零。全范围 FFN、紧凑40位/直传、背压、中止排空与恢复在 Verilator/Icarus 中通过；严格 lint 通过。逐层分解、状态/占用直方图、输入与日志校验值见 [机器验证报告](evidence/fifo-study-validation.json)。
+两个独立模式均覆盖 12 个任务。候选编码器覆盖 12 条输入 × 12 层，基线用同一条 task 0 输入完成 12 层 A/B，并核对历史 12 条基线均为相同周期。最终整数输出逐位一致，所有层的饱和计数为零。全范围 FFN、紧凑40位/直传、背压、中止排空与恢复在 Verilator/Icarus 中通过；严格 lint 通过。逐层分解、状态/占用直方图、输入与日志校验值见 [机器验证报告](../evidence/fifo-study-validation.json)。
 
 ## LN1→FFN 输入直传的后续实验
 

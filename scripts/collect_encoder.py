@@ -267,7 +267,7 @@ DMA 请求背压 **{w['request']:,}** 拍、存在在途请求但没有响应 **
 
 正式 **150 MHz、≤2.25 mm²、功耗和每次推理能耗尚未验证**，仍需官方单元/SRAM 库与评测条件。本轮仅验证调度、传输与逻辑功能；通用网表仿真不涉及工艺时序、面积和功耗验收。
 
-原始证据和 SHA-256 见 [encoder-validation.json](../evidence/encoder-validation.json)，接口及复现见 [full-encoder.md](../full-encoder.md)。
+原始证据和 SHA-256 见 [encoder-validation.json](../evidence/encoder-validation.json)，接口及复现见 [full-encoder.md](../design/full-encoder.md)。
 '''
     (ROOT/'docs/history/encoder-performance.md').write_text(md,encoding='utf-8')
     print(json.dumps({'cycles':cycles,'nominal_ms':ms,'reuse':ab,'hardware':hardware},indent=2))

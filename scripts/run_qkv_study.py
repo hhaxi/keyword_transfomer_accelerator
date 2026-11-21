@@ -153,7 +153,7 @@ def collect():
 def package():
     report = collect()
     files = [ROOT/name for name in report['logs_sha256']]
-    files += [RECEIPT, REPORT, ROOT/'docs/qkv-study.md', ROOT/'README.md']
+    files += [RECEIPT, REPORT, ROOT/'docs/studies/qkv-study.md', ROOT/'README.md']
     receipt = json.loads(RECEIPT.read_text())
     files += [ROOT/name for name in receipt['sources']]
     target = ROOT/'deliverables/qkv-study-f7a3a47.zip'

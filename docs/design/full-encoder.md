@@ -1,6 +1,6 @@
 # 完整编码器拓展：第 4—7 项、结果直传与调度优化
 
-> 第五版增加可切换 LN1→FFN 输入直传与权重预装载：ENC1 配置 bit4 配合 bit3、KWT5 mode4，新增输入计数 0x98。接口时序、取消语义及同条件对照见 [输入直传报告](input-stream.md)。本文其余历史性能表仍注明各自版本。
+> 第五版增加可切换 LN1→FFN 输入直传与权重预装载：ENC1 配置 bit4 配合 bit3、KWT5 mode4，新增输入计数 0x98。接口时序、取消语义及同条件对照见 [输入直传报告](../studies/input-stream.md)。本文其余历史性能表仍注明各自版本。
 用户确认的范围是全部编码器拓展。结构遵循固定 KWT-1 检查点的 **PostNorm** 顺序，注意力在 FFN 之前。原有 FFN1 独立模式、完整 FFN 模式、驱动和必做基线保留。本文对应前端实现与本地验证，正式工艺 PPA 和官方评测仍待完成。
 
 ```text
@@ -23,7 +23,7 @@ Z ─┬────────────────────────
 | 6：12 层系统 | E203 执行命令、切换参数、调用两个真实硬件 DMA；同一分类头比较浮点/定点预测；支持跨层驻留 | 音频前处理、嵌入及最后分类头属于软件参考边界；官方 600 条清单待提供 |
 | 7：综合与性能 | 可复现通用网表、综合后整机测试、周期/访问计数、同配置跨层复用 A/B、150 MHz 目标约束 | 正式库 STA、总面积、功耗和每次推理能耗待官方环境，不能认定 2.25 mm²/150 MHz 已达标 |
 
-当前前端机器结果在 [fifo-study-validation.json](evidence/fifo-study-validation.json)，实测对比在 [fifo-study.md](fifo-study.md)。第三版传输对照见 [frontend-transfer.md](frontend-transfer.md)；[encoder-validation.json](evidence/encoder-validation.json) 和 [encoder-performance.md](history/encoder-performance.md) 保留第二版历史综合/网表证据。本轮未重新执行综合和网表。`docs/evidence/design-validation.json`、`docs/ffn-group-scheduling.md` 表示第八版 FFN 工作负载。
+当前前端机器结果在 [fifo-study-validation.json](../evidence/fifo-study-validation.json)，实测对比在 [fifo-study.md](../studies/fifo-study.md)。第三版传输对照见 [frontend-transfer.md](../studies/frontend-transfer.md)；[encoder-validation.json](../evidence/encoder-validation.json) 和 [encoder-performance.md](../history/encoder-performance.md) 保留第二版历史综合/网表证据。本轮未重新执行综合和网表。`docs/evidence/design-validation.json`、`docs/studies/ffn-group-scheduling.md` 表示第八版 FFN 工作负载。
 
 ## 硬件与资源
 
@@ -48,13 +48,13 @@ Z ─┬────────────────────────
 
 ## 第四版输出合并调度
 
-FIFO 观测表明满等待为零、最大占用3/4，瓶颈主要在 FFN 供给。输出组将40位奇偶部分和直接写入现有 FIFO，省掉独立 MERGE 拍；进入 GELU 前仍保留合并寄存器。每层 FFN 和并发 tail 各减少792拍，两者不能重复相加。独立线性层为167,134周期，完整 FFN 为305,708周期，完整编码器为14,549,345周期。接口与数学运算顺序不变；计数来自仿真观察器，无新增硬件寄存器。详细拆分见 [FIFO研究](fifo-study.md)。
+FIFO 观测表明满等待为零、最大占用3/4，瓶颈主要在 FFN 供给。输出组将40位奇偶部分和直接写入现有 FIFO，省掉独立 MERGE 拍；进入 GELU 前仍保留合并寄存器。每层 FFN 和并发 tail 各减少792拍，两者不能重复相加。独立线性层为167,134周期，完整 FFN 为305,708周期，完整编码器为14,549,345周期。接口与数学运算顺序不变；计数来自仿真观察器，无新增硬件寄存器。详细拆分见 [FIFO研究](../studies/fifo-study.md)。
 
 ## 第三版计算与传输（保留实现）
 
 独立第一线性层也启用现有 16 路 MAC，奇偶 k 同时读取、分别累加，再合并 40 位结果。FFN DMA 使用两笔顺序在途请求及同拍结果补入，独立线性层降至 170,236 周期，完整 FFN 为 306,703 周期。
 
-packed40 每 4 个有符号40位结果打成 5 个32位字，FIFO40 使用带背压的直接链路。两者只删除64位存储中的冗余符号位，接收端仍按原顺序进行符号扩展、缩放舍入、加 Z、饱和和 LN2。FIFO 模式必须并行启动 FFN 与 tail，并等待两端完成；错误/中止清空队列并停止对端。详细协议、计时和验证见 [前端传输优化](frontend-transfer.md)。
+packed40 每 4 个有符号40位结果打成 5 个32位字，FIFO40 使用带背压的直接链路。两者只删除64位存储中的冗余符号位，接收端仍按原顺序进行符号扩展、缩放舍入、加 Z、饱和和 LN2。FIFO 模式必须并行启动 FFN 与 tail，并等待两端完成；错误/中止清空队列并停止对端。详细协议、计时和验证见 [前端传输优化](../studies/frontend-transfer.md)。
 
 ## 第二版前端调度与 DMA（保留实现）
 
@@ -76,7 +76,7 @@ packed40 每 4 个有符号40位结果打成 5 个32位字，FIFO40 使用带背
 
 本地 120 条固定验证样本：浮点和整数分类均 **119/120**，预测一致 **120/120**；最大逐层聚合 NRMSE 为 **0.171713%**。24 条训练检查样本均正确。这里的 NRMSE 是逐层聚合值，不是单样本最大值；本地准确率不是官方 600 条评测成绩。
 
-后续保持格式与原整数算术文件不变，将软件验证扩大到完整上游 validation 索引 **4,445 条**（4,074 个不同音频 + 371 个重复静音条目）：浮点与整数均正确 **4,351/4,445（97.8853%）**，预测全部一致，所有监测阶段实际饱和次数为 **0**。最大逐层聚合 NRMSE **0.171308%**，最差单样本逐层 NRMSE **0.237820%**。原 120 条复测与历史数值完全一致；这次扩展不增加 RTL 整机仿真条数。逐层误差、分类明细、饱和和复现方式见 [扩展验证报告](encoder-validation-expanded.md)。
+后续保持格式与原整数算术文件不变，将软件验证扩大到完整上游 validation 索引 **4,445 条**（4,074 个不同音频 + 371 个重复静音条目）：浮点与整数均正确 **4,351/4,445（97.8853%）**，预测全部一致，所有监测阶段实际饱和次数为 **0**。最大逐层聚合 NRMSE **0.171308%**，最差单样本逐层 NRMSE **0.237820%**。原 120 条复测与历史数值完全一致；这次扩展不增加 RTL 整机仿真条数。逐层误差、分类明细、饱和和复现方式见 [扩展验证报告](../validation/encoder-validation-expanded.md)。
 
 参考使用固定上游 KWT-1 `best_weights`，导出前逐项核验 162 个 checkpoint 张量；本机仍采用已有 TensorFlow 2.4.0 开发环境，尚未被官方认证为其原始 2.4.0rc1 运行环境的完全等价替代。官方环境到位后需按同一冻结格式复核。
 

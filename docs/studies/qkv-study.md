@@ -122,7 +122,7 @@ X 目前每个值广播给四个输出列，16个列组仍会重复读；W 在�
 
 `run` 在构建前保存源码、固件、向量指纹；`collect` 拒绝输入变化、缺失日志、周期分解不闭合、完整任务或独立模式回退。观测器由 `ENCODER_QKV_METRICS` 编译开关加入，常规构建不含这些仿真数组和检查。
 
-- [机器验证记录](evidence/qkv-study-validation.json)：逐层/逐投影计数、界限公式、日志和输入 SHA-256。
+- [机器验证记录](../evidence/qkv-study-validation.json)：逐层/逐投影计数、界限公式、日志和输入 SHA-256。
 - `output/design/qkv-study-inputs.json`：完整输入清单；`tb_qkv_study-run.log`、`qkv_observer_off-run.log`、`qkv_twelve-run.log`：原始观测日志。
 - `deliverables/f7a3a47-baseline/source.zip`：指定提交的源码快照。
 - `deliverables/f7a3a47-baseline/verified-v5.zip`：原 v5 验证包，含基线源码、向量、固件、日志，SHA-256 保持 `48dbfe35f08c75a59dd9ac0acf7a8c7498505585ba2c878b8f33e126ba9d9a1c`。

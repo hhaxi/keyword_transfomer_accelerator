@@ -1,0 +1,55 @@
+Compact single-lane KWT-1 encoder SoC
+Source: user-supplied RDserver03 DC/VCS report summary, 2026-11-19.
+RTL: d9b7a03f08f8aa6ecf319d66eabc7e8e52940e1c with the E203 ICB LINK-3 width fix.
+Top: kwt_encoder_soc. KWT_COMPACT=1, PROJECTION_K4=1, WIDE_MACRO=1,
+DMA_BURST=1, HOST_BURST=0. DC option: compile_ultra -no_autoungroup.
+
+[Clock, I/O and libraries]
+Standard cell DB: scc40nll_vhsc40_rvt_ss_v0p99_125c_basic.db
+Operating condition ss_v0p99_125c; supply 0.99 V; 125 C.
+core_clk period 6.666667 ns; setup/hold uncertainty 0.100/0.100 ns.
+Input max/min 1.000/0.000 ns; output max/min 1.000/0.000 ns; load 0.020 pF.
+Default operating condition; no explicit wire-load model.
+
+[Area in linked-library units]
+Ports 45020; nets 297547; cells 239365; combinational 218888;
+sequential 19294; macros/black boxes 208; buf/inv 28269; references 4.
+Combinational 388060.702499; buf/inv 19287.022061;
+noncombinational 98479.265343; macros 3240875.713379.
+Total cell area 3727415.681221. Net interconnect area undefined.
+Area scope COMPLETE; unknown leaves 0 in all scopes.
+added: 216133 leaves, area 1489217.34567.
+cpu: 21891 leaves, area 475838.496096.
+shared: 905 leaves, area 1762359.83318.
+Macro inventory: 26 RAMSP128X16 at 2677.051025; 100 RAMSP1024X16 at
+9148.524414; 82 RAMSP4096X16 at 27517.316406. Payload 883200 B.
+Added macro area from 26/100/2 instances: 1039490.400862.
+Added non-macro area: 449726.944808.
+
+[Timing in ns]
+Group       Path length  Setup slack  SS hold WNS  SS hold TNS  Hold violations
+FEEDTHROUGH       2.81         1.75         0.00         0.00          0
+INPUTS            5.40         0.13        -0.03        -1.55         73
+OUTPUTS           4.39         1.18         0.00         0.00          0
+core_clk          6.17         0.00        -0.17       -79.95       1360
+Setup WNS/TNS/violations: 0.00 / 0.00 / 0.
+SS hold WNS/TNS/violations (signed): -0.17 / -81.50 / 1433.
+Worst setup path: bus/encoder/exp_unit/pipelined_exp_fraction_reg_2_
+ -> bus/encoder/exp_unit/pipelined_exp_interp_reg_33_.
+Worst SS hold path: bus/encoder/wide_attention_math_score_pipeline_total_reg_20_
+ -> bus/encoder/score_ping_pong_halves_0__exp_mem/native128_u_macro.
+
+[RTL SAIF coverage and activity power]
+Ports 141/141 (100.00%); seq cells 9044/19294 (46.87%); PWR-19 conflicts 213.
+Power in mW. DC reports total directly; component columns are rounded separately.
+Block             Switching   Internal   Dynamic   Leakage   Total
+kwt_encoder_soc      49.629     44.897    94.526     6.120  100.643
+cpu                  44.927      0.961    45.888     0.760   46.648
+u_e203_srams          0.002      0.086     0.088     0.738    0.825
+u_e203_cpu           44.926      0.875    45.801     0.023   45.823
+bus                   4.700     43.935    48.635     5.360   53.992
+encoder               2.693     22.629    25.322     1.500   26.824
+shared                0.079      8.005     8.084     2.950   11.031
+One input, all 12 layers. Window begins with the first input load and
+ends when Host observes completion. Output readback follows the window.
+4,206,337 cycles; 28.042 ms at 150 MHz; 35.660 tasks/s; 2822.256 uJ/task.
