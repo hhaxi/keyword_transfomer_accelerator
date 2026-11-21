@@ -1,7 +1,0 @@
-FORMAT_STREAM_PASS packed=0 scenario=0 words=2048 cycles=2049 overlaps=1023
-FORMAT_STREAM_PASS packed=0 scenario=1 words=2048 cycles=4198 overlaps=1017
-FORMAT_STREAM_PASS packed=0 scenario=1 words=2048 cycles=4198 overlaps=1015
-FORMAT_STREAM_PASS packed=0 scenario=0 words=2048 cycles=2049 overlaps=1023
-FORMAT_STREAM_PASS packed=0 scenario=0 words=2048 cycles=2049 overlaps=1023
-FORMATTER_PASS packed=0
-D:\Project\Transformer\undergrad_ffn1\frontend_candidates\tests\tb_formatter.sv:118: $finish called at 145700000 (1ps)

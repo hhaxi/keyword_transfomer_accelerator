@@ -1,8 +1,0 @@
-FORMAT_STREAM_PASS packed=1 scenario=0 words=1280 cycles=1284 overlaps=1020
-FORMAT_STREAM_PASS packed=1 scenario=1 words=1280 cycles=2657 overlaps=755
-FORMAT_STREAM_PASS packed=1 scenario=1 words=1280 cycles=2656 overlaps=762
-FORMAT_STREAM_PASS packed=1 scenario=0 words=1280 cycles=1284 overlaps=1020
-FORMAT_STREAM_PASS packed=1 scenario=1 words=1280 cycles=2658 overlaps=747
-FORMAT_STREAM_PASS packed=1 scenario=0 words=1280 cycles=1284 overlaps=1020
-FORMATTER_PASS packed=1
-D:\Project\Transformer\undergrad_ffn1\clock_gating\tests\tb_formatter.sv:118: $finish called at 118690000 (1ps)

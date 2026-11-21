@@ -38,19 +38,18 @@ ASIC 面积采用 DC 综合单元面积，新增范围含加速器、内部 SRAM
 
 ## 源码与复现入口
 
-| 要复现的配置 | 从哪里开始 |
+| 工程 | 源码与命令 |
 | --- | --- |
-| 报告基础 FFN1 | `main` 的 [Q128 reference_sleep 工程](undergrad_ffn1/candidates/q128_reference_sleep/README.md)，含 RTL、固件、向量与 DC/VCS 入口 |
-| 报告紧凑单路 ASIC | [`fpga` 的 `d9b7a03` 源码](https://github.com/hhaxi/keyword_transfomer_accelerator/tree/d9b7a03f08f8aa6ecf319d66eabc7e8e52940e1c)，综合包另含 E203 ICB 连线位宽适配。[综合配置](docs/evidence/report/encoder-compact1-ppa.txt) |
-| 报告 Z100 紧凑单路 | [`fpga@d9b7a03` 的板卡构建与验证](https://github.com/hhaxi/keyword_transfomer_accelerator/blob/d9b7a03f08f8aa6ecf319d66eabc7e8e52940e1c/docs/fpga-validation/compact-area.md)，使用 `--compact 1` |
-| 主分支的编码器与独立 FFN 基线 | `encoder.ps1` 和 `design.ps1`，用于本地 RTL、通用综合与网表流程。[主分支复现](docs/reproduce.md) |
+| [Q128 FFN1](projects/ffn1/README.md) | `projects/ffn1/` 包含 IRQ/WFI 定版封包、冻结向量、12 组参数回归和 DC/VCS 入口 |
+| [紧凑单路编码器](projects/encoder/README.md) | `projects/encoder/` 包含 E203 SoC、定点模型、固件和 12 层 RTL 回归 |
+| [Z100 55.56 MHz 上板](projects/encoder/integration/z100/README.md) | 编码器工程内的 Vivado、ARM 固件、烧录和 TCP 实测入口 |
+
+[结果与证据](docs/results/README.md)记录正式配置的综合和板测口径。紧凑单路 ASIC 服务器综合包还包含 E203 ICB LINK-3 位宽适配。[综合配置](docs/evidence/report/encoder-compact1-ppa.txt)
 
 ## 仓库结构
 
-- `rtl/`、`integration/`、`firmware/`、`constraints/` · 基线计算核、E203 系统集成、RISC-V 固件与约束。
-- `undergrad_ffn1/` · 独立本科 FFN1 工程、候选配置、验证与综合交付。
-- `model/`、`tests/`、`scripts/` · 定点参考、测试平台、构建、验证与打包工具。
-- `environment/`、`assets/` · 环境配置、依赖锁定和上游资源清单。
-- `docs/` · [报告结果](docs/results/README.md)、[接口设计](docs/design/full-encoder.md)、[验证与研究文档](docs/README.md)。
+- `projects/ffn1/` · Q128 IRQ/WFI 正式工程。
+- `projects/encoder/` · 紧凑单路编码器与 Z100 板卡集成。
+- `docs/` · 报告结果、原始证据、框架图与[历史工程归档](docs/archive.md)。
 
-上游模型、E203、Speech Commands V2 数据和许可证见 [NOTICE](NOTICE.md) 与[资源锁定清单](assets/resources.lock.json)。
+上游模型、E203、Speech Commands V2 数据和许可证见 [NOTICE](NOTICE.md) 与[资源锁定清单](projects/encoder/assets/resources.lock.json)。

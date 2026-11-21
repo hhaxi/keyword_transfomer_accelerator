@@ -3,10 +3,10 @@
 output/
 deliverables/
 tmp/
-environment/local-tools.json
-environment/installed-model-packages.txt
-environment/*-manifest.json
-assets/metadata/
+/projects/encoder/environment/local-tools.json
+/projects/encoder/environment/installed-model-packages.txt
+/projects/encoder/environment/*-manifest.json
+/projects/encoder/assets/metadata/
 __pycache__/
 *.pyc
 .pytest_cache/
@@ -18,11 +18,11 @@ Thumbs.db
 *.fst
 *.wlf
 transcript
-assets/downloads/
-assets/datasets/
-assets/sources/
-assets/references/
-assets/papers/
+/projects/encoder/assets/downloads/
+/projects/encoder/assets/datasets/
+/projects/encoder/assets/sources/
+/projects/encoder/assets/references/
+/projects/encoder/assets/papers/
 
 # Local EDA/PDK artifacts and machine-specific configuration.
 *.tar
@@ -41,4 +41,9 @@ assets/papers/
 *.o
 *.a
 *.gch
-environment/cpu-verification-tools.json
+/projects/encoder/environment/cpu-verification-tools.json
+
+# Vivado takes additional local logs outside the selected build directory.
+/projects/encoder/.Xil/
+/projects/encoder/*.jou
+/projects/encoder/vivado*.log
